@@ -30,7 +30,7 @@ def add_event(date_obj, times_dict):
             dt_end = dt_base + timedelta(minutes=PADDING_AFTER_MIN)
 
             event = Event()
-            event.name = name.capitalize()
+            event.name = f"{name.capitalize()} ({time_str})"
             event.begin = dt_start
             event.end = dt_end
             event.location = f"Mosquée {masjid_id.replace('-', ' ').title()}"
@@ -52,7 +52,8 @@ if choice == "1":
     response.raise_for_status()
     prayer_times = response.json()
     today = now.date()
-    times_dict = {name: prayer_times.get(name) for name in PRAYERS_ORDER if prayer_times.get(name)}
+    filtered_times = {k: v for k, v in prayer_times.items() if k in PRAYERS_ORDER}
+    times_dict = {name: filtered_times[name] for name in PRAYERS_ORDER if name in filtered_times}
     add_event(today, times_dict)
 
     output_file = f"horaires_priere_{masjid_id}_{today}.ics"
@@ -73,7 +74,8 @@ elif choice == "2":
     for i, daily_times in enumerate(calendar_data):
         try:
             date_obj = datetime(YEAR, month, i + 1)
-            times_dict = {name: daily_times.get(name) for name in PRAYERS_ORDER if daily_times.get(name)}
+            filtered_times = {k: v for k, v in daily_times.items() if k in PRAYERS_ORDER}
+            times_dict = {name: filtered_times[name] for name in PRAYERS_ORDER if name in filtered_times}
             add_event(date_obj, times_dict)
         except Exception as e:
             print(f"⚠️ Erreur jour {i+1}/{month} : {e}")
@@ -92,8 +94,9 @@ elif choice == "3":
         for day_str, time_list in month_dict.items():
             try:
                 date_obj = datetime(YEAR, month_index, int(day_str))
-                if isinstance(time_list, list) and len(time_list) >= len(PRAYERS_ORDER):
-                    times_dict = dict(zip(PRAYERS_ORDER, time_list[:len(PRAYERS_ORDER)]))
+                if isinstance(time_list, list) and len(time_list) >= 6:
+                    cleaned_list = [v for i, v in enumerate(time_list) if i != 1]
+                    times_dict = dict(zip(PRAYERS_ORDER, cleaned_list[:len(PRAYERS_ORDER)]))
                     add_event(date_obj, times_dict)
                 else:
                     print(f"⚠️ Format invalide jour {day_str}/{month_index} : {time_list}")
