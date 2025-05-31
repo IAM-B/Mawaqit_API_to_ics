@@ -38,6 +38,27 @@ clean:
 reset: clean install
 	@echo "♻️ Projet réinitialisé."
 
+# Git commit avec message passé en paramètre : make gcommit "message ici"
+gcommit:
+	git add .
+	git commit -m "$(m)"
+
+# Git push (branche courante)
+gpush:
+	git push origin master
+
+# Git pull (branche courante)
+gpull:
+	git pull origin master
+
+# Reset soft
+greset:
+	git reset HEAD~
+
+# Status
+gstatus:
+	git status
+
 # ℹ️ Aide
 help:
 	@echo ""
@@ -46,4 +67,11 @@ help:
 	@echo "  make run       → Lancer l’interface Flask"
 	@echo "  make clean     → Supprimer l’environnement virtuel"
 	@echo "  make reset     → Nettoyer et réinstaller"
+	@echo ""
+	@echo "Commandes Git :"
+	@echo "  make gcommit m=\"message\"  → Ajouter, commit avec message"
+	@echo "  make gpush         → Pousser sur origin/master"
+	@echo "  make gpull         → Récupérer depuis origin/master"
+	@echo "  make greset        → Reset le dernier commit (soft)"
+	@echo "  make gstatus       → Afficher le status git"
 	@echo ""

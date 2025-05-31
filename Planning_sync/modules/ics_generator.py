@@ -89,7 +89,7 @@ def generate_ics_file(masjid_id: str, scope: str) -> str:
     else:
         raise ValueError("Scope must be 'today', 'month', or 'year'")
 
-    output_path = Path("data") / filename
+    output_path = Path("static/ics") / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         f.writelines(cal)

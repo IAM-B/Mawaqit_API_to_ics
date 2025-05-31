@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from modules.mawaqit_api import fetch_mosques
 from modules.time_segmenter import segment_available_time
 from modules.ics_generator import generate_ics_file
+from pathlib import Path
 
 app = Flask(__name__)
 
@@ -16,10 +17,14 @@ def planner():
     
     try:
         prayer_times = fetch_mosques(masjid_id, period)
-        
+
         # Génération du fichier ICS
         ics_path = generate_ics_file(masjid_id, period)
-        
+
+        # Chemin de téléchargement pour l'utilisateur
+        filename = Path(ics_path).name
+        ics_url = f"/static/ics/{filename}"
+
         # Gestion des segments
         if isinstance(prayer_times, list):
             segments = []
@@ -35,8 +40,8 @@ def planner():
         else:
             segments = segment_available_time(prayer_times)
 
-        return render_template("planner.html", segments=segments, file_path=ics_path)
-    
+        return render_template("planner.html", download_link=ics_url, segments=segments)
+
     except Exception as e:
         return f"<h2>❌ Erreur : {e}</h2>", 500
 

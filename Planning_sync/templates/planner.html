@@ -14,6 +14,9 @@
       {% endfor %}
     </ul>
 
-    <a href="{{ ics_file }}">Télécharger le fichier ICS</a>
+    {% if download_link %}
+    <a href="{{ download_link }}" download>Télécharger le fichier .ics</a>
+    {% endif %}
+    
   </body>
 </html>
