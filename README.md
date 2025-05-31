@@ -1,6 +1,6 @@
-# Planning_sync
+# Planning\_sync
 
-**Planning_sync** is a local tool to generate a personalized schedule synchronized with prayer times from your local mosque.
+**Planning\_sync** is a local tool to generate a personalized schedule synchronized with prayer times from your local mosque.
 
 This app connects to the [Mawaqit API](https://mawaqit.net), fetches the prayer times of your chosen mosque, calculates the free time segments between prayers, and helps you plan your daily, monthly, or yearly routine accordingly.
 
@@ -10,11 +10,11 @@ It also generates an `.ics` calendar file that you can import into your favorite
 
 ## 📦 Features
 
-- 🌍 Select your mosque by ID from Mawaqit
-- 🕒 Choose scope: daily, monthly, or yearly prayer times
-- 📅 Get calculated free time slots between prayers
-- 📤 Export the schedule as `.ics` file
-- 📁 Local web interface via Flask
+* 🌍 Select your mosque by ID from Mawaqit
+* 🕒 Choose scope: daily, monthly, or yearly prayer times
+* 📅 Get calculated free time slots between prayers
+* 📤 Export the schedule as `.ics` file
+* 📁 Local web interface via Flask
 
 ---
 
@@ -25,11 +25,11 @@ It also generates an `.ics` calendar file that you can import into your favorite
 ```bash
 git clone https://github.com/IAM-B/Mawaqit_API_to_ics
 cd Mawaqit_API_to_ics
-````
+```
 
 ### 2. Launch Mawaqit API (in parallel)
 
-> ⚠️ This app requires the [Mawaqit\_API](../Mawaqit_API) service to be running locally.
+⚠️ This app requires the `Mawaqit_API` service to be running locally.
 
 From the root project folder:
 
@@ -98,3 +98,4 @@ Planning_sync/
 ## 📖 License
 
 MIT License – © 2025
+
