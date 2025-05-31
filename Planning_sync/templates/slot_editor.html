@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Éditeur de créneaux</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+    <h2>🕓 Édition d’un créneau disponible</h2>
+
+    <form method="POST" action="/edit_slot">
+        <label for="index">Sélectionner un créneau :</label>
+        <select name="index" id="index" required>
+            {% for slot in slots %}
+                <option value="{{ loop.index0 }}">
+                    {{ slot.start }} → {{ slot.end }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label for="start">Nouvelle heure de début :</label>
+        <input type="time" name="start" id="start" required>
+
+        <label for="end">Nouvelle heure de fin :</label>
+        <input type="time" name="end" id="end" required>
+
+        <br><br>
+
+        <button type="submit">💾 Modifier ce créneau</button>
+    </form>
+
+    <br><br>
+
+    <a href="/generate_slots_ics">📥 Télécharger les créneaux disponibles (.ics)</a>
+</body>
+</html>

@@ -1,29 +1,37 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Planificateur</title>
-    <link rel="stylesheet" href="/static/styles.css" />
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Planificateur</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
 
-    <h1>Créer mon emploi du temps synchronisé avec les horaires de prière</h1>
+  <h1>Créer mon emploi du temps synchronisé avec les horaires de prière</h1>
 
-    <h2>Créneaux disponibles</h2>
-    
-    <ul>
-      {% for seg in segments %}
-        <li>{{ seg.start }} - {{ seg.end }}</li>
-      {% endfor %}
-    </ul>
+  <h2>Créneaux disponibles</h2>
+  <ul>
+    {% for seg in segments %}
+      <li>{{ seg.start }} - {{ seg.end }}</li>
+    {% endfor %}
+  </ul>
 
-    {% if download_link %}
-      <a href="{{ download_link }}" download>Télécharger le fichier .ics</a>
-    {% endif %}
+  <a href="/edit_slot">✏️ Modifier un créneau manuellement</a>
+  
+  {% if download_link %}
+    <br><br>
+    <a href="{{ download_link }}" download>📥 Télécharger le fichier .ics (horaires de prière)</a>
+  {% endif %}
+
+  {% if empty_download_link %}
     <br>
-    {% if empty_download_link %}
-      <a href="{{ empty_download_link }}" download>Télécharger les créneaux disponibles (.ics)</a>
-    {% endif %}
+    <a href="{{ empty_download_link }}" download>📥 Télécharger les créneaux disponibles (.ics)</a>
+  {% endif %}
 
-  </body>
+  {% if slots_download_link %}
+    <br>
+    <a href="{{ slots_download_link }}" download>📥 Télécharger les créneaux synchronisés (.ics)</a>
+  {% endif %}
+
+</body>
 </html>
