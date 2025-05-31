@@ -1,8 +1,10 @@
 import os
 import requests
 import pandas as pd
+import pytz
 from pathlib import Path
 from datetime import datetime, timedelta
+from icalendar import Calendar, Event
 from ics import Calendar, Event
 from pytz import timezone
 
@@ -94,3 +96,18 @@ def generate_ics_file(masjid_id: str, scope: str) -> str:
     with open(output_path, "w", encoding="utf-8") as f:
         f.writelines(cal)
     return str(output_path)
+
+def generate_empty_event_ics_file(slots: list[tuple[datetime, datetime]], filename: str):
+    cal = Calendar()
+    timezone = pytz.timezone("Africa/Algiers")
+
+    for start, end in slots:
+        event = Event()
+        event.add("summary", "⏳ Créneau disponible")
+        event.add("dtstart", timezone.localize(start))
+        event.add("dtend", timezone.localize(end))
+        event.add("description", "Créneau libre entre deux prières")
+        cal.add_component(event)
+
+    with open(filename, "wb") as f:
+        f.write(cal.to_ical())

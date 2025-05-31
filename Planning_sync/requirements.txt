@@ -3,3 +3,4 @@ requests
 ics
 pytz
 pandas
+icalendar

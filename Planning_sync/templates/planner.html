@@ -6,17 +6,24 @@
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
+
     <h1>Créer mon emploi du temps synchronisé avec les horaires de prière</h1>
+
     <h2>Créneaux disponibles</h2>
+    
     <ul>
       {% for seg in segments %}
-      <li>{{ seg.start }} - {{ seg.end }}</li>
+        <li>{{ seg.start }} - {{ seg.end }}</li>
       {% endfor %}
     </ul>
 
     {% if download_link %}
-    <a href="{{ download_link }}" download>Télécharger le fichier .ics</a>
+      <a href="{{ download_link }}" download>Télécharger le fichier .ics</a>
     {% endif %}
-    
+
+    {% if empty_download_link %}
+      <a href="{{ empty_download_link }}" download>Télécharger les créneaux disponibles (.ics)</a>
+    {% endif %}
+
   </body>
 </html>
