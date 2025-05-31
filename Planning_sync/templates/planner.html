@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Planificateur</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <h1>Créer mon emploi du temps synchronisé avec les horaires de prière</h1>
+    <h2>Créneaux disponibles</h2>
+    <ul>
+      {% for seg in segments %}
+      <li>{{ seg.start }} - {{ seg.end }}</li>
+      {% endfor %}
+    </ul>
+
+    <a href="{{ ics_file }}">Télécharger le fichier ICS</a>
+  </body>
+</html>

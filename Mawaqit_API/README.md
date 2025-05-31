@@ -16,6 +16,33 @@ the current website is using php so it's returning the whole html every get requ
 
 Find the installation and usage documentation [here](https://mrsofiane.me/mawaqit-api).
 
+Installation
+There are multiple ways to install and deploy the Mawaqi API depending on your preferences and requirements.
+
+Using Source Code and Running Python:
+
+Clone the repository from GitHub.
+Ensure you have Python installed on your system (version 3.8 or higher).
+Navigate to the project directory.
+Create virtual environment python -m  venv env or python3 -m  venv env.
+Activate the virtual environment source env/bin/activate.
+Install dependencies using pip: pip install -r requirements.txt or pip3 install -r requirements.txt.
+Run the API using the following command: uvicorn main:app --host 0.0.0.0 --port 8000.
+The API will be accessible at http://localhost:8000.
+Using Docker to Build Image:
+
+Ensure you have Docker installed on your system.
+Clone the repository from GitHub.
+Navigate to the project directory.
+Build the Docker image using the provided Dockerfile: docker build -t mawaqi-api ..
+Run the Docker container: docker run -d --name mawaqit-api -p 8000:80 mawaqi-api.
+The API will be accessible at http://localhost:8000.
+Choose the installation method that best suits your environment and preferences.
+
+API Documentation:
+
+You can find the API documentation at the path /docs relative to your API's base URL. It's an OpenAPI documentation generated automatically from FastAPI.
+
 ## Extra Features
 
 A complementary script `mawaqit_to_ics.py` has been added to convert prayer times into `.ics` calendar files.  

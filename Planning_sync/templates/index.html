@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Planning Sync</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <h1>Bienvenue sur Planning Sync</h1>
+    <a href="/planner">Accéder au planificateur</a>
+
+    <form action="/planner" method="post">
+      <label for="masjid_id">ID de la Mosquée :</label>
+      <input type="text" name="masjid_id" required />
+
+      <label for="period">Période :</label>
+      <select name="period">
+        <option value="day">Aujourd'hui</option>
+        <option value="month">Mois</option>
+        <option value="year">Année</option>
+      </select>
+
+      <button type="submit">Générer planning</button>
+    </form>
+  </body>
+</html>
