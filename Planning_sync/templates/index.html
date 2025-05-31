@@ -7,19 +7,24 @@
   </head>
   <body>
     <h1>Bienvenue sur Planning Sync</h1>
-    <a href="/planner">Accéder au planificateur</a>
 
     <form action="/planner" method="post">
       <label for="masjid_id">ID de la Mosquée :</label>
       <input type="text" name="masjid_id" required />
-
+      
+      <label for="padding_before">Temps avant prière (min):</label>
+      <input type="number" name="padding_before" value="10" min="0" />
+      
+      <label for="padding_after">Temps après prière (min):</label>
+      <input type="number" name="padding_after" value="10" min="0" />
+      
       <label for="period">Période :</label>
       <select name="scope" required>
         <option value="today">Aujourd'hui</option>
         <option value="month">Mois</option>
         <option value="year">Année</option>
       </select>
-
+      
       <button type="submit">Générer planning</button>
     </form>
   </body>

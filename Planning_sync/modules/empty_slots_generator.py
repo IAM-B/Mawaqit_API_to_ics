@@ -10,6 +10,8 @@ def generate_empty_slot_events(prayer_times: dict, date: datetime, filename: str
 
     slots = []
     for i in range(len(PRAYERS_ORDER) - 1):
+        if PRAYERS_ORDER[i] not in prayer_times or PRAYERS_ORDER[i + 1] not in prayer_times:
+            continue
         start = to_datetime(prayer_times[PRAYERS_ORDER[i]])
         end = to_datetime(prayer_times[PRAYERS_ORDER[i + 1]])
 

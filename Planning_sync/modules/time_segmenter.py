@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
+from config import config
 
-def segment_available_time(prayer_times: dict, padding=15):
+def segment_available_time(prayer_times: dict):
     times = []
+    padding_before = config.PADDING_BEFORE_MIN
+    padding_after = config.PADDING_AFTER_MIN
 
     for key, time_str in prayer_times.items():
         try:
@@ -15,8 +18,8 @@ def segment_available_time(prayer_times: dict, padding=15):
     segments = []
 
     for i in range(len(times) - 1):
-        start = times[i] + timedelta(minutes=padding)
-        end = times[i + 1] - timedelta(minutes=padding)
+        start = times[i] + timedelta(minutes=padding_before)
+        end = times[i + 1] - timedelta(minutes=padding_after)
         if start < end:
             segments.append({"start": start.strftime("%H:%M"), "end": end.strftime("%H:%M")})
 
