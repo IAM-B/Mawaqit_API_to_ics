@@ -5,6 +5,12 @@ PIP := $(VENV)/bin/pip
 APP := main:app
 PORT := 8000
 
+init-direnv:
+	@echo "👉 Création du fichier .envrc pour direnv..."
+	@echo 'source env-mawaqit/bin/activate' > .envrc
+	@direnv allow .
+	@echo "✅ direnv configuré. Il activera automatiquement l'environnement en entrant dans le dossier."
+
 # ⚙️ Création de l'environnement virtuel + install des dépendances
 install: $(VENV)/bin/activate
 
@@ -13,8 +19,10 @@ $(VENV)/bin/activate: requirements.txt
 	python -m venv $(VENV)
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
-	@touch $(VENV)/bin/activate
-	@echo "✅ Dépendances installées."
+	@$(MAKE) init-direnv
+	@echo "✅ Installation terminée."
+	@echo "🧠 Astuce : direnv activera ton environnement automatiquement à l'avenir."
+	@echo "✅ Environnement prêt."
 
 # 🚀 Lancement de l'API en mode local
 run: install

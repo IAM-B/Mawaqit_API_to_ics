@@ -3,13 +3,13 @@ from datetime import datetime
 
 BASE_URL = "http://localhost:8000/api/v1"
 
-def fetch_mosques(masjid_id: str, period: str = "day"):
-    if period == "day":
+def fetch_mosques(masjid_id: str, scope: str = "today"):
+    if scope == "today":
         url = f"{BASE_URL}/{masjid_id}/prayer-times"
-    elif period == "month":
+    elif scope == "month":
         now = datetime.now()
         url = f"{BASE_URL}/{masjid_id}/calendar/{now.month}"
-    elif period == "year":
+    elif scope == "year":
         url = f"{BASE_URL}/{masjid_id}/calendar"
     else:
         raise ValueError("Période invalide")

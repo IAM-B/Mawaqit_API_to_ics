@@ -1,0 +1,3 @@
+data/*.ics
+env-planner
+modules/__pycache__
