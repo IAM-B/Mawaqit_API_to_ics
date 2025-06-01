@@ -1,0 +1,134 @@
+[
+  {
+    "slug": "waqf-nordmore-kristiansund-1",
+    "name": "Waqf مسجد",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/844b7814-2409-4480-97f0-ba85c18cc039/mosque/1eea8dd9-2c76-6dda-9819-066ed47a7584.jpeg",
+    "address": "Gomagata 15",
+    "city": "Kristiansund",
+    "zipcode": "6512",
+    "countryFullName": "Norway",
+    "lng": 7.7494881,
+    "lat": 63.1165179
+  },
+  {
+    "slug": "ismg-mevlana-moske-oslo-0671-norway",
+    "name": "ISMG Mevlana Moske",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8f1627cd-f0b8-45fb-a3e1-6d613a575925/mosque/1eea8e39-d660-6958-be5d-066ed47a7584.jpg",
+    "address": "Tvetenveien 152",
+    "city": "Oslo",
+    "zipcode": "0671",
+    "countryFullName": "Norway",
+    "lng": 10.8463709,
+    "lat": 59.9162125
+  },
+  {
+    "slug": "mevlana-moske-stavanger-4007-norway",
+    "name": "Diyanet Mevlana Moské",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/20a01aea-5357-4b8f-be90-5661ee5e0e8f/mosque/1eea8e4d-9768-67be-af26-066ed47a7584.jpg",
+    "address": "Dusavikveien 35",
+    "city": "Stavanger",
+    "zipcode": "4007",
+    "countryFullName": "Norway",
+    "lng": 5.7098793,
+    "lat": 58.9819205
+  },
+  {
+    "slug": "hadeland-islamsk-kultur-senteret-gran-2750-norway",
+    "name": "Hadeland Islamisk Kultursenter",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b58ca5ac-e610-45e8-a96f-148655c61367/mosque/1eea8ecf-d5f0-69be-910f-066ed47a7584.jpg",
+    "address": "Hovsgutua 8",
+    "city": "GRAN",
+    "zipcode": "2750",
+    "countryFullName": "Norway",
+    "lng": 10.573988109827,
+    "lat": 60.357573656466
+  },
+  {
+    "slug": "islamsk-kultursenter-gjovik-2821-norway",
+    "name": "Islamsk Kultursenter I Gjøvik",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/38b0cc16-f4c6-48f9-b72d-68ce584ef905/mosque/1eea8ee4-909f-6f58-8c2d-066ed47a7584.jpg",
+    "address": "Bryggeveien 7",
+    "city": "GJØVIK",
+    "zipcode": "2821",
+    "countryFullName": "Norway",
+    "lng": 10.705945,
+    "lat": 60.79832
+  },
+  {
+    "slug": "islamsk-kultursenter-i-melhus-melhus-7224-norway",
+    "name": "ISLAMSK KULTURSENTER I MELHUS",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f85785f9-e3ae-4c00-a5c3-442b49770106/mosque/1eefe91f-8d99-6706-b1fd-0621eb7171ad.jpeg",
+    "address": "Pottenvegen 1",
+    "city": "MELHUS",
+    "zipcode": "7224",
+    "countryFullName": "Norway",
+    "lng": 10.2818199,
+    "lat": 63.2839344
+  },
+  {
+    "slug": "al-iman-kultursenter-gjovik-2815-norway",
+    "name": "Al Iman Kultursenter I Gjøvik",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2377c405-3fc8-4d76-9e5e-5c1158ac9ea0/mosque/1ef5110e-7f76-6a40-971d-0a67bcb0d635.jpeg",
+    "address": "Storgata 20",
+    "city": "GJøVIK",
+    "zipcode": "2815",
+    "countryFullName": "Norway",
+    "lng": 10.6878239,
+    "lat": 60.7939421
+  },
+  {
+    "slug": "assalam-tonsberg-3112-norway",
+    "name": "Masjid Assalam",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6e42973a-ba00-4925-969e-5277693eea04/mosque/1ef572a4-2e4f-6e4e-9ec8-0eccd22c0f01.jpg",
+    "address": "Slagenveien 19",
+    "city": "TøNSBERG",
+    "zipcode": "3112",
+    "countryFullName": "Norway",
+    "lng": 10.4162826,
+    "lat": 59.2685356
+  },
+  {
+    "slug": "bkc-innlandet-mesdzid-gjovik-2815-norway",
+    "name": "BKC Innlandet",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/adf9c80d-71e4-41fe-89de-f291760a26d1/mosque/1ef910e1-672b-6d56-b600-0671c73660c5.jpg",
+    "address": "Nedre Torvgata",
+    "city": "GJøVIK",
+    "zipcode": "2815",
+    "countryFullName": "Norway",
+    "lng": 10.6882398,
+    "lat": 60.7952621
+  },
+  {
+    "slug": "eyup-sultan-moske-stavanger-4016-norway",
+    "name": "ISMG Eyüp Sultan Moske",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8da76c77-f79b-4129-bd12-fa971317fa17/mosque/1efd7461-0fc9-6eae-9061-0ac178b258e1.jpg",
+    "address": "Hillevågsveien 23b",
+    "city": "STAVANGER",
+    "zipcode": "4016",
+    "countryFullName": "Norway",
+    "lng": 5.741271,
+    "lat": 58.9501521
+  },
+  {
+    "slug": "msjd-bwaer-drammen-3024-norway",
+    "name": "مسجد باوەڕ",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9e3b7c3b-ea4f-4808-a526-756b9d6bf716/mosque/1f02b6c5-07a6-6dc0-8a41-0e31fcfe1275.jpg",
+    "address": "Valbrottveien 19, 3024 Drammen, Norway",
+    "city": "DRAMMEN",
+    "zipcode": "3024",
+    "countryFullName": "Norway",
+    "lng": 10.1391481,
+    "lat": 59.7543775
+  },
+  {
+    "slug": "oslo-islamic-center-oslo-0190-norway",
+    "name": "Oslo Islamic Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/120a9a27-2e65-4244-8ee8-374e12b1ffad/mosque/1f031b37-2b96-66c8-ad05-0633aa0c74d7.jpg",
+    "address": "Grønlandsleiret 34, Oslo, Norway",
+    "city": "OSLO",
+    "zipcode": "0190",
+    "countryFullName": "Norway",
+    "lng": 10.7676768,
+    "lat": 59.9111409
+  }
+]

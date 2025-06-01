@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "vilnius-mosque-and-islamic-center-vilnius-03205-lithuania",
+    "name": "Vilnius Mosque and Islamic Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ca2b68c6-7ffb-4327-822b-038ca29a71a1/mosque/1eea8e91-a5ad-6c54-a08b-066ed47a7584.jpg",
+    "address": "Smolensko g. 19, 03205 Vilnius",
+    "city": "VILNIUS",
+    "zipcode": "03205",
+    "countryFullName": "Lithuania",
+    "lng": 25.2593646,
+    "lat": 54.6739549
+  },
+  {
+    "slug": "iman-klaipedos-krasto-musulmonu-bendruom-klaipeda-klaipeda-city-municipality-lithuania-91260-lithuania",
+    "name": "IMAN - Klaipedos musulmonų bendruome",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ba72728b-51f2-4f79-a00a-7a2527f52586/mosque/1eeed31f-040f-642a-a10f-0e8f4a8ce035.png",
+    "address": "Debreceno g. 3, Klaipėda, 94175 Klaipėdos m. sav",
+    "city": "KLAIPEDA CITY MUNICIPALITY",
+    "zipcode": "91260",
+    "countryFullName": "Lithuania",
+    "lng": 21.1790379,
+    "lat": 55.6843848
+  },
+  {
+    "slug": "islamo-centras-vilniaus-m-08418-lithuania",
+    "name": "Islamo Centras",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5ec5ed7a-c96a-45a1-a341-a995878e246c/mosque/1ef8acd6-f937-6ade-a510-0affcb0701ab.jpg",
+    "address": "Rugių g. 1, Vilnius, 08418 Vilniaus m. sav.",
+    "city": "VILNIAUS M.",
+    "zipcode": "08418",
+    "countryFullName": "Lithuania",
+    "lng": 25.275329,
+    "lat": 54.7413143
+  }
+]

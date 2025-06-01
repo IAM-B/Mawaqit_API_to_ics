@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "assalam-cayenne-97300-french-guiana",
+    "name": "Assalam",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a5bc57e4-cf45-4075-879a-24117a89d377/mosque/1eea8ed9-2f82-6212-bad4-066ed47a7584.jpg",
+    "address": "3 rue Maillard dumesle",
+    "city": "CAYENNE",
+    "zipcode": "97300",
+    "countryFullName": "French Guiana",
+    "lng": -52.3292,
+    "lat": 4.93912
+  },
+  {
+    "slug": "mosquee-abou-bakr-cayenne-97300-french-guiana-1",
+    "name": "Mosquée ABOU BAKR",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e7fe9449-efa0-4185-9e4e-fe0370a0dcec/mosque/1eff3ab1-e8a3-6cbc-af22-06ef9144e88f.png",
+    "address": "15 Rue Leon Bassieres",
+    "city": "CAYENNE",
+    "zipcode": "97300,",
+    "countryFullName": "French Guiana",
+    "lng": -52.320394,
+    "lat": 4.933988
+  },
+  {
+    "slug": "rahma-saint-laurent-du-maroni-97320-french-guiana",
+    "name": "Rahma",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0473611d-161d-4802-a1a6-146f83eb27de/mosque/1f0080af-3c82-6704-8eab-0e61b0058d45.jpeg",
+    "address": "33 Avenue du Général de Gaulle, Saint-Laurent-du-Maroni, Guyane française",
+    "city": "SAINT-LAURENT-DU-MARONI",
+    "zipcode": "97320",
+    "countryFullName": "French Guiana",
+    "lng": -54.031937,
+    "lat": 5.4999969
+  }
+]

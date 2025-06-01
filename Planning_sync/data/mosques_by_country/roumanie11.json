@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "masjid-cluj-napoca-400338-romania",
+    "name": "مسجد كلوج",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d5f0a6cf-4b29-402f-a226-35fe68f1ed36/mosque/1eea8e0e-6a0f-6676-b109-066ed47a7584.jpg",
+    "address": "strada pastorului 17",
+    "city": "Cluj-Napoca",
+    "zipcode": "400338",
+    "countryFullName": "Romania",
+    "lng": 23.5781945,
+    "lat": 46.7612026
+  },
+  {
+    "slug": "msjd-tyb-bucuresti-021171-romania",
+    "name": "مسجد طيبة - Moscheea Taiba",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/54535f79-4583-4259-bc78-034cc3acd397/mosque/1eea8e23-e24d-6a92-8755-066ed47a7584.jpg",
+    "address": "Sos. Colentina Nr 373",
+    "city": "Bucuresti",
+    "zipcode": "021171",
+    "countryFullName": "Romania",
+    "lng": 26.1538429,
+    "lat": 44.473174
+  },
+  {
+    "slug": "msjd-lqds-bucuresti-022504-romania",
+    "name": "مسجد القدس",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d169d691-1ffd-4248-9260-53a201ca7b8b/mosque/1eea8e24-66a3-604e-927e-066ed47a7584.jpg",
+    "address": "Strada Fabrica de Gheață Nr 14",
+    "city": "Bucuresti",
+    "zipcode": "022504",
+    "countryFullName": "Romania",
+    "lng": 26.1405047,
+    "lat": 44.4692841
+  },
+  {
+    "slug": "masjid-ettaqwa-bucuresti-31214-romania",
+    "name": "مسجد التقوى",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b1592977-20fb-4ded-97b1-4898a35ed34e/mosque/1eea8e2c-54a7-6478-900e-066ed47a7584.jpg",
+    "address": "Strada Logofătul Tăutu 66",
+    "city": "București",
+    "zipcode": "31214",
+    "countryFullName": "Romania",
+    "lng": 26.1164788,
+    "lat": 44.4185161
+  },
+  {
+    "slug": "moscheea-iasi-iasi-700259-romania",
+    "name": "Moscheea Iaşi",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6e605ee7-a188-4b60-824e-1ca441dd2afe/mosque/1eea8e97-7ffa-6af6-bf69-066ed47a7584.jpg",
+    "address": "Strada Morilor nr 20",
+    "city": "IAșI",
+    "zipcode": "700259",
+    "countryFullName": "Romania",
+    "lng": 27.576977,
+    "lat": 47.159852
+  },
+  {
+    "slug": "msjd-lrhmn-moscheea-ar-rahman-bucuresti-060316-romania",
+    "name": "مسجد الرحمن - MOSCHEEA  AR-RAHMAN",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/565f30c6-cc7e-4eed-92aa-d46b8841f961/mosque/1ef598a8-37b1-6300-8803-0afeeb7ee923.png",
+    "address": "Strada Muntii Gurghiului nr 50-56",
+    "city": "BUCURESTI",
+    "zipcode": "060316",
+    "countryFullName": "Romania",
+    "lng": 26.0463042,
+    "lat": 44.4484909
+  }
+]

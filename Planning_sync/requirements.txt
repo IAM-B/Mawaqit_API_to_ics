@@ -1,4 +1,6 @@
-Flask
-requests
-pandas
-icalendar
+Flask==3.1.1
+requests==2.32.3
+pandas==2.2.3
+icalendar==6.3.1
+beautifulsoup4==4.13.4
+unidecode==1.3.8

@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "masjid-amir-soltan-niamey-99337-niger",
+    "name": "مسجد أمير سلطان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6e1aeb5d-6cba-452d-a863-f66e4ba8655a/mosque/1eed745d-f121-629e-9b4c-0ede686d7942.png",
+    "address": "F4VR+M3C, Niamey, Niger",
+    "city": "NIAMEY",
+    "zipcode": "99337",
+    "countryFullName": "Niger",
+    "lng": 2.1401406,
+    "lat": 13.4941875
+  },
+  {
+    "slug": "masjid-al-ansar-bague-daouda-8000-niamey-niger",
+    "name": "مسجد الأنصار - Mosquée Bagué Daouda",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4e6ec4b4-c77c-4954-9e5d-ae140e918c26/mosque/1f03a23a-a6f3-65d4-9e46-0ebf32fefef3.png",
+    "address": "Terrain Musulman",
+    "city": "NIAMEY",
+    "zipcode": "8000",
+    "countryFullName": "Niger",
+    "lng": 2.1253686770797,
+    "lat": 13.512862067537
+  }
+]

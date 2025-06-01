@@ -1,0 +1,79 @@
+[
+  {
+    "slug": "masjid-ibrahim-lkhalil-ain-tmouchnt-46000-algeria",
+    "name": "ANSAN MASJID & ISLAMIC CENTER ANSAN",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a2c3da5f-1688-4e02-b3c3-e9b26ad9d2c9/mosque/1efee6c0-a096-6b4e-bff9-0a7d06691847.png",
+    "address": "Wongokbon-dong, Danwon-gu, Ansan-si",
+    "city": "GYEONGGI-DO",
+    "zipcode": "753-15",
+    "countryFullName": "South Korea",
+    "lng": 126.7914059,
+    "lat": 37.3227276
+  },
+  {
+    "slug": "19257",
+    "name": "Baitul Falah Masjid & Islamic Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/36a2bc37-eba7-4458-a8fb-64416b45edd4/mosque/1efccd5c-dbd7-650c-aa53-06bada7b305f.png",
+    "address": "212-23 Gujang-ri, Paltan-myeon",
+    "city": "HWASEONG-SI, GYEONGGI-DO",
+    "zipcode": "15527",
+    "countryFullName": "South Korea",
+    "lng": 126.8939727,
+    "lat": 37.15511
+  },
+  {
+    "slug": "paju-masjid-islamic-center",
+    "name": "PAJU MASJID & ISLAMIC CENTER",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9484b098-8a09-426f-ac0c-f2136a23846a/mosque/1efccb93-f399-6890-aa14-0e61b0058d45.jpeg",
+    "address": "421-9. Youngtae-ri Wollong-myun",
+    "city": "PAJU-SI, GEYONGGI-DO",
+    "zipcode": "10201",
+    "countryFullName": "South Korea",
+    "lng": 126.792602,
+    "lat": 37.795549
+  },
+  {
+    "slug": "20260",
+    "name": "Songwoori Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c971c87d-e19a-4de3-a074-9e350d1144ae/mosque/1efccc3b-633e-6202-af29-0a21b15e7a1f.png",
+    "address": "107-16 Song-u-ri, Soheul-eup",
+    "city": "POCHEON-SI, GYEONGGI-DO",
+    "zipcode": "11018",
+    "countryFullName": "South Korea",
+    "lng": 127.1490573,
+    "lat": 37.8298455
+  },
+  {
+    "slug": "lmrkz-lslmy-lsn-bassano-del-grappa-36061-italy-1",
+    "name": "Baitul Ma'mur Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1b03de31-0b04-4a39-9dbc-b9bca4fe9e05/mosque/1f007d4b-8f3f-64e0-bf2b-0a2e1c0b5725.png",
+    "address": "Namdongseo-ro, Namdong-gu,City",
+    "city": "INCHEON METROPOLITAN",
+    "zipcode": "59B-1L",
+    "countryFullName": "South Korea",
+    "lng": 126.6926677,
+    "lat": 37.4080006
+  },
+  {
+    "slug": "gatbawi-mosque-islamic-center-yangjusi-11426-south-korea",
+    "name": "Gatbawi Mosque & Islamic Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4b45d2f8-cae8-476c-a27e-2a80bdff8468/mosque/1efcc392-0558-6aae-8c91-0a21b15e7a1f.png",
+    "address": "HWAHAP-RO 610BEON-GIL 610 110-10",
+    "city": "양주시",
+    "zipcode": "11426",
+    "countryFullName": "South Korea",
+    "lng": 127.00336530805,
+    "lat": 37.869497712684
+  },
+  {
+    "slug": "masjid-noor-seoul-seoul-05000-south-korea",
+    "name": "Masjid Noor",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/bab6e250-5982-4a1e-a1a0-24ef74c5e648/mosque/1efdbb1e-b5a9-6cda-9209-0ac178b258e1.jpg",
+    "address": "11 Dongil-ro 56-gil, Gwangjin District, Seoul",
+    "city": "SEOUL",
+    "zipcode": "05000",
+    "countryFullName": "South Korea",
+    "lng": 127.0727352798,
+    "lat": 37.556094467447
+  }
+]

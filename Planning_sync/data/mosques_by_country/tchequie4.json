@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "al-nour-mosque-mesita-al-nour-prague-110-00-czechia",
+    "name": "Al-imam Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5328df1e-96d2-4c27-a6fd-6ab256005503/mosque/1f03317b-8814-6e18-910b-0e325d5c4035.png",
+    "address": "Růžová 12, Praha 1",
+    "city": "PRAGUE",
+    "zipcode": "110 00",
+    "countryFullName": "Czechia",
+    "lng": 14.4307213,
+    "lat": 50.0832958
+  },
+  {
+    "slug": "mosque-cerny-most-prague-198-00-czechia",
+    "name": "Mešita Černý Most",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/df7b966e-b8bb-4e59-8c47-c08cee5e8084/mosque/1eea8eda-65d9-6c42-9214-066ed47a7584.jpg",
+    "address": "Blatská 1491",
+    "city": "PRAGUE",
+    "zipcode": "198 00",
+    "countryFullName": "Czechia",
+    "lng": 14.5685184,
+    "lat": 50.1088594
+  },
+  {
+    "slug": "mosque-teplice-teplice-41501-czechia",
+    "name": "Mešita Teplice",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f9aa5d5a-ce50-42fe-a1ac-17fc468c1b41/mosque/1eeacb10-09b8-66a8-823a-06a317939006.jpeg",
+    "address": "U Nových lázní 1224, 415 01 Teplice 1",
+    "city": "TEPLICE",
+    "zipcode": "41501",
+    "countryFullName": "Czechia",
+    "lng": 13.8433065,
+    "lat": 50.6433592
+  },
+  {
+    "slug": "brno-mosque-brno-639-00-czechia",
+    "name": "Brno Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/fd3a807d-27d7-4a7e-bc4f-1330280afdde/mosque/1f03b1ae-53c6-66ee-b492-0ebf32fefef3.jpg",
+    "address": "Vídeňská 819, 639 00 Brno-střed-Štýřice, Czechia",
+    "city": "BRNO",
+    "zipcode": "639 00",
+    "countryFullName": "Czechia",
+    "lng": 16.594157,
+    "lat": 49.1819748
+  }
+]

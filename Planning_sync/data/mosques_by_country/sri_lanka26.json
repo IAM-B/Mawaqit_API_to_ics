@@ -1,0 +1,189 @@
+[
+  {
+    "slug": "valaichenai-jumma-masjidh-valaichenai-3400-sri-lanka",
+    "name": "MOHAIDEEN JUMMAH GRAND MASJIDH",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/64e09784-7341-4d55-9633-5e2eafcd3f6c/mosque/1eea8eb6-c2d5-60e6-8477-066ed47a7584.jpg",
+    "address": "WGFH+QX5, AB38, Kalkudah, Sri Lanka",
+    "city": "VALAICHENAI",
+    "zipcode": "3400",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.5297741,
+    "lat": 7.9268495
+  },
+  {
+    "slug": "masjidul-nahar-batticaloa-30420-sri-lanka",
+    "name": "Masjidul Nahar",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ad0961f5-aa2f-45e0-8535-235b5470026a/mosque/1eea8eb8-d48d-6a02-b38b-066ed47a7584.jpg",
+    "address": "Old Market Road, Oddamavadi",
+    "city": "BATTICALOA",
+    "zipcode": "30420",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.6054161,
+    "lat": 7.7789054
+  },
+  {
+    "slug": "masjithul-irshath-oddamavadi-30420-sri-lanka",
+    "name": "Masjithul Irshath مسجد الإرشاد",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/689d2042-617c-4b6c-9d96-399c55f06113/mosque/1eea8ebc-e8ed-6598-ae08-066ed47a7584.jpg",
+    "address": "WG6C+58R, MK Rd, Oddamavadi",
+    "city": "ODDAMAVADI",
+    "zipcode": "30420",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.5214716,
+    "lat": 7.9108725
+  },
+  {
+    "slug": "nooriya-jummah-masjid-valaichenai-30400-sri-lanka",
+    "name": "நூரிய்யா ஜும்ஆ மஸ்ஜித்",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b9be9084-6423-43a6-9f42-47d708c72854/mosque/1eee3928-8c5d-6fac-a807-0600496b1db1.jpg",
+    "address": "Nooriya Jummah Masjid Road, Brainthuraichenai",
+    "city": "VALAICHENAI",
+    "zipcode": "30400",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.5293,
+    "lat": 7.9113323564238
+  },
+  {
+    "slug": "bathuriya-jumma-masjith-valaichenai-30400-sri-lanka",
+    "name": "பதுறியா ஜும்ஆ மஸ்ஜித்",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f804d599-03bb-4b26-9eb9-20ba26b23c19/mosque/1eeea969-1273-61e0-b06c-0a0c9324ab13.jpg",
+    "address": "Bathuriya Road, Valaichenai.",
+    "city": "VALAICHENAI",
+    "zipcode": "30400",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.5246705,
+    "lat": 7.9213276
+  },
+  {
+    "slug": "masjithul-falah-valaichenai-30400-sri-lanka",
+    "name": "MASJITHUL FALAH",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1ac87705-3bfe-4a3f-b5c0-91422808600a/mosque/1ef2bd95-50a7-64ea-a9a2-0e35be729aed.jpeg",
+    "address": "MASJITHUL FALAH CROSS ROAD",
+    "city": "VALAICHENAI",
+    "zipcode": "30400",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.5246705,
+    "lat": 7.9213276
+  },
+  {
+    "slug": "kollupitiya-jummah-masjid-colombo-00300-sri-lanka",
+    "name": "KOLLUPITIYA JUMMAH MASJID",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/780d678a-8dca-45ae-9be0-7e2d7e674984/mosque/1ef82fcd-6859-6bba-81bd-0ecd6770c589.jpg",
+    "address": "61, St. Michaels Road,",
+    "city": "COLOMBO",
+    "zipcode": "00300",
+    "countryFullName": "Sri Lanka",
+    "lng": 79.8506455,
+    "lat": 6.9130256
+  },
+  {
+    "slug": "al-azhar-jumma-mosque-galgamuwa-60700-sri-lanka",
+    "name": "Al Azhar Jumma Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e9a29331-3a89-49dd-ac2c-8817e6eb9b42/mosque/1efd0c2a-c1fc-6102-b3fd-06bada7b305f.jpg",
+    "address": "Kurunegala Road, Galgamuwa",
+    "city": "GALGAMUWA",
+    "zipcode": "60700",
+    "countryFullName": "Sri Lanka",
+    "lng": 80.2682748,
+    "lat": 7.9907465
+  },
+  {
+    "slug": "bari-jummah-masjid-valaichenai-30400-sri-lanka",
+    "name": "பாரி ஜும்ஆ மஸ்ஜித்",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f895718f-61d9-4855-a69e-b18e2901cc6b/mosque/1efe221d-c22b-67cc-ae14-063aa5df5c67.jpg",
+    "address": "MPCS ROAD, SEMMENODAI",
+    "city": "VALAICHENAI",
+    "zipcode": "30400",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.5248739,
+    "lat": 7.9075313
+  },
+  {
+    "slug": "al-hasanath-jumma-masjid-galgamuwa-60700-sri-lanka",
+    "name": "Al Hasanath Jumma Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/48fc7df4-bc3b-4d07-a42f-708cf789d8f3/mosque/1eff087d-e02d-6c92-8549-06ef9144e88f.jpg",
+    "address": "Monnankulama, Galgamuwa",
+    "city": "GALGAMUWA",
+    "zipcode": "60700",
+    "countryFullName": "Sri Lanka",
+    "lng": 80.27061,
+    "lat": 7.99567
+  },
+  {
+    "slug": "jiffry-thakkiya-masjid-eravur-30300-sri-lanka",
+    "name": "ஜிப்ரி தக்கியா மஸ்ஜித்",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/76834c18-294b-4b7c-812a-dc5eb6e1a420/mosque/1effa709-fca5-6660-9ef5-0e4fa23cf9cb.jpg",
+    "address": "Punnakuda Road",
+    "city": "ERAVUR",
+    "zipcode": "30300",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.6067377,
+    "lat": 7.7870342
+  },
+  {
+    "slug": "hudha-jummah-masjid-oddamavadi-30420-sri-lanka",
+    "name": "ஹுதா ஜும்ஆ மஸ்ஜித்",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1ce01f4c-3d10-436c-8b3a-7090720e6978/mosque/1effa797-0f6b-671c-9dce-0a2e1c0b5725.jpg",
+    "address": "Hudha Masjid Road",
+    "city": "ODDAMAVADI",
+    "zipcode": "30420",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.5239846,
+    "lat": 7.9031076
+  },
+  {
+    "slug": "jamiuth-thawheed-jumma-masjidh-mawathagama-60071-sri-lanka",
+    "name": "JAMIUTH THAWHEED JUMMA MASJIDH",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6c23a43d-5832-44db-a9ff-456637e1e339/mosque/1effda45-311e-69c8-a784-0e4fa23cf9cb.jpg",
+    "address": "KANDY ROAD, PARAGAHADENIYA.",
+    "city": "MAWATHAGAMA",
+    "zipcode": "60071",
+    "countryFullName": "Sri Lanka",
+    "lng": 79.9906,
+    "lat": 6.8539
+  },
+  {
+    "slug": "al-markazul-islami-eravur-30300-sri-lanka",
+    "name": "Al Markazul Islami",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6d29dadc-0ea5-4003-98ed-fedb1ab058dc/mosque/1f019c8a-6ee6-65cc-bd30-06bdda781935.jpg",
+    "address": "Jiffry thaikka road, Eravur, Sri Lanka",
+    "city": "ERAVUR",
+    "zipcode": "30300",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.6170059,
+    "lat": 7.7817321
+  },
+  {
+    "slug": "kadeeja-jumma-masjid-eravur-30300-sri-lanka",
+    "name": "Kadeeja Jummah Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2bb993f9-b859-4cc7-ad66-155388ed95d5/mosque/1f01af64-837a-6b0e-bafe-0e61b0058d45.jpeg",
+    "address": "Pokkar Road Eravur,06",
+    "city": "ERAVUR",
+    "zipcode": "30300",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.6042028,
+    "lat": 7.7768972
+  },
+  {
+    "slug": "al-hassan-jummah-masjid-colombo-00300-sri-lanka",
+    "name": "Al Hassan Jummah Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/edd7222a-b61d-4e27-a470-16d4869d47c5/mosque/1f02385a-94f0-6eb8-b65d-0e61b0058d45.jpg",
+    "address": "10 Lower Bagatalle Road, Colombo, Sri Lanka",
+    "city": "COLOMBO",
+    "zipcode": "00300",
+    "countryFullName": "Sri Lanka",
+    "lng": 79.852655,
+    "lat": 6.9011584
+  },
+  {
+    "slug": "masjithus-safa-valaichenai-30420-sri-lanka",
+    "name": "MASJITHUS SAFA - SEMMANNODAI-07",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3ff8f8cb-6928-4664-8076-904793ca3ff7/mosque/1f02b51c-456b-6ae8-8288-0aa0def8c88b.jpg",
+    "address": "Hajiyar road semmanodai 7",
+    "city": "VALAICHENAI",
+    "zipcode": "30420",
+    "countryFullName": "Sri Lanka",
+    "lng": 81.529577225447,
+    "lat": 7.9040675997671
+  }
+]

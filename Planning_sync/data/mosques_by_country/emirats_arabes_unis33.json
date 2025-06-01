@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "ghumran-rashid-bugarah-dubai-00000-united-arab-emirates",
+    "name": "مسجد غمران راشد بوقراعة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9b351675-c600-4bd4-8b6f-884290be83ec/mosque/1ef736b6-1e78-6110-9143-0affcb0701ab.jpeg",
+    "address": "Wadi al safa 5 39M7+V2J - Emirates Road - The Villa",
+    "city": "DUBAI",
+    "zipcode": "00000",
+    "countryFullName": "United Arab Emirates",
+    "lng": 55.4457376,
+    "lat": 25.1243442
+  },
+  {
+    "slug": "masjid-aicha-khlfn-ain-88920-united-arab-emirates",
+    "name": "جامع عائشه خلفان اليحيائي رحمها الله",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8cad62f2-437c-43e6-a3a7-4252b2a1000d/mosque/1ef8184f-6f1f-67f0-b6c9-0affcb0701ab.jpg",
+    "address": "العين - عين الفايضه",
+    "city": "العين",
+    "zipcode": "88920",
+    "countryFullName": "United Arab Emirates",
+    "lng": 55.699345171452,
+    "lat": 24.091520781386
+  },
+  {
+    "slug": "msjd-lkhttb-lshmly-sbrt-sirag2013z-gmail-com-libya",
+    "name": "مسجد محطة أدنوك الظاهرة - محطة 760",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8a5b8078-4f9d-4d99-97d8-486b64db593e/mosque/1f035e4c-0db9-69b8-8d0a-0a8428051ce1.jpeg",
+    "address": "طريق أم الزمول",
+    "city": "العين",
+    "zipcode": "30000",
+    "countryFullName": "United Arab Emirates",
+    "lng": 55.3272071,
+    "lat": 23.2802066
+  }
+]

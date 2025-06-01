@@ -1,0 +1,145 @@
+[
+  {
+    "slug": "mesjid-osikovo",
+    "name": "Джамия с. Осиково",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8d9e121c-7a45-4dd9-9a99-0f0c08e799e4/mosque/1eea8ddb-2d46-65c4-affd-066ed47a7584.jpg",
+    "address": "Osikovo Garmen Blagoevgrad",
+    "city": "Osikovo",
+    "zipcode": "2965",
+    "countryFullName": "Bulgaria",
+    "lng": 23.7770231,
+    "lat": 41.6959799
+  },
+  {
+    "slug": "ribnovo-garmen",
+    "name": "Джамия Рибново",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7d9b112c-a9f7-409b-aac7-657b0be51af6/mosque/1eea8de4-dd73-6592-a87f-066ed47a7584.jpeg",
+    "address": "Ribnovo Blagoevgrad 14  1",
+    "city": "Garmen",
+    "zipcode": "2967",
+    "countryFullName": "Bulgaria",
+    "lng": 23.7633476,
+    "lat": 41.7184228
+  },
+  {
+    "slug": "dolno-osenovo-simitli",
+    "name": "Долно Осеново",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b53bbb9a-f86b-4355-8dba-0d14156bc7b0/mosque/1eea8dfd-31ac-6bfa-81cd-066ed47a7584.jpg",
+    "address": "Blagoevgrad 1º",
+    "city": "Simitli",
+    "zipcode": "2757",
+    "countryFullName": "Bulgaria",
+    "lng": 23.10602,
+    "lat": 41.8896733
+  },
+  {
+    "slug": "dzhamiia-s-ribnovo-blagoevgrad-2967-bulgaria",
+    "name": "Джамия с. Рибново",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5e61f3e4-e268-4e06-a5f4-ff6b0f710404/mosque/1eea8e12-3304-6d6c-9825-066ed47a7584.jpg",
+    "address": "Ribnovo 14  1  garmen",
+    "city": "Blagoevgrad",
+    "zipcode": "2967",
+    "countryFullName": "Bulgaria",
+    "lng": 23.7633476,
+    "lat": 41.7184228
+  },
+  {
+    "slug": "dzhamiia-barutin-barutin-4830-bulgaria",
+    "name": "Джамия БАРУТИН",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4ec58aaa-2d85-4ed6-8f9a-1ca144671266/mosque/1eea8e8c-666f-69ca-9e1b-066ed47a7584.jpg",
+    "address": "Бартина 4",
+    "city": "Барутин",
+    "zipcode": "4830",
+    "countryFullName": "Bulgaria",
+    "lng": 24.179167143186,
+    "lat": 41.599774090216
+  },
+  {
+    "slug": "dzhamiia-srnitsa-kv-peteltsi-sarnitsa-4633-bulgaria",
+    "name": "Джамия СЪРНИЦА - кв. Петелци",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7154090e-c325-4ad1-afb4-c792a7293aee/mosque/1eea8ee7-7e85-6b94-9857-066ed47a7584.jpg",
+    "address": "Ул. Рилa 11",
+    "city": "SARNITSA",
+    "zipcode": "4633",
+    "countryFullName": "Bulgaria",
+    "lng": 24.019016,
+    "lat": 41.743979
+  },
+  {
+    "slug": "dzhamiia-s-zmeitsa-zmeitsa-4834-bulgaria",
+    "name": "ДЖАМИЯ - с. ЗМЕИЦА",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/13be0e6f-1931-4a35-9134-c653fa35e5b2/mosque/1ef20b3f-846d-672e-af4f-0acd791c875b.jpeg",
+    "address": "Ул. Бор 3",
+    "city": "ZMEITSA",
+    "zipcode": "4834",
+    "countryFullName": "Bulgaria",
+    "lng": 24.2525529,
+    "lat": 41.6424459
+  },
+  {
+    "slug": "dzhamiia-s-kochan-kochan-2955-bulgaria",
+    "name": "ДЖАМИЯ - с. Кочан",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/81e23cd9-1403-4d7b-b69a-a8601430f50f/mosque/1ef256e8-e6fe-6e8e-84ec-069cfb0c4e97.jpeg",
+    "address": "Ул. Пролет 6",
+    "city": "Кочан",
+    "zipcode": "2955",
+    "countryFullName": "Bulgaria",
+    "lng": 24.7468311,
+    "lat": 42.1473619
+  },
+  {
+    "slug": "dzhamiia-beitallakh-slavyanovo-5840-bulgaria",
+    "name": "ДЖАМИЯ БЕЙТАЛЛАХ",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/796ca0c5-701f-423f-a82c-699bcaa24ee0/mosque/1ef4467f-27a8-6e44-8437-0a67bcb0d635.jpg",
+    "address": "улица Ст. Марек, 5840 Slavyanovo, Bulgarie",
+    "city": "SLAVYANOVO",
+    "zipcode": "5840",
+    "countryFullName": "Bulgaria",
+    "lng": 24.8808611,
+    "lat": 43.4676423
+  },
+  {
+    "slug": "dzhamiia-s-brshchen-brshchen-4821-bulgaria",
+    "name": "Джамия - с. Бръщен",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1fbc3deb-0456-4523-8aeb-9bef0c6e560d/mosque/1ef98ee4-bd44-6a86-8bd4-0a0389a4e0f5.jpg",
+    "address": "ул. Родопи 3",
+    "city": "Бръщен",
+    "zipcode": "4821",
+    "countryFullName": "Bulgaria",
+    "lng": 24.154856,
+    "lat": 41.6493227
+  },
+  {
+    "slug": "dzhamiia-s-kornitsa-kornitsa-2970-bulgaria",
+    "name": "Джамия с.Корница",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/92551c2b-b527-4d5a-999d-0263d3cf1856/mosque/1efe0e4c-a50d-67c4-a511-0e61b0058d45.jpeg",
+    "address": "Kornitsa",
+    "city": "KORNITSA",
+    "zipcode": "2970",
+    "countryFullName": "Bulgaria",
+    "lng": 23.676003813744,
+    "lat": 41.641485531564
+  },
+  {
+    "slug": "central-krichim-mosque-krichim-4220-bulgaria",
+    "name": "Central Krichim Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/36c4ed53-aa9c-40fd-b315-c691b794b09a/mosque/1f016f27-58b3-69de-888b-0ac73cfd41db.jpg",
+    "address": "ul. \"Nikola Petkov\" 254220, 4220 Krichim",
+    "city": "KRICHIM",
+    "zipcode": "4220",
+    "countryFullName": "Bulgaria",
+    "lng": 24.4716505,
+    "lat": 42.0400462
+  },
+  {
+    "slug": "masjid-studentski-grad-sofiia-1700-bulgaria",
+    "name": "Masjid Studentski grad",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5f3dd2c3-1a68-47e9-8297-e7f38c4fae73/mosque/1f0185b6-75fc-67c0-96b7-06bdda781935.jpg",
+    "address": "блок 12А, Студентски Комплекс, София, България",
+    "city": "София",
+    "zipcode": "1700",
+    "countryFullName": "Bulgaria",
+    "lng": 23.3444874,
+    "lat": 42.6504221
+  }
+]

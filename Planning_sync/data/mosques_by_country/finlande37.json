@@ -1,0 +1,222 @@
+[
+  {
+    "slug": "hervanta-moskeija-somali-tampere-33720-finland",
+    "name": "HERVANTA MOSKEIJA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/90800442-ebf5-4817-8b6f-52a5709e1a4f/mosque/1eea8e8d-e452-6742-b34f-066ed47a7584.jpg",
+    "address": "Parkanonkatu 29",
+    "city": "TAMPERE",
+    "zipcode": "33720",
+    "countryFullName": "Finland",
+    "lng": 23.8325279,
+    "lat": 61.4522987
+  },
+  {
+    "slug": "hervanta-new-mosque-tampere-33720-finland",
+    "name": "Hervannan islamilainen keskus",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c16fdbf7-6ca8-4269-b818-005c7a2e47ba/mosque/1eea8eb3-8b4a-64da-84f6-066ed47a7584.jpg",
+    "address": "Opiskelijankatu 5",
+    "city": "TAMPERE",
+    "zipcode": "33720",
+    "countryFullName": "Finland",
+    "lng": 23.845278630931,
+    "lat": 61.4527491795
+  },
+  {
+    "slug": "tampereen-islamin-yhdyskunta-tampere-33100-finland",
+    "name": "Tampereen Islamin Yhdyskunta",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/71c8a58b-5b00-44ee-a244-8a4cb5489921/mosque/1eea8ec7-2e32-67e8-9ca8-066ed47a7584.jpg",
+    "address": "Yliopistonkatu 60 A",
+    "city": "TAMPERE",
+    "zipcode": "33100",
+    "countryFullName": "Finland",
+    "lng": 23.7794514,
+    "lat": 61.4952011
+  },
+  {
+    "slug": "islamic-society-northern-finland-oulu-90100-finland",
+    "name": "Yusuf An-Naaghi Oulun Keskus Moskeija",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4f17d99e-9114-4be1-aa1b-35fe35a1715a/mosque/1eea8ec9-d608-6eac-b170-066ed47a7584.jpg",
+    "address": "Linannankatu 23-25",
+    "city": "OULU",
+    "zipcode": "90100",
+    "countryFullName": "Finland",
+    "lng": 25.4813817,
+    "lat": 65.0136716
+  },
+  {
+    "slug": "zamzam-mosque-tampere-33200-finland",
+    "name": "ZamZam Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8b84aca0-99fa-4939-86f8-5d3958f4aab4/mosque/1eea8edf-cc42-6394-8eb9-066ed47a7584.jpg",
+    "address": "Koulukatu 12",
+    "city": "TAMPERE",
+    "zipcode": "33200",
+    "countryFullName": "Finland",
+    "lng": 23.7474668,
+    "lat": 61.4946159
+  },
+  {
+    "slug": "vaasa-islamic-society-mosques-vaasa-finland-65200-finland",
+    "name": "Vaasa Palosaari Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/66c357f8-fb70-41c6-9c2a-c0c35f4a6255/mosque/1eecf665-e9ef-66f4-852e-0a7eba2dd6b3.jpeg",
+    "address": "Palosaarentie 66, 65230",
+    "city": "VAASA, FINLAND",
+    "zipcode": "65200",
+    "countryFullName": "Finland",
+    "lng": 21.6095354,
+    "lat": 63.1147597
+  },
+  {
+    "slug": "vaasa-tiilitehtaankatu-mosque-vaasa-65100-finland",
+    "name": "Vaasa Center Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/cf99faea-3788-4cf5-9af0-d6b1b21f5216/mosque/1eedbfaa-314f-659a-8511-0ede686d7942.jpeg",
+    "address": "Tiilitehtaankatu 25",
+    "city": "VAASA",
+    "zipcode": "65100",
+    "countryFullName": "Finland",
+    "lng": 21.6262608,
+    "lat": 63.0900646
+  },
+  {
+    "slug": "msal-masjid-lappeenranta-53850-finland",
+    "name": "MSAL Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2114c46d-2af9-46ec-92ef-ddd87cf2556b/mosque/1eede2cd-79de-68c4-99ec-06acfcd1c88a.jpg",
+    "address": "7243 Yliopistonkatu 34",
+    "city": "LAPPEENRANTA",
+    "zipcode": "53850",
+    "countryFullName": "Finland",
+    "lng": 28.092968,
+    "lat": 61.065181
+  },
+  {
+    "slug": "tawfiiq-masjid-espoo-02650-finland",
+    "name": "Tawfiq Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2cec8cc6-60b2-4c65-a494-3ce96360e0ca/mosque/1eee849c-8abb-6bee-9dc2-0a0c9324ab13.jpeg",
+    "address": "Läkkisepänkuja 4",
+    "city": "ESPOO",
+    "zipcode": "02650",
+    "countryFullName": "Finland",
+    "lng": 24.8120523,
+    "lat": 60.2209247
+  },
+  {
+    "slug": "taqwan-moskeija-msjd-ltqw-turku-20610-finland",
+    "name": "Taqwan moskeija",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1d4cdad0-e94c-4739-b2c6-11d8497e3b1e/mosque/1ef2f489-e5b9-668e-81d6-0e4a6d39a313.jpeg",
+    "address": "Littoistentie 110",
+    "city": "TURKU",
+    "zipcode": "20610",
+    "countryFullName": "Finland",
+    "lng": 22.341456,
+    "lat": 60.4424365
+  },
+  {
+    "slug": "28600",
+    "name": "Masjid Annur",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/fb18ca4a-f8ed-4cec-8b9a-df76c7700612/mosque/1efb3f46-a8a5-653a-8a8d-065b15099ccb.png",
+    "address": "Takamaantie 17",
+    "city": "TURKU",
+    "zipcode": "20720",
+    "countryFullName": "Finland",
+    "lng": 22.275879130522,
+    "lat": 60.436557525443
+  },
+  {
+    "slug": "ashti-moskeija-turku-20240-finland",
+    "name": "Ashtin Moskeija",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6eb5312d-c71f-41a8-b1de-abea644c01c5/mosque/1ef94a95-b4b1-6006-a9a8-0e9d077f5bb1.jpeg",
+    "address": "Hakapellonkatu 2",
+    "city": "TURKU",
+    "zipcode": "20240",
+    "countryFullName": "Finland",
+    "lng": 22.3005773,
+    "lat": 60.4593307
+  },
+  {
+    "slug": "assahabah-helsinki-00920-finland",
+    "name": "Assahabah",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4e106973-7532-41d2-b143-d3f127e377c9/mosque/1ef97a5b-7eaf-6c46-8ef8-0a0389a4e0f5.jpeg",
+    "address": "Alakiventie8",
+    "city": "HELSINKI",
+    "zipcode": "00920",
+    "countryFullName": "Finland",
+    "lng": 25.0658787,
+    "lat": 60.2200837
+  },
+  {
+    "slug": "as-salaam-islamic-center-vantaa-01600-finland",
+    "name": "As-Salaam Islamic Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b265a7cb-0343-46ec-80b4-8e7831e6f0b1/mosque/1efbc955-1d51-65b2-817c-06bada7b305f.jpeg",
+    "address": "ojahaanrinne 4k",
+    "city": "VANTAA",
+    "zipcode": "01600",
+    "countryFullName": "Finland",
+    "lng": 24.8557993,
+    "lat": 60.2640096
+  },
+  {
+    "slug": "masjid-darul-aman-helsinki-00930-finland",
+    "name": "Masjid Darul Aman",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f4dff63f-297b-4905-a198-ee32d1688a99/mosque/1efe18a4-8f83-6b1c-8bc3-063aa5df5c67.jpg",
+    "address": "Turunlinnantie 14",
+    "city": "HELSINKI",
+    "zipcode": "00930",
+    "countryFullName": "Finland",
+    "lng": 25.0786672,
+    "lat": 60.2106764
+  },
+  {
+    "slug": "masjid-ar-rahmaan-porvoo-06100-finland",
+    "name": "Masjid Ar-rahmaan",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b14ce706-cc98-4fe7-b290-7e59861ece69/mosque/1efeea3b-20a7-6e50-8ce9-0a7d06691847.jpeg",
+    "address": "Sammontie 1",
+    "city": "PORVOO",
+    "zipcode": "06100",
+    "countryFullName": "Finland",
+    "lng": 25.6962409,
+    "lat": 60.3868679
+  },
+  {
+    "slug": "abubakar-sadiq-espoo-02230-finland",
+    "name": "Abubakar Sadiq",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a93ac671-bd92-45ff-bd89-3e2742abe83e/mosque/1f0000c8-0a31-6546-b744-0e4fa23cf9cb.jpg",
+    "address": "kalastajanmäki 13 D",
+    "city": "ESPOO",
+    "zipcode": "02230",
+    "countryFullName": "Finland",
+    "lng": 24.7341479,
+    "lat": 60.1552315
+  },
+  {
+    "slug": "masjid-al-nuur-espoo-02760-finland",
+    "name": "Masjid Al-Nuur",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5765e24d-9863-4cb9-a9ca-337359977a81/mosque/1f001a92-f09e-6a5e-93ff-06bdda781935.jpg",
+    "address": "Kirstinharju 1-3",
+    "city": "ESPOO",
+    "zipcode": "02760",
+    "countryFullName": "Finland",
+    "lng": 24.6656559,
+    "lat": 60.2013389
+  },
+  {
+    "slug": "al-isra-mosque-turku-20520-finland",
+    "name": "Al-Isra Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b8673d6e-a78e-4f47-9f00-3257d4a66cdd/mosque/1f002d5c-4f1e-6184-8b3c-0e61b0058d45.jpg",
+    "address": "Kalevantie 25",
+    "city": "TURKU",
+    "zipcode": "20520",
+    "countryFullName": "Finland",
+    "lng": 22.3110968,
+    "lat": 60.4494109
+  },
+  {
+    "slug": "taqwa-espoo-02650-finland",
+    "name": "Taqwa",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/bfcf36a7-b415-4beb-9944-f60f06a573cb/mosque/1f01bb7f-0875-6338-b391-0ac73cfd41db.jpeg",
+    "address": "Läkkisepänkuja 3 B, 02650 Espoo, Finland",
+    "city": "ESPOO",
+    "zipcode": "02650",
+    "countryFullName": "Finland",
+    "lng": 24.8121193,
+    "lat": 60.2202517
+  }
+]

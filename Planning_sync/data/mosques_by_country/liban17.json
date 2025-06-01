@@ -1,0 +1,101 @@
+[
+  {
+    "slug": "abrar-tripoli",
+    "name": "مسجد الأبرار - طرابلس",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/08bb20c6-4974-42c6-8efc-cd8df185028e/mosque/1eea8daf-d0f3-6310-8488-066ed47a7584.jpg",
+    "address": "ABOU SAMRA",
+    "city": "Tripoli",
+    "zipcode": "99",
+    "countryFullName": "Lebanon",
+    "lng": 35.8421541,
+    "lat": 34.4259141
+  },
+  {
+    "slug": "othmane-elmina-tripoli",
+    "name": "مسجد عثمان بن عفان - الميناء - لبنان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/949c47bd-ed37-4bfe-959b-7ed0f09f3b4b/mosque/1eea8db2-4ab3-61c6-8a25-066ed47a7584.jpg",
+    "address": "Rue Ibn Khaldoun",
+    "city": "طرابلس",
+    "zipcode": "99",
+    "countryFullName": "Lebanon",
+    "lng": 35.8361633,
+    "lat": 34.4345947
+  },
+  {
+    "slug": "gm-mina-tripoli",
+    "name": "المسجد العالي الكبير -الميناء-",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/40a5c567-38c1-4c11-8cd5-9acc706ea44c/mosque/1eea8db3-4252-6c38-9e26-066ed47a7584.jpeg",
+    "address": "البحر - فوق القبوة",
+    "city": "طرابلس",
+    "zipcode": "٩٦١",
+    "countryFullName": "Lebanon",
+    "lng": 35.8361633,
+    "lat": 34.4345947
+  },
+  {
+    "slug": "tariq-tripoli",
+    "name": "مسجد طارق - طرابلس - لبنان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1bcd5cf1-853e-43a0-9937-fbc5674e4b64/mosque/1eea8dd7-f91f-65c8-b117-066ed47a7584.jpg",
+    "address": "التل",
+    "city": "طرابلس",
+    "zipcode": "00961",
+    "countryFullName": "Lebanon",
+    "lng": 35.8388797,
+    "lat": 34.4365983
+  },
+  {
+    "slug": "masjid-lqoba-lazahr-armoun-1500-lebanon",
+    "name": "مسجد القبة الأزهر",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5f36633d-7ff5-4811-8b5b-b23975fe3e8a/mosque/1eebfafd-fbda-6b98-8b0d-06acfcd1c88a.jpg",
+    "address": "دوحة عرمون لبنان",
+    "city": "عرمون",
+    "zipcode": "1500",
+    "countryFullName": "Lebanon",
+    "lng": 35.490188,
+    "lat": 33.789938
+  },
+  {
+    "slug": "al-qalamoun-mosque-msjd-lqlmwn-lbhry-qalamoun-000000-lebanon",
+    "name": "Al Qalamoun Mosque - مسجد القلمون البحري",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ee921f74-8ecf-4fb6-9f42-4f8e33df842f/mosque/1eef9889-b9b5-6d80-b39b-0a382b7256a1.jpg",
+    "address": "Sea-side road",
+    "city": "QALAMOUN",
+    "zipcode": "0",
+    "countryFullName": "Lebanon",
+    "lng": 35.786279439926,
+    "lat": 34.388796961777
+  },
+  {
+    "slug": "masjid-harba-lkourah-00000-lebanon",
+    "name": "مسجد حربا",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/aba17d30-bb93-489b-878b-8645dce58d78/mosque/1efa893a-9057-6130-a542-0e9d077f5bb1.gif",
+    "address": "رأس مسقا",
+    "city": "الكوره",
+    "zipcode": "00000",
+    "countryFullName": "Lebanon",
+    "lng": 35.832591,
+    "lat": 34.413739
+  },
+  {
+    "slug": "msjd-lymn-dwh-lshwyft-1500-lebanon",
+    "name": "مسجد الايمــان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d8bdbb2f-d8ff-4361-b716-3c94b9f9876f/mosque/1eff7e3b-05ac-6116-8611-0e61b0058d45.jpg",
+    "address": "دوحة الشويفات مفرق مطعم الصوصة بجانب مدرسة الايمان",
+    "city": "دوحة الشويفات",
+    "zipcode": "1500",
+    "countryFullName": "Lebanon",
+    "lng": 35.4890397,
+    "lat": 33.7874342
+  },
+  {
+    "slug": "bll-bn-rbh-b-lbk-1800-lebanon",
+    "name": "مسجد بلال بن رباح - مخيم الجليل",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a85cb846-c15c-4608-827c-c3ca7a309479/mosque/1f010750-7871-649a-bcde-06bdda781935.jpg",
+    "address": "بعلبك مخيم الجليل",
+    "city": "بعلبك",
+    "zipcode": "1800",
+    "countryFullName": "Lebanon",
+    "lng": 36.2110399,
+    "lat": 34.0046888
+  }
+]

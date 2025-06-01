@@ -1,0 +1,156 @@
+[
+  {
+    "slug": "masjid-idlab-lkabir-963-syria",
+    "name": "مسجد العزة لله",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1d674add-90fc-42ed-8847-f81c0b00a346/mosque/1ef9d081-5072-6c3a-ba17-0e9d077f5bb1.jpeg",
+    "address": "قرية البردقلي",
+    "city": "ادلب",
+    "zipcode": "+963",
+    "countryFullName": "Syria",
+    "lng": 36.732188,
+    "lat": 36.208462
+  },
+  {
+    "slug": "masjid-attawhid-idlib-963-syria",
+    "name": "مسجد التوحيد",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0a802ef8-b7ef-4108-be2a-c4118f4a0f5e/mosque/1eea8ead-5aa3-60bc-bd0c-066ed47a7584.jpg",
+    "address": "حي القصور",
+    "city": "ادلب",
+    "zipcode": "Idlib",
+    "countryFullName": "Syria",
+    "lng": 36.6329502,
+    "lat": 35.9248612
+  },
+  {
+    "slug": "masjid-saad-bn-abi-waqass-adleb-963-syria",
+    "name": "مسجد سعد بن أبي وقاص",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1f898677-3c43-4491-bac5-8947e8e4ff61/mosque/1eea8eb5-fa5e-6cd4-878a-066ed47a7584.jpg",
+    "address": "حي الثورة",
+    "city": "ادلب",
+    "zipcode": "963",
+    "countryFullName": "Syria",
+    "lng": 36.6232124,
+    "lat": 35.926037
+  },
+  {
+    "slug": "lsbtin-lhassan-lhoucin-dlb-963-syria",
+    "name": "السبطين الحسن والحسين",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a410fd84-2c6e-458c-bfb9-1fd9e30f7e98/mosque/1ef12ec1-103a-66d2-b74b-06724289ed6b.jpg",
+    "address": "ادلب كفريا جانب مدرسة دار الوحي الشريف",
+    "city": "ادلب",
+    "zipcode": "+963",
+    "countryFullName": "Syria",
+    "lng": 36.6791536,
+    "lat": 35.990733
+  },
+  {
+    "slug": "anwar-akkad-mosque-damascus-00963-syria",
+    "name": "جامع أنور العقاد",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/daf2274d-fef6-42bc-b8b9-ec0d48e355fd/mosque/1ef44d87-09b2-6160-8c6b-0600dbafaeef.jpg",
+    "address": "Damascus Governorate f7wm+57c",
+    "city": "DAMASCUS",
+    "zipcode": "00963",
+    "countryFullName": "Syria",
+    "lng": 36.2831406,
+    "lat": 33.4954375
+  },
+  {
+    "slug": "lmasjid-lkabir-dleb-2647-syria",
+    "name": "المسجد الكبير في كفريحمول",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e49145ec-64af-42c9-a00f-db9b7f9e25dd/mosque/1ef56df6-42aa-6fa4-a866-0eccd22c0f01.jpg",
+    "address": "وسط البلدة",
+    "city": "إدلب",
+    "zipcode": "2647",
+    "countryFullName": "Syria",
+    "lng": 36.6412842,
+    "lat": 35.9326666
+  },
+  {
+    "slug": "27963",
+    "name": "مسجد الخيرات",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2cc616fd-3f64-49fe-ab4a-1093c2ee6258/mosque/1efef692-b5b6-64f2-8d08-06ef9144e88f.png",
+    "address": "حلب اورم الكبرى",
+    "city": "حلب",
+    "zipcode": "SY021002",
+    "countryFullName": "Syria",
+    "lng": 36.9460462,
+    "lat": 36.1502725
+  },
+  {
+    "slug": "masjid-lsahaba-dyr-lzour-41111-syria",
+    "name": "مسجد الصحابة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e87bbb76-fa9c-41d3-a772-55e8ff398967/mosque/1ef8b969-69ba-602e-8f02-0671c73660c5.jpg",
+    "address": "سوريا - دير الزور - قرية الحصان",
+    "city": "دير الزور",
+    "zipcode": "41111",
+    "countryFullName": "Syria",
+    "lng": 40.1235027,
+    "lat": 35.4077739
+  },
+  {
+    "slug": "msjd-bw-bkr-lsdyq-dlb-963-syria",
+    "name": "مسجد ابو بكر الصديق",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/da7e5ca4-90a4-44e2-9840-418d22509f7e/mosque/1efb167a-eb0c-6e2c-ae67-0a0389a4e0f5.jpg",
+    "address": "البردقلي",
+    "city": "ادلب",
+    "zipcode": "963+",
+    "countryFullName": "Syria",
+    "lng": 36.735,
+    "lat": 36.2138413
+  },
+  {
+    "slug": "msjd-lmm-hmd-bn-hnbl-ldn-963-syria",
+    "name": "مسجد الإمام أحمد بن حنبل",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/64c2c49b-e4de-42ab-88a4-8afc8288243b/mosque/1efdd879-6699-6cb2-a89f-063aa5df5c67.jpg",
+    "address": "ادلب",
+    "city": "الدانا",
+    "zipcode": "963+",
+    "countryFullName": "Syria",
+    "lng": 36.7745727,
+    "lat": 36.2136407
+  },
+  {
+    "slug": "ljm-lmwy-dmshq-dmshq-00000-syria",
+    "name": "الجامع الأموي (دمشق)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/27baf148-aad7-4b1d-8fe0-58ed1d6e89b8/mosque/1eff5262-4adf-6968-b79e-0e61b0058d45.jpg",
+    "address": "دمشق القديمة",
+    "city": "دمشق",
+    "zipcode": "00000",
+    "countryFullName": "Syria",
+    "lng": 36.3066964,
+    "lat": 33.5112174
+  },
+  {
+    "slug": "ljamii-lkbir-bnsh-000000-syria",
+    "name": "الجامع الكبير",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/74824d18-c3f9-497f-ac9d-0ad138a0f555/mosque/1f01b366-5d65-6cb0-9698-0e61b0058d45.jpg",
+    "address": "بنش",
+    "city": "بنش",
+    "zipcode": "19",
+    "countryFullName": "Syria",
+    "lng": 36.7133944,
+    "lat": 35.9582173
+  },
+  {
+    "slug": "jm-lymn-srqb-023-syria",
+    "name": "جامع الإيمان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/01d6021b-3252-4cb8-8063-d8ed77842c4a/mosque/1f0276de-3ae5-60aa-85ae-0aae5cc50e23.jpg",
+    "address": "سراقب الحي الغربي",
+    "city": "سراقب",
+    "zipcode": "023",
+    "countryFullName": "Syria",
+    "lng": 36.8016608,
+    "lat": 35.8650581
+  },
+  {
+    "slug": "jm-ltwbyn-hlb-0096-syria",
+    "name": "جامع التوابين",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b3ce9f3b-54f1-4169-a7e6-067f1c5c6be4/mosque/1f030491-285e-6558-8f40-0e129cf045c7.jpg",
+    "address": "النيرب",
+    "city": "حلب",
+    "zipcode": "0096",
+    "countryFullName": "Syria",
+    "lng": 37.2277962,
+    "lat": 36.171635
+  }
+]

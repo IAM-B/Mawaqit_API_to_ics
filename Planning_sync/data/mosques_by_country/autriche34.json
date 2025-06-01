@@ -1,0 +1,200 @@
+[
+  {
+    "slug": "rahme-wien",
+    "name": "Multinationaler Masjid RAHME - Wien",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ed222106-8bcc-4e68-bbad-c5a994a6edd1/mosque/1eea8d9a-105f-608c-bd06-066ed47a7584.jpeg",
+    "address": "Leitgebgasse 2/1-2 (Eingang: Stöbergasse 5)",
+    "city": "Wien",
+    "zipcode": "1050",
+    "countryFullName": "Austria",
+    "lng": 16.3546571,
+    "lat": 48.1841799
+  },
+  {
+    "slug": "el-buhari-wien",
+    "name": "Xhamia \"Imam El Buhari\"",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d17db994-6fc1-4311-93d5-17330c690485/mosque/1eea8de5-60a3-60a2-8c8e-066ed47a7584.jpg",
+    "address": "Eichenstraße 2c",
+    "city": "Wien",
+    "zipcode": "1120",
+    "countryFullName": "Austria",
+    "lng": 16.3435803,
+    "lat": 48.1775065
+  },
+  {
+    "slug": "ibntaimiamoschee",
+    "name": "Ibn Taimia Moschee",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c5e6652c-46ee-4dbb-9e55-c7ac0305231a/mosque/1eea8e1a-05fc-6e2a-8b14-066ed47a7584.jpg",
+    "address": "Toldgasse 7/2",
+    "city": "Wien",
+    "zipcode": "1150",
+    "countryFullName": "Austria",
+    "lng": 16.3163875,
+    "lat": 48.2017002
+  },
+  {
+    "slug": "al-nur-wien-vienna-1150-austria",
+    "name": "Džemat AL-NUR | Wien",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2dd55f1d-bca1-47af-982e-225b1ab288f8/mosque/1eea8e86-35b1-6866-a446-066ed47a7584.jpg",
+    "address": "Goldschlagstraße 36",
+    "city": "Vienna",
+    "zipcode": "1150",
+    "countryFullName": "Austria",
+    "lng": 16.3306228,
+    "lat": 48.1977148
+  },
+  {
+    "slug": "nasiha-gmunden-4810-austria-1",
+    "name": "Nasiha",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e04bae07-228b-42a3-a876-bd2d56921e92/mosque/1eea8e91-7beb-61aa-9f6e-066ed47a7584.jpg",
+    "address": "Brauhausstraße 21",
+    "city": "GMUNDEN",
+    "zipcode": "4810",
+    "countryFullName": "Austria",
+    "lng": 13.7984976,
+    "lat": 47.9280662
+  },
+  {
+    "slug": "msjd-lnwr-graz-8020-austria-1",
+    "name": "مسجد النور _ Alnur Moschee",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/75fe00de-8778-4869-ba75-77d90895e69a/mosque/1eea8ea9-ca1c-683e-b3da-066ed47a7584.jpg",
+    "address": "Neubaugasse 67",
+    "city": "GRAZ",
+    "zipcode": "8020",
+    "countryFullName": "Austria",
+    "lng": 15.4284597,
+    "lat": 47.0797208
+  },
+  {
+    "slug": "msjd-hl-lthr-graz-8020-austria",
+    "name": "مسجد أهل الأثر - Ahl-Alathar Moschee",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b9409088-bf46-466b-9439-39d1365b7e2e/mosque/1eea8ecb-f373-6256-98a8-066ed47a7584.jpg",
+    "address": "Ungergasse 6",
+    "city": "GRAZ",
+    "zipcode": "8020",
+    "countryFullName": "Austria",
+    "lng": 15.426342,
+    "lat": 47.0673185
+  },
+  {
+    "slug": "muslimisches-zentrum-wien-vienna-1200-austria",
+    "name": "Muslimisches Zentrum Wien",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/48238248-5c5c-47b7-b9e8-1afe86d3ccf3/mosque/1eea8ee0-db11-64b4-acbc-066ed47a7584.jpg",
+    "address": "Engertshtraße 79",
+    "city": "VIENNA",
+    "zipcode": "1200",
+    "countryFullName": "Austria",
+    "lng": 16.385901839223,
+    "lat": 48.239299027509
+  },
+  {
+    "slug": "an-nasiha-wien-1080-austria",
+    "name": "En Nasiha",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/cd09fe69-cad4-4f7f-9350-aafe7590ce78/mosque/1eecd158-d4d7-6c76-8649-0ede686d7942.jpeg",
+    "address": "Hernalser Gürtel 2",
+    "city": "WIEN",
+    "zipcode": "1080",
+    "countryFullName": "Austria",
+    "lng": 16.3401658,
+    "lat": 48.2126571
+  },
+  {
+    "slug": "qendra-kulturore-shqiptare-ikre-wien-1120-austria",
+    "name": "Qendra Kulturore Shqiptare IKRE",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d4bda2ab-ffab-451e-8420-db2d051456b4/mosque/1ef70e16-9501-6bc4-bf26-0600dbafaeef.jpg",
+    "address": "Schönbrunner Str. 175, 1120 Wien",
+    "city": "WIEN",
+    "zipcode": "1120",
+    "countryFullName": "Austria",
+    "lng": 16.3396869,
+    "lat": 48.1861068
+  },
+  {
+    "slug": "dzemat-sandzak-graz-feldkirchen-bei-graz-8073-austria",
+    "name": "Džemat \"Sandžak\" Graz",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/aebaba08-c185-4ead-98a7-4528433b1d60/mosque/1ef71454-d6e8-6206-94d6-0600dbafaeef.jpg",
+    "address": "Triester Str. 210",
+    "city": "FELDKIRCHEN BEI GRAZ",
+    "zipcode": "8073",
+    "countryFullName": "Austria",
+    "lng": 15.453489,
+    "lat": 46.99493
+  },
+  {
+    "slug": "hbm-wien-1030-austria",
+    "name": "Haci Bayram Moschee",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7ba2be72-7f1f-42db-b03b-fb62acfbbe09/mosque/1efb9f97-e306-60e2-bb00-0ef2881d9837.png",
+    "address": "Keinergasse 18/1",
+    "city": "WIEN",
+    "zipcode": "1030",
+    "countryFullName": "Austria",
+    "lng": 16.3977306,
+    "lat": 48.1970374
+  },
+  {
+    "slug": "afghanisch-islamisches-kulturzentrum-graz-8020-austria",
+    "name": "Masjid Al Hidayah - مسجد الهداية",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/37ed015b-05f8-42d1-ae99-47a842ee6136/mosque/1efc7a59-e503-6316-adf3-06bada7b305f.jpeg",
+    "address": "Rochelgasse 10",
+    "city": "GRAZ",
+    "zipcode": "8020",
+    "countryFullName": "Austria",
+    "lng": 15.4067075,
+    "lat": 47.0736962
+  },
+  {
+    "slug": "nasiha-laakirchen-4663-austria",
+    "name": "Nasiha",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8e0d0b41-f5e9-4524-838b-7ae1d3ce7056/mosque/1efcb0aa-fcfb-6fd6-9d97-06bada7b305f.jpg",
+    "address": "Gmundenerstraße 40",
+    "city": "LAAKIRCHEN",
+    "zipcode": "4663",
+    "countryFullName": "Austria",
+    "lng": 13.8131231,
+    "lat": 47.9878839
+  },
+  {
+    "slug": "subul-el-salam-moschee-msjd-sbl-lslm-graz-8010-austria",
+    "name": "Subul El-Salam Moschee مسجد سبل السلام",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4837c6ee-4583-47ac-b3cb-70b112d4f73a/mosque/1eff6ba5-e1f7-698e-a968-0a4cfd8cef51.jpeg",
+    "address": "Großmarktstraße 10",
+    "city": "GRAZ",
+    "zipcode": "8010",
+    "countryFullName": "Austria",
+    "lng": 15.4331481,
+    "lat": 47.0538269
+  },
+  {
+    "slug": "masjid-alfajr-vienna-1160-austria",
+    "name": "Masjid AL-FAJR | Wien",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/56b3e42d-197d-4a5e-898c-bc25eb43c878/mosque/1f001657-0737-6486-a8e8-0e61b0058d45.jpg",
+    "address": "Ottakringer Straße 67/1",
+    "city": "VIENNA",
+    "zipcode": "1160",
+    "countryFullName": "Austria",
+    "lng": 16.3292589,
+    "lat": 48.2137237
+  },
+  {
+    "slug": "minhaj-ul-quran-wien-1150-austria",
+    "name": "Minhaj ul Quran",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1c46dbf2-7387-4dbe-8092-586af16a9837/mosque/1f01e9bc-5151-69ce-b077-0ac73cfd41db.jpg",
+    "address": "Toßgasse 4/2, Wien, Österreich",
+    "city": "WIEN",
+    "zipcode": "1150",
+    "countryFullName": "Austria",
+    "lng": 16.3287811,
+    "lat": 48.192966
+  },
+  {
+    "slug": "msjd-byt-l-yl-bregenz-6900-austria",
+    "name": "مسجد الرحمٰن",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b5ebf7e4-706e-44df-ab0c-622a99379160/mosque/1f01efd1-17e6-68ae-bdc8-06bdda781935.jpg",
+    "address": "Neugasse 3, Bregenz, Austria",
+    "city": "BREGENZ",
+    "zipcode": "6900",
+    "countryFullName": "Austria",
+    "lng": 9.745715,
+    "lat": 47.5025349
+  }
+]

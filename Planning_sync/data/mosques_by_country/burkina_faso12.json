@@ -1,0 +1,123 @@
+[
+  {
+    "slug": "mosquee-rawda-ouagadougou-10040-burkina-faso",
+    "name": "Mosquée Rawda",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/01fe93dc-62c2-45fb-add7-316f648cf331/mosque/1eed2795-a0e0-68da-87a9-0a7eba2dd6b3.jpg",
+    "address": "04 BP 521",
+    "city": "OUAGADOUGOU",
+    "zipcode": "10040",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5196603,
+    "lat": 12.3714277
+  },
+  {
+    "slug": "mosquee-sunnite-rayongo-ouagadougou-11-burkina-faso",
+    "name": "MSBF|BRC|Mosquée AR-RIDDA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b22ffad1-4d56-4c68-b1f4-a0d3bd0869d8/mosque/1efd7df6-5e72-6d64-ad0f-0ac178b258e1.jpg",
+    "address": "11 Bp1613 Ouagadougou 11",
+    "city": "OUAGADOUGOU",
+    "zipcode": "11",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5196603,
+    "lat": 12.3714277
+  },
+  {
+    "slug": "mosque-sunnite-docetur-kindo-balkuy-ouagadougou-1613-ouaga-11-burkina-faso",
+    "name": "MSBF|BRC|Mosquee Dr Mohamad KINDO",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3229a926-a0de-45cd-86bc-cf2ef3e3cfc0/mosque/1efd8ea2-74bb-6438-87ba-0e61b0058d45.jpeg",
+    "address": "secteur 49 arondissement 11",
+    "city": "OUAGADOUGOU",
+    "zipcode": "1613 OUAGA 11",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5196603,
+    "lat": 12.3714277
+  },
+  {
+    "slug": "mosquee-centrale-du-mouvement-sunnite-ouagadougou-s-c-1332-ouagadougou-burkina-faso",
+    "name": "Mosquée Centrale du Mouvement Sunnite",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e2c4053d-ad89-4cd0-8024-5c31841e4a80/mosque/1efdd386-55ee-611c-afce-063aa5df5c67.jpeg",
+    "address": "Av Loudun, Projet ZACA",
+    "city": "OUAGADOUGOU",
+    "zipcode": "S/C 1332 Ouagadougou",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5167269,
+    "lat": 12.3625492
+  },
+  {
+    "slug": "mosquee-mouzintinga-du-mouvement-sunnite-ouagadougou-1332-ouaga-burkina-faso",
+    "name": "MSBF|BRC| Mosquée Mouzintinga",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ea107f28-88b3-472d-9658-ac622591e4e8/mosque/1efebe41-aedc-602a-a4f7-06ef9144e88f.jpeg",
+    "address": "Mouzintinga Ouagadougou",
+    "city": "OUAGADOUGOU",
+    "zipcode": "1332 Ouaga",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5158656,
+    "lat": 12.3751836
+  },
+  {
+    "slug": "mosquee-zidnaba-msbf-ouagadougou-1332-ouaga-burkina-faso",
+    "name": "MSBF|BRC| Mosquée Zidnaba",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f97cd116-486b-43b6-bd57-9180b0cf97c8/mosque/1efebe61-7385-61f0-b511-0e61b0058d45.jpeg",
+    "address": "Ouaga",
+    "city": "OUAGADOUGOU",
+    "zipcode": "1332 Ouaga",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5196603,
+    "lat": 12.3714277
+  },
+  {
+    "slug": "mosquee-aboubacar-citerne-msbf-ouagadougou-1332-ouaga-burkina-faso",
+    "name": "MSBF | BRC | Mosquée Aboubacar Citerne",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/dfe69448-4554-47ec-b925-363c4a8d2166/mosque/1efebe79-4456-6bbe-9488-0e61b0058d45.jpeg",
+    "address": "Pissy Ouagadougou",
+    "city": "OUAGADOUGOU",
+    "zipcode": "1332 Ouaga",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5672698,
+    "lat": 12.3448105
+  },
+  {
+    "slug": "mosquee-ihyaous-sunna-ouagadougou-1332-ouaga-burkina-faso",
+    "name": "MSBF | BRC | Mosquée Ihyaous Sunna",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d39d9da4-9d9e-4274-be63-1bd13b6cfaea/mosque/1efebee5-6ef9-63dc-8e5b-06ef9144e88f.jpeg",
+    "address": "Ouaga",
+    "city": "OUAGADOUGOU",
+    "zipcode": "1332 Ouaga",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.5196603,
+    "lat": 12.3714277
+  },
+  {
+    "slug": "mosquee-10-yaar-msbf-ouagadougou-1332-ouaga-burkina-faso",
+    "name": "MSBF | BRC | Mosquée 10 Yaar",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3fcd1a57-f05f-444b-bd4b-4006e4c75881/mosque/1efebeef-d11d-6dd8-bfe4-0e61b0058d45.jpeg",
+    "address": "01 BP 6622 Ouaga 01",
+    "city": "OUAGADOUGOU",
+    "zipcode": "1332 Ouaga",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.4918235,
+    "lat": 12.2850926
+  },
+  {
+    "slug": "mosquee-dubai-ouaga-ouagadougou-00226-burkina-faso",
+    "name": "Mosquée Dubaï Ouaga",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b7c50f06-3086-43e4-991a-97c90455ef0b/mosque/1f000042-432c-6106-abfb-0e4fa23cf9cb.jpg",
+    "address": "Balkuy",
+    "city": "OUAGADOUGOU",
+    "zipcode": "00226",
+    "countryFullName": "Burkina Faso",
+    "lng": -1.460583,
+    "lat": 12.283028
+  },
+  {
+    "slug": "grande-moosquee-de-ouahigouya-ouahigouya-hhmj-3jw-burkina-faso",
+    "name": "Grande moosquée de Ouahigouya",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/986b9038-7ef6-4aab-ac6f-115f0948ac6d/mosque/1f022ca0-3ab1-69ae-b513-0e61b0058d45.jpeg",
+    "address": "HHMJ+3JW Ouahigouya, Burkina Faso",
+    "city": "OUAHIGOUYA",
+    "zipcode": "HHMJ+3JW",
+    "countryFullName": "Burkina Faso",
+    "lng": -2.4184219,
+    "lat": 13.5827375
+  }
+]

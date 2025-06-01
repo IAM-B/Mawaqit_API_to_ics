@@ -1,0 +1,79 @@
+[
+  {
+    "slug": "poznanski-meczet-poznan-60-272-poland",
+    "name": "Poznański meczet مَــــسْجِدُ بـُوزنــان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/014a36a1-07c9-46d2-b174-070069a2aede/mosque/1eea8eb6-1fba-6474-88ad-066ed47a7584.jpg",
+    "address": "ul. Adama Biedrzyckiego 13",
+    "city": "POZNAń",
+    "zipcode": "60-272",
+    "countryFullName": "Poland",
+    "lng": 16.8861982,
+    "lat": 52.3895602
+  },
+  {
+    "slug": "osrodek-kultury-muzulmanskie-warsaw-02-389-poland",
+    "name": "OKM w Warszawie مسجد وارسو",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/309a8996-3e0e-47c1-b38a-1d983b8197fe/mosque/1eea8ebf-4f11-6bf6-890f-066ed47a7584.jpg",
+    "address": "Aleje bohaterów września 23",
+    "city": "WARSAW",
+    "zipcode": "02-389",
+    "countryFullName": "Poland",
+    "lng": 20.959826968611,
+    "lat": 52.215352055188
+  },
+  {
+    "slug": "mcko-wroclaw-msjd-wmrkz-frtswf-wroclaw-57-120-poland",
+    "name": "MCKO Wrocław   مسجد ومركز فرتسواف",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/850bf309-39d3-4371-91a8-3d6f7d227798/mosque/1eea8ece-6a78-67fa-97f2-066ed47a7584.jpg",
+    "address": "Al. Kasprowicza 24",
+    "city": "WROCLAW",
+    "zipcode": "57-120",
+    "countryFullName": "Poland",
+    "lng": 17.040500342846,
+    "lat": 51.13657937905
+  },
+  {
+    "slug": "darassalam-mosque-warsaw-msjd-dr-lslm-warsaw-02-389-poland",
+    "name": "DarAssalam Mosque-Warsaw مسجد دار السلام",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c01b507b-09b2-45b6-9f8b-415eae8fa051/mosque/1eee6ab7-1c66-6c7e-8353-0e8f4a8ce035.jpg",
+    "address": "Puławska 403a",
+    "city": "WARSAW",
+    "zipcode": "02-801",
+    "countryFullName": "Poland",
+    "lng": 21.018496,
+    "lat": 52.145758
+  },
+  {
+    "slug": "muzulmanska-gmina-wyznaniowa-kaukaz-opacz-kolonia-05-816-poland",
+    "name": "Muzulmanska Gmina Wyznaniowa Kaukaz",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e5787ea4-4bb6-412b-bca2-aaf2abd8d23a/mosque/1ef5f73f-a9c8-629a-a0f7-0e4a41cdad45.png",
+    "address": "ul. Bodycha 41",
+    "city": "OPACZ KOLONIA",
+    "zipcode": "05-816",
+    "countryFullName": "Poland",
+    "lng": 20.8899241,
+    "lat": 52.1823167
+  },
+  {
+    "slug": "the-islamic-center-warsaw-warsaw-02-952-poland",
+    "name": "The Islamic Center Warsaw",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6041009f-e820-4a78-ad61-43a9c91e9014/mosque/1ef90a6b-7dee-6272-bbde-0e9d077f5bb1.jfif",
+    "address": "Wiertnicza 103",
+    "city": "WARSAW",
+    "zipcode": "02-952",
+    "countryFullName": "Poland",
+    "lng": 21.078064441681,
+    "lat": 52.174379105544
+  },
+  {
+    "slug": "mosque-in-bydgoszcz-bydgoszcz-85-079-poland",
+    "name": "Mosque in Bydgoszcz",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e5624091-8bb4-4b21-a974-1054263a794e/mosque/1efe58ac-94b2-6a28-9c50-063aa5df5c67.jpg",
+    "address": "Tadeusza Kościuszki 39",
+    "city": "BYDGOSZCZ",
+    "zipcode": "85-079",
+    "countryFullName": "Poland",
+    "lng": 18.0108201,
+    "lat": 53.1362762
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "bolura-sylhet",
+    "name": "বলাউরা কসকালিকা জামে মসজিদ",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b20ff122-6f8e-4dc7-88d5-2a96b3d306f0/mosque/1eea8db4-72cf-6ce8-866a-066ed47a7584.jpg",
+    "address": "Bolaura bazar Koshkalika JM",
+    "city": "Sylhet",
+    "zipcode": "3100",
+    "countryFullName": "Bangladesh",
+    "lng": 91.7824884,
+    "lat": 24.9136499
+  },
+  {
+    "slug": "mirpur-dohs-mosque-no-3-dhaka-1216-bangladesh",
+    "name": "Mirpur DOHS Masjid no. 3",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/62ef4ff7-e155-49dc-b68f-bcdf2703a4b9/mosque/1eec69f8-eacb-637e-8c7d-06acfcd1c88a.jpg",
+    "address": "Avenue 2, Mirpur DOHS",
+    "city": "DHAKA",
+    "zipcode": "1216",
+    "countryFullName": "Bangladesh",
+    "lng": 90.366338,
+    "lat": 23.84057
+  },
+  {
+    "slug": "mhabbot-ali-miaji-central-jame-mosjid-sahnagar-4353-bangladesh",
+    "name": "MOHABBOT ALI MIAJI CENTRAL JAME MOSJID",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/478e99e3-8b45-4882-8897-c37a61a47c81/mosque/1f016b91-2778-6b1a-92b2-0ac73cfd41db.jpg",
+    "address": "shahnagar fatikchati chattogram",
+    "city": "SAHNAGAR",
+    "zipcode": "4353",
+    "countryFullName": "Bangladesh",
+    "lng": 91.836572,
+    "lat": 22.648561
+  },
+  {
+    "slug": "islampur-jame-masjid-fenchuganj-3116-bangladesh",
+    "name": "Islampur Jame Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/25d6a3b1-ed7c-4fbf-be8a-98e4a1ff18b7/mosque/1f02d085-6bf2-646c-8f59-0ac08f730885.jpg",
+    "address": "Islampur Jame Masjid, Fenchuganj, Bangladesh",
+    "city": "FENCHUGANJ",
+    "zipcode": "3116",
+    "countryFullName": "Bangladesh",
+    "lng": 91.9496065,
+    "lat": 24.6992151
+  }
+]

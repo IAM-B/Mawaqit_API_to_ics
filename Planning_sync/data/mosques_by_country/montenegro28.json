@@ -1,0 +1,211 @@
+[
+  {
+    "slug": "xhamia-halid-pinjesh-ulqin-ulcinj-85360-montenegro",
+    "name": "Bashkësia Islame Ulqin",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ebf97838-4c25-4936-9822-c6ef193e3e75/mosque/1eea8e99-f4d5-61a8-abc8-066ed47a7584.jpg",
+    "address": "Rruga ë Kosovës - Pinjes",
+    "city": "ULQIN ULCINJ",
+    "zipcode": "85360",
+    "countryFullName": "Montenegro",
+    "lng": 19.213349819183,
+    "lat": 41.925673708987
+  },
+  {
+    "slug": "xhamia-e-pashes-ulqin-85360-montenegro",
+    "name": "XHAMIA E PASHËS",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6574da8a-abec-4a73-b3a5-e67a1fa52998/mosque/1ef036b7-0c1f-6ffa-acde-0e8f4a8ce035.jpg",
+    "address": "Buda Tomoviq",
+    "city": "ULQIN",
+    "zipcode": "85360",
+    "countryFullName": "Montenegro",
+    "lng": 19.2031339,
+    "lat": 41.9258224
+  },
+  {
+    "slug": "medzlis-islamske-zajednice-bar-bar-85000-montenegro",
+    "name": "MEDŽLIS ISLAMSKE ZAJEDNICE",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a5bf0661-be79-4756-9d08-ca125e19e994/mosque/1ef96908-9a17-6b50-b925-0671c73660c5.jpg",
+    "address": "bb stari Bar",
+    "city": "BAR",
+    "zipcode": "85000",
+    "countryFullName": "Montenegro",
+    "lng": 19.128444728057,
+    "lat": 42.088422552269
+  },
+  {
+    "slug": "xhamia-e-kravarit-ulcinj-85360-montenegro",
+    "name": "XHAMIA E KRAVARIT",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/55282f5c-5ef1-4780-9a3a-5518b7fc237c/mosque/1ef98987-eada-6444-94f0-0671c73660c5.jpg",
+    "address": "Katerkolle bb",
+    "city": "ULCINJ",
+    "zipcode": "85360",
+    "countryFullName": "Montenegro",
+    "lng": 19.350761658302,
+    "lat": 42.051648399006
+  },
+  {
+    "slug": "xhamia-e-shtojit-dzamija-stoj-ulcinj-85360-montenegro",
+    "name": "DŽAMIJA ŠTOJ",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c5795627-76b2-4c70-bf89-6ddec95e0cdf/mosque/1ef98a7f-f67c-645c-a6f4-0a0389a4e0f5.jpg",
+    "address": "Shtoj",
+    "city": "ULCINJ",
+    "zipcode": "85360",
+    "countryFullName": "Montenegro",
+    "lng": 19.30604107642,
+    "lat": 41.904209662644
+  },
+  {
+    "slug": "xhamia-e-mileshit-milesh-81206-montenegro",
+    "name": "Xhamia e Mileshit",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c12917d3-12ef-4d85-aa88-fa982a6869e8/mosque/1ef9a03d-f607-6228-8afb-0a0389a4e0f5.jpg",
+    "address": "Donji Miljes 1",
+    "city": "MILESH",
+    "zipcode": "81206",
+    "countryFullName": "Montenegro",
+    "lng": 19.323266712956,
+    "lat": 42.392037235953
+  },
+  {
+    "slug": "xhamia-e-shtojit-ulcinj-85360-montenegro",
+    "name": "XHAMIA E SHTOJIT",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/93fc2131-1b6b-4486-9d3f-a348a085ea5d/mosque/1ef9ded6-8b41-638a-b00c-0671c73660c5.jpg",
+    "address": "Shtoj",
+    "city": "ULCINJ",
+    "zipcode": "85360",
+    "countryFullName": "Montenegro",
+    "lng": 19.3024284,
+    "lat": 41.9050675
+  },
+  {
+    "slug": "dzamia-dzemat-konik-podgorica-81101-montenegro",
+    "name": "Dzamija Dzemat Konik",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/837adc63-b305-4e02-8a4d-1f76abb84d32/mosque/1efa9c99-d811-6f08-8abb-0671c73660c5.jpg",
+    "address": "C79X+89H Podgorica, Monténégro",
+    "city": "PODGORICA",
+    "zipcode": "81101",
+    "countryFullName": "Montenegro",
+    "lng": 19.298480032192,
+    "lat": 42.418321396768
+  },
+  {
+    "slug": "xhamia-e-rashtishes-nalte-ulqin-85366-montenegro",
+    "name": "Xhamia e Rashtishes Naltë",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e3d11af3-aeb8-4cb2-bffa-28b6207a1df4/mosque/1efacf9a-393a-67d4-a0c0-0671c73660c5.jpg",
+    "address": "Katerkolle bb",
+    "city": "ULQIN",
+    "zipcode": "85366",
+    "countryFullName": "Montenegro",
+    "lng": 19.326479187456,
+    "lat": 42.047494517096
+  },
+  {
+    "slug": "bashkesia-islame-xhamia-e-zogajve-ulqin-85360-montenegro",
+    "name": "Bashkesia Islame - Xhamia e Zogajve",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0575ae99-9b58-4a3f-8b6c-f5448f557e9c/mosque/1efae7a2-b650-6d02-91d7-0a0389a4e0f5.jpg",
+    "address": "Zogaj",
+    "city": "ULQIN",
+    "zipcode": "85360",
+    "countryFullName": "Montenegro",
+    "lng": 19.3998846,
+    "lat": 42.0713677
+  },
+  {
+    "slug": "dzamija-vranj-tuzi-81000-montenegro",
+    "name": "Džamija Vranj",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7918c0ca-1320-43d9-ac07-0778ee53b047/mosque/1efafdcc-f211-6388-9e9e-0a0389a4e0f5.jpg",
+    "address": "87GW+GVQ, Vranj",
+    "city": "TUZI",
+    "zipcode": "81000",
+    "countryFullName": "Montenegro",
+    "lng": 19.2972344,
+    "lat": 42.3263375
+  },
+  {
+    "slug": "selimova-dzamija-tuzi-81206-montenegro",
+    "name": "Džamija Karabuško Polje",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/fcdd0370-10f1-405e-9959-383f5028f38d/mosque/1efb0c6b-eaf8-6c56-9e31-0a0389a4e0f5.jpg",
+    "address": "98J6+MFR, Tuzi, Monténégro",
+    "city": "TUZI",
+    "zipcode": "81206",
+    "countryFullName": "Montenegro",
+    "lng": 19.3111406,
+    "lat": 42.3817375
+  },
+  {
+    "slug": "dzamija-hysein-kovaci-podgorica-81000-montenegro",
+    "name": "Dzamija Hysein Kovac-Dzemat El-Kerim",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a4fb93f1-5558-4afc-8e0b-b99cb7155433/mosque/1eff0ab4-aec8-6fe2-84a7-06ef9144e88f.jpg",
+    "address": "Konik Kamp 5",
+    "city": "PODGORICA",
+    "zipcode": "81000",
+    "countryFullName": "Montenegro",
+    "lng": 19.298005435137,
+    "lat": 42.425040744872
+  },
+  {
+    "slug": "xhamia-e-dinoshes-dinosa-81206-montenegro",
+    "name": "Xhamia Dinoshë",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/43225ed2-ca6e-4e2d-9c4a-8f8882a44998/mosque/1eff5d0e-1b2d-6cea-a76f-0adf9413746d.jpg",
+    "address": "C88X+789",
+    "city": "DINOšA",
+    "zipcode": "81206",
+    "countryFullName": "Montenegro",
+    "lng": 19.3483594,
+    "lat": 42.4156625
+  },
+  {
+    "slug": "dzamija-sutivan-bijelo-polje-84000-montenegro",
+    "name": "Džamija Sutivan",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/cbb5c487-8f9d-4710-af1f-ca6cb5f871e7/mosque/1effdf66-ff8f-6f0c-b1d4-0e61b0058d45.jpg",
+    "address": "Sutivan",
+    "city": "BIJELO POLJE",
+    "zipcode": "84000",
+    "countryFullName": "Montenegro",
+    "lng": 19.769413664288,
+    "lat": 43.086783035677
+  },
+  {
+    "slug": "mesdzid-herceg-novi-herceg-novi-85340-montenegro",
+    "name": "Islamski kulturni centar Herceg Novi",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8fe4eafd-b8ea-4c1a-936d-60ff2b101bf6/mosque/1f005a97-68d5-6600-bb28-0a2e1c0b5725.jpg",
+    "address": "Kumbor",
+    "city": "HERCEG NOVI",
+    "zipcode": "85340",
+    "countryFullName": "Montenegro",
+    "lng": 18.592463035053,
+    "lat": 42.438829944121
+  },
+  {
+    "slug": "xhamia-e-lamit-ulcinj-85360-montenegro",
+    "name": "Xhamia e Lamit - Ulqin",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4bb1aec0-b51f-4ded-b58c-246059b0c40d/mosque/1f013165-c500-6f24-99da-06bdda781935.jpeg",
+    "address": "Rr. Ymer Prizreni",
+    "city": "ULCINJ",
+    "zipcode": "85360",
+    "countryFullName": "Montenegro",
+    "lng": 19.206765348749,
+    "lat": 41.931385050908
+  },
+  {
+    "slug": "mesdzid-budva-budva-85310-montenegro",
+    "name": "MEDŽLIS ISLAMSKE ZAJEDNICE Budva",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/35aafd6e-ae16-4fd1-9784-b1318e31fdf7/mosque/1f038168-07a7-6b3a-bc87-06e62934e98f.jpg",
+    "address": "Obilaznica, Budva, Crna Gora",
+    "city": "BUDVA",
+    "zipcode": "85310",
+    "countryFullName": "Montenegro",
+    "lng": 18.8352565,
+    "lat": 42.2885622
+  },
+  {
+    "slug": "mesdzid-u-tivtu-tivat-85320-montenegro",
+    "name": "Mesdžid u Tivtu",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2ae65d38-2a44-42ea-8079-85fe67ae30c7/mosque/1f03e14b-4e78-6698-acca-06f7ea63bd95.jpg",
+    "address": "Jadranska magistrala",
+    "city": "TIVAT",
+    "zipcode": "85320",
+    "countryFullName": "Montenegro",
+    "lng": 18.7015052,
+    "lat": 42.4304632
+  }
+]

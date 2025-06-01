@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "masjid-ikhsan-kyakhulai-368300-dagestan-russia",
+    "name": "Мечеть Ихсан",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/72bd2d91-266d-472f-890b-50df9b46326d/mosque/1f002a02-8820-66b0-9a21-0e4fa23cf9cb.jpeg",
+    "address": "Kyakhulai",
+    "city": "REPUBLIC OF DAGESTAN",
+    "zipcode": "368300",
+    "countryFullName": "Russia",
+    "lng": 47.490007281303,
+    "lat": 42.960426970552
+  },
+  {
+    "slug": "msjd-lymn-panakhes-385113-russia",
+    "name": "Мечеть",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/80bf3df8-cbd8-40ea-a882-25ea7c055d45/mosque/1f013b52-b63e-6b34-ae00-0ac73cfd41db.jpg",
+    "address": "Схакумидова 3/2",
+    "city": "Панахес",
+    "zipcode": "385113",
+    "countryFullName": "Russia",
+    "lng": 38.7173231,
+    "lat": 44.9867833
+  },
+  {
+    "slug": "alburkent-dzhuma-mechet-alburikent-367026-russia",
+    "name": "Джума мечеть Альбурикент",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/49b46379-cf29-440c-bcc8-098ae7eafdeb/mosque/1f019410-7acc-6382-8dc7-0e61b0058d45.jpeg",
+    "address": "Альбурикент, Республика Дагестан, Россия",
+    "city": "Альбурикент",
+    "zipcode": "367026",
+    "countryFullName": "Russia",
+    "lng": 47.4702904,
+    "lat": 42.9719506
+  },
+  {
+    "slug": "borhan-422621-kaipy-russia",
+    "name": "Борхан",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/46331106-a73c-475a-b847-e83045fa19ea/mosque/1f030328-9459-64b6-80a4-0e129cf045c7.jpeg",
+    "address": "Матвеева 1/1",
+    "city": "Деревня Каипы",
+    "zipcode": "422621",
+    "countryFullName": "Russia",
+    "lng": 49.4752726,
+    "lat": 55.5784079
+  }
+]

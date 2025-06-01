@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "masjid-umar-bin-khattab-fdlc-gombe-gombe-760253-nigeria",
+    "name": "Masjid Umar Bin Khattab FDLC Gombe",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9a2c46a1-dfa7-42f6-b749-1c857c1095c0/mosque/1eea8ed9-7234-6bb4-96e9-066ed47a7584.jpg",
+    "address": "1, Federal Lowcost Gombe",
+    "city": "GOMBE",
+    "zipcode": "760253",
+    "countryFullName": "Nigeria",
+    "lng": 11.1454572,
+    "lat": 10.3046338
+  },
+  {
+    "slug": "-16",
+    "name": "Masjid؛ Muslim Community Centre (MCC)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/769bb289-3c29-4862-8220-2d12caa7be66/mosque/1ef53300-50c2-6078-9643-0eccd22c0f01.png",
+    "address": "Zone 3, Wuse FCT",
+    "city": "ABUJA",
+    "zipcode": "760253",
+    "countryFullName": "Nigeria",
+    "lng": 7.4719463,
+    "lat": 9.0596457
+  },
+  {
+    "slug": "-28",
+    "name": "ICICE AL-NOOR MASJID",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9c640ee0-dfa3-4c14-9419-08ea03fa2d47/mosque/1ef71cfd-b193-62e2-8090-0a30a0d770d7.jpg",
+    "address": "Plot 289 IBB Way Wuse II F.C.T",
+    "city": "ABUJA",
+    "zipcode": "760253",
+    "countryFullName": "Nigeria",
+    "lng": 7.4985259,
+    "lat": 9.0562646
+  }
+]

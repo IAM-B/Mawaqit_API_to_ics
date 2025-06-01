@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "sidna-ali-ahel-7439146569-iran",
+    "name": "مسجد سیدنا علی ابن ابی طالب",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/feda8ab3-dda8-4daf-b43c-efff6aab45bc/mosque/1ef3ecb4-e91e-6c60-a269-0a67bcb0d635.jpg",
+    "address": "6M74+C9C, Ahel",
+    "city": "FARS PROVINCE",
+    "zipcode": "74614",
+    "countryFullName": "Iran",
+    "lng": 53.6558906,
+    "lat": 27.2135625
+  },
+  {
+    "slug": "masjid-boubakhr-sdiq-mlikhi-74-iran",
+    "name": "مسجد سیدنا ابوبکر صدیق",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/59bbe1c1-194c-46e3-a910-bf4ef73a09ed/mosque/1efa4477-e9c8-6cf8-bccf-0e9d077f5bb1.jpg",
+    "address": "62R3+8GR Milaki, Hormozgan Province",
+    "city": "ملیکی",
+    "zipcode": "74",
+    "countryFullName": "Iran",
+    "lng": 53.0037656,
+    "lat": 27.2408625
+  },
+  {
+    "slug": "msjd-sydn-slmn-frsy-rd-shhr-hl-shhr-hl-7439146568-iran",
+    "name": "مسجد سیدنا سلمان فارسی",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d52cacbf-50a6-49e1-9b2a-71bf29857421/mosque/1efe9ec8-6e91-6756-a296-063aa5df5c67.jpeg",
+    "address": "6M68+MX5, Ahel, Fars Province",
+    "city": "شهر اهل",
+    "zipcode": "7439146568",
+    "countryFullName": "Iran",
+    "lng": 53.6674844,
+    "lat": 27.2116375
+  }
+]

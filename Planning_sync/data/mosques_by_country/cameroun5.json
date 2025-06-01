@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "sabongari-ngaoundere",
+    "name": "SABONGARI",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/bd46fc28-41e7-4b42-bddd-86cbc5ad3fd1/mosque/1eea8dae-3128-637c-9f03-066ed47a7584.jpg",
+    "address": "Quartier sabongari",
+    "city": "Ngaoundéré",
+    "zipcode": "23700",
+    "countryFullName": "Cameroon",
+    "lng": 13.5957596,
+    "lat": 7.3425339
+  },
+  {
+    "slug": "mbamyanga-ngaoundere",
+    "name": "G M MBAMYANGA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/841fa2eb-bd8c-42ca-a93a-e52f07343c0d/mosque/1eea8dae-9520-6884-8a85-066ed47a7584.jpg",
+    "address": "Quartier Mbamyanga",
+    "city": "Ngaoundéré",
+    "zipcode": "23700",
+    "countryFullName": "Cameroon",
+    "lng": 13.578473,
+    "lat": 7.301163
+  },
+  {
+    "slug": "adamou-ngaoundere",
+    "name": "ALH ADAMOU",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7e62a623-35c8-4021-a145-bf4380ab91d9/mosque/1eea8daf-b8f3-6422-b02c-066ed47a7584.jpg",
+    "address": "Quartier 3 mala",
+    "city": "Ngaoundéré",
+    "zipcode": "23700",
+    "countryFullName": "Cameroon",
+    "lng": 13.5668302,
+    "lat": 7.3381488
+  }
+]

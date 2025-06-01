@@ -1,0 +1,178 @@
+[
+  {
+    "slug": "masjid-jamek-tabal-hulu-narathiwat-96110-thailand",
+    "name": "MASJID JAMEK TABAL HULU",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/104ab2d3-1e38-4dfc-883e-d4d1df28c39f/mosque/1eea8e9b-60b1-6146-8a1d-066ed47a7584.jpg",
+    "address": "123/9, Moo 1, Amphoe Tak Bai, Tambon Chehe",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.08427429199,
+    "lat": 6.2334321
+  },
+  {
+    "slug": "masjid-darul-muttaqin-luar-jati-narathiwat-96110-thailand",
+    "name": "MASJID DARUL MUTTAQIN (LUAR JATI)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/914c1171-2060-474d-ada0-cedff4e04ba4/mosque/1eea8ea8-5ed3-6916-9a9d-066ed47a7584.jpg",
+    "address": "Moo 1, Tambon Chehe, Amphoe Tak Bai",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0616865,
+    "lat": 6.2537219
+  },
+  {
+    "slug": "masjid-taqwa-abuya-narathiwat-96110-thailand",
+    "name": "MASJID TAQWA (ABUYA)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6f2b4400-bd9b-408d-b832-046a5e271c31/mosque/1eea8ea8-7227-6c88-9d9a-066ed47a7584.jpg",
+    "address": "Tambon Chehe, Amphoe Tak Bai",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0616865,
+    "lat": 6.2537219
+  },
+  {
+    "slug": "masjid-nurulhuda-yakan3-natathiwat-96000-thailand",
+    "name": "MASJID NURULHUDA (ณ นคร)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/989f7f24-4559-4f31-ba27-7a451b3e06be/mosque/1eea8eb7-735a-6f24-82b7-066ed47a7584.jpg",
+    "address": "51 ถ.ณ นคร ซอย1 ต.บางนาค อ.เมือง",
+    "city": "NARATHIWAT",
+    "zipcode": "96000",
+    "countryFullName": "Thailand",
+    "lng": 101.8124864,
+    "lat": 6.4154317
+  },
+  {
+    "slug": "masjid-ehsan-taba-hilir-narathiwat-96110-thailand",
+    "name": "MASJID EHSAN TABA HILIR",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1c0a6a48-e57a-47d2-a03a-e50ad0215633/mosque/1eea8eb9-1d51-6e32-8a8e-066ed47a7584.jpg",
+    "address": "51, Moo 1, Amphoe Tak Bai, Tambon Chehe",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0616865,
+    "lat": 6.2537219
+  },
+  {
+    "slug": "masjid-kalae-taba-narathiwat-96110-thailand",
+    "name": "MASJID KALAE TABA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3424f6aa-5a1c-4073-b7d2-ca0ac436f2d6/mosque/1eea8ecd-c5df-67fc-84c5-066ed47a7584.jpg",
+    "address": "295/4, Moo 1, Amphoe Tak Bai, Tambon Chehe",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0616865,
+    "lat": 6.2537219
+  },
+  {
+    "slug": "masjid-nurul-huda-narathiwat-96110-thailand",
+    "name": "MASJID NURUL HUDA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7292d5e6-3b57-4a5a-8a71-d8f3b4c889e4/mosque/1eea8edc-f026-665a-a651-066ed47a7584.jpg",
+    "address": "45/4, Moo 1, Amphoe Tak Bai, Tambon Chehe",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0616865,
+    "lat": 6.2537219
+  },
+  {
+    "slug": "rumah-anak-yateem-miskin-k-koksekuan-narathiwat-96110-thailand",
+    "name": "RUMAH ANAK YATIM KOKSEKUAN",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/974a6c2a-1c6a-4658-a725-6ca50a5e8e06/mosque/1eeb6801-16c2-6af4-87b5-06acfcd1c88a.jpg",
+    "address": "Moo.5, Tambon Phron, Amphoe Tak Bai",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0276042,
+    "lat": 6.198087
+  },
+  {
+    "slug": "masyidnuurulhuudaayakang3-nraathiwaas-96000-thailand",
+    "name": "MASJID NURULHUDA JAKAN3",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/bb1e8b68-80bc-495b-bea8-2bd1b7bfd6a2/mosque/1eeb9303-15ee-6d58-b374-0ede686d7942.jpg",
+    "address": "51 ซ.1 ถนน ณ นคร ต.บางนาค",
+    "city": "นราธิวาส",
+    "zipcode": "96000",
+    "countryFullName": "Thailand",
+    "lng": 101.8124972,
+    "lat": 6.4154422
+  },
+  {
+    "slug": "masjid-nur-reda-narathiwat-96110-thailand",
+    "name": "MASJID NUR REDA (AYATA)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2d89656a-bc71-4c2c-8553-970f96706447/mosque/1eeca892-1a72-678a-bde7-06acfcd1c88a.jpg",
+    "address": "Moo 1, Tak Bai, Chehe",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0529718,
+    "lat": 6.259185
+  },
+  {
+    "slug": "masjid-darul-istiqlal-jakan-nraathiwaas-96000-thailand",
+    "name": "MASJID DARUL ISTIQLAL JAKAN",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d4ff635b-aa44-4f83-bac0-3bbb8e8a37e2/mosque/1eed8616-960b-6a56-9db0-0a7eba2dd6b3.jpg",
+    "address": "ถ.ระแงะมรรคา ต.บางนาค อ.เมือง",
+    "city": "นราธิวาส",
+    "zipcode": "96000",
+    "countryFullName": "Thailand",
+    "lng": 101.8238595,
+    "lat": 6.412478
+  },
+  {
+    "slug": "masjid-talian-narathiwat-96110-thailand",
+    "name": "مسجد تأليان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/99eb0193-d965-4dfe-aca2-77f957dc99b9/mosque/1ef2870e-2cae-6042-94b7-0abc556dbbf3.jpg",
+    "address": "210, Moo. 4, Kampung Talian, Tak Bai",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0529718,
+    "lat": 6.259185
+  },
+  {
+    "slug": "masjid-assa-adah-kg-jujur-narathiwat-96110-thailand",
+    "name": "مسجد السعادة - جوجور",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1e5a6105-d5a6-493c-82c9-beda33421b67/mosque/1ef4002b-764c-6e50-939f-0a67bcb0d635.jpg",
+    "address": "Moo.5, Ban Khung Thong, Amphoe Tak Bai",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0032957,
+    "lat": 6.2479238
+  },
+  {
+    "slug": "msjd-frchm-chgwd-nrtywt-nrtywt-96000-thailand",
+    "name": "มัสยิดประจำจังหวัดนราธิวาส ( منار الهدى)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d1f3a3a6-9b4b-4322-8caa-5c6e3a8a1091/mosque/1ef74b25-8afa-6814-aed4-0600dbafaeef.jpeg",
+    "address": "٦٣/١",
+    "city": "ناراتيوات",
+    "zipcode": "٩٦٠٠٠",
+    "countryFullName": "Thailand",
+    "lng": 101.82193279266,
+    "lat": 6.4437164581
+  },
+  {
+    "slug": "masjid-johor-narathiwat-96220-thailand",
+    "name": "MASJID JOHOR",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/df699322-cd28-485d-afe1-43481b5565f3/mosque/1eff50a9-acad-6d58-ac8c-0adf9413746d.jpeg",
+    "address": "Bo Ngo, Ra-ngae District",
+    "city": "NARATHIWAT",
+    "zipcode": "96220",
+    "countryFullName": "Thailand",
+    "lng": 101.5702813,
+    "lat": 5.9870407
+  },
+  {
+    "slug": "masjid-darul-furqan-narathiwat-96110-thailand",
+    "name": "MASJID DARUL FURQAN",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a5a0affe-6a8d-4b1c-8a55-5e1a9b674f87/mosque/1f02cb1b-65f1-6a5a-afd6-0ab233a5b545.jpg",
+    "address": "Moo. 2, Kok Saton, Tak Bai",
+    "city": "NARATHIWAT",
+    "zipcode": "96110",
+    "countryFullName": "Thailand",
+    "lng": 102.0529718,
+    "lat": 6.259185
+  }
+]

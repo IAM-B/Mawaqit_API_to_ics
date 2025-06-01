@@ -1,0 +1,233 @@
+[
+  {
+    "slug": "ar-rahma-bamako",
+    "name": "Mosquée AR-RAHMAN Badalabougou",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2545ebb6-fc6a-4402-9113-c0e509122d5e/mosque/1eea8dad-46b7-648c-be38-066ed47a7584.jpg",
+    "address": "Badalabougou Rue 136 Porte 790",
+    "city": "Bamako",
+    "zipcode": "00",
+    "countryFullName": "Mali",
+    "lng": -8.0031389,
+    "lat": 12.6401342
+  },
+  {
+    "slug": "tawhid-koulikoro",
+    "name": "Mosquée At Tawhid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/43cb3dc2-85b5-4304-8e34-d2c84046b705/mosque/1eea8dc5-6014-6070-8a4a-066ed47a7584.JPG",
+    "address": "Sanankoroba",
+    "city": "Sanankoroba",
+    "zipcode": "099",
+    "countryFullName": "Mali",
+    "lng": -7.9402184,
+    "lat": 12.3992022
+  },
+  {
+    "slug": "mosquee-mouaz-ibn-djabal-bamako",
+    "name": "MOSQUÉE MOUAZ IBN DJABAL",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/193e5a1a-add1-42b1-8310-5e30d2ea07c4/mosque/1eea8dec-eb6d-6686-a72a-066ed47a7584.jpg",
+    "address": "KALABAN COURA ACI",
+    "city": "Bamako",
+    "zipcode": "91095",
+    "countryFullName": "Mali",
+    "lng": -7.9940869,
+    "lat": 12.5537028
+  },
+  {
+    "slug": "sobrou-la-tolerance-bamako",
+    "name": "MOSQUÉE  SÔBROU (LA TOLÉRANCE)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/75e6b467-0053-4fdb-ace2-c63602f9480b/mosque/1eea8df1-710a-6e98-a044-066ed47a7584.jpg",
+    "address": "KALANBAN BKO",
+    "city": "Bamako",
+    "zipcode": "99335",
+    "countryFullName": "Mali",
+    "lng": -8.0301544,
+    "lat": 12.5757646
+  },
+  {
+    "slug": "mosquee-ghoufrane-bamako",
+    "name": "MOSQUÉE AL GHOUFRANE",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/051168db-9dd7-4dc8-beaf-6401151b6399/mosque/1eea8dff-dae1-632c-bd2f-066ed47a7584.jpg",
+    "address": "KALANBAN COURA",
+    "city": "Bamako",
+    "zipcode": "99335",
+    "countryFullName": "Mali",
+    "lng": -8.0216913803982,
+    "lat": 12.578016003572
+  },
+  {
+    "slug": "mosquee-babou-kane-de-niarela-bamako-mali",
+    "name": "MOSQUÉE  DE NIARELA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/769d40fd-5f8b-4b00-a286-bfb6728d05e5/mosque/1eea8e02-276c-69c4-9a2d-066ed47a7584.jpg",
+    "address": "RUE 481 PORTE 175",
+    "city": "Bamako",
+    "zipcode": "00000",
+    "countryFullName": "Mali",
+    "lng": -7.9847690870821,
+    "lat": 12.646768889184
+  },
+  {
+    "slug": "mosquee-al-tawfiq-bamako-91095-mali",
+    "name": "MOSQUEE AL TAWFIQ",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/146769f8-4c28-46ed-afd5-6783f01fda8e/mosque/1eea8e02-ec31-657a-9ab7-066ed47a7584.jpg",
+    "address": "KALANBAN COURA",
+    "city": "Bamako",
+    "zipcode": "91095",
+    "countryFullName": "Mali",
+    "lng": -7.9945056,
+    "lat": 12.5867259
+  },
+  {
+    "slug": "mosquee-sunna-lafiabougou-id-10291",
+    "name": "MOSQUÉE SUNNA LAFIABOUGOU",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a343c8d3-1667-4470-8be5-32dcd6e3f604/mosque/1eea8e04-e61a-67ac-9960-066ed47a7584.jpg",
+    "address": "rue 442 porte 543",
+    "city": "Bamako",
+    "zipcode": "2345",
+    "countryFullName": "Mali",
+    "lng": -8.0420029163361,
+    "lat": 12.627503235009
+  },
+  {
+    "slug": "mosquee-atata-senou-bamako-senou-91096-mali",
+    "name": "MOSQUEE ATATA SENOU",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/1a2c15f9-b28a-41bb-bd84-d497157869cc/mosque/1eea8e18-453c-6a9c-a255-066ed47a7584.jpg",
+    "address": "BAMAKO SENOU",
+    "city": "Bamako-Senou",
+    "zipcode": "91096",
+    "countryFullName": "Mali",
+    "lng": -7.9211555,
+    "lat": 12.5220743
+  },
+  {
+    "slug": "mosquee-oumar-ibn-kattab-sokorodji-bamako-00000-mali",
+    "name": "عمر ابن الخطاب بسوكوروجي",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5166726d-ec8c-4a35-89e5-b83c7ea7585b/mosque/1eea8e4b-6f44-6dc0-9da4-066ed47a7584.jpg",
+    "address": "Sokorodji rue 538",
+    "city": "Bamako",
+    "zipcode": "00000",
+    "countryFullName": "Mali",
+    "lng": -7.9515043380424,
+    "lat": 12.610876640616
+  },
+  {
+    "slug": "mosquee-al-madina-al-mounawara-bamako-99-mali",
+    "name": "Mosqueé  Al Madina Al Mounawara",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3c0f5a2c-ca67-416b-9a12-239748d03c6e/mosque/1eea8e55-ab60-6e6c-9148-066ed47a7584.jpg",
+    "address": "Magnambougou projet",
+    "city": "Bamako",
+    "zipcode": "99",
+    "countryFullName": "Mali",
+    "lng": -7.9542249441147,
+    "lat": 12.608605403242
+  },
+  {
+    "slug": "mosquee-bilal-de-namala-karan-99999-mali",
+    "name": "Mosquée Bilal de Namala",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b4130736-74dc-4126-bc41-4f0bf6b179f6/mosque/1eea8e56-dd45-6b8e-b096-066ed47a7584.jpg",
+    "address": "Landi-Namala",
+    "city": "Karan",
+    "zipcode": "99999",
+    "countryFullName": "Mali",
+    "lng": -9.3868716,
+    "lat": 13.3642704
+  },
+  {
+    "slug": "mosquee-sunnite-de-quinzambougou-bamako-125-mali",
+    "name": "Mosquée Sunnite de Quinzambougou",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5a82b467-d456-4cdc-8db3-6dae9bdc423f/mosque/1eea8e7a-08e4-62a4-bbab-066ed47a7584.jpg",
+    "address": "Rue 535 porte 280 commune II",
+    "city": "Bamako",
+    "zipcode": "125",
+    "countryFullName": "Mali",
+    "lng": -7.9819622,
+    "lat": 12.6500255
+  },
+  {
+    "slug": "al-huqma-bamako-99000-mali",
+    "name": "MOSQUÉE AL HIQMA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/34d3ec42-797c-4467-856d-dbc601fe18af/mosque/1ef22c77-59e4-67e2-9d66-069cfb0c4e97.jpeg",
+    "address": "Baco Djicoroni",
+    "city": "BAMAKO",
+    "zipcode": "99000",
+    "countryFullName": "Mali",
+    "lng": -7.9648999,
+    "lat": 12.5986364
+  },
+  {
+    "slug": "mosque-al-ikhlass-bamako-91094-mali",
+    "name": "MOSQUÉE AL IKHLASS",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/041933f6-0b55-4ef1-9bc8-c204043f3ac3/mosque/1ef4df52-6bd4-69d0-a6e3-0600dbafaeef.jpeg",
+    "address": "LAFIA BOUGOU",
+    "city": "BAMAKO",
+    "zipcode": "91094",
+    "countryFullName": "Mali",
+    "lng": -8.0437909,
+    "lat": 12.6351525
+  },
+  {
+    "slug": "mosquee-rhamat-bamako-9929-mali",
+    "name": "MOSQUÉE RAHAMA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/506e0082-9615-4daf-a41d-ec25991fa399/mosque/1ef5cbf1-e06c-686a-87fc-0600dbafaeef.jpeg",
+    "address": "BACO DJICORONI",
+    "city": "BAMAKO",
+    "zipcode": "9929",
+    "countryFullName": "Mali",
+    "lng": -7.9648999,
+    "lat": 12.5986364
+  },
+  {
+    "slug": "masjid-alwarith-bko-91094-mali",
+    "name": "MASJID ALWARITH",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a51c1466-ca69-46cc-a1de-56ab490bd020/mosque/1efcee53-ceb5-6672-89a9-06bada7b305f.jpeg",
+    "address": "Kalaban Coro plateau",
+    "city": "BKO",
+    "zipcode": "91094",
+    "countryFullName": "Mali",
+    "lng": -8.030149,
+    "lat": 12.575774
+  },
+  {
+    "slug": "sibila-missiriba-sibila-segou-41051-mali",
+    "name": "Sibila Missiriba",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/07d61f26-f8e9-427c-997d-e3d9bf6f0cc8/mosque/1efdcc44-2226-6aa8-b034-063aa5df5c67.png",
+    "address": "Place de la mosquée",
+    "city": "SIBILA ( SéGOU)",
+    "zipcode": "41051",
+    "countryFullName": "Mali",
+    "lng": -5.8781787,
+    "lat": 13.7803219
+  },
+  {
+    "slug": "masjid-at-tawhid-tienfala-tienfala-region-de-koulikoro-mali",
+    "name": "MASJID AT TAWHID",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/747dd06b-4774-4416-8df5-68a3140adf49/mosque/1eff5579-de2d-6a2a-8452-06ef9144e88f.jpeg",
+    "address": "RN6 ROUTE DE KOULIKORO",
+    "city": "TIENFALA",
+    "zipcode": "TIENFALA RÉGION DE KOULIKORO",
+    "countryFullName": "Mali",
+    "lng": -6.8663001,
+    "lat": 12.8790763
+  },
+  {
+    "slug": "masjid-ahlu-sunna-wal-jamaa-ngolobougou-223-mali",
+    "name": "Masjid Ahlu Sunna Wal Jama’a",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/68a4b792-05e0-4be5-b902-3b3b9284f634/mosque/1f01a9f5-a835-6634-b6bf-0e61b0058d45.jpeg",
+    "address": "Rue de la grande antenne",
+    "city": "NGOLOBOUGOU",
+    "zipcode": "223",
+    "countryFullName": "Mali",
+    "lng": -6.7158059,
+    "lat": 12.1771318
+  },
+  {
+    "slug": "mosquee-al-ikhlass-bamako-00000-mali",
+    "name": "MOSQUÉE AL IKHLASS",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e48d04dc-c5c9-44db-994e-a863bc16d8d5/mosque/1f01ebd5-f556-6bbc-a533-0ac73cfd41db.jpg",
+    "address": "Lafiabougou, Bamako, Mali",
+    "city": "BAMAKO",
+    "zipcode": "00000",
+    "countryFullName": "Mali",
+    "lng": -8.0437909,
+    "lat": 12.6351525
+  }
+]

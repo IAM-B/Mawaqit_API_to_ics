@@ -1,4 +1,4 @@
 ics
 env-planner
 __pycache__/
-test_api.py
+*.log

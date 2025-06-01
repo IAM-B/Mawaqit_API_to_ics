@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "mezquita-de-magdalena-del-mar-lima-07921-peru",
+    "name": "Mezquita de Magdalena del mar",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/51a06a78-5ebd-46d2-b72b-dcdc93cb4556/mosque/1eea8e3c-cc54-61e6-8271-066ed47a7584.jpg",
+    "address": "JR Tacna 556 Magdalena del mar lima",
+    "city": "Lima",
+    "zipcode": "07921",
+    "countryFullName": "Peru",
+    "lng": -77.0719611,
+    "lat": -12.0938736
+  },
+  {
+    "slug": "mezquita-nurul-islam-lima-15084-peru",
+    "name": "Mezquita Nurul Islam",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/99c3bea7-a4fd-448f-9f8d-a41c313ac761/mosque/1ef3a6e8-bb43-6eb0-a8ab-0600dbafaeef.jpg",
+    "address": "Calle José Gregorio Paredes 2746, Pueblo Libre, Lima",
+    "city": "LIMA",
+    "zipcode": "15084",
+    "countryFullName": "Peru",
+    "lng": -77.0636529,
+    "lat": -12.085073
+  }
+]

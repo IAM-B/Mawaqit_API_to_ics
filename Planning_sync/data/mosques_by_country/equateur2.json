@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "islamic-center-khalid-ibn-alwalid-170518-ecuador",
+    "name": "المركز الإسلامي الثقافي خالد بن الوليد",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/594bdb77-f9df-42cc-b818-e5053398cf6d/mosque/1eea8e1c-5f2a-62c0-8454-066ed47a7584.jpg",
+    "address": "Los Shyris y Eloy Alfaro",
+    "city": "Quito",
+    "zipcode": "170518",
+    "countryFullName": "Ecuador",
+    "lng": -78.4827221,
+    "lat": -0.1889964
+  },
+  {
+    "slug": "centro-islamico-mezquita-santo-domingo-1302-ecuador",
+    "name": "Centro Islámico Mezquita de Santo Doming",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9c1da45a-3a07-42a7-a093-8ee6c52eb19a/mosque/1ef3dda4-4e23-6a18-8192-0eccd22c0f01.png",
+    "address": "C. Latacunga 1302, , Ecuador",
+    "city": "SANTO DOMINGO",
+    "zipcode": "1302",
+    "countryFullName": "Ecuador",
+    "lng": -79.1720284,
+    "lat": -0.2585201
+  }
+]

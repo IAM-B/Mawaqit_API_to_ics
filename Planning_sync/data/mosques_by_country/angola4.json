@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "masjid-as-salam-luanda-angola-id-36514",
+    "name": "مسجد السلام",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c24b4ebd-99d8-4490-a7b4-34052b0cad66/mosque/1f020413-45ee-67b4-a9e9-0e61b0058d45.jpeg",
+    "address": "Dondo",
+    "city": "DONDO",
+    "zipcode": "23000",
+    "countryFullName": "Angola",
+    "lng": 14.4286639,
+    "lat": -9.6848602
+  },
+  {
+    "slug": "masjid-al-noor-uige-20000-angola",
+    "name": "مسجد النور",
+    "image1": null,
+    "address": "Avenida Do Café; Cidade Do Uige; Provincia Do Uige",
+    "city": "UíGE",
+    "zipcode": "20000",
+    "countryFullName": "Angola",
+    "lng": 15.0615865,
+    "lat": -7.6102105
+  }
+]

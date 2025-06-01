@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "dawat-ul-haq-vacoas-vacoas-mauritius",
+    "name": "Bonne Terre - Dawat-Ul-Haq Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7210cc34-6dfc-4651-bf06-ac061a0048f7/mosque/1eea8e2b-326a-65f0-8b45-066ed47a7584.jpg",
+    "address": "70, Remy Ollier Street, Bonne Terre",
+    "city": "Vacoas",
+    "zipcode": "VACOAS",
+    "countryFullName": "Mauritius",
+    "lng": 57.491273,
+    "lat": -20.2879136
+  },
+  {
+    "slug": "taleem-ul-islam-madrassah-calebasses-20201-mauritius",
+    "name": "Taleem-Ul-Islam Madrassah",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/11babbfd-a83f-4821-940d-2c9fcadddbf3/mosque/1eea8e8e-e275-6536-8c28-066ed47a7584.jpg",
+    "address": "School Lane Calebasses",
+    "city": "CALEBASSES",
+    "zipcode": "20201",
+    "countryFullName": "Mauritius",
+    "lng": 57.5561071,
+    "lat": -20.1174305
+  },
+  {
+    "slug": "masjid-bait-ul-noor-port-louis-11817-mauritius",
+    "name": "Masjid Bait Ul Noor",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f95cf1c5-158f-4046-965e-1751cc987a78/mosque/1eff77df-2b48-6094-b096-0afdb4a7872f.jpg",
+    "address": "Bait Ul Noor Street",
+    "city": "PORT LOUIS",
+    "zipcode": "11817",
+    "countryFullName": "Mauritius",
+    "lng": 57.52911782024,
+    "lat": -20.154618591583
+  },
+  {
+    "slug": "bait-ur-rahmaan-coromandel-71620-mauritius",
+    "name": "BAIT-UR-RAHMAAN",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/686696a7-ac2e-45e1-bc1e-6e995865ef2c/mosque/1f007954-0211-655a-a0b6-0a2e1c0b5725.jpeg",
+    "address": "Neon Avenue, Morcellement Chapman View",
+    "city": "COROMANDEL",
+    "zipcode": "71620",
+    "countryFullName": "Mauritius",
+    "lng": 57.4620581,
+    "lat": -20.2013529
+  }
+]

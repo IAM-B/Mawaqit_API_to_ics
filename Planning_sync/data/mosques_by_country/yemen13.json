@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "msjd-lshykh-fdl-t-z-967-yemen",
+    "name": "مسجد الشيخ فاضل",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0bf6ee82-b5d9-4f85-9ade-9645d196a035/mosque/1f01b819-de87-6584-8d56-0ac73cfd41db.jpg",
+    "address": "جولة سنان, تعز",
+    "city": "تعز",
+    "zipcode": "+967",
+    "countryFullName": "Yemen",
+    "lng": 44.0163815,
+    "lat": 13.5884238
+  },
+  {
+    "slug": "jm-ls-yd-t-z-967-yemen",
+    "name": "جامع السعيد",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b0abe1b8-ed09-415f-95b1-102952abaff8/mosque/1f01d124-2d08-68d4-b97b-06bdda781935.jpg",
+    "address": "جولة سنان, تعز",
+    "city": "تعز",
+    "zipcode": "+967",
+    "countryFullName": "Yemen",
+    "lng": 44.0163815,
+    "lat": 13.5884238
+  },
+  {
+    "slug": "msjd-lshykh-fdl-t-z-967-yemen-1",
+    "name": "مسجد الشيخ فاضل",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/04edfac5-4c9a-4aac-af29-2986f32d79f5/mosque/1f01d13c-40d4-6c42-8d9f-0ac73cfd41db.jpg",
+    "address": "جولة سنان, تعز",
+    "city": "تعز",
+    "zipcode": "+967",
+    "countryFullName": "Yemen",
+    "lng": 44.0163815,
+    "lat": 13.5884238
+  }
+]

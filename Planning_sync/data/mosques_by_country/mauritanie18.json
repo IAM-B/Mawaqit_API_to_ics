@@ -1,0 +1,57 @@
+[
+  {
+    "slug": "ahmed-bab-hmadi-nouakchott-1995-mauritania",
+    "name": "أحمد باب حمادي",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5784d97f-eba0-467d-b02c-f081ebdff053/mosque/1eea8eca-140f-69e4-a93e-066ed47a7584.jpg",
+    "address": "519, zone université, je tevragh zeina",
+    "city": "NOUAKCHOTT",
+    "zipcode": "1995",
+    "countryFullName": "Mauritania",
+    "lng": -15.9996165,
+    "lat": 18.119893
+  },
+  {
+    "slug": "masjid-khayr-lqroun-nouakchott-06-mauritania",
+    "name": "مسجد خير القرون",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f9f765fd-74cd-47db-85db-b15dc28fb402/mosque/1eeba178-5643-6ce0-9532-0638e41374d2.jpg",
+    "address": "Avenue Kheyr Kouroun",
+    "city": "NOUAKCHOTT",
+    "zipcode": "06",
+    "countryFullName": "Mauritania",
+    "lng": -15.9674833,
+    "lat": 18.1284597
+  },
+  {
+    "slug": "msjd-khwywyrh-khwywyrh-00222-mauritania",
+    "name": "مسجد اخويويره",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d96bed19-4e0e-4af7-9891-483634007cc5/mosque/1ef98ae7-60f6-6258-ae4a-0a0389a4e0f5.jpeg",
+    "address": "7C8GH279+J5",
+    "city": "اخويويره",
+    "zipcode": "00222",
+    "countryFullName": "Mauritania",
+    "lng": -9.9820747,
+    "lat": 16.5640092
+  },
+  {
+    "slug": "mosquee-ettawba-sebkha-nouakchott-0000-mauritania",
+    "name": "Mosquée Ettawba, Sebkha",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b4253411-7497-4878-a439-33f64d1546e1/mosque/1efcefcc-89cc-6f54-b1ae-0a21b15e7a1f.jpg",
+    "address": "5èm Arrondissement, Sebkha",
+    "city": "NOUAKCHOTT",
+    "zipcode": "0000",
+    "countryFullName": "Mauritania",
+    "lng": -15.9983611,
+    "lat": 18.0748218
+  },
+  {
+    "slug": "kinkou-kode-djewol-99000-mauritania",
+    "name": "kinkou kode",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4677f05c-38fd-4126-8de8-5dcaa9af5311/mosque/1f02c171-16cd-6ab8-bbee-0ab233a5b545.png",
+    "address": "Djewol, Mauritanie",
+    "city": "DJEWOL",
+    "zipcode": "99000",
+    "countryFullName": "Mauritania",
+    "lng": -13.3731694,
+    "lat": 16.0668672
+  }
+]

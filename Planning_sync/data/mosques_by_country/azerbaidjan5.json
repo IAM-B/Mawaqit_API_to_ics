@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "26931",
+    "name": "Nərimanov r. Cümə məscidi",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/387ed409-0d1f-4181-8a2a-494ff9ebdf79/mosque/1eff1e58-8eb8-636c-8551-0e61b0058d45.png",
+    "address": "8 Ulvi Bunyad-Zadeh Street",
+    "city": "BAKU",
+    "zipcode": "1096",
+    "countryFullName": "Azerbaijan",
+    "lng": 49.8504444,
+    "lat": 40.3857518
+  },
+  {
+    "slug": "shehidler-xiyabani-mescidi-8-ulvi-bunyad-zadeh-street-1096-baku-azerbaijan",
+    "name": "Şəhidlər Xiyabanı Məscidi",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/bd503c80-3e53-4cc6-8d6b-88d4e8940b8a/mosque/1f01915f-2389-6128-8b75-0ac73cfd41db.png",
+    "address": "Mehdi Hüseyn Küçəsi, Baku, Azerbaijan",
+    "city": "BAKU",
+    "zipcode": "1006",
+    "countryFullName": "Azerbaijan",
+    "lng": 49.8275643,
+    "lat": 40.3657367
+  }
+]

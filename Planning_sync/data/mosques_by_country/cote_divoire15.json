@@ -1,0 +1,112 @@
+[
+  {
+    "slug": "aghien",
+    "name": "COMMUNAUTE MUSULMANE D'AGHIEN",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/cbf91d3e-c3d4-43b2-9f9f-9660d89aa03c/mosque/1eea8da3-f36f-695e-91d8-066ed47a7584.jpg",
+    "address": "Côte d'Ivoire, Abidjan, Cocody, 2 plateaux Aghien",
+    "city": "Abidjan",
+    "zipcode": "225",
+    "countryFullName": "CôTE D’IVOIRE",
+    "lng": -3.9932946,
+    "lat": 5.3822233
+  },
+  {
+    "slug": "mosqueerayyane",
+    "name": "MOSQUEE RAYYANE",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f06d8af1-b847-4270-aac0-a71f16826a16/mosque/1eea8dac-6385-6aba-97de-066ed47a7584.jpg",
+    "address": "Abidjan, Riviera Palmeraie",
+    "city": "Abidjan",
+    "zipcode": "05",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -3.953548,
+    "lat": 5.364364
+  },
+  {
+    "slug": "complexe-islamique-firad-abidjan-00225-cote-divoire",
+    "name": "Complexe islamique Firad",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/55f1a410-62a0-4574-9731-d6b42f0f7af8/mosque/1eea8e78-6f61-6ca4-b078-066ed47a7584.jpg",
+    "address": "C24F+VG7, Angré",
+    "city": "Abidjan",
+    "zipcode": "00225",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -3.9762031,
+    "lat": 5.4071625
+  },
+  {
+    "slug": "mosquee-ihsane-korhogo-savanes-korhogo-cote-divoire-1",
+    "name": "MOSQUÉE IHSANE",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2b1ec2b4-8e63-4c6e-a628-859c0e86a095/mosque/1eea8eac-f472-6e8c-9393-066ed47a7584.jpg",
+    "address": "F9CF+PJ5, Korhogo",
+    "city": "KORHOGO",
+    "zipcode": "Savanes, Korhogo",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -5.6258906,
+    "lat": 9.4717625
+  },
+  {
+    "slug": "mosquee-mouaz-ibn-djabal-riviera-faya-abidjan-01-bp-1387-cote-divoire",
+    "name": "Mosquée Mouaz Ibn Djabal - Riviera Faya",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4880af60-feba-49d3-997a-a1bed295b712/mosque/1eea8eb7-01fa-6528-a308-066ed47a7584.jpg",
+    "address": "01 BP 1387 ABIDJAN 01",
+    "city": "ABIDJAN",
+    "zipcode": "01 bp 1387",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -3.9319547607409,
+    "lat": 5.3693666095994
+  },
+  {
+    "slug": "mosquee-comucip-cite-prestige-2-abidjan-10000-cote-divoire",
+    "name": "Mosquée COMUCIP Cité Prestige 2",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7b4eb595-afec-4360-9e36-a39ae72385d7/mosque/1efed560-3f15-69e0-b4dd-06ef9144e88f.jpg",
+    "address": "CITE PRESTIGE 2 COCODY",
+    "city": "ABIDJAN",
+    "zipcode": "10000",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -3.9194011,
+    "lat": 5.3853211
+  },
+  {
+    "slug": "mosquee-noun-toure-abidjan-01-cote-divoire",
+    "name": "Mosquée noun touré",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/fedbb0a4-187e-483c-9832-bed758b061d6/mosque/1efcdd6a-ebb2-6c56-a67a-0a21b15e7a1f.jpg",
+    "address": "N’dotré kobakro",
+    "city": "ABIDJAN",
+    "zipcode": "01",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -4.079353433401,
+    "lat": 5.4533124815484
+  },
+  {
+    "slug": "mosquee-cisse-mamadou-abidjan-09-bp-1470-abidjan-09-cote-divoire",
+    "name": "Mosquée Cissé Mamadou",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6df086c7-d061-4cae-8439-07cba7a305c3/mosque/1efe0aec-1351-6e60-81d8-063aa5df5c67.jpeg",
+    "address": "Abidjan, Adjamé",
+    "city": "ABIDJAN",
+    "zipcode": "09 bp 1470 Abidjan 09",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -4.0160501,
+    "lat": 5.3479239
+  },
+  {
+    "slug": "mosquee-sunnite-alhadj-alhousseyne-abidjan-00225-cote-divoire",
+    "name": "MOSQUÉE SUNNITE ALHADJ ALHOUSSEYNE",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a7b5b99e-3278-4c3e-a30e-89dad1da5822/mosque/1eff8fd1-c0ad-6e86-a803-0a2e1c0b5725.jpg",
+    "address": "KOUMASSI REMBLAIS, DERRIERE LA PHARMACIE DES SABLES",
+    "city": "ABIDJAN",
+    "zipcode": "00225",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -3.9624073,
+    "lat": 5.3033555
+  },
+  {
+    "slug": "cmora-abidjan-cote-d-ivoire",
+    "name": "CMORA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/31395307-b735-4f4e-8372-b0a6e19d9f7c/mosque/1f03c5f3-63be-6674-9329-0ebf32fefef3.jpeg",
+    "address": "01 BP 1387 ABIDJAN 01",
+    "city": "ABIDJAN",
+    "zipcode": "01 bp 1387",
+    "countryFullName": "Côte d’Ivoire",
+    "lng": -4.0184434,
+    "lat": 5.3280931
+  }
+]

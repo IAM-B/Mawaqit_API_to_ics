@@ -1,0 +1,57 @@
+[
+  {
+    "slug": "masjid-khatim-ul-nabiyyeen-lahore-54000-pakistan",
+    "name": "مسجد خاتم الانبیا",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/436b071b-9bb4-4a94-924f-ab1a47ac57dc/mosque/1eea8e26-1c25-6358-94f8-066ed47a7584.jpg",
+    "address": "E- Block Valencia Town Lahore",
+    "city": "Lahore",
+    "zipcode": "54000",
+    "countryFullName": "Pakistan",
+    "lng": 74.25388,
+    "lat": 31.4091108
+  },
+  {
+    "slug": "19265",
+    "name": "Jamia Masjid Quwwatul Islam",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/75ad9625-7be8-47c1-bb0f-be27dbed2903/mosque/1efc98a6-ff88-68ba-b917-06bada7b305f.png",
+    "address": "986G+7XW, Tiaret",
+    "city": "TIARET",
+    "zipcode": "14000",
+    "countryFullName": "Pakistan",
+    "lng": 69.345116,
+    "lat": 30.375321
+  },
+  {
+    "slug": "jamia-masjid-bilal-kolian-shah-hussain-dinga-00000-pakistan",
+    "name": "Jamia Masjid Bilal - Kolian Shah Hussain",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ab786201-1eee-4c42-9ab8-f165d2e8112b/mosque/1ef8635b-9f54-6a86-91fe-0affcb0701ab.jpeg",
+    "address": "Kolian Shah Hussain, 00000, Dinga",
+    "city": "DINGA",
+    "zipcode": "00000",
+    "countryFullName": "Pakistan",
+    "lng": 73.74213,
+    "lat": 32.63975
+  },
+  {
+    "slug": "khalid-masjid-lahore",
+    "name": "Khalid Masjid - Lahore",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6509c054-075c-4176-8e5b-515912e58193/mosque/1f00e195-845a-6152-aaf6-0e4fa23cf9cb.jpg",
+    "address": "G928+2J2, Cavalry Ground",
+    "city": "LAHORE",
+    "zipcode": "Lahore",
+    "countryFullName": "Pakistan",
+    "lng": 74.3665156,
+    "lat": 31.5000125
+  },
+  {
+    "slug": "jamia-masjid-sector-d-rawalpindi-4600-pakistan",
+    "name": "Jamia Masjid Sector D",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/deaf0820-d7dd-4ff1-bf06-5c265e62b39a/mosque/1f037bfa-2937-6c28-aac0-0e64c74f2ff1.jpg",
+    "address": "Askari 14, Rawalpindi, Pakistan",
+    "city": "RAWALPINDI",
+    "zipcode": "4600",
+    "countryFullName": "Pakistan",
+    "lng": 73.0672703,
+    "lat": 33.5433667
+  }
+]

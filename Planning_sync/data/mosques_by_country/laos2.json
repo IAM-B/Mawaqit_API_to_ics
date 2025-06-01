@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "vientiane",
+    "name": "Vientiane Jamia Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/618dae3c-0f96-4cdc-9c38-6c1fc7e7c21b/mosque/1eea8d9e-1435-63e2-97f5-066ed47a7584.jpeg",
+    "address": "Setthathilat Road",
+    "city": "VIENTIANE",
+    "zipcode": "0100",
+    "countryFullName": "Laos",
+    "lng": 102.6039533,
+    "lat": 17.9661336
+  },
+  {
+    "slug": "iklas-vientiane",
+    "name": "Unity (Iklas) Masjid Vientiane",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/efbe1ea7-d341-453e-8070-84c1c2aa11fb/mosque/1efbe8b0-40cb-6d6a-be89-0ef2881d9837.jpg",
+    "address": "Khamsavat",
+    "city": "VIENTIANE",
+    "zipcode": "01030",
+    "countryFullName": "Laos",
+    "lng": 102.6331035,
+    "lat": 17.9757058
+  }
+]

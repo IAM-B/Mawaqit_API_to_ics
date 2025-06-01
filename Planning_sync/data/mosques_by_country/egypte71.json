@@ -1,0 +1,233 @@
+[
+  {
+    "slug": "masjid-laatiwi-lkabir-dimyat-34511-egypt",
+    "name": "مسجد العطوي الكبير",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/040f47e9-710a-4a62-b1bf-57a5e896264f/mosque/1eea8e4e-6425-670c-8ca2-066ed47a7584.jpg",
+    "address": "العطوي",
+    "city": "دمياط",
+    "zipcode": "٣٤٥١١",
+    "countryFullName": "Egypt",
+    "lng": 31.770933030691,
+    "lat": 31.336284652658
+  },
+  {
+    "slug": "ltawba-lmansour-7650001-egypt",
+    "name": "مسجد التوبة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/765e7e70-2883-4028-b603-c524f786dbe5/mosque/1eea8e88-fde6-67a8-a398-066ed47a7584.jpg",
+    "address": "ميت سلسيل",
+    "city": "المنصورة",
+    "zipcode": "٧٦٥٠٠٠١",
+    "countryFullName": "Egypt",
+    "lng": 31.2859,
+    "lat": 30.0771
+  },
+  {
+    "slug": "masjid-alazhar-le-caire-4293024-egypt",
+    "name": "مسجد الأزهر",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e9e1102b-ee01-4e6c-a7e8-f0784bb75e47/mosque/1eea8e97-06a9-64ae-a56c-066ed47a7584.jpg",
+    "address": "الدرب الأحمر",
+    "city": "القاهرة",
+    "zipcode": "4293024",
+    "countryFullName": "Egypt",
+    "lng": 31.262539889165,
+    "lat": 30.045645891635
+  },
+  {
+    "slug": "masjid-lrahman-demyat-34511-egypt",
+    "name": "مسجد الرحمن",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/dbd02ebb-c4be-4897-b0e8-67f1e6685941/mosque/1ef5e08b-82d4-608c-9cb0-0afeeb7ee923.jpg",
+    "address": "فارسكور",
+    "city": "دمياط",
+    "zipcode": "٣٤٥١١",
+    "countryFullName": "Egypt",
+    "lng": 31.71917,
+    "lat": 31.341201
+  },
+  {
+    "slug": "masjid-ahl-lsouna-talkha-050-egypt",
+    "name": "مجمع أهل السنة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a14f2f09-9583-4cb0-b503-451c4ebeda76/mosque/1ef79503-f698-62a6-ba6b-0affcb0701ab.jpg",
+    "address": "كفر دميره القديم",
+    "city": "طلخا",
+    "zipcode": "050",
+    "countryFullName": "Egypt",
+    "lng": 31.362272,
+    "lat": 31.1092612
+  },
+  {
+    "slug": "msjd-lhnn-lmnn-6-ktwbr-15535-egypt",
+    "name": "مسجد الحنان المنان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2b9d2125-5196-4277-8843-45fc1a0cc0e3/mosque/1efaf3fe-56c0-6dac-b642-0e9d077f5bb1.png",
+    "address": "التوسعات الشمالية الثالثة",
+    "city": "٦ أكتوبر",
+    "zipcode": "15535",
+    "countryFullName": "Egypt",
+    "lng": 30.9497835,
+    "lat": 30.0026729
+  },
+  {
+    "slug": "30518",
+    "name": "مسجد عمرو بن العاص ببلتاج",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2c4624a9-39ea-4d39-a1c2-2e7bde92845c/mosque/1f00b0da-60da-66c8-a52d-0e61b0058d45.jpeg",
+    "address": "قرية بلتاج، مركز قطور",
+    "city": "الغربية",
+    "zipcode": "31727",
+    "countryFullName": "Egypt",
+    "lng": 30.988550361046,
+    "lat": 31.002944130499
+  },
+  {
+    "slug": "msjd-loualdin-nas-4442203-egypt",
+    "name": "مسجد الوالدين",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5179b3c0-0350-4706-9e85-1531661e2f2f/mosque/1efb8beb-2590-6784-bbf7-0a21b15e7a1f.jpg",
+    "address": "الحي العاشر",
+    "city": "NASR",
+    "zipcode": "4442203",
+    "countryFullName": "Egypt",
+    "lng": 31.3632293,
+    "lat": 30.0399825
+  },
+  {
+    "slug": "masjid-lmam-ldahhbi-lecaire-12345-egypt",
+    "name": "مسجد الإمام الذهبي",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/65f37f5c-bca0-4774-9ef2-ec76a79386e2/mosque/1efd3ec1-181a-6174-b9a7-0e61b0058d45.jpg",
+    "address": "محور السادات منطقة البنفسج 5 خلف بنزينة شيل أوت - التجمع الأول - القاهرة",
+    "city": "القاهرة",
+    "zipcode": "12345",
+    "countryFullName": "Egypt",
+    "lng": 31.4692235,
+    "lat": 30.0534103
+  },
+  {
+    "slug": "masjid-lsamii-lmoujib-alexandrie-002125-egypt",
+    "name": "مسجد السميع المجيب",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/80be034b-8584-437a-8c66-62b7434f1de0/mosque/1efd6ff2-812d-6230-beb4-0e61b0058d45.jpg",
+    "address": "العجمى الاسكندرية شارع الطوب الرملى بجوار مسجد السميع المجيب",
+    "city": "الاسكندريه",
+    "zipcode": "002125",
+    "countryFullName": "Egypt",
+    "lng": 29.7923853,
+    "lat": 31.1097416
+  },
+  {
+    "slug": "msjd-lmhmd-lqhr-4625010-egypt",
+    "name": "مسجــد الـمحـمــدى",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a6e651e5-c0a4-4752-9324-afa4c40a72d0/mosque/1efdbf34-47c4-6be2-b068-0e61b0058d45.jpg",
+    "address": "ش انس بن مالك من شارع عثمان عيسى - التروللى - بركة الحاج - القاهرة",
+    "city": "القاهرة",
+    "zipcode": "4625010",
+    "countryFullName": "Egypt",
+    "lng": 31.37063,
+    "lat": 30.14539
+  },
+  {
+    "slug": "msjd-lrfh-lmnswrh-35511-egypt",
+    "name": "مسجد الرفه",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8273a012-3086-4d90-a3aa-f70190a183d1/mosque/1efe8729-b694-6168-aea7-0e61b0058d45.png",
+    "address": "المنصورة ش سكة سندوب",
+    "city": "المنصوره",
+    "zipcode": "35511",
+    "countryFullName": "Egypt",
+    "lng": 31.3791552,
+    "lat": 31.0391116
+  },
+  {
+    "slug": "msjd-nwr-lslm-shbr-lkhym-12345-egypt",
+    "name": "مسجد نور الاسلام",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0c1c4ca0-7454-4a2f-a19a-ddecd32d936a/mosque/1eff811b-6619-6732-b1e9-06ef9144e88f.jpeg",
+    "address": "ش كريستال عصفور شبرا الخيمة",
+    "city": "شبرا الخيمة",
+    "zipcode": "12345",
+    "countryFullName": "Egypt",
+    "lng": 31.2556431,
+    "lat": 30.125695
+  },
+  {
+    "slug": "msjd-ktb-hl-lqran-wlhdyth-1-met-ghamer-35617-egypt",
+    "name": "مسجد كتاب أهل القرآن والحديث 1",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2e738f12-f949-4499-b5a4-57098581906a/mosque/1effac5f-49c7-6cae-a64d-06ef9144e88f.jpg",
+    "address": "شارع يوسف جوده كوم النور",
+    "city": "MET GHAMER",
+    "zipcode": "35617",
+    "countryFullName": "Egypt",
+    "lng": 31.2932548,
+    "lat": 30.7263172
+  },
+  {
+    "slug": "msjd-ftm-lzhr-wld-sqr-44688-egypt",
+    "name": "مسجد فاطمة الزهراء",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f8e79256-872d-47db-8dde-f42ef63ec638/mosque/1f0064a2-09c6-61ea-95fe-06bdda781935.jpg",
+    "address": "منشاة الامير",
+    "city": "اولاد صقر",
+    "zipcode": "44688",
+    "countryFullName": "Egypt",
+    "lng": 31.7554139,
+    "lat": 31.0136305
+  },
+  {
+    "slug": "msjd-lmgfr-bmnshh-shnwn-menoufia-32880-egypt",
+    "name": "مسجد المغفرة بمنشاه شنوان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/768aaba9-85d2-42a4-8d3a-d2d8e1fd484a/mosque/1f00b19e-9f53-6b38-9b6d-0e4fa23cf9cb.jpg",
+    "address": "30.52158179305589, 30.999916925247216",
+    "city": "MENOUFIA",
+    "zipcode": "32880",
+    "countryFullName": "Egypt",
+    "lng": 30.9876321,
+    "lat": 30.5972455
+  },
+  {
+    "slug": "msjd-lsd-al-ldqq-ldrs-mdyn-lgrdq-84511-egypt",
+    "name": "مسجد السادة آل الدقاق الأدارسة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c5a9fa2c-66e3-4390-9c48-7086505f5c2a/mosque/1f01682c-55fb-6cd4-a878-0ac73cfd41db.jpg",
+    "address": "منطقة شمال الأحياء",
+    "city": "مدينة الغردقة",
+    "zipcode": "84511",
+    "countryFullName": "Egypt",
+    "lng": 33.745370378942,
+    "lat": 27.301063335589
+  },
+  {
+    "slug": "msjd-zmzm-mdyn-lfywm-2934245-egypt",
+    "name": "مسجد زمزم",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/74c3b8df-c1b0-45b5-8dc4-b1c1e53a3089/mosque/1f01ed26-3c75-648e-aced-0ac73cfd41db.jpg",
+    "address": "محافظة الفيوم، Qesm Al Fayoum, First Al Faiyum, مصر",
+    "city": "مدينة الفيوم",
+    "zipcode": "2934245",
+    "countryFullName": "Egypt",
+    "lng": 30.8516889,
+    "lat": 29.3189148
+  },
+  {
+    "slug": "masjid-ar-rahman-ar-raheem-new-damietta-egypt",
+    "name": "مسجد الرحمن الرحيم",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/55901742-bf48-46d9-a7e8-3fb290f85f3c/mosque/1f03fba6-cee5-654a-b5ad-0ebaf38e6aa1.png",
+    "address": "دمياط الجديدة",
+    "city": "دمياط",
+    "zipcode": "34518",
+    "countryFullName": "Egypt",
+    "lng": 31.655892133713,
+    "lat": 31.437707632375
+  },
+  {
+    "slug": "palm-hills-mosque-october-3292712-egypt",
+    "name": "مسجد بالم هيلز",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4475fcb8-bf5d-4ba3-9219-485840f9e54f/mosque/1f026add-8054-62c4-9237-0aae5cc50e23.jpg",
+    "address": "227J+7GW, Unnamed Rd, First 6th of October, باتواكالي، باريزال 3292712, Egypt",
+    "city": "OCTOBER",
+    "zipcode": "3292712",
+    "countryFullName": "Egypt",
+    "lng": 31.0313281,
+    "lat": 30.0132375
+  },
+  {
+    "slug": "masjid-abu-khadr-qaryat-al-saadiyah-3241-al-sharqia-egypt",
+    "name": "مسجد أبو خضر",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b349488f-447f-45ad-a152-931b8c8e6ea6/mosque/1f02e0ba-0342-67ba-9ca8-063cb081a36d.png",
+    "address": "قرية السعدي",
+    "city": "محافظة الشرقية",
+    "zipcode": "3241",
+    "countryFullName": "Egypt",
+    "lng": 31.7195459,
+    "lat": 30.7326622
+  }
+]

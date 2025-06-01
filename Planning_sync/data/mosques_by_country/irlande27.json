@@ -1,0 +1,178 @@
+[
+  {
+    "slug": "masjid-clongriffin-dublin",
+    "name": "Clongriffin Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f5206aad-96bb-400a-8192-ded1435d1ccb/mosque/1eea8dd0-05ad-6824-82c9-066ed47a7584.jpg",
+    "address": "3 station street, Clongriffin",
+    "city": "Dublin",
+    "zipcode": "D13 VY22",
+    "countryFullName": "Ireland",
+    "lng": -6.1498936,
+    "lat": 53.403936
+  },
+  {
+    "slug": "limerick-islamic-cultural-center-limerick",
+    "name": "Limerick Islamic Cultural Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/039787e6-ad55-42c8-a2b7-44e5b0e39994/mosque/1eea8def-41b4-6ba0-92f6-066ed47a7584.jpg",
+    "address": "SAINT ELMO, Dooradoyle",
+    "city": "Limerick",
+    "zipcode": "V94 HX2R",
+    "countryFullName": "Ireland",
+    "lng": -8.6428238048443,
+    "lat": 52.634585169024
+  },
+  {
+    "slug": "lucan-islamic-centre-of-ireland-dublin-k78-v650-ireland",
+    "name": "Lucan Islamic Centre of Ireland",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8426974f-bbbe-43a8-9b65-a31ec9adfacd/mosque/1eea8e55-89f6-656a-8d24-066ed47a7584.jpg",
+    "address": "Ballyowen Park, Newlands Road, Lucan",
+    "city": "Dublin",
+    "zipcode": "K78 V650",
+    "countryFullName": "Ireland",
+    "lng": -6.4106212,
+    "lat": 53.3411616
+  },
+  {
+    "slug": "imcc-irish-muslim-cultural-center-dublin-dublin-22-ireland",
+    "name": "IMCC (Irish Muslim Cultural Center)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/09b75a35-91bd-45cf-92ee-9aac1ae859b0/mosque/1eea8e9e-6ed0-6576-87d5-066ed47a7584.jpg",
+    "address": "Ballymanaggin,Clondalkin, Co.Dublin,22",
+    "city": "DUBLIN",
+    "zipcode": "Dublin 22",
+    "countryFullName": "Ireland",
+    "lng": -6.4006016,
+    "lat": 53.327318
+  },
+  {
+    "slug": "al-khidmah-community-centre-dublin-d22y0p1-ireland",
+    "name": "Al-Khidmah Community Centre",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/85662919-5f8b-414e-bd96-0d431b7cfd1e/mosque/1eea8eb2-d928-6680-885a-066ed47a7584.jpg",
+    "address": "3 Ninth Lock Road, Ballymanaggin, Clondalkin, Dublin 22",
+    "city": "DUBLIN",
+    "zipcode": "D22Y0P1",
+    "countryFullName": "Ireland",
+    "lng": -6.3985245,
+    "lat": 53.3304554
+  },
+  {
+    "slug": "20342",
+    "name": "Khair Community Centre",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9c90d9ef-371c-4274-b65e-2cb318c1cebc/mosque/1efe3012-a81f-6664-8c65-0a7d06691847.jpeg",
+    "address": "Maws",
+    "city": "CO. KILDARE",
+    "zipcode": "W23 NR2F",
+    "countryFullName": "Ireland",
+    "lng": -6.6420044,
+    "lat": 53.3905892
+  },
+  {
+    "slug": "hansfield-islamic-community-centre-dublin-d15yf9p-ireland",
+    "name": "Hansfield Islamic Cultural Centre",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/81d03b6f-fd72-48c7-a58b-c89b2ca7cd5b/mosque/1ef0677f-e971-6d06-9d3a-0a382b7256a1.jpeg",
+    "address": "13 Hansfield Square, Dublin 15",
+    "city": "DUBLIN",
+    "zipcode": "D15YF9P",
+    "countryFullName": "Ireland",
+    "lng": -6.4403023719788,
+    "lat": 53.390171051025
+  },
+  {
+    "slug": "-34",
+    "name": "Naas Masjid (KICC)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e2eb5d34-b68e-432c-a895-209475713915/mosque/1ef774ec-13f2-6fc8-8ffc-0ecd6770c589.png",
+    "address": "27 Main Street South",
+    "city": "KILDARE",
+    "zipcode": "W91PKV2",
+    "countryFullName": "Ireland",
+    "lng": -6.6648406,
+    "lat": 53.2158182
+  },
+  {
+    "slug": "newbridge-masjid-newbridge-newbridge-ireland",
+    "name": "Newbridge Masjid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ba044b6d-969f-48ea-a776-5b0d86beb626/mosque/1ef84116-3941-6c42-9f5b-0affcb0701ab.jpeg",
+    "address": "Eyre St, Greatconnell, Newbridge, Co. Kildare",
+    "city": "NEWBRIDGE",
+    "zipcode": "Newbridge",
+    "countryFullName": "Ireland",
+    "lng": -6.7972771,
+    "lat": 53.1822147
+  },
+  {
+    "slug": "shannon-mosque-shannon-ireland",
+    "name": "Islamic Cultural Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/66391dd2-908c-4fac-9629-c03892b73e43/mosque/1ef8e349-e357-6256-b523-0e9d077f5bb1.jpg",
+    "address": "Bru Na Sionna",
+    "city": "SHANNON",
+    "zipcode": "V14HW40",
+    "countryFullName": "Ireland",
+    "lng": -8.8804529,
+    "lat": 52.7073323
+  },
+  {
+    "slug": "thurles-islamic-community-centre-thurles-e41-kh70-ireland",
+    "name": "Thurles Islamic Community Centre",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c53f3e1d-a3bf-42b5-973c-86ebeecd3a38/mosque/1ef8e65c-e8af-6742-b788-0affcb0701ab.jpeg",
+    "address": "18 Parnell Street",
+    "city": "THURLES",
+    "zipcode": "E41 KH70",
+    "countryFullName": "Ireland",
+    "lng": -7.8164072,
+    "lat": 52.6804893
+  },
+  {
+    "slug": "mosney-islamic-centre-mosque-julianstown-a92ed6v-ireland",
+    "name": "Mosney Islamic Centre Mosque",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b9c5dfc0-b939-4e7a-ab16-eb0f9978acdb/mosque/1efb4c5a-fb79-6196-9974-0a3077684d61.jpg",
+    "address": "Mosney Village",
+    "city": "JULIANSTOWN",
+    "zipcode": "A92ED6V",
+    "countryFullName": "Ireland",
+    "lng": -6.2440104,
+    "lat": 53.6619865
+  },
+  {
+    "slug": "icc-bandon-cork-bandon-p72ad92-ireland",
+    "name": "ICC Bandon",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/46d3567e-385c-4fa2-b25b-2aaff888e258/mosque/1efb8014-ac84-6494-9051-0a21b15e7a1f.png",
+    "address": "13 N Main St, Coolfadda, Bandon  ∙",
+    "city": "CORK BANDON",
+    "zipcode": "P72AD92",
+    "countryFullName": "Ireland",
+    "lng": -8.736238,
+    "lat": 51.7467471
+  },
+  {
+    "slug": "cavan-islmic-community-centre-cavan-h12-we88-ireland",
+    "name": "Cavan Islamic Community & Edu Centre",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/01750ebe-8d6e-4589-9a4b-b922fb1a14e2/mosque/1efc93b9-30a0-6314-8a80-0e61b0058d45.jpg",
+    "address": "Kesh Road cavan",
+    "city": "CAVAN",
+    "zipcode": "H12 WE88",
+    "countryFullName": "Ireland",
+    "lng": -7.3529760931847,
+    "lat": 53.975138272337
+  },
+  {
+    "slug": "islamic-cultural-centre-of-ennis-ennis-v95-pyr4-ireland",
+    "name": "Islamic Cultural Centre of Ennis",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a1c07747-a508-4973-a07b-fdbc7aed126b/mosque/1eff8d5d-005d-6706-b19c-06ef9144e88f.jpg",
+    "address": "Elevation Business Park, Clon Road, Co Clare",
+    "city": "ENNIS",
+    "zipcode": "V95 PYR4",
+    "countryFullName": "Ireland",
+    "lng": -8.9758802,
+    "lat": 52.8432248
+  },
+  {
+    "slug": "navan-muslim-community-centre-nmcc-navan-c15-wtt8-ireland",
+    "name": "Navan Muslim Community Centre (NMCC)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/256e7bd2-668d-475b-9899-eb1a32e5b9e2/mosque/1f0215b6-316e-6bd6-8b7b-06bdda781935.jpg",
+    "address": "40 Canon Row, Abbeyland South, Navan, Co. Meath, C15 WTT8, Ireland",
+    "city": "NAVAN",
+    "zipcode": "C15 WTT8",
+    "countryFullName": "Ireland",
+    "lng": -6.6894836,
+    "lat": 53.6528411
+  }
+]

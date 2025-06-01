@@ -1,0 +1,101 @@
+[
+  {
+    "slug": "14469",
+    "name": "Mesquita Palestina",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a548fe8d-a57c-4417-b46f-702b31ce9859/mosque/1efabbde-3185-62e8-b78b-0671c73660c5.png",
+    "address": "R. Palestina, 205 - Pinheirinho",
+    "city": "CRICIúMA",
+    "zipcode": "88803-170",
+    "countryFullName": "Brazil",
+    "lng": -49.382038,
+    "lat": -28.691512
+  },
+  {
+    "slug": "20544",
+    "name": "MUSSALLA   AL  MUHAJIREEN   WAL   ANSAAR",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/10d1bb62-bcfe-440c-9621-5cf0a8304aef/mosque/1efe87f5-fb93-66f2-ae96-0a7d06691847.png",
+    "address": "R. Dr. Jaci Barbosa, 184 - Vila Carrão",
+    "city": "SãO PAULO",
+    "zipcode": "03447-000",
+    "countryFullName": "Brazil",
+    "lng": -46.5255433,
+    "lat": -23.5535274
+  },
+  {
+    "slug": "21502",
+    "name": "المركز الإسلامي بفيلا كاهون",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6c520eea-215b-4002-9b74-3f9325ac1abc/mosque/1efd65cc-6ce2-6e86-9646-06bada7b305f.png",
+    "address": "Praça Aurélio Lombardi, 9 - Vila Carrão",
+    "city": "SãO PAULO",
+    "zipcode": "03445-060",
+    "countryFullName": "Brazil",
+    "lng": -46.5284468,
+    "lat": -23.552084
+  },
+  {
+    "slug": "centro-islamico-beneficente-do-parana-curitiba-80210-brazil",
+    "name": "Centro Islâmico Beneficente do Paraná",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0ab18d5f-b1fb-45f2-b7ed-73c9912a8cd0/mosque/1ef20185-1cc4-674e-8104-0ecb5e3f0f5f.jpeg",
+    "address": "R. Hildebrando de Araújo, 729 - Jardim Botânico, - PR",
+    "city": "CURITIBA",
+    "zipcode": "80210",
+    "countryFullName": "Brazil",
+    "lng": -49.2457569,
+    "lat": -25.4406888
+  },
+  {
+    "slug": "msjd-fytwry-mesquita-vitoria-vitoria-es-29090-750-brazil",
+    "name": "مسجد فيتوريا  Mesquita Vitória",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/55b71c88-b9e2-4e78-9d4e-f698510dfedd/mosque/1ef235f4-bcf1-6cc8-b540-069cfb0c4e97.jpg",
+    "address": ",Rua Maria Bárbara de Oliveira, 495 Jardim Camburi",
+    "city": "VITÓRIA, ES",
+    "zipcode": "29090-750",
+    "countryFullName": "Brazil",
+    "lng": -40.2665494,
+    "lat": -20.2556414
+  },
+  {
+    "slug": "associacao-muculmana-de-juiz-de-fora",
+    "name": "ASSOCIAÇÃO MUÇULMANA DE JUIZ DE FORA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d338be77-333a-497c-bf9e-dc3b531c739c/mosque/1ef27636-9c9f-61aa-bba1-063004a65297.jpeg",
+    "address": "Av. dos Andradas, 340 - Morro da Glória, Juiz de Fora - MG",
+    "city": "FORA, MG,",
+    "zipcode": "36036",
+    "countryFullName": "Brazil",
+    "lng": -43.3522074,
+    "lat": -21.7530649
+  },
+  {
+    "slug": "-14",
+    "name": "Masjed Al Salam - مَسْجِد السَّلَام",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d01993b5-2a2e-4eae-8117-04c61af4f9c5/mosque/1ef5ac36-5bff-6012-9d48-0600dbafaeef.png",
+    "address": "R. Vasco Alves, 836 - Centro, Sant'Ana",
+    "city": "LIVRAMENTO",
+    "zipcode": "97573",
+    "countryFullName": "Brazil",
+    "lng": -55.5343359,
+    "lat": -30.8937636
+  },
+  {
+    "slug": "33767",
+    "name": "Mesquita Abu Baker Assadik",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c07e79d1-95c6-4ec4-946e-d61b34fd4f23/mosque/1eff9bda-6faf-6ef2-8d38-0e4fa23cf9cb.png",
+    "address": "Av. Júlio de Castilhos, centro",
+    "city": "CAXIAS DO SUL - RS",
+    "zipcode": "1881",
+    "countryFullName": "Brazil",
+    "lng": -51.1807211,
+    "lat": -29.1677052
+  },
+  {
+    "slug": "mesquita-de-cuiaba-cuiaba-mato-grosso-78010-020-brazil",
+    "name": "Mesquita de Cuiabá",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9a27c288-4b1e-41f2-a910-794b2d43c04c/mosque/1eff984a-08b4-6fc4-a2e6-06ef9144e88f.jpg",
+    "address": "Rua Baltazar Navarros, 9 - Bandeirantes",
+    "city": "CUIABá - MATO GROSSO",
+    "zipcode": "78010-020",
+    "countryFullName": "Brazil",
+    "lng": -56.0915182,
+    "lat": -15.5970399
+  }
+]

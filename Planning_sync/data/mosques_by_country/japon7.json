@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "madina-masjid-tokyo-mateina-masuzido-kita-city-tokyo",
+    "name": "MADINA MASJID TOKYO",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0f3ae8d4-2382-4590-904e-9a6945881b56/mosque/1eea8df0-cb58-6f86-ae0a-066ed47a7584.jpeg",
+    "address": "3 Chome-17-3 Higashijujo , Kita-City",
+    "city": "Tokyo",
+    "zipcode": "114-0001",
+    "countryFullName": "Japan",
+    "lng": 139.7272772,
+    "lat": 35.7650858
+  },
+  {
+    "slug": "makki-masjid-tokyo",
+    "name": "MAKKI MASJID TOKYO",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c8025708-62b6-4956-bd01-62c0a0242049/mosque/1eea8e09-893a-60a0-92fc-066ed47a7584.jpg",
+    "address": "5 Chome-22-14 Yotsugi, Katsushika City, Tokyo 124-0011",
+    "city": "Tokyo",
+    "zipcode": "124-0011",
+    "countryFullName": "Japan",
+    "lng": 139.842664,
+    "lat": 35.7435603
+  },
+  {
+    "slug": "assalam-masjid-taito-110-0016-japan",
+    "name": "As-Salaam Masjid Okachimachi",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9bfba2a7-be50-42ac-af37-1ae3fe0f7d41/mosque/1eea8e65-e325-6496-b8ac-066ed47a7584.jpg",
+    "address": "4 Chome-6-7 Taito, Taito City, Tokyo",
+    "city": "Taito",
+    "zipcode": "110-0016",
+    "countryFullName": "Japan",
+    "lng": 139.7778383,
+    "lat": 35.7059658
+  }
+]

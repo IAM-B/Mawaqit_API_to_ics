@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "mountari-accra-lomnava-ghana",
+    "name": "Mountari",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/cf874bdd-be61-47bf-a744-0a00721e1195/mosque/1eea8eaa-0ddb-6656-8b9e-066ed47a7584.jpg",
+    "address": "Israel first curve A22",
+    "city": "ACCRA",
+    "zipcode": "Lomnava",
+    "countryFullName": "Ghana",
+    "lng": -0.1869644,
+    "lat": 5.6037168
+  },
+  {
+    "slug": "-38",
+    "name": "Al-wa'ayul Islamie Mosque (Centre)",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/67fee5f8-17b4-43af-b343-193857a4c75f/mosque/1ef7d8e0-dcc0-6ea2-9f09-0600dbafaeef.png",
+    "address": "No. 15 Palace Street, Madina West",
+    "city": "ACCRA",
+    "zipcode": "18399",
+    "countryFullName": "Ghana",
+    "lng": -0.2276826,
+    "lat": 5.5777147
+  }
+]

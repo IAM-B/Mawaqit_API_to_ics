@@ -1,0 +1,57 @@
+[
+  {
+    "slug": "madina-masjid-panama-panama-000000-panama",
+    "name": "MADINA MASJID PANAMA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c5d3e7be-4eab-4f94-879d-60a41c6490dd/mosque/1ef923a5-9e3a-623a-b19e-0affcb0701ab.jpg",
+    "address": "Vista Hermosa, Panamá, Av. 3A Nte., Panamá, Provincia",
+    "city": "Panama",
+    "zipcode": "000000",
+    "countryFullName": "Panama",
+    "lng": -79.5216043,
+    "lat": 9.0030643
+  },
+  {
+    "slug": "centro-cultural-islamico-de-villa-cacere-panama-00507-panama",
+    "name": "C. CULTURAL ISLAMICO VILLA CACERES",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/9477ac16-8e80-40ed-952b-80137a32a5ba/mosque/1ef61993-49b6-63ae-882f-0e4a41cdad45.jpg",
+    "address": "Casa E121, Calle 77C Oeste, Villa Cáceres, Ciudad de Panamá.",
+    "city": "PANAMA",
+    "zipcode": "00507",
+    "countryFullName": "Panama",
+    "lng": -79.5224041,
+    "lat": 9.0210593
+  },
+  {
+    "slug": "musallah-la-loceria-panama-00507-panama",
+    "name": "MUSALLAH LA LOCERÍA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0c3ea8e5-33d6-4c79-86fd-b6595fdca242/mosque/1ef7577f-6b31-6d46-a2bd-0600dbafaeef.png",
+    "address": "a Nte Panamá, Provincia de Panamá",
+    "city": "PANAMA",
+    "zipcode": "7061",
+    "countryFullName": "Panama",
+    "lng": -79.4837299,
+    "lat": 9.0714845
+  },
+  {
+    "slug": "musalla-central-panama-panama-507-panama",
+    "name": "MUSALLA CENTRAL PANAMÁ",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/40d3efde-f901-4a32-ad9d-8da85fe92dfc/mosque/1ef7dd0d-a907-6e0e-911f-0600dbafaeef.png",
+    "address": "C. 19 Este, Panamá, Provincia",
+    "city": "PANAMA",
+    "zipcode": "507",
+    "countryFullName": "Panama",
+    "lng": -79.5403802,
+    "lat": 8.9590838
+  },
+  {
+    "slug": "musallah-de-perejil-panama-507-panama",
+    "name": "MUSALLAH DE PEREJIL",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/96a351d1-1ad9-4d67-aab5-d0cd2d5d799e/mosque/1efda4f7-7bae-69d2-8945-06bada7b305f.png",
+    "address": "Panama",
+    "city": "PANAMA",
+    "zipcode": "507",
+    "countryFullName": "Panama",
+    "lng": -80.782127,
+    "lat": 8.537981
+  }
+]

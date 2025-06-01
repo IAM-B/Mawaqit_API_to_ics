@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "vendredi-moheli",
+    "name": "مسجد الجمعة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/12408e4c-719e-4418-88f5-27884ad4fe69/mosque/1eea8da7-4795-64e0-953c-066ed47a7584.jpg",
+    "address": "hagnamoida",
+    "city": "Moheli",
+    "zipcode": "99",
+    "countryFullName": "Comoros",
+    "lng": 43.7334089,
+    "lat": -12.3377376
+  },
+  {
+    "slug": "masdjid-soifa-bangwa-chandra-chandra",
+    "name": "Masdjid soifa bangwa Chandra",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2ef26068-d3f1-4d34-aaf4-3ef809941f65/mosque/1eea8df0-ed85-6848-b84b-066ed47a7584.jpg",
+    "address": "191,mustamudu",
+    "city": "Chandra",
+    "zipcode": "191",
+    "countryFullName": "Comoros",
+    "lng": 44.4665485,
+    "lat": -12.2001475
+  },
+  {
+    "slug": "mosquee-trambwe-mdjoiezi-99999-comoros",
+    "name": "Mosquée TRAMBWE",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/6a6cb620-bae1-4d98-aea4-c5a91f0008df/mosque/1eea8e04-b71a-684e-8dda-066ed47a7584.jpg",
+    "address": "1 Place bangwe",
+    "city": "Mdjoiezi",
+    "zipcode": "99999",
+    "countryFullName": "Comoros",
+    "lng": 43.314729598791,
+    "lat": -11.836020294684
+  },
+  {
+    "slug": "msjd-ljm-sima-97300-comoros",
+    "name": "مسجد الجمعة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/38f27556-269f-4615-8e47-b84f6e9fad82/mosque/1eea8e37-ae94-6890-9a03-066ed47a7584.jpg",
+    "address": "DAGO LATSINI",
+    "city": "Sima",
+    "zipcode": "97300",
+    "countryFullName": "Comoros",
+    "lng": 44.2751395,
+    "lat": -12.1992451
+  },
+  {
+    "slug": "mosquee-du-vendredi-denbini-97660-comoros",
+    "name": "Mosquée vendredi Hajangoua",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8b452f40-542e-4559-ba04-c8d4010e523a/mosque/1eea8e97-69f4-6162-9001-066ed47a7584.jpg",
+    "address": "Rue Mosquée du Vendredi Hajangouna",
+    "city": "DENBINI",
+    "zipcode": "97660",
+    "countryFullName": "Comoros",
+    "lng": 45.198107110041,
+    "lat": -12.866277716561
+  },
+  {
+    "slug": "grande-mosquee-de-mkazi-mkazi-bambao-99-comoros",
+    "name": "GRANDE MOSQUEE DE MKAZI",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c1796a9d-6b6c-4cfc-b6ec-fbfca82fbc60/mosque/1eea8ecc-d083-625e-90ca-066ed47a7584.jpg",
+    "address": "Mkazi Mramboini",
+    "city": "MKAZI BAMBAO",
+    "zipcode": "99",
+    "countryFullName": "Comoros",
+    "lng": 43.3333,
+    "lat": -11.6455
+  }
+]

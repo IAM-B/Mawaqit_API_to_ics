@@ -1,0 +1,134 @@
+[
+  {
+    "slug": "nova-dzamija-xhamia-e-re-prizren-20000-serbia",
+    "name": "\"Nova Džamija-Xhamia e Re\"",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f0200397-ce34-450d-b0cf-6bf2b0f1f671/mosque/1eee0d0b-9b24-60e8-aed7-069403e530e9.jpg",
+    "address": "Ljubizde",
+    "city": "PRIZREN",
+    "zipcode": "20000",
+    "countryFullName": "Albania",
+    "lng": 20.770728407386,
+    "lat": 42.237686267569
+  },
+  {
+    "slug": "dzamija-grncare-prizren-20000-albania",
+    "name": "Dzamija “Grnčare”",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/206a2eba-f678-4ce6-8e32-0bad12180268/mosque/1ef70772-5c52-60da-a82c-0600dbafaeef.jpeg",
+    "address": "Grnčare",
+    "city": "PRIZREN",
+    "zipcode": "20000",
+    "countryFullName": "Albania",
+    "lng": 20.7700618,
+    "lat": 42.2190478
+  },
+  {
+    "slug": "xhamia-aliu-r-a-prizren-20000-albania",
+    "name": "Xhamia Aliu r.a",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/aa27ac9c-2ae7-4f3d-801f-1ef26d612c4e/mosque/1efa1158-312e-63ca-adb2-0e9d077f5bb1.jpg",
+    "address": "Rr.Driton Ferati, Bushatlint Nr.262, Prizren 20000",
+    "city": "PRIZREN",
+    "zipcode": "20000",
+    "countryFullName": "Albania",
+    "lng": 20.760563313961,
+    "lat": 42.231085325813
+  },
+  {
+    "slug": "xhamia-e-madhe-durres-durres-2001-albania",
+    "name": "Xhamia e Madhe Durrës",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/55fa8427-0120-4233-bca7-103c59f30aa1/mosque/1efb7f8a-16fc-6c62-81b6-0ef2881d9837.jpg",
+    "address": "Sheshi Liria",
+    "city": "DURRëS",
+    "zipcode": "2001",
+    "countryFullName": "Albania",
+    "lng": 19.4464549,
+    "lat": 41.3131884
+  },
+  {
+    "slug": "xhamia-kenete-durres-2001-albania",
+    "name": "XHAMIA KËNETË",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a72eb0d4-15db-4cb1-bbb3-414336ebe163/mosque/1efd3551-3510-6fb8-b624-0e61b0058d45.jpg",
+    "address": "RRUGA SHENJTORËT",
+    "city": "DURRËS",
+    "zipcode": "2001",
+    "countryFullName": "Albania",
+    "lng": 19.4705428,
+    "lat": 41.3361411
+  },
+  {
+    "slug": "xhamia-e-llashtices-gjilan-60000-albania",
+    "name": "Xhamia e Llashtices",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/592ce915-84b8-443c-9736-795ff2c87ade/mosque/1efe4886-3d5a-6540-a715-0a7d06691847.jpg",
+    "address": "Llashtice, Kosovo.",
+    "city": "GJILAN",
+    "zipcode": "60000",
+    "countryFullName": "Albania",
+    "lng": 21.5006239,
+    "lat": 42.3873727
+  },
+  {
+    "slug": "xhamia-beder-durres-2001-albania",
+    "name": "XHAMIA BEDER",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/154c9263-aa27-4823-93db-fbbc3e1910fb/mosque/1efeba36-3c88-6e4c-afd4-06ef9144e88f.jpg",
+    "address": "SHENVLASH",
+    "city": "DURRËS",
+    "zipcode": "2001",
+    "countryFullName": "Albania",
+    "lng": 19.482450103277,
+    "lat": 41.358412532754
+  },
+  {
+    "slug": "xhamia-e-letres-kavaje-2501-albania",
+    "name": "Xhamia e Letrës",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/019d326c-0272-4973-822b-ecba78589266/mosque/1efeeacd-96a7-6f50-b478-06ef9144e88f.jpg",
+    "address": "Rruga Arnisa Ilire",
+    "city": "KAVAJë",
+    "zipcode": "2501",
+    "countryFullName": "Albania",
+    "lng": 19.5537811,
+    "lat": 41.1959204
+  },
+  {
+    "slug": "xhamia-jonus-hajredin-kastrati-durres-2001-albania",
+    "name": "Xhamia Jonus Hajredin Kastrati",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2afb0311-7fac-4acf-b5c0-c2a620b66ce0/mosque/1eff6872-754d-6346-bca9-0e61b0058d45.jpg",
+    "address": "8G82+G9M, Rruga Mikpritja, Durrës, Albania",
+    "city": "DURRES",
+    "zipcode": "2001",
+    "countryFullName": "Albania",
+    "lng": 19.5015013,
+    "lat": 41.3138192
+  },
+  {
+    "slug": "xhamia-katund-sukth-durres-2000-albania",
+    "name": "Xhamia Katund Sukth",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/66dd381d-44cc-4962-9608-2711a4d462de/mosque/1f003834-9e7a-60ba-b22a-0e61b0058d45.jpg",
+    "address": "Katund Sukth",
+    "city": "DURRëS",
+    "zipcode": "2000",
+    "countryFullName": "Albania",
+    "lng": 19.5359821,
+    "lat": 41.3752744
+  },
+  {
+    "slug": "xhamia-gjepalaj-shijak-2013-2014-albania",
+    "name": "Xhamia Gjepalaj",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ad2943c6-6e53-47cd-8aae-d6aaf50b2abf/mosque/1f029d5e-5451-6e16-bec1-063f15cb3ad3.jpg",
+    "address": "8HPG+VP5 Shijak, Albania",
+    "city": "SHIJAK",
+    "zipcode": "2013-2014",
+    "countryFullName": "Albania",
+    "lng": 19.5768594,
+    "lat": 41.3371375
+  },
+  {
+    "slug": "dzamija-donja-radesa-dragash-22000-albania",
+    "name": "Dzamija Donja Radesa",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/06b95990-5ed1-4cb3-a833-fb047cdfecf6/mosque/1f0370fc-f461-6416-a3c9-0acbbde44e7f.jpg",
+    "address": "Dragash",
+    "city": "Драгаш",
+    "zipcode": "22000",
+    "countryFullName": "Albania",
+    "lng": 20.6042284,
+    "lat": 41.9806862
+  }
+]

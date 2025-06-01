@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "islamic-cultural-center-mosque-umma-kyiv-04119-ukraine",
+    "name": "Kyiv Islamic Cultural Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/dbea87bc-f16e-49c1-abac-f523d3a4a4d4/mosque/1ef0d51b-7cae-6f2a-a952-0a33d0408e15.jpg",
+    "address": "Dehtiarivska str. 25A",
+    "city": "KYIV",
+    "zipcode": "04119",
+    "countryFullName": "Ukraine",
+    "lng": 30.455312266314,
+    "lat": 50.460703726473
+  },
+  {
+    "slug": "lviv-islamic-cultural-center-lviv-79000-ukraine",
+    "name": "Lviv Islamic Cultural Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c536befc-3854-4719-8897-b28755a2b813/mosque/1ef0f44d-56e9-60e6-a977-0e8f4a8ce035.jpeg",
+    "address": "Avraam Linkoln st, 29A",
+    "city": "LVIV",
+    "zipcode": "79000",
+    "countryFullName": "Ukraine",
+    "lng": 24.035977802741,
+    "lat": 49.866911800183
+  },
+  {
+    "slug": "bukovyna-islamic-cultural-center-chernivtsi-5800-ukraine",
+    "name": "Bukovyna Islamic Cultural Center",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e5aa9036-bedc-4210-b3fa-bbda96ffafe3/mosque/1ef0f4b5-b8ce-69d8-8bdf-06724289ed6b.jpeg",
+    "address": "Holovna Str. 150A",
+    "city": "CHERNIVTSI",
+    "zipcode": "5800",
+    "countryFullName": "Ukraine",
+    "lng": 25.9496697,
+    "lat": 48.2668246
+  },
+  {
+    "slug": "icki-merkez-camisi-icki-92700-ukraine",
+    "name": "icki Merkez Camisi",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b15e868c-69df-49fc-922c-678fa69bca7d/mosque/1f021e74-9ef7-69fc-9852-06bdda781935.jpg",
+    "address": "Proletarskaya",
+    "city": "ICKI",
+    "zipcode": "92700",
+    "countryFullName": "Ukraine",
+    "lng": 31.16558,
+    "lat": 48.379433
+  }
+]

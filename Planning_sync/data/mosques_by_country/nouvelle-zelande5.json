@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "nelson-islamic-centre-nelson-7011-new-zealand",
+    "name": "Nelson Islamic Centre",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/92c2cf04-1034-45d0-9293-e7de2d38bf0a/mosque/1ef46604-5931-6eb2-9ad7-0a67bcb0d635.jpg",
+    "address": "435 nayland road",
+    "city": "NELSON",
+    "zipcode": "7011",
+    "countryFullName": "New Zealand",
+    "lng": 173.2168648,
+    "lat": -41.3180634
+  },
+  {
+    "slug": "suhail-patel-auckland-0626-new-zealand",
+    "name": "Birkenhead Islamic Centre",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f833762c-ce38-4a22-ad5a-87669a3b82a0/mosque/1eff2912-3d99-6ff2-b3b9-0a7d06691847.jpg",
+    "address": "22 Birkenhead Avenue",
+    "city": "AUCKLAND",
+    "zipcode": "0626",
+    "countryFullName": "New Zealand",
+    "lng": 174.7257661,
+    "lat": -36.8113987
+  }
+]

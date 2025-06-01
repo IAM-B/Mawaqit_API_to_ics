@@ -3,7 +3,14 @@ from icalendar import Calendar, Event
 from zoneinfo import ZoneInfo
 from uuid import uuid4
 
-def generate_empty_slot_events(prayer_times: dict, base_date: datetime, filename: str, timezone_str: str) -> str:
+def generate_empty_slot_events(
+    prayer_times: dict,
+    base_date: datetime,
+    filename: str,
+    timezone_str: str,
+    padding_before: int = 10,
+    padding_after: int = 10
+) -> str:
     PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
     tz = ZoneInfo(timezone_str)
 
@@ -29,6 +36,12 @@ def generate_empty_slot_events(prayer_times: dict, base_date: datetime, filename
         start = to_datetime(t1)
         end = to_datetime(t2)
         if not start or not end or start >= end:
+            continue
+
+        # Appliquer le padding utilisateur
+        start += timedelta(minutes=padding_after)
+        end -= timedelta(minutes=padding_before)
+        if start >= end:
             continue
 
         # Premier créneau : de `start` à prochaine heure pleine

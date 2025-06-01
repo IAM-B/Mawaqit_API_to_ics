@@ -1,0 +1,145 @@
+[
+  {
+    "slug": "ljm",
+    "name": "LJM",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque_default_picture.png",
+    "address": "32 Dernier sol",
+    "city": "Luxembourg",
+    "zipcode": "L-2543",
+    "countryFullName": "Luxembourg",
+    "lng": 6.1349586,
+    "lat": 49.5967423
+  },
+  {
+    "slug": "arrahma-niederkorn",
+    "name": "Mosquée AlRahma  مسجد الرحمة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/96d9459c-61d5-4a4f-a8d8-465265b6c8dc/mosque/1ef7c088-40df-6274-986b-0600dbafaeef.jpg",
+    "address": "96 Avenue de la liberté",
+    "city": "Niederkorn",
+    "zipcode": "4601",
+    "countryFullName": "Luxembourg",
+    "lng": 5.8911421895027,
+    "lat": 49.52849360784
+  },
+  {
+    "slug": "afnane-differdange",
+    "name": "Mosquée Afnane",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque_default_picture.png",
+    "address": "41 Rue J-F Kennedy",
+    "city": "Differdange",
+    "zipcode": "L-4599",
+    "countryFullName": "Luxembourg",
+    "lng": 5.886457,
+    "lat": 49.5226771
+  },
+  {
+    "slug": "fraternelle-mersch",
+    "name": "AFMM - مسجد الأخوة",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/69f6bcd5-9be7-4d4f-8d03-a02abc10de0c/mosque/1eea8dc4-45bf-693c-8a98-066ed47a7584.jpg",
+    "address": "4,rue grande duchesse charlotte",
+    "city": "Mersch",
+    "zipcode": "L-7520",
+    "countryFullName": "Luxembourg",
+    "lng": 6.1074683,
+    "lat": 49.7506671
+  },
+  {
+    "slug": "ccil-mamer",
+    "name": "Centre Culturel Islamique Mamer",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a224cf6a-f1e5-4128-85e7-3a36bcfa54bf/mosque/1eea8dc7-492c-634c-9e54-066ed47a7584.jpg",
+    "address": "2, rte d'Arlon",
+    "city": "Mamer",
+    "zipcode": "L-8210",
+    "countryFullName": "Luxembourg",
+    "lng": 6.0375385,
+    "lat": 49.6243487
+  },
+  {
+    "slug": "centre-islamique-gazi-isa-beg-esch-sur-alzette",
+    "name": "Centre islamique Gazi Isa-beg",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/71d6e608-c6b3-4867-bfa8-c899fd4b5ad0/mosque/1eea8de3-8b12-60ba-a160-066ed47a7584.jpg",
+    "address": "144, Boulevard J.F. Kennedy",
+    "city": "Esch-Sur-Alzette",
+    "zipcode": "L-4171",
+    "countryFullName": "Luxembourg",
+    "lng": 5.9801621,
+    "lat": 49.4906215
+  },
+  {
+    "slug": "centre-islamique-berat-de-luxembourg-esch-sur-alzette-4260-luxembourg",
+    "name": "Centre Islamique Berat de Luxembourg",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/17c78796-a799-452f-a673-98affe3528ed/mosque/1eea8e51-d11e-6842-8a4c-066ed47a7584.jpg",
+    "address": "28 rue du Nord",
+    "city": "Esch-Sur-Alzette",
+    "zipcode": "4260",
+    "countryFullName": "Luxembourg",
+    "lng": 5.9790321,
+    "lat": 49.4968279
+  },
+  {
+    "slug": "centre-islamique-medina-weidingen-9518-luxembourg",
+    "name": "Centre Islamique Medina",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b3573273-db98-4cd0-ae09-52e928e6c3e2/mosque/1eef58a3-e78a-648e-b49a-0e8f4a8ce035.jpg",
+    "address": "59 route d'erpeldange",
+    "city": "WEIDINGEN",
+    "zipcode": "9518",
+    "countryFullName": "Luxembourg",
+    "lng": 5.9425004,
+    "lat": 49.9766419
+  },
+  {
+    "slug": "quds-belvaux-4450-luxembourg",
+    "name": "QUDS",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3aa71f66-f369-4817-885b-b6a3e11771a3/mosque/1ef80bd9-b485-642a-95ae-0671c73660c5.jpg",
+    "address": "17, route d'Esch",
+    "city": "BELVAUX",
+    "zipcode": "4450",
+    "countryFullName": "Luxembourg",
+    "lng": 5.9302303,
+    "lat": 49.5114198
+  },
+  {
+    "slug": "centre-culturel-islamique-de-bettembourg-bettembourg-3236-luxembourg",
+    "name": "Centre Culturel Islamique de Bettembourg",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/14094d39-48e8-441e-8934-0de148b23591/mosque/1efa726c-b7f2-694a-9ff4-0e9d077f5bb1.jpeg",
+    "address": "12, rue de la gare",
+    "city": "BETTEMBOURG",
+    "zipcode": "3236",
+    "countryFullName": "Luxembourg",
+    "lng": 6.10093,
+    "lat": 49.51864
+  },
+  {
+    "slug": "msjd-bn-mrym-ettelbruck-9051-luxembourg",
+    "name": "مسجد ابن مريم",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a9872a5e-8a45-44cb-983d-0a19cdecc830/mosque/1f0002c1-8d3c-6170-aa2d-0a2e1c0b5725.jpg",
+    "address": "92, Grand rue",
+    "city": "ETTELBRUCK",
+    "zipcode": "9051",
+    "countryFullName": "Luxembourg",
+    "lng": 6.101609,
+    "lat": 49.847047
+  },
+  {
+    "slug": "centre-islamique-ccit-al-siddiq-troisvierges-9905-luxembourg",
+    "name": "Centre Islamique CCIT “Al-Siddiq”",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5052d674-5852-495d-91ce-d410bc8cfb9e/mosque/1f0242cc-533b-6faa-b109-06bdda781935.png",
+    "address": "13 Grand Rue",
+    "city": "TROISVIERGES",
+    "zipcode": "9905",
+    "countryFullName": "Luxembourg",
+    "lng": 6.0009107,
+    "lat": 50.1212912
+  },
+  {
+    "slug": "centre-islamique-ccit-al-siddiq-troisvierges-9905-luxembourg-1",
+    "name": "Centre Islamique “Al-Siddiq”",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a7fbc654-373a-4a54-a113-a591989203af/mosque/1f02f4d0-9c3c-6a2c-8794-0a17f0e78aa5.jpeg",
+    "address": "13 Grand-Rue, Troisvierges, Luxembourg",
+    "city": "TROISVIERGES",
+    "zipcode": "9905",
+    "countryFullName": "Luxembourg",
+    "lng": 6.0009107,
+    "lat": 50.1212912
+  }
+]

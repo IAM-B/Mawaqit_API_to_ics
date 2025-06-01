@@ -1,0 +1,101 @@
+[
+  {
+    "slug": "xhamia-kapixhi-hamza-skopje-1010-north-macedonia",
+    "name": "Xhamia Kapixhi Hamza",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d08da4b3-36b9-4041-8ce6-4f78bc85fc3d/mosque/1eea8e7b-c5ce-6c38-91cc-066ed47a7584.jpg",
+    "address": "Rr. Fan Noli nr: 112",
+    "city": "Shkup",
+    "zipcode": "1010",
+    "countryFullName": "North Macedonia",
+    "lng": 21.444631,
+    "lat": 42.005389
+  },
+  {
+    "slug": "centralna-dzamija-restelica-dragash-22000-north-macedonia",
+    "name": "Centralna dzamija Restelica",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3ee8c43c-4266-4f64-86aa-f641dd123d2c/mosque/1eea8ec4-c6b0-628e-90d9-066ed47a7584.jpg",
+    "address": "Restelica",
+    "city": "DRAGASH",
+    "zipcode": "22000",
+    "countryFullName": "North Macedonia",
+    "lng": 20.669064431242,
+    "lat": 41.943799803013
+  },
+  {
+    "slug": "romani-dzamija-bejtullah-kumanovo-1300-north-macedonia",
+    "name": "Masjid Al Ghuraba",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/cf60ac19-7e10-4f88-a58f-a7bb9ad38036/mosque/1eea8ecf-f693-614e-8880-066ed47a7584.jpg",
+    "address": "Sredorek 100",
+    "city": "KUMANOVO",
+    "zipcode": "1300",
+    "countryFullName": "North Macedonia",
+    "lng": 21.7219673,
+    "lat": 42.1418724
+  },
+  {
+    "slug": "xhamia-e-grushines-shkup-1045-north-macedonia",
+    "name": "Xhamia e Grushinës",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/08043909-73db-43db-9c88-18a4254376f9/mosque/1eef3999-1e70-609a-9e4c-0e8f4a8ce035.jpeg",
+    "address": "Rruga 1 nr. 0",
+    "city": "SHKUP",
+    "zipcode": "1045",
+    "countryFullName": "North Macedonia",
+    "lng": 21.61975,
+    "lat": 42.06015
+  },
+  {
+    "slug": "xhamia-ikre-saraj-skopje-1000-north-macedonia",
+    "name": "Xhamia Ikre Saraj",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3cc209c0-8523-4d7b-bbbe-e99c3fdf5c7f/mosque/1ef4257b-5ff9-671e-9b67-0eccd22c0f01.jpg",
+    "address": "Rr. Enver Idrizi Nr 35",
+    "city": "SKOPJE",
+    "zipcode": "1000",
+    "countryFullName": "North Macedonia",
+    "lng": 21.3231736,
+    "lat": 42.0016061
+  },
+  {
+    "slug": "nova-dzhamija-dolno-kosovrasti-debar-1250-north-macedonia",
+    "name": "Нова Џамија Долно Косоврасти",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/15f216aa-8058-436d-8ec4-db078d4730be/mosque/1ef69680-aa21-606c-b04b-0a30a0d770d7.jpeg",
+    "address": "Долно Коспврасти б.б",
+    "city": "Дебар",
+    "zipcode": "1250",
+    "countryFullName": "North Macedonia",
+    "lng": 20.585340363076,
+    "lat": 41.538381265743
+  },
+  {
+    "slug": "xhamia-mulla-hysen-saiti-lubin-skopje-1000-north-macedonia",
+    "name": "Xhamia MULLA HYSEN SAITI Lubin",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/db84fd70-ce5d-4655-aec4-858579c8daad/mosque/1ef84c06-fcbb-6240-a84f-0e9d077f5bb1.jpg",
+    "address": "3 123",
+    "city": "SKOPJE",
+    "zipcode": "1000",
+    "countryFullName": "North Macedonia",
+    "lng": 21.4037407,
+    "lat": 41.9970643
+  },
+  {
+    "slug": "xhamija-neda-haracine-shkup-1045-north-macedonia",
+    "name": "Xhamia NEDA",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/45b2f12b-645d-4cbc-b35f-5b48f4260d7a/mosque/1f0076f9-8318-6b60-a12b-0e61b0058d45.jpg",
+    "address": "Rruga 4 Nr. O BB",
+    "city": "SHKUP",
+    "zipcode": "1045",
+    "countryFullName": "North Macedonia",
+    "lng": 21.562509620914,
+    "lat": 42.021697722917
+  },
+  {
+    "slug": "dzamija-chelopetsi-6250-north-macedonia",
+    "name": "Џамија Челопеци",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7e944fa3-0894-4748-aa9a-4ebf27ffe039/mosque/1f01b75e-c486-61e6-ba8f-0ac73cfd41db.jpg",
+    "address": "Čelopeci, Северна Македонија",
+    "city": "Челопеци",
+    "zipcode": "6250",
+    "countryFullName": "North Macedonia",
+    "lng": 21.0287611,
+    "lat": 41.4719328
+  }
+]

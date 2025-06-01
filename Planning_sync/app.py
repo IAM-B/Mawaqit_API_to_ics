@@ -28,7 +28,7 @@ def planner():
     period = request.form['scope']
 
     padding_before = int(request.form.get('padding_before', 10))
-    padding_after = int(request.form.get('padding_after', 10))
+    padding_after = int(request.form.get('padding_after', 35))
     
     config.PADDING_BEFORE_MIN = padding_before
     config.PADDING_AFTER_MIN = padding_after
@@ -46,7 +46,14 @@ def planner():
         empty_ics_url = None
         if not isinstance(prayer_times, list):  # today
             filename = f"static/ics/empty_slots_{masjid_id}.ics"
-            empty_path = generate_empty_slot_events(prayer_times, datetime.now(), filename, tz_str)
+            empty_path = generate_empty_slot_events(
+                prayer_times,
+                datetime.now(),
+                filename,
+                tz_str,
+                padding_before=padding_before,
+                padding_after=padding_after
+            )
             empty_ics_url = f"/{empty_path}"
 
         # 📊 Segments pour affichage HTML
@@ -102,6 +109,18 @@ def method_not_allowed(e):
 @app.errorhandler(500)
 def internal_error(e):
     return render_template("error.html", error_message="Erreur interne du serveur (500)"), 500
+
+@app.route("/debug/<masjid_id>")
+def debug_masjid_data(masjid_id):
+    import requests, json
+    try:
+        url = f"http://localhost:8000/api/v1/{masjid_id}"
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return f"<pre>{json.dumps(data, indent=2, ensure_ascii=False)}</pre>"
+    except Exception as e:
+        return f"❌ Erreur : {e}", 500
 
 if __name__ == "__main__":
     try:

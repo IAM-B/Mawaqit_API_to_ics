@@ -1,0 +1,57 @@
+[
+  {
+    "slug": "muhadzirska-dzamija-sarajevo-71000-bosnia-herzegovina",
+    "name": "Džemat Osjek-Muhadžirska džamija",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/8a101846-a662-4895-8238-c3c51d5a0528/mosque/1efe5fa7-be42-63f0-a29d-0a7d06691847.png",
+    "address": "Osik 286",
+    "city": "SARAJEVO",
+    "zipcode": "71000",
+    "countryFullName": "Bosnia & Herzegovina",
+    "lng": 18.2789647,
+    "lat": 43.843217
+  },
+  {
+    "slug": "dzemat-grbavica-vitez-72251-bosnia-herzegovina",
+    "name": "Džemat Grbavica",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/c1f21dd7-298f-4d56-8d31-6bd090ca2379/mosque/1f027358-d9f9-6b7a-aad3-06df4152832f.jpeg",
+    "address": "Grbavica bb",
+    "city": "VITEZ",
+    "zipcode": "72251",
+    "countryFullName": "Bosnia & Herzegovina",
+    "lng": 17.793535,
+    "lat": 44.1515767
+  },
+  {
+    "slug": "divic-divic-75400-bosnia-herzegovina",
+    "name": "Divič",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/a420df86-8c3d-4edb-9f2b-df8fb2dc0fbc/mosque/1f004bf1-a471-6146-9dfb-0e61b0058d45.jpg",
+    "address": "Divic bb",
+    "city": "DIVIC",
+    "zipcode": "75400",
+    "countryFullName": "Bosnia & Herzegovina",
+    "lng": 19.112777709961,
+    "lat": 44.366277847789
+  },
+  {
+    "slug": "dzemat-blatusa-zenica-72000-bosnia-herzegovina",
+    "name": "Džemat Blatuša",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/7a2b4f43-f7e7-45a4-b61c-1157c80e42be/mosque/1f02a10a-1d9d-6bcc-8710-0e31fcfe1275.jpeg",
+    "address": "Zije Dizdarevića, Zenica, Bosnia and Herzegovina",
+    "city": "ZENICA",
+    "zipcode": "72000",
+    "countryFullName": "Bosnia & Herzegovina",
+    "lng": 17.886723,
+    "lat": 44.2276424
+  },
+  {
+    "slug": "konaturska-dzamija-travnik-72270-bosnia-herzegovina",
+    "name": "Konaturska džamija",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/ec347884-629b-44fc-bf56-86dff334ca78/mosque/1f02c91f-ecf4-61ae-a9e5-0e3e0b8b30a1.jpg",
+    "address": "Konatur 1",
+    "city": "TRAVNIK",
+    "zipcode": "72270",
+    "countryFullName": "Bosnia & Herzegovina",
+    "lng": 17.6677489,
+    "lat": 44.225463
+  }
+]

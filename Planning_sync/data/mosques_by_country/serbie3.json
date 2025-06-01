@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "xhamia-strukarve-trrnovac-17528-serbia",
+    "name": "Xhamia Strukarve",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/e6ad4d04-1267-444b-a230-e05439e03ba1/mosque/1ef6a2c9-2f4d-60a2-8ab2-0a30a0d770d7.jpg",
+    "address": "Rruga Mustafi",
+    "city": "TRRNOVAC",
+    "zipcode": "17528",
+    "countryFullName": "Serbia",
+    "lng": 21.737738009351,
+    "lat": 42.481414164997
+  },
+  {
+    "slug": "xhamia-e-muhovcit-muhovac-17529-serbia",
+    "name": "Xhamia e Muhovcit",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3491823f-5f88-4b1f-8e77-867e2a2feb25/mosque/1f032261-5705-6c1a-9083-0a17f0e78aa5.jpg",
+    "address": "HQC4+Q7 Muhovac, Serbien",
+    "city": "MUHOVAC",
+    "zipcode": "17529",
+    "countryFullName": "Serbia",
+    "lng": 21.7556875,
+    "lat": 42.5719375
+  }
+]

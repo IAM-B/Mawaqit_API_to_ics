@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "mosquee-de-noumea-noumea-98800-new-caledonia",
+    "name": "Centre Islamique de Nouméa",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/68e5c0ef-602b-4bc8-8cae-7572bcb41c13/mosque/1eea8e99-e65b-66ae-a193-066ed47a7584.jpg",
+    "address": "13 Rue Mérano",
+    "city": "NOUMéA",
+    "zipcode": "98800",
+    "countryFullName": "New Caledonia",
+    "lng": 166.4532584,
+    "lat": -22.2690362
+  },
+  {
+    "slug": "moskee-attauhid-soest-3765xe-new-caledonia",
+    "name": "Moskee Attauhid",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/f802a47a-a4e8-4340-8e24-b9eba662071a/mosque/1ef0a5c7-858c-67e2-8740-0e8f4a8ce035.jpg",
+    "address": "Weegbreestraat 209",
+    "city": "SOEST",
+    "zipcode": "3765XE",
+    "countryFullName": "New Caledonia",
+    "lng": 5.299197,
+    "lat": 52.1763515
+  }
+]

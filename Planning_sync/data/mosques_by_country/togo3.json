@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "mosquee-centre-elhouda-bafilo-bafilo-00228-togo",
+    "name": "Mosquée Centre EL-HOUDA  de BAFILO",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d9640cb8-a91c-40d5-8c52-00c3ff189f4c/mosque/1f006309-c546-62c0-a454-0a2e1c0b5725.jpg",
+    "address": "BAFILO",
+    "city": "BAFILO",
+    "zipcode": "00228",
+    "countryFullName": "Togo",
+    "lng": 1.248195,
+    "lat": 9.3568025
+  },
+  {
+    "slug": "mosquee-elnour-kara-400-togo",
+    "name": "Mosquée Elnour",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2652c4d4-acff-41f2-b208-bf6600c2fee0/mosque/1ef47476-2b5c-67a0-ab2d-0eccd22c0f01.jpg",
+    "address": "6 rue de l'hôpital chinois, Tomdé, Kara",
+    "city": "KARA",
+    "zipcode": "400",
+    "countryFullName": "Togo",
+    "lng": 1.2029956,
+    "lat": 9.5532609
+  }
+]

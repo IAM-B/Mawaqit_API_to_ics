@@ -1,0 +1,101 @@
+[
+  {
+    "slug": "msjd-szeged-mecset-szeged-6722-hungary",
+    "name": "مسجد- Szeged Mecset",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque_default_picture.png",
+    "address": "tisza lajos krt 93",
+    "city": "Szeged",
+    "zipcode": "6722",
+    "countryFullName": "Hungary",
+    "lng": 20.1450093,
+    "lat": 46.248391
+  },
+  {
+    "slug": "huda-budapest",
+    "name": "ALHUDA - BUDAPEST",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d818f1cd-a540-4133-91b4-30a20f273e6e/mosque/1eea8dd5-647b-687e-b2a5-066ed47a7584.jpeg",
+    "address": "Teleki László tér 10",
+    "city": "Budapest",
+    "zipcode": "1086",
+    "countryFullName": "Hungary",
+    "lng": 19.08553440551,
+    "lat": 47.493034303253
+  },
+  {
+    "slug": "budapest",
+    "name": "BUDAPEST MECSET",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3a231abf-b674-48ab-a187-68e84639c42f/mosque/1eea8dd5-76e0-6d5c-a6e2-066ed47a7584.JPG",
+    "address": "Fehérvári út 41",
+    "city": "Budapest",
+    "zipcode": "1119",
+    "countryFullName": "Hungary",
+    "lng": 19.0442319,
+    "lat": 47.4707851
+  },
+  {
+    "slug": "masjid-lforqan-pecs-7621-hungary-1",
+    "name": "مسجد الفرقان",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/b6c13b75-d440-45f0-af2b-36e61fbb6e25/mosque/1eea8ebd-0fbb-6a8a-a12d-066ed47a7584.jpg",
+    "address": "József u. 4",
+    "city": "PéCS",
+    "zipcode": "7621",
+    "countryFullName": "Hungary",
+    "lng": 18.2287977,
+    "lat": 46.0776194
+  },
+  {
+    "slug": "masjid-al-noor-budapest-1071-hungary",
+    "name": "Masjid-Al Noor",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/df7dad55-143c-44eb-a0ca-4f7efa57081d/mosque/1eedd174-7ea8-6c84-a58e-0a7eba2dd6b3.jpeg",
+    "address": "Budapest, Rákóczi út 84, 1071",
+    "city": "BUDAPEST",
+    "zipcode": "1071",
+    "countryFullName": "Hungary",
+    "lng": 19.0777051,
+    "lat": 47.4992944
+  },
+  {
+    "slug": "-3",
+    "name": "Darusszalam Mecset Budapest",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/3337979c-84b4-4127-8525-ab1049a63e16/mosque/1ef3f7d5-18c2-6612-b552-0600dbafaeef.jpg",
+    "address": "Bartók Béla út 29,",
+    "city": "BUDAPEST",
+    "zipcode": "1118",
+    "countryFullName": "Hungary",
+    "lng": 19.0505826,
+    "lat": 47.4798426
+  },
+  {
+    "slug": "-4",
+    "name": "Tauhid mecset Budapest",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/57b4626a-c078-4057-905f-b0dadb8cc92e/mosque/1ef415c8-3172-6804-a40c-0a67bcb0d635.png",
+    "address": "Bartók Béla út 29,",
+    "city": "BUDAPEST",
+    "zipcode": "1118",
+    "countryFullName": "Hungary",
+    "lng": 19.0505826,
+    "lat": 47.4798426
+  },
+  {
+    "slug": "debrecen-timings-debrecen-4032-hungary",
+    "name": "Debrecen Timings",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/515c4e2b-b836-42c8-8006-4b213782ec54/mosque/1f028b73-1a44-67f2-9b6c-0e31fcfe1275.jpg",
+    "address": "Debrecen, Egyetem tér 1, Hongrie",
+    "city": "DEBRECEN",
+    "zipcode": "4032",
+    "countryFullName": "Hungary",
+    "lng": 21.618334829137,
+    "lat": 47.554985493834
+  },
+  {
+    "slug": "al-taqwa-mecset-budapest-1082-hungary",
+    "name": "Al-Taqwa Mecset",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/20bb6164-b548-45dd-9439-37971e73732a/mosque/1efa36bb-d8aa-6058-b0b0-0a0389a4e0f5.jpg",
+    "address": "Baross u 110",
+    "city": "BUDAPEST",
+    "zipcode": "1082",
+    "countryFullName": "Hungary",
+    "lng": 19.0823803,
+    "lat": 47.4890037
+  }
+]

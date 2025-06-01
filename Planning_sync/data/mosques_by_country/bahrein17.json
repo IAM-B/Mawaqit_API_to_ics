@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "markaz-sabika-bnt-barhim-lansri-isa-town-00000-bahrain",
+    "name": "جامع سبيكة بنت إبراهيم الانصاري",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/4985f75d-e174-42b7-95a0-661397ce949e/mosque/1ef53451-8383-6cf8-91d1-0600dbafaeef.jpg",
+    "address": "Bahrain",
+    "city": "ISA TOWN",
+    "zipcode": "00000",
+    "countryFullName": "Bahrain",
+    "lng": 50.5564742,
+    "lat": 26.1679752
+  },
+  {
+    "slug": "masjid-madina-issa-south-810-issa-town-bahrain",
+    "name": "جامع مدينة عيسى الجنوبي",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/5cce025b-16e6-416a-a970-932308480167/mosque/1f012054-efa5-6580-8da4-0e61b0058d45.jpg",
+    "address": "BAHRIN",
+    "city": "ISA TOWN",
+    "zipcode": "810",
+    "countryFullName": "Bahrain",
+    "lng": 50.5564742,
+    "lat": 26.1679752
+  },
+  {
+    "slug": "jm-lzbyr-bn-l-wm-isa-town-00000-bahrain",
+    "name": "جامع الزبير بن العوام",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/fd312931-cee2-4cc7-b278-3b1144dabacc/mosque/1f012275-1950-614c-8563-06bdda781935.jpg",
+    "address": "BAHRIN",
+    "city": "ISA TOWN",
+    "zipcode": "00000",
+    "countryFullName": "Bahrain",
+    "lng": 50.5564742,
+    "lat": 26.1679752
+  },
+  {
+    "slug": "masjid-bin-suwar-shari-al-qasr-0317-manama-bahrain",
+    "name": "مسجد بن سوار",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/2ba9912b-4d57-40c9-acba-88f3ce92289b/mosque/1f02f1c3-4fc8-6f7a-8667-06d617d5cc55.png",
+    "address": "شارع القصر",
+    "city": "المنامة",
+    "zipcode": "0317",
+    "countryFullName": "Bahrain",
+    "lng": 50.588814,
+    "lat": 26.2318816
+  },
+  {
+    "slug": "jm-lsyf-manama-seef-428-bahrain",
+    "name": "جامع السيف",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/08112a30-046e-4bb0-96d3-f8532635bed5/mosque/1f02fdd5-3fca-6e16-a6f6-06d617d5cc55.jpg",
+    "address": "2831",
+    "city": "MANAMA - SEEF",
+    "zipcode": "428",
+    "countryFullName": "Bahrain",
+    "lng": 50.5305109,
+    "lat": 26.2378439
+  },
+  {
+    "slug": "-18",
+    "name": "مسجد بن سوار -",
+    "image1": null,
+    "address": "شارع القصر",
+    "city": "المنامة",
+    "zipcode": "0317",
+    "countryFullName": "Bahrain",
+    "lng": 50.588814,
+    "lat": 26.2318816
+  }
+]

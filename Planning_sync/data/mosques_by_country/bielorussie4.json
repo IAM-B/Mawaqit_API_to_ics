@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "minskaia-sabornaia-miachets-minsk-220035-belarus",
+    "name": "Саборная мячэць",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0cbc5a0a-5733-428a-bf09-354e641eeab9/mosque/1eeb46fb-63ee-6c32-a54f-0aedfd0440f0.jpg",
+    "address": "ул. Грибоедова, 29",
+    "city": "Минск",
+    "zipcode": "220035",
+    "countryFullName": "Belarus",
+    "lng": 27.52629,
+    "lat": 53.91719
+  },
+  {
+    "slug": "brestskii-molitvennyi-dom-brest-224014-belarus",
+    "name": "Брестский молитвенный дом",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/0c933f14-18be-4522-998e-74ac9f13e5a5/mosque/1eeec329-21d9-64c0-919c-0621eb7171ad.png",
+    "address": "Ул. Писателя Смирнова, 111",
+    "city": "Брест",
+    "zipcode": "224014",
+    "countryFullName": "Belarus",
+    "lng": 23.640971938946,
+    "lat": 52.110224323474
+  }
+]

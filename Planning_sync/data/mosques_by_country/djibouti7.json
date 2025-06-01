@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "djafar-gabode4-djibouti",
+    "name": "Masjid Djaffar - Gabode 4",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque_default_picture.png",
+    "address": "Gabode 4",
+    "city": "Djibouti",
+    "zipcode": "12131",
+    "countryFullName": "Djibouti",
+    "lng": 43.1447389,
+    "lat": 11.5614431
+  },
+  {
+    "slug": "abdrrahman-djibouti",
+    "name": "مسجد عبد الرحمان بن عوف",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque_default_picture.png",
+    "address": "Balballa",
+    "city": "Djibouti",
+    "zipcode": "12143",
+    "countryFullName": "Djibouti",
+    "lng": 43.1068632,
+    "lat": 11.561484
+  },
+  {
+    "slug": "masjid-lsalam-fyart-djibouti-77101-djibouti",
+    "name": "مسجد السلام",
+    "image1": "https://cdn.mawaqit.net/images/backend/mosque/d98c0751-c2a6-4905-8c6f-5b4fc60d1f52/mosque/1ef17967-42c5-67f0-8db0-0ebe1546356b.jpeg",
+    "address": "GRCQ+G3H, Djibouti",
+    "city": "DJIBOUTI",
+    "zipcode": "77101",
+    "countryFullName": "Djibouti",
+    "lng": 42.8377344,
+    "lat": 11.5213125
+  }
+]
