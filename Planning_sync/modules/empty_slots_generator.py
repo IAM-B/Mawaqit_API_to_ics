@@ -1,19 +1,35 @@
 from datetime import datetime, timedelta
-from ics import Calendar, Event
+from icalendar import Calendar, Event
+from zoneinfo import ZoneInfo
+from uuid import uuid4
 
-def generate_empty_slot_events(prayer_times: dict, date: datetime, filename: str = "empty_slots.ics"):
+def generate_empty_slot_events(prayer_times: dict, base_date: datetime, filename: str, timezone_str: str) -> str:
     PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
-    calendar = Calendar()
+    tz = ZoneInfo(timezone_str)
 
-    # Convertir en datetime les horaires
-    def to_datetime(time_str): return datetime.combine(date, datetime.strptime(time_str, "%H:%M").time())
+    calendar = Calendar()
+    calendar.add('prodid', '-//Planning Sync//Mawaqit//FR')
+    calendar.add('version', '2.0')
+
+    def to_datetime(time_str):
+        try:
+            t = datetime.strptime(time_str, "%H:%M").time()
+            return datetime.combine(base_date.date(), t).replace(tzinfo=tz)
+        except Exception as e:
+            print(f"⛔ Erreur parsing {time_str}: {e}")
+            return None
 
     slots = []
     for i in range(len(PRAYERS_ORDER) - 1):
-        if PRAYERS_ORDER[i] not in prayer_times or PRAYERS_ORDER[i + 1] not in prayer_times:
+        t1 = prayer_times.get(PRAYERS_ORDER[i])
+        t2 = prayer_times.get(PRAYERS_ORDER[i + 1])
+        if not t1 or not t2:
             continue
-        start = to_datetime(prayer_times[PRAYERS_ORDER[i]])
-        end = to_datetime(prayer_times[PRAYERS_ORDER[i + 1]])
+
+        start = to_datetime(t1)
+        end = to_datetime(t2)
+        if not start or not end or start >= end:
+            continue
 
         # Premier créneau : de `start` à prochaine heure pleine
         next_hour = (start + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
@@ -30,22 +46,16 @@ def generate_empty_slot_events(prayer_times: dict, date: datetime, filename: str
         if current < end:
             slots.append((current, end))
 
-    # Ajout au calendrier
-    for slot in slots:
-        if not isinstance(slot, tuple) or len(slot) != 2:
-            print(f"❌ Slot invalide détecté : {slot}")
-            continue
+    for start, end in slots:
+        event = Event()
+        event.add("uid", str(uuid4()))
+        event.add("dtstart", start)
+        event.add("dtend", end)
+        event.add("summary", "Créneau disponible")
+        event.add("description", "Créneau libre entre deux prières")
+        calendar.add_component(event)
 
-        start, end = slot
-        e = Event()
-        e.name = "Créneau disponible"
-        e.begin = start
-        e.end = end
-        calendar.events.add(e)
-
-
-    # Sauvegarde
-    with open(filename, "w") as f:
-        f.write(calendar.serialize())
+    with open(filename, "wb") as f:
+        f.write(calendar.to_ical())
 
     return filename

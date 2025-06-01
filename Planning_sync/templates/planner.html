@@ -10,6 +10,11 @@
   <h1>Créer mon emploi du temps synchronisé avec les horaires de prière</h1>
 
   <h2>Créneaux disponibles</h2>
+
+  <p>
+    <strong>Fuseau horaire détecté :</strong> {{ timezone_str }}
+  </p>
+
   <ul>
     {% for seg in segments %}
       <li>{{ seg.start }} - {{ seg.end }}</li>

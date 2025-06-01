@@ -1,6 +1,4 @@
 Flask
 requests
-ics
-pytz
 pandas
 icalendar

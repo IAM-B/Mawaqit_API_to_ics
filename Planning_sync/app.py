@@ -36,17 +36,17 @@ def planner():
     try:
         slots_download_link = None
         # 📥 Données de prière
-        prayer_times = fetch_mosques(masjid_id, period)
+        prayer_times, tz_str = fetch_mosques(masjid_id, period)
 
         # 📁 Génération fichier ICS standard
-        ics_path = generate_prayer_ics_file(masjid_id, period)
+        ics_path = generate_prayer_ics_file(masjid_id, period, tz_str)
         ics_url = f"/static/ics/{Path(ics_path).name}"
 
         # 📁 Génération ICS créneaux vides (seulement si scope = today)
         empty_ics_url = None
         if not isinstance(prayer_times, list):  # today
             filename = f"static/ics/empty_slots_{masjid_id}.ics"
-            empty_path = generate_empty_slot_events(prayer_times, datetime.now(), filename)
+            empty_path = generate_empty_slot_events(prayer_times, datetime.now(), filename, tz_str)
             empty_ics_url = f"/{empty_path}"
 
         # 📊 Segments pour affichage HTML
@@ -59,11 +59,11 @@ def planner():
                 except Exception as e:
                     print(f"⚠️ Erreur jour {i+1} : {e}")
         else:
-            segments = segment_available_time(prayer_times)
+            segments = segment_available_time(prayer_times, tz_str)
             slots = adjust_slots_rounding(segments)
             silent_slots = apply_silent_settings(slots)
             slots_ics_path = f"static/ics/slots_{masjid_id}.ics"
-            generate_slot_ics_file(silent_slots, slots_ics_path)
+            generate_slot_ics_file(silent_slots, slots_ics_path, tz_str)
             slots_download_link = f"/{slots_ics_path}"
 
         return render_template(
@@ -71,7 +71,8 @@ def planner():
             download_link=ics_url,
             empty_download_link=empty_ics_url,
             slots_download_link=slots_download_link,
-            segments=segments
+            segments=segments,
+            timezone_str=tz_str 
         )
 
     except Exception as e:

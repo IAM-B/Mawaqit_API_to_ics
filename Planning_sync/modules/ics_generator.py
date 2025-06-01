@@ -4,13 +4,11 @@ from pathlib import Path
 from datetime import datetime, timedelta, time
 from icalendar import Calendar, Event
 from config import config
-from pytz import timezone
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
-LOCAL_TZ = timezone("Africa/Algiers")
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
 
-# 🔧 Outil de conversion HH:MM (str) → datetime
 def parse_time_str(time_str: str, date_ref=None) -> datetime:
     if not date_ref:
         date_ref = datetime.today().date()
@@ -18,22 +16,23 @@ def parse_time_str(time_str: str, date_ref=None) -> datetime:
     return datetime.combine(date_ref, time(h, m))
 
 
-# ✅ 1. Générateur ICS pour les créneaux disponibles
-def generate_slot_ics_file(slots, filepath):
+def generate_slot_ics_file(slots, filepath, timezone_str):
+    tz = ZoneInfo(timezone_str)
     cal = Calendar()
 
     for slot in slots:
         try:
             start = slot["start"]
             end = slot["end"]
-            # Si ce sont des chaînes (ex: '14:30'), on les convertit
+
             if isinstance(start, str):
                 start = parse_time_str(start)
             if isinstance(end, str):
                 end = parse_time_str(end)
 
-            start = LOCAL_TZ.localize(start)
-            end = LOCAL_TZ.localize(end)
+            if start.tzinfo is None:
+                start = start.replace(tzinfo=tz)
+                end = end.replace(tzinfo=tz)
 
             event = Event()
             event.add('uid', str(uuid4()))
@@ -43,7 +42,7 @@ def generate_slot_ics_file(slots, filepath):
             event.add('description', slot.get('description', ''))
             event.add('transp', 'TRANSPARENT' if slot.get('transparent') else 'OPAQUE')
             if slot.get('mute'):
-                event.add('X-MOZ-SOUND', 'None')  # Pour silence (optionnel)
+                event.add('X-MOZ-SOUND', 'None')
             cal.add_component(event)
         except Exception as e:
             print(f"⚠️ Erreur de slot : {e} ({slot})")
@@ -52,12 +51,12 @@ def generate_slot_ics_file(slots, filepath):
         f.write(cal.to_ical())
 
 
-# ✅ 2. Générateur ICS pour les horaires de prière officiels
-def generate_prayer_ics_file(masjid_id: str, scope: str) -> str:
+def generate_prayer_ics_file(masjid_id: str, scope: str, timezone_str: str) -> str:
     BASE_URL = f"http://localhost:8000/api/v1/{masjid_id}"
     YEAR = datetime.now().year
     padding_before = config.PADDING_BEFORE_MIN
     padding_after = config.PADDING_AFTER_MIN
+    tz = ZoneInfo(timezone_str)
     cal = Calendar()
     now = datetime.now()
 
@@ -67,10 +66,9 @@ def generate_prayer_ics_file(masjid_id: str, scope: str) -> str:
             if not time_str:
                 continue
             try:
-                local_dt = parse_time_str(time_str, date_obj)
-                dt_base = LOCAL_TZ.localize(local_dt)
-                dt_start = dt_base - timedelta(minutes=padding_before)
-                dt_end = dt_base + timedelta(minutes=padding_after)
+                base_dt = parse_time_str(time_str, date_obj).replace(tzinfo=tz)
+                dt_start = base_dt - timedelta(minutes=padding_before)
+                dt_end = base_dt + timedelta(minutes=padding_after)
 
                 event = Event()
                 event.add('uid', str(uuid4()))
@@ -135,16 +133,19 @@ def generate_prayer_ics_file(masjid_id: str, scope: str) -> str:
     return str(output_path)
 
 
-# ✅ 3. Générateur de créneaux vides (en datetime)
-def generate_empty_event_ics_file(slots: list[tuple[datetime, datetime]], filename: str):
+def generate_empty_event_ics_file(slots: list[tuple[datetime, datetime]], filename: str, timezone_str: str):
+    tz = ZoneInfo(timezone_str)
     cal = Calendar()
 
     for start, end in slots:
+        start = start.replace(tzinfo=tz)
+        end = end.replace(tzinfo=tz)
+
         event = Event()
         event.add("uid", str(uuid4()))
         event.add("summary", "⏳ Créneau disponible")
-        event.add("dtstart", LOCAL_TZ.localize(start))
-        event.add("dtend", LOCAL_TZ.localize(end))
+        event.add("dtstart", start)
+        event.add("dtend", end)
         event.add("description", "Créneau libre entre deux prières")
         cal.add_component(event)
 
