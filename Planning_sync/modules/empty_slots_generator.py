@@ -49,15 +49,26 @@ def generate_empty_slot_events(
         if next_hour < end:
             slots.append((start, next_hour))
 
-        # Créneaux horaires pleins
-        current = next_hour
-        while current + timedelta(hours=1) < end:
-            slots.append((current, current + timedelta(hours=1)))
-            current += timedelta(hours=1)
+        # Ne crée pas un slot partiel si trop court (< 30 min), mais l'absorbe dans le créneau suivant
+        min_slot_duration = timedelta(minutes=30)
+        full_hour = timedelta(hours=1)
 
-        # Dernier créneau
+        current = start
+        while current + full_hour <= end:
+            slots.append((current, current + full_hour))
+            current += full_hour
+
+        # S’il reste un petit créneau à la fin (> 0), l’ajoute à la dernière tranche
         if current < end:
-            slots.append((current, end))
+            if slots:
+                # Étend la fin du dernier slot
+                last_start, last_end = slots[-1]
+                if end - last_end < min_slot_duration:
+                    slots[-1] = (last_start, end)
+                else:
+                    slots.append((current, end))
+            else:
+                slots.append((current, end))
 
     for start, end in slots:
         event = Event()
