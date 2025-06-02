@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, abort
 from modules.mawaqit_api import fetch_mosques
-from modules.time_segmenter import segment_available_time, generate_empty_slots
-from modules.ics_generator import generate_prayer_ics_file, generate_slot_ics_file
+from modules.time_segmenter import segment_available_time
+from modules.prayer_generator import generate_prayer_ics_file
 from modules.empty_slots_generator import generate_empty_slot_events
+from modules.slots_generator import generate_slot_ics_file
 from modules.slot_utils import adjust_slots_rounding
 from modules.mute_utils import apply_silent_settings
 from pathlib import Path
@@ -20,7 +21,7 @@ def index():
 @app.route('/planner', methods=['GET'])
 def redirect_planner():
     return render_template("error.html", error_message="Accès direct à /planner non autorisé. Merci de soumettre le formulaire.")
-    
+
 @app.route('/planner', methods=['POST'])
 def planner():
     masjid_id = request.form['masjid_id']
@@ -31,36 +32,37 @@ def planner():
 
     try:
         slots_download_link = None
-        # 📥 Données de prière
+
+        # 📥 Récupération des horaires de prière
         prayer_times, tz_str = fetch_mosques(masjid_id, period)
 
-        # 📁 Génération fichier ICS standard
+        # 🕌 Génération du fichier .ics des prières
         ics_path = generate_prayer_ics_file(masjid_id, period, tz_str, padding_before, padding_after)
         ics_url = f"/static/ics/{Path(ics_path).name}"
 
-        # 📁 Génération ICS créneaux vides (seulement si scope = today)
+        # 🕳️ Créneaux vides (uniquement pour aujourd'hui)
         empty_ics_url = None
-        if not isinstance(prayer_times, list):  # today
-            filename = f"static/ics/empty_slots_{masjid_id}.ics"
+        if isinstance(prayer_times, dict):  # today
+            empty_filename = f"static/ics/empty_slots_{masjid_id}.ics"
             empty_path = generate_empty_slot_events(
                 prayer_times,
                 datetime.now(),
-                filename,
+                empty_filename,
                 tz_str,
-                padding_before=padding_before,
-                padding_after=padding_after
+                padding_before,
+                padding_after
             )
             empty_ics_url = f"/{empty_path}"
 
-        # 📊 Segments pour affichage HTML
+        # 📊 Créneaux segmentés pour affichage
         if isinstance(prayer_times, list):
             segments = []
             for i, daily in enumerate(prayer_times):
                 try:
-                    slots = segment_available_time(daily)
+                    slots = segment_available_time(daily, tz_str, padding_before, padding_after)
                     segments.append({"day": i + 1, "slots": slots})
                 except Exception as e:
-                    print(f"⚠️ Erreur jour {i+1} : {e}")
+                    print(f"⚠️ Erreur jour {i + 1} : {e}")
         else:
             segments = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
             slots = adjust_slots_rounding(segments)
@@ -75,7 +77,7 @@ def planner():
             empty_download_link=empty_ics_url,
             slots_download_link=slots_download_link,
             segments=segments,
-            timezone_str=tz_str 
+            timezone_str=tz_str
         )
 
     except Exception as e:
@@ -85,7 +87,6 @@ def planner():
 @app.route('/edit_slot', methods=['GET', 'POST'])
 def edit_slot():
     if request.method == 'POST':
-        # à implémenter plus tard : traitement formulaire
         ...
     else:
         slots = [
@@ -124,4 +125,3 @@ if __name__ == "__main__":
         app.run(debug=False)
     except KeyboardInterrupt:
         print("🛑 Arrêt du serveur Flask.")
-
