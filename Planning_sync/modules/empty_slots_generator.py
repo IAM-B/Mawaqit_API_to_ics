@@ -8,8 +8,8 @@ def generate_empty_slot_events(
     base_date: datetime,
     filename: str,
     timezone_str: str,
-    padding_before: int = 10,
-    padding_after: int = 10
+    padding_before: int,
+    padding_after: int
 ) -> str:
     PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
     tz = ZoneInfo(timezone_str)

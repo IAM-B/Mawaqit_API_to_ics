@@ -7,7 +7,6 @@ from modules.slot_utils import adjust_slots_rounding
 from modules.mute_utils import apply_silent_settings
 from pathlib import Path
 from datetime import datetime
-from config import config
 
 app = Flask(__name__)
 
@@ -29,9 +28,6 @@ def planner():
 
     padding_before = int(request.form.get('padding_before', 10))
     padding_after = int(request.form.get('padding_after', 35))
-    
-    config.PADDING_BEFORE_MIN = padding_before
-    config.PADDING_AFTER_MIN = padding_after
 
     try:
         slots_download_link = None
@@ -39,7 +35,7 @@ def planner():
         prayer_times, tz_str = fetch_mosques(masjid_id, period)
 
         # 📁 Génération fichier ICS standard
-        ics_path = generate_prayer_ics_file(masjid_id, period, tz_str)
+        ics_path = generate_prayer_ics_file(masjid_id, period, tz_str, padding_before, padding_after)
         ics_url = f"/static/ics/{Path(ics_path).name}"
 
         # 📁 Génération ICS créneaux vides (seulement si scope = today)
@@ -66,7 +62,7 @@ def planner():
                 except Exception as e:
                     print(f"⚠️ Erreur jour {i+1} : {e}")
         else:
-            segments = segment_available_time(prayer_times, tz_str)
+            segments = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
             slots = adjust_slots_rounding(segments)
             silent_slots = apply_silent_settings(slots)
             slots_ics_path = f"static/ics/slots_{masjid_id}.ics"

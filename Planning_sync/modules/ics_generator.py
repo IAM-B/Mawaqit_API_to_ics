@@ -3,7 +3,6 @@ import requests
 from pathlib import Path
 from datetime import datetime, timedelta, time
 from icalendar import Calendar, Event
-from config import config
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
@@ -51,11 +50,9 @@ def generate_slot_ics_file(slots, filepath, timezone_str):
         f.write(cal.to_ical())
 
 
-def generate_prayer_ics_file(masjid_id: str, scope: str, timezone_str: str) -> str:
+def generate_prayer_ics_file(masjid_id: str, scope: str, timezone_str: str, padding_before: int, padding_after: int) -> str:
     BASE_URL = f"http://localhost:8000/api/v1/{masjid_id}"
     YEAR = datetime.now().year
-    padding_before = config.PADDING_BEFORE_MIN
-    padding_after = config.PADDING_AFTER_MIN
     tz = ZoneInfo(timezone_str)
     cal = Calendar()
     now = datetime.now()

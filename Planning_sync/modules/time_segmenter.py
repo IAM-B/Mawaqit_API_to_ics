@@ -1,12 +1,9 @@
 from datetime import datetime, timedelta
-from config import config
 from zoneinfo import ZoneInfo
 
-def segment_available_time(prayer_times: dict, tz_str: str):
+def segment_available_time(prayer_times: dict, tz_str: str, padding_before: int, padding_after: int):
     times = []
     tz = ZoneInfo(tz_str)
-    padding_before = config.PADDING_BEFORE_MIN
-    padding_after = config.PADDING_AFTER_MIN
 
     for key, time_str in prayer_times.items():
         try:
