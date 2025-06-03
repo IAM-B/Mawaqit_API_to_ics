@@ -53,7 +53,7 @@ body {
 .form {
   background-color: var(--form-bg);
   padding: 2em;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -212,4 +212,42 @@ input#mosque-select-ts-control {
 
 .btn-submit:hover {
   background-color: var(--success-hover)
+}
+
+/* ==================
+   🗺️ Popup Map
+   ================== */
+div#mosque-map {
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.popup-mosque {
+  text-align: center;
+}
+
+.popup-mosque-name {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.popup-content {
+  text-align: center;
+}
+
+.popup-image {
+  width: 100%;
+  max-width: 150px;
+  margin-top: 5px;
+  border-radius: 6px;
+}
+
+.btn-sync-mosque {
+  margin-top: 8px;
+  padding: 5px 10px;
+  font-size: 0.9em;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
 }

@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
           mosqueSelect.addOptions(
             mosques.map(m => ({
               value: m.slug || m.id || m.name,
-              text: m.text || m.name, // on garde text comme affichage
+              text: m.text || m.name,
               name: m.name,
               slug: m.slug,
               city: m.city,
