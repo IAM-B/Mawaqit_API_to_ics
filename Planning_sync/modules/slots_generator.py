@@ -1,39 +1,59 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from icalendar import Calendar, Event
 from zoneinfo import ZoneInfo
 from uuid import uuid4
 
-def generate_slot_ics_file(slots: list[dict], filepath: str, timezone_str: str):
+PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
+
+def to_datetime(time_str: str, base_date: datetime, tz: ZoneInfo) -> datetime:
+    t = datetime.strptime(time_str, "%H:%M").time()
+    return datetime.combine(base_date.date(), t).replace(tzinfo=tz)
+
+def format_duration(delta: timedelta) -> str:
+    total_minutes = int(delta.total_seconds() // 60)
+    hours = total_minutes // 60
+    minutes = total_minutes % 60
+    return f"{hours}h{minutes:02d}"
+
+def generate_slot_ics_file(
+    prayer_times: dict,
+    base_date: datetime,
+    filename: str,
+    timezone_str: str,
+    padding_before: int,
+    padding_after: int
+) -> str:
     tz = ZoneInfo(timezone_str)
-    cal = Calendar()
+    calendar = Calendar()
+    calendar.add('prodid', '-//Planning Sync//Mawaqit//FR')
+    calendar.add('version', '2.0')
 
-    for slot in slots:
-        try:
-            start = slot["start"]
-            end = slot["end"]
+    for i in range(len(PRAYERS_ORDER) - 1):
+        t1 = prayer_times.get(PRAYERS_ORDER[i])
+        t2 = prayer_times.get(PRAYERS_ORDER[i + 1])
+        if not t1 or not t2:
+            continue
 
-            if isinstance(start, str):
-                start = datetime.fromisoformat(start)
-            if isinstance(end, str):
-                end = datetime.fromisoformat(end)
+        start = to_datetime(t1, base_date, tz) + timedelta(minutes=padding_after)
+        end = to_datetime(t2, base_date, tz) - timedelta(minutes=padding_before)
 
-            if start.tzinfo is None:
-                start = start.replace(tzinfo=tz)
-            if end.tzinfo is None:
-                end = end.replace(tzinfo=tz)
+        if start >= end:
+            continue
 
-            event = Event()
-            event.add('uid', str(uuid4()))
-            event.add('dtstart', start)
-            event.add('dtend', end)
-            event.add('summary', slot.get('summary', 'Créneau libre'))
-            event.add('description', slot.get('description', ''))
-            event.add('transp', 'TRANSPARENT' if slot.get('transparent') else 'OPAQUE')
-            if slot.get('mute'):
-                event.add('X-MOZ-SOUND', 'None')
-            cal.add_component(event)
-        except Exception as e:
-            print(f"⚠️ Erreur de slot : {e} ({slot})")
+        duration = end - start
+        formatted = format_duration(duration)
 
-    with open(filepath, 'wb') as f:
-        f.write(cal.to_ical())
+        event = Event()
+        event.add("uid", str(uuid4()))
+        event.add("dtstart", start)
+        event.add("dtend", end)
+        event.add("transp", "TRANSPARENT")
+        event.add("categories", "occupé")
+        event.add("summary", f"Disponibilité : {formatted}")
+        event.add("description", f"Crenau libre entre {PRAYERS_ORDER[i]} et {PRAYERS_ORDER[i + 1]} — Durée : {formatted}")
+        calendar.add_component(event)
+
+    with open(filename, "wb") as f:
+        f.write(calendar.to_ical())
+
+    return filename

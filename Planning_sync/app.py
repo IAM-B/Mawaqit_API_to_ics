@@ -68,7 +68,14 @@ def planner():
             slots = adjust_slots_rounding(segments)
             silent_slots = apply_silent_settings(slots)
             slots_ics_path = f"static/ics/slots_{masjid_id}.ics"
-            generate_slot_ics_file(silent_slots, slots_ics_path, tz_str)
+            generate_slot_ics_file(
+                prayer_times,
+                datetime.now(),
+                slots_ics_path,
+                tz_str,
+                padding_before,
+                padding_after
+            )
             slots_download_link = f"/{slots_ics_path}"
 
         return render_template(

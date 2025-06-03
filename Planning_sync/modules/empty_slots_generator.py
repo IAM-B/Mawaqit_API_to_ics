@@ -65,6 +65,8 @@ def generate_empty_slot_events(
         event.add("uid", str(uuid4()))
         event.add("dtstart", start)
         event.add("dtend", end)
+        event.add("transp", "TRANSPARENT")
+        event.add("categories", "Empty slot")
         event.add("summary", "Créneau disponible")
         event.add("description", "Créneau libre entre deux prières")
         calendar.add_component(event)
