@@ -63,26 +63,6 @@ MAWAQIT_API_TO_ICS/
 └── Planning_sync/         # Schedule generator with UI
 ```
 
-```
-Planning_sync/
-├── app.py                 # Flask backend
-├── requirements.txt
-├── Makefile
-│
-├── templates/
-│   ├── index.html
-│   └── planner.html
-├── static/
-│   └── styles.css
-│
-├── modules/
-│   ├── mawaqit_api.py
-│   ├── time_segmenter.py
-│   └── ics_generator.py
-└── data/
-    └── mosques.json
-```
-
 ---
 
 ## 🧩 Roadmap
