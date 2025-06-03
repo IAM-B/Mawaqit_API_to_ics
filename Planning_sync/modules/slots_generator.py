@@ -50,8 +50,8 @@ def generate_slot_ics_file(
         event.add("dtstart", start)
         event.add("dtend", end)
         event.add("transp", "TRANSPARENT")
-        event.add("categories", "Empty")
-        event.add("summary", f"Disponibilité : {formatted}")
+        event.add("categories", "Empty slots")
+        event.add("summary", f"Disponibilité ({formatted})")
         event.add("description", f"Crenau libre entre {PRAYERS_ORDER[i]} et {PRAYERS_ORDER[i + 1]} — Durée : {formatted}")
         calendar.add_component(event)
 

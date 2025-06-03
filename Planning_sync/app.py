@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, abort
 from modules.mawaqit_api import fetch_mosques
 from modules.time_segmenter import segment_available_time
 from modules.prayer_generator import generate_prayer_ics_file
-from modules.empty_slots_generator import generate_empty_slot_events
+from modules.empty_slots_generator import generate_empty_slots_by_scope
 from modules.slots_generator import generate_slots_by_scope
 from modules.slot_utils import adjust_slots_rounding
 from modules.mute_utils import apply_silent_settings
@@ -40,19 +40,15 @@ def planner():
         ics_path = generate_prayer_ics_file(masjid_id, period, tz_str, padding_before, padding_after)
         ics_url = f"/static/ics/{Path(ics_path).name}"
 
-        # 🕳️ Créneaux vides (uniquement pour aujourd'hui)
-        empty_ics_url = None
-        if isinstance(prayer_times, dict):  # today
-            empty_filename = f"static/ics/empty_slots_{masjid_id}.ics"
-            empty_path = generate_empty_slot_events(
-                prayer_times,
-                datetime.now(),
-                empty_filename,
-                tz_str,
-                padding_before,
-                padding_after
-            )
-            empty_ics_url = f"/{empty_path}"
+        # 🕳️ Créneaux vides (générés pour tous les scopes)
+        empty_path = generate_empty_slots_by_scope(
+            masjid_id=masjid_id,
+            scope=period,
+            timezone_str=tz_str,
+            padding_before=padding_before,
+            padding_after=padding_after
+        )
+        empty_ics_url = f"/{empty_path}"
 
         # 📊 Créneaux segmentés pour affichage
         if isinstance(prayer_times, list):
