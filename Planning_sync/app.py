@@ -1,3 +1,5 @@
+from pathlib import Path
+from datetime import datetime
 from flask import Flask, render_template, request, abort, jsonify
 from modules.mawaqit_api import fetch_mosques
 from modules.time_segmenter import segment_available_time
@@ -7,8 +9,6 @@ from modules.slots_generator import generate_slots_by_scope
 from modules.slot_utils import adjust_slots_rounding
 from modules.mute_utils import apply_silent_settings
 from modules.mosque_search import list_countries, list_mosques_by_country
-from pathlib import Path
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -91,15 +91,22 @@ def planner():
 
 @app.route("/get_countries", methods=["GET"])
 def get_countries():
-    countries = list_countries()
-    return jsonify(countries)
+    return jsonify(list_countries())
 
 @app.route("/get_mosques", methods=["GET"])
 def get_mosques():
     country = request.args.get("country")
-    if not country:
-        return jsonify([]), 400
     mosques = list_mosques_by_country(country)
+
+    for m in mosques:
+        m["text"] = " - ".join(filter(None, [
+            m.get("name", ""),
+            m.get("city", ""),
+            m.get("address", ""),
+            m.get("zipcode", ""),
+            m.get("slug", "")
+        ]))
+
     return jsonify(mosques)
 
 @app.route('/edit_slot', methods=['GET', 'POST'])

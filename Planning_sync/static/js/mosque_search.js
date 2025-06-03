@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
     placeholder: "Choisir une mosquée...",
     valueField: "value",
     labelField: "text",
-    searchField: ["text"],
+    searchField: ["name", "slug", "city", "address", "zipcode"],
     options: [],
-    shouldLoad: () => false, // désactive chargement async auto
+    shouldLoad: () => false,
     render: {
       no_results: () => '<div class="no-results">Aucune mosquée trouvée</div>'
     }
@@ -27,7 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
           mosqueSelect.addOptions(
             mosques.map(m => ({
               value: m.slug || m.id || m.name,
-              text: m.name
+              text: m.text || m.name, // on garde text comme affichage
+              name: m.name,
+              slug: m.slug,
+              city: m.city,
+              address: m.address,
+              zipcode: m.zipcode
             }))
           );
         });

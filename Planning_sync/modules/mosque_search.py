@@ -1,12 +1,21 @@
 import os
+import re
 import json
 from pathlib import Path
 
 MOSQUE_DIR = Path(__file__).resolve().parent.parent / "data" / "mosques_by_country"
 
+def format_country_display(filename):
+    name = Path(filename).stem
+    name = re.sub(r"\d+$", "", name)
+    return name.replace("_", " ").upper()
+
 def list_countries():
     return [
-        {"code": file.stem, "name": file.stem.upper()}
+        {
+            "code": file.stem,
+            "name": format_country_display(file.name)
+        }
         for file in MOSQUE_DIR.glob("*.json")
     ]
 
