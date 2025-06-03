@@ -63,12 +63,6 @@ body {
   padding: 0;
 }
 
-.form-section legend {
-  font-weight: bold;
-  color: var(--accent);
-  margin-bottom: 0.5em;
-}
-
 label {
   display: block;
   margin-top: 1em;
@@ -80,7 +74,7 @@ input,
 select,
 .ts-control input {
   width: 100%;
-  padding: 0.9em;
+  padding: 9px;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: 4px;
@@ -153,10 +147,6 @@ input#mosque-select-ts-control {
 
 .ts-wrapper.focus .ts-control {
   box-shadow: 0 0 0 1px var(--text-color);
-}
-
-.ts-control .item {
-  padding: 0.3em 0.5em;
 }
 
 .ts-control,

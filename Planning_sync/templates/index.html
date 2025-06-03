@@ -4,16 +4,27 @@
     <meta charset="UTF-8" />
     <title>Prayer Planner</title>
     <link rel="stylesheet" href="/static/styles.css" />
-
     <!-- Tom Select -->
-    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
+      rel="stylesheet"
+    />
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
   <body>
     <main class="container">
       <h1 class="page-title">🕌 Prayer Planner</h1>
-
+      <div
+        id="mosque-map"
+        style="height: 500px; margin-top: 1em; border-radius: 8px"
+      ></div>
       <form action="/planner" method="post" class="form">
-
         <fieldset class="form-section">
           <label for="country-select">Pays :</label>
           <select id="country-select" name="country" autocomplete="off">
@@ -21,7 +32,12 @@
           </select>
 
           <label for="mosque-select">Mosquée :</label>
-          <select id="mosque-select" name="masjid_id" autocomplete="off" disabled>
+          <select
+            id="mosque-select"
+            name="masjid_id"
+            autocomplete="off"
+            disabled
+          >
             <option value="">-- Sélectionner une mosquée --</option>
           </select>
 
@@ -39,13 +55,15 @@
           </select>
         </fieldset>
 
-        <button type="submit" class="btn-submit" aria-label="Générer planning">📥 Générer planning</button>
-
+        <button type="submit" class="btn-submit" aria-label="Générer planning">
+          📥 Générer planning
+        </button>
       </form>
     </main>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map_loader.js') }}"></script>
   </body>
 </html>
