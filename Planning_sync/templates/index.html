@@ -4,27 +4,39 @@
     <meta charset="UTF-8" />
     <title>Prayer Planner</title>
     <link rel="stylesheet" href="/static/styles.css" />
+    <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
   </head>
   <body>
     <h1>Salamu alykum from Prayer Planner</h1>
 
     <form action="/planner" method="post">
-      <label for="masjid_id">ID de la Mosquée :</label>
-      <input type="text" name="masjid_id" required />
-      
+      <div id="mosque-selector">
+        <h3>🕌 Sélection de la mosquée</h3>
+
+        <label for="country-select">Choisissez un pays :</label>
+        <select id="country-select">
+          <option value="">-- Sélectionner un pays --</option>
+        </select>
+
+        <label for="mosque-select">Choisissez une mosquée :</label>
+        <select id="mosque-select" name="masjid_id" disabled>
+          <option value="">-- Sélectionner une mosquée --</option>
+        </select>
+      </div>
+
       <label for="padding_before">Temps avant prière (min):</label>
       <input type="number" name="padding_before" value="10" min="0" />
-      
+
       <label for="padding_after">Temps après prière (min):</label>
       <input type="number" name="padding_after" value="35" min="0" />
-      
+
       <label for="period">Période :</label>
       <select name="scope" required>
         <option value="today">Aujourd'hui</option>
         <option value="month">Mois</option>
         <option value="year">Année</option>
       </select>
-      
+
       <button type="submit">Générer planning</button>
     </form>
   </body>

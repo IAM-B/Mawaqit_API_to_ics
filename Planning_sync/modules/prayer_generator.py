@@ -38,7 +38,15 @@ def generate_prayer_ics_file(masjid_id: str, scope: str, timezone_str: str, padd
                 event.add('summary', f"{name.capitalize()} ({time_str})")
                 event.add('location', f"Mosquée {masjid_id.replace('-', ' ').title()}")
                 event.add('description', f"Prière incluant {padding_before} min avant et {padding_after} min après")
-                cal.add_component(event)
+
+                alarm = Event()
+                alarm.add('action', 'AUDIO')
+                alarm.add('trigger', timedelta(minutes=0))
+                alarm.add('description', f"🔊 Appel à la prière {name.capitalize()}")
+
+                event.add_component(alarm)
+                cal.add_component(event) 
+
             except Exception as e:
                 print(f"⚠️ Erreur pour {name} ({time_str}) le {date_obj} : {e}")
 

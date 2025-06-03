@@ -7,6 +7,16 @@ from uuid import uuid4
 
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
 
+def to_datetime(time_str: str, base_date: datetime, tz: ZoneInfo) -> datetime:
+    t = datetime.strptime(time_str, "%H:%M").time()
+    return datetime.combine(base_date.date(), t).replace(tzinfo=tz)
+
+def format_duration(delta: timedelta) -> str:
+    total_minutes = int(delta.total_seconds() // 60)
+    hours = total_minutes // 60
+    minutes = total_minutes % 60
+    return f"{hours}h{minutes:02d}"
+
 def generate_empty_slot_events(
     prayer_times: dict,
     base_date: datetime,
@@ -56,13 +66,16 @@ def generate_empty_slot_events(
             slots[-1] = (last_start, end)
 
     for start, end in slots:
+        duration = end - start
+        formatted = format_duration(duration)
+
         event = Event()
         event.add("uid", str(uuid4()))
         event.add("dtstart", start)
         event.add("dtend", end)
         event.add("transp", "TRANSPARENT")
         event.add("categories", "Empty slot")
-        event.add("summary", "Créneau")
+        event.add("summary", f"Créneau ({formatted})")
         event.add("description", "Créneau libre entre deux prières")
         calendar.add_component(event)
 

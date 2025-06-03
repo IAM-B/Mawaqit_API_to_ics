@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort
+from flask import Flask, render_template, request, abort, jsonify
 from modules.mawaqit_api import fetch_mosques
 from modules.time_segmenter import segment_available_time
 from modules.prayer_generator import generate_prayer_ics_file
@@ -6,6 +6,7 @@ from modules.empty_slots_generator import generate_empty_slots_by_scope
 from modules.slots_generator import generate_slots_by_scope
 from modules.slot_utils import adjust_slots_rounding
 from modules.mute_utils import apply_silent_settings
+from modules.mosque_search import list_countries, list_mosques_by_country
 from pathlib import Path
 from datetime import datetime
 
@@ -24,8 +25,8 @@ def redirect_planner():
 
 @app.route('/planner', methods=['POST'])
 def planner():
-    masjid_id = request.form['masjid_id']
-    period = request.form['scope']
+    masjid_id = request.form.get("masjid_id")
+    scope = request.form.get("scope")
 
     padding_before = int(request.form.get('padding_before', 10))
     padding_after = int(request.form.get('padding_after', 35))
@@ -34,16 +35,16 @@ def planner():
         slots_download_link = None
 
         # 📥 Récupération des horaires de prière
-        prayer_times, tz_str = fetch_mosques(masjid_id, period)
+        prayer_times, tz_str = fetch_mosques(masjid_id, scope)
 
         # 🕌 Génération du fichier .ics des prières
-        ics_path = generate_prayer_ics_file(masjid_id, period, tz_str, padding_before, padding_after)
+        ics_path = generate_prayer_ics_file(masjid_id, scope, tz_str, padding_before, padding_after)
         ics_url = f"/static/ics/{Path(ics_path).name}"
 
         # 🕳️ Créneaux vides (générés pour tous les scopes)
         empty_path = generate_empty_slots_by_scope(
             masjid_id=masjid_id,
-            scope=period,
+            scope=scope,
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after
@@ -62,7 +63,7 @@ def planner():
         # 📂 Génération du fichier ICS avec tous les créneaux disponibles selon le scope
         slots_path = generate_slots_by_scope(
             masjid_id=masjid_id,
-            scope=period,  # ou scope si tu renommes
+            scope=scope,  # ou scope si tu renommes
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after
@@ -87,6 +88,19 @@ def planner():
     except Exception as e:
         print(f"❌ Erreur interne : {e}")
         abort(500)
+
+@app.route("/get_countries", methods=["GET"])
+def get_countries():
+    countries = list_countries()
+    return jsonify(countries)
+
+@app.route("/get_mosques", methods=["GET"])
+def get_mosques():
+    country = request.args.get("country")
+    if not country:
+        return jsonify([]), 400
+    mosques = list_mosques_by_country(country)
+    return jsonify(mosques)
 
 @app.route('/edit_slot', methods=['GET', 'POST'])
 def edit_slot():
