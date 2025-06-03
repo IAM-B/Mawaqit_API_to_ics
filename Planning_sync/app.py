@@ -3,7 +3,7 @@ from modules.mawaqit_api import fetch_mosques
 from modules.time_segmenter import segment_available_time
 from modules.prayer_generator import generate_prayer_ics_file
 from modules.empty_slots_generator import generate_empty_slot_events
-from modules.slots_generator import generate_slot_ics_file
+from modules.slots_generator import generate_slots_by_scope
 from modules.slot_utils import adjust_slots_rounding
 from modules.mute_utils import apply_silent_settings
 from pathlib import Path
@@ -63,20 +63,21 @@ def planner():
                     segments.append({"day": i + 1, "slots": slots})
                 except Exception as e:
                     print(f"⚠️ Erreur jour {i + 1} : {e}")
-        else:
+        # 📂 Génération du fichier ICS avec tous les créneaux disponibles selon le scope
+        slots_path = generate_slots_by_scope(
+            masjid_id=masjid_id,
+            scope=period,  # ou scope si tu renommes
+            timezone_str=tz_str,
+            padding_before=padding_before,
+            padding_after=padding_after
+        )
+        slots_download_link = f"/{slots_path}"
+
+        # 📊 Segmenter les slots pour affichage (si today)
+        if isinstance(prayer_times, dict):
             segments = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
             slots = adjust_slots_rounding(segments)
             silent_slots = apply_silent_settings(slots)
-            slots_ics_path = f"static/ics/slots_{masjid_id}.ics"
-            generate_slot_ics_file(
-                prayer_times,
-                datetime.now(),
-                slots_ics_path,
-                tz_str,
-                padding_before,
-                padding_after
-            )
-            slots_download_link = f"/{slots_ics_path}"
 
         return render_template(
             "planner.html",
