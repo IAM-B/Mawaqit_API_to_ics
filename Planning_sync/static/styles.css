@@ -1,78 +1,225 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ==================
+   🎨 Couleurs / Thème
+   ================== */
+:root {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --primary: #1976d2;
+  --primary-hover: #1565c0;
+  --accent: #90caf9;
+  --form-bg: #1e1e1e;
+  --input-bg: #2a2a2a;
+  --border-color: #444;
+  --success: #43a047;
+  --success-hover: #388e3c;
+}
+
+/* ==================
+   🧱 Layout & global
+   ================== */
+html {
+  font-size: 16px;
+}
+
 body {
-  background-color: #121212;
-  color: #e0e0e0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: 'Segoe UI', sans-serif;
-  margin: 2em auto;
-  padding: 1em;
+  margin: 0;
+  padding: 2em;
+}
+
+.container {
   max-width: 800px;
-  line-height: 1.6;
-}
-
-h1, h2 {
-  color: #90caf9;
-  text-align: center;
-  border-bottom: 1px solid #333;
-  padding-bottom: 0.2em;
-}
-
-a {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  background-color: #1976d2;
-  color: white;
-  text-align: center;
-  width: 90%;
-  padding: 0.6em 1em;
-  text-decoration: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-a:hover {
-  background-color: #1565c0;
-}
-
-ul {
-  padding-left: 1.2em;
-}
-
-li {
-  margin-bottom: 0.5em;
-}
-
-form {
-  background-color: #1e1e1e;
+  margin: 0 auto;
   padding: 1em;
-  border-radius: 6px;
+}
+
+.page-title {
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+/* ==================
+   📝 Formulaire
+   ================== */
+.form {
+  background-color: var(--form-bg);
+  padding: 2em;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+.form-section {
   margin-bottom: 2em;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  border: none;
+  padding: 0;
+}
+
+.form-section legend {
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 0.5em;
 }
 
 label {
   display: block;
   margin-top: 1em;
-  color: #bbdefb;
+  margin-bottom: 0.3em;
+  color: var(--accent);
 }
 
-input, select, button {
+input,
+select,
+.ts-control input {
   width: 100%;
-  box-sizing: border-box;
-  padding: 0.5em;
-  margin-top: 0.3em;
-  border: 1px solid #444;
+  padding: 0.9em;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  background-color: #2a2a2a;
-  color: #fff;
+  color: var(--text-color);
+  font-size: 1em;
+  box-sizing: border-box;
 }
 
-button {
-  background-color: #43a047;
+input#country-select-ts-control,
+input#mosque-select-ts-control {
+    width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+::placeholder {
+  color:  var(--text-color);
+  font-size: 1em !important;
+  opacity: 1;
+}
+
+.ts-control input::placeholder {
+  color:  var(--text-color);
+  font-size: 1em !important;
+}
+
+/* ==================
+   🔍 Tom Select
+   ================== */
+.ts-wrapper {
+  width: 100%;
+}
+
+.ts-control,
+.ts-control input,
+.ts-control .item {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1rem !important;
+  color: var(--text-color);
+}
+
+.ts-control {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  min-height: 38px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.ts-control input {
+  background: transparent;
+  color: var(--text-color);
+}
+
+.ts-dropdown {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.ts-dropdown .option {
+  padding: 0.5em;
+}
+
+.ts-dropdown .active {
+  background-color: var(--primary);
+  color: white;
+}
+
+.ts-wrapper.focus .ts-control {
+  box-shadow: 0 0 0 1px var(--text-color);
+}
+
+.ts-control .item {
+  padding: 0.3em 0.5em;
+}
+
+.ts-control,
+.ts-wrapper.single.input-active .ts-control {
+  background: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+.ts-dropdown-content {
+  max-height: 250px;
+  overflow-y: auto;
+  color:  var(--text-color);
+  background-color: var(--input-bg);
+  border-top: 1px solid var(--border-color);
+  padding: 0.3em 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--input-bg);
+  transition: background-color 0.3s ease;
+}
+
+.ts-dropdown-content .option {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-dropdown-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ts-dropdown-content::-webkit-scrollbar-thumb {
+  background-color: var(--accent);
+  border-radius: 3px;
+}
+
+.ts-dropdown-content::-webkit-scrollbar-track {
+  background: var(--input-bg);
+}
+
+.ts-dropdown .option:hover {
+  background-color: var(--text-color);
+  color: var(--form-bg);
+}
+
+/* ==================
+   ✅ Bouton
+   ================== */
+.btn-submit {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: var(--success);
+  color: white;
   border: none;
-  margin-top: 4.5em;
-  padding: 1em 0;
+  padding: 1em;
+  width: 100%;
+  margin-top: 2em;
+  font-size: 1.1em;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-button:hover {
-  background-color: #388e3c;
+.btn-submit:hover {
+  background-color: var(--success-hover)
 }

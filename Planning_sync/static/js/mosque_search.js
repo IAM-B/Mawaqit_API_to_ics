@@ -1,44 +1,45 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const countrySelect = document.getElementById("country-select");
-  const mosqueSelect = document.getElementById("mosque-select");
+  const countrySelectEl = document.getElementById("country-select");
+  const mosqueSelectEl = document.getElementById("mosque-select");
 
-  // Chargement des pays
+  const mosqueSelect = new TomSelect(mosqueSelectEl, {
+    placeholder: "Choisir une mosquée...",
+    valueField: "value",
+    labelField: "text",
+    searchField: ["text"],
+    options: [],
+    shouldLoad: () => false, // désactive chargement async auto
+    render: {
+      no_results: () => '<div class="no-results">Aucune mosquée trouvée</div>'
+    }
+  });
+
+  const countrySelect = new TomSelect(countrySelectEl, {
+    placeholder: "Choisir un pays...",
+    onChange: (value) => {
+      if (!value) return;
+
+      fetch(`/get_mosques?country=${value}`)
+        .then(res => res.json())
+        .then(mosques => {
+          mosqueSelect.clearOptions();
+          mosqueSelect.enable();
+          mosqueSelect.addOptions(
+            mosques.map(m => ({
+              value: m.slug || m.id || m.name,
+              text: m.name
+            }))
+          );
+        });
+    }
+  });
+
+  // Charger les pays
   fetch("/get_countries")
     .then(res => res.json())
     .then(countries => {
-      countries.forEach(({ code, name }) => {
-        const option = document.createElement("option");
-        option.value = code;
-        option.textContent = name;
-        countrySelect.appendChild(option);
-      });
+      countrySelect.addOptions(
+        countries.map(c => ({ value: c.code, text: c.name }))
+      );
     });
-
-  // Quand un pays est sélectionné
-  countrySelect.addEventListener("change", () => {
-    const countryCode = countrySelect.value;
-    mosqueSelect.innerHTML = '<option value="">-- Sélectionner une mosquée --</option>';
-    mosqueSelect.disabled = true;
-
-    if (!countryCode) return;
-
-    fetch(`/get_mosques?country=${countryCode}`)
-      .then(res => res.json())
-      .then(mosques => {
-        mosques.forEach(mosque => {
-          const option = document.createElement("option");
-          option.value = mosque.slug || mosque.id || mosque.name;
-          option.textContent = mosque.name;
-          mosqueSelect.appendChild(option);
-        });
-        mosqueSelect.disabled = false;
-      });
-  });
-
-  // Quand une mosquée est sélectionnée
-  mosqueSelect.addEventListener("change", () => {
-    const selected = mosqueSelect.value;
-    console.log("Mosquée sélectionnée :", selected);
-    // On peux ici appeler un endpoint pour sauvegarder ou stocker la sélection
-  });
 });

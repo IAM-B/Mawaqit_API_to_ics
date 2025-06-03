@@ -1,42 +1,64 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Planificateur</title>
-  <link rel="stylesheet" href="/static/styles.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>🕌 Planning synchronisé</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 class="page-title">🕌 Emploi du temps synchronisé</h1>
 
-  <h1>Créer mon emploi du temps synchronisé avec les horaires de prière</h1>
+      <section class="form">
+        <fieldset class="form-section">
+          <legend>📌 Informations Générales</legend>
 
-  <h2>Créneaux disponibles</h2>
+          <label>Fuseau horaire détecté :</label>
+          <ul>
+            <li>{{ timezone_str }}</li>
+          </ul>
 
-  <p>
-    <strong>Fuseau horaire détecté :</strong> {{ timezone_str }}
-  </p>
+          {% if segments %}
+          <label>Créneaux disponibles :</label>
+          <ul>
+            {% for seg in segments %}
+            <li>{{ seg.start }} - {{ seg.end }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>
+          {% endif %}
 
-  <ul>
-    {% for seg in segments %}
-      <li>{{ seg.start }} - {{ seg.end }}</li>
-    {% endfor %}
-  </ul>
+          <boutton class="btn-submit">
+            <a href="/edit_slot">✏️ Modifier un créneau manuellement</a>
+          </boutton>
+          
+        </fieldset>
 
-  <a href="/edit_slot">✏️ Modifier un créneau manuellement</a>
-  
-  {% if download_link %}
-    <br><br>
-    <a href="{{ download_link }}" download>📥 Télécharger le fichier .ics (horaires de prière)</a>
-  {% endif %}
+        <fieldset class="form-section">
+          <legend>📂 Fichiers téléchargeables</legend>
 
-  {% if empty_download_link %}
-    <br>
-    <a href="{{ empty_download_link }}" download>📥 Télécharger les créneaux disponibles (.ics)</a>
-  {% endif %}
-
-  {% if slots_download_link %}
-    <br>
-    <a href="{{ slots_download_link }}" download>📥 Télécharger les créneaux synchronisés (.ics)</a>
-  {% endif %}
-
-</body>
+          {% if download_link %}
+          <boutton class="btn-submit"
+            ><a href="{{ download_link }}" download
+              >📥 Télécharger les horaires de prière (.ics)</a
+            ></boutton
+          >
+          {% endif %} {% if empty_download_link %}
+          <boutton class="btn-submit"
+            ><a href="{{ empty_download_link }}" download
+              >📥 Télécharger les créneaux disponibles (.ics)</a
+            ></boutton
+          >
+          {% endif %} {% if slots_download_link %}
+          <boutton class="btn-submit"
+            ><a href="{{ slots_download_link }}" download
+              >📥 Télécharger les créneaux synchronisés (.ics)</a
+            ></boutton
+          >
+          {% endif %}
+        </fieldset>
+      </section>
+    </main>
+  </body>
 </html>

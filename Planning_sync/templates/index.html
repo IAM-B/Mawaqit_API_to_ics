@@ -4,40 +4,48 @@
     <meta charset="UTF-8" />
     <title>Prayer Planner</title>
     <link rel="stylesheet" href="/static/styles.css" />
-    <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
+
+    <!-- Tom Select -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet" />
   </head>
   <body>
-    <h1>Salamu alykum from Prayer Planner</h1>
+    <main class="container">
+      <h1 class="page-title">🕌 Prayer Planner</h1>
 
-    <form action="/planner" method="post">
-      <div id="mosque-selector">
-        <h3>🕌 Sélection de la mosquée</h3>
+      <form action="/planner" method="post" class="form">
 
-        <label for="country-select">Choisissez un pays :</label>
-        <select id="country-select">
-          <option value="">-- Sélectionner un pays --</option>
-        </select>
+        <fieldset class="form-section">
+          <label for="country-select">Pays :</label>
+          <select id="country-select" name="country" autocomplete="off">
+            <option value="">-- Sélectionner un pays --</option>
+          </select>
 
-        <label for="mosque-select">Choisissez une mosquée :</label>
-        <select id="mosque-select" name="masjid_id" disabled>
-          <option value="">-- Sélectionner une mosquée --</option>
-        </select>
-      </div>
+          <label for="mosque-select">Mosquée :</label>
+          <select id="mosque-select" name="masjid_id" autocomplete="off" disabled>
+            <option value="">-- Sélectionner une mosquée --</option>
+          </select>
 
-      <label for="padding_before">Temps avant prière (min):</label>
-      <input type="number" name="padding_before" value="10" min="0" />
+          <label for="padding_before">Temps avant prière (min) :</label>
+          <input type="number" name="padding_before" value="10" min="0" />
 
-      <label for="padding_after">Temps après prière (min):</label>
-      <input type="number" name="padding_after" value="35" min="0" />
+          <label for="padding_after">Temps après prière (min) :</label>
+          <input type="number" name="padding_after" value="35" min="0" />
 
-      <label for="period">Période :</label>
-      <select name="scope" required>
-        <option value="today">Aujourd'hui</option>
-        <option value="month">Mois</option>
-        <option value="year">Année</option>
-      </select>
+          <label for="scope">Période :</label>
+          <select name="scope" required>
+            <option value="today">Aujourd'hui</option>
+            <option value="month">Mois</option>
+            <option value="year">Année</option>
+          </select>
+        </fieldset>
 
-      <button type="submit">Générer planning</button>
-    </form>
+        <button type="submit" class="btn-submit" aria-label="Générer planning">📥 Générer planning</button>
+
+      </form>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
   </body>
 </html>
