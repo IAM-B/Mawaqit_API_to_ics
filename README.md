@@ -10,7 +10,7 @@ It also generates an `.ics` calendar file that you can import into your favorite
 
 ## 📦 Features
 
-* 🌍 Select your mosque by ID from Mawaqit
+* 🌍 Select your mosque
 * 🕒 Choose scope: daily, monthly, or yearly prayer times
 * 📅 Get calculated free time slots between prayers
 * 📤 Export the schedule as `.ics` file
@@ -27,26 +27,11 @@ git clone https://github.com/IAM-B/Mawaqit_API_to_ics
 cd Mawaqit_API_to_ics
 ```
 
-### 2. Launch Mawaqit API (in parallel)
-
-⚠️ This app requires the `Mawaqit_API` service to be running locally.
-
-From the root project folder:
-
-```bash
-cd Mawaqit_API
-make install
-make run
-```
-
-This starts the local FastAPI server on `http://localhost:8000`.
-
 ### 3. Set up and run Planning\_sync
 
 In a new terminal:
 
 ```bash
-cd Planning_sync
 make install
 make run
 ```
@@ -55,15 +40,6 @@ Then open your browser at: [http://localhost:5000](http://localhost:5000)
 
 ---
 
-## 🛠 Project Structure
-
-```
-MAWAQIT_API_TO_ICS/
-├── Mawaqit_API/           # Local FastAPI service
-└── Planning_sync/         # Schedule generator with UI
-```
-
----
 
 ## 🧩 Roadmap
 

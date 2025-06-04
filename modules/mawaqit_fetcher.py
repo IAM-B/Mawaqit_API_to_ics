@@ -2,6 +2,7 @@ import re
 import json
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 # Fonction principale : récupère les données confData du site Mawaqit
 def fetch_mawaqit_data(masjid_id: str) -> dict:
@@ -77,4 +78,5 @@ def get_month(masjid_id: str, month_number: int):
 # Données annuelles
 def get_calendar(masjid_id: str):
     conf_data = fetch_mawaqit_data(masjid_id)
-    return conf_data.get("calendar", [])
+    calendar = conf_data.get("calendar", [])
+    return calendar

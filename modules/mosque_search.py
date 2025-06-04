@@ -2,9 +2,25 @@ import os
 import re
 import json
 from pathlib import Path
+from flask import request, jsonify
 
 MOSQUE_DIR = Path(__file__).resolve().parent.parent / "data" / "mosques_by_country"
 
+def get_formatted_mosques():
+    country = request.args.get("country")
+    mosques = list_mosques_by_country(country)
+
+    for m in mosques:
+        m["text"] = " - ".join(filter(None, [
+            m.get("name", ""),
+            m.get("city", ""),
+            m.get("address", ""),
+            m.get("zipcode", ""),
+            m.get("slug", "")
+        ]))
+
+    return jsonify(mosques)
+    
 def format_country_display(filename):
     name = Path(filename).stem
     name = re.sub(r"\d+$", "", name)
