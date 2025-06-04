@@ -12,33 +12,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const markers = {};
 
-  // Met à jour le formulaire en fonction du pays et de la mosquée sélectionnés
-  function selectMosqueInForm(countryCode, mosqueSlug) {
-    if (!countryCode || !mosqueSlug) return;
+  function selectMosqueAfterLoad(mosqueSelect, mosqueSlug) {
+    let attempts = 0;
+    const maxAttempts = 20;
 
-    countrySelectEl.value = countryCode;
-    countrySelectEl.dispatchEvent(new Event("change"));
+    const wait = setInterval(() => {
+      const options = Object.keys(mosqueSelect.options || {});
+      if (options.includes(mosqueSlug)) {
+        mosqueSelect.setValue(mosqueSlug, true);
+        clearInterval(wait);
 
-    // attendre chargement des mosquées
-    setTimeout(() => {
-      const option = Array.from(mosqueSelectEl.options).find(
-        (opt) => opt.value === mosqueSlug
-      );
-      if (option) {
-        mosqueSelectEl.value = mosqueSlug;
-        mosqueSelectEl.dispatchEvent(new Event("change"));
+        const marker = markers[mosqueSlug];
+        if (marker) {
+          map.setView(marker.getLatLng(), 13);
+          marker.openPopup();
+        }
+      } else if (++attempts > maxAttempts) {
+        console.warn(`⚠️ Impossible de sélectionner la mosquée : ${mosqueSlug}`);
+        clearInterval(wait);
       }
-    }, 500);
+    }, 300);
   }
 
   // Charge toutes les mosquées avec leurs marqueurs
   async function loadAllMosques() {
-    const res = await fetch("/get_countries");
-    const countries = await res.json();
+    const countries = await (await fetch("/get_countries")).json();
 
     for (const country of countries) {
-      const res = await fetch(`/get_mosques?country=${country.code}`);
-      const mosques = await res.json();
+      const mosques = await (await fetch(`/get_mosques?country=${country.code}`)).json();
 
       mosques.forEach((mosque) => {
         if (!mosque.lat || !mosque.lng) return;
@@ -66,13 +67,39 @@ document.addEventListener("DOMContentLoaded", () => {
   // Délégation d’événement pour synchronisation à partir de la carte
   map.on("popupopen", (e) => {
     const btn = e.popup.getElement().querySelector(".btn-sync-mosque");
-    if (btn) {
-      btn.addEventListener("click", () => {
-        const country = btn.dataset.country;
-        const slug = btn.dataset.slug;
-        selectMosqueInForm(country, slug);
-      });
-    }
+    if (!btn) return;
+
+    btn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const countryCode = btn.dataset.country;
+      const mosqueSlug = btn.dataset.slug;
+      const countrySelect = countrySelectEl.tomselect;
+      const mosqueSelect = mosqueSelectEl.tomselect;
+
+      countrySelect.setValue(countryCode, true);
+
+      fetch(`/get_mosques?country=${countryCode}`)
+        .then((res) => res.json())
+        .then((mosques) => {
+          mosqueSelect.clearOptions();
+          mosqueSelect.enable();
+          mosqueSelect.addOptions(
+            mosques.map((m) => ({
+              value: m.slug || m.id || m.name,
+              text: m.text || m.name,
+              name: m.name,
+              slug: m.slug,
+              city: m.city,
+              address: m.address,
+              zipcode: m.zipcode,
+            }))
+          );
+
+          selectMosqueAfterLoad(mosqueSelect, mosqueSlug);
+        });
+    });
   });
 
   // Mise à jour de la carte lors de la sélection manuelle
