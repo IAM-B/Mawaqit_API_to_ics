@@ -85,7 +85,7 @@ def generate_empty_slot_events(
     return filename
 
 # ✅ NEW: multi-scope support
-def generate_empty_slots_by_scope(
+def generate_empty_by_scope(
     masjid_id: str,
     scope: str,
     timezone_str: str,

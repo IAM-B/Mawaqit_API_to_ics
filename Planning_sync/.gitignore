@@ -2,3 +2,4 @@ ics
 env-planner
 __pycache__/
 *.log
+.envrc

@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, abort, jsonify
 from modules.mawaqit_api import fetch_mosques
 from modules.time_segmenter import segment_available_time
 from modules.prayer_generator import generate_prayer_ics_file
-from modules.empty_slots_generator import generate_empty_slots_by_scope
+from modules.empty_generator import generate_empty_by_scope
 from modules.slots_generator import generate_slots_by_scope
 from modules.slot_utils import adjust_slots_rounding
 from modules.mute_utils import apply_silent_settings
@@ -42,7 +42,7 @@ def planner():
         ics_url = f"/static/ics/{Path(ics_path).name}"
 
         # 🕳️ Créneaux vides (générés pour tous les scopes)
-        empty_path = generate_empty_slots_by_scope(
+        empty_path = generate_empty_by_scope(
             masjid_id=masjid_id,
             scope=scope,
             timezone_str=tz_str,
