@@ -1,9 +1,9 @@
-import requests
-from pathlib import Path
-from datetime import datetime, timedelta, time
-from icalendar import Calendar, Event
-from zoneinfo import ZoneInfo
 from uuid import uuid4
+from pathlib import Path
+from zoneinfo import ZoneInfo
+from icalendar import Calendar, Event
+from datetime import datetime, timedelta, time
+from modules.mawaqit_fetcher import fetch_mosques_data
 
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
 
@@ -15,7 +15,6 @@ def parse_time_str(time_str: str, date_ref=None) -> datetime:
 
 
 def generate_prayer_ics_file(masjid_id: str, scope: str, timezone_str: str, padding_before: int, padding_after: int) -> str:
-    BASE_URL = f"http://localhost:8000/api/v1/{masjid_id}"
     YEAR = datetime.now().year
     tz = ZoneInfo(timezone_str)
     cal = Calendar()
@@ -50,21 +49,17 @@ def generate_prayer_ics_file(masjid_id: str, scope: str, timezone_str: str, padd
             except Exception as e:
                 print(f"⚠️ Erreur pour {name} ({time_str}) le {date_obj} : {e}")
 
+    prayer_data, _tz = fetch_mosques_data(masjid_id, scope)
+
     if scope == "today":
-        response = requests.get(f"{BASE_URL}/prayer-times")
-        response.raise_for_status()
-        prayer_times = response.json()
         today = now.date()
-        filtered_times = {k: v for k, v in prayer_times.items() if k in PRAYERS_ORDER}
+        filtered_times = {k: v for k, v in prayer_data.items() if k in PRAYERS_ORDER}
         add_event(today, filtered_times)
         filename = f"horaires_priere_{masjid_id}_{today}.ics"
 
     elif scope == "month":
         month = now.month
-        response = requests.get(f"{BASE_URL}/calendar/{month}")
-        response.raise_for_status()
-        calendar_data = response.json()
-        for i, daily_times in enumerate(calendar_data):
+        for i, daily_times in enumerate(prayer_data):
             try:
                 date_obj = datetime(YEAR, month, i + 1)
                 filtered_times = {k: v for k, v in daily_times.items() if k in PRAYERS_ORDER}
@@ -74,11 +69,7 @@ def generate_prayer_ics_file(masjid_id: str, scope: str, timezone_str: str, padd
         filename = f"horaires_priere_{masjid_id}_{YEAR}_{month:02d}.ics"
 
     elif scope == "year":
-        response = requests.get(f"{BASE_URL}/calendar")
-        response.raise_for_status()
-        calendar_data = response.json()["calendar"]
-
-        for month_index, month_days in enumerate(calendar_data, start=1):
+        for month_index, month_days in enumerate(prayer_data, start=1):
             if not isinstance(month_days, dict):
                 continue
             for day_str, time_list in month_days.items():

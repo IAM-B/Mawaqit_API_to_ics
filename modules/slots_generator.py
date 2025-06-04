@@ -1,9 +1,9 @@
-import requests
-from pathlib import Path
-from datetime import datetime, timedelta
-from icalendar import Calendar, Event
-from zoneinfo import ZoneInfo
 from uuid import uuid4
+from pathlib import Path
+from zoneinfo import ZoneInfo
+from icalendar import Calendar, Event
+from datetime import datetime, timedelta, time
+from modules.mawaqit_fetcher import fetch_mosques_data
 
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
 
@@ -62,10 +62,8 @@ def generate_slot_ics_file(
 
 # ✅ Wrapper multi-scope
 def generate_slots_by_scope(masjid_id: str, scope: str, timezone_str: str, padding_before: int, padding_after: int) -> str:
-    BASE_URL = f"http://localhost:8000/api/v1/{masjid_id}"
     YEAR = datetime.now().year
     now = datetime.now()
-    tz = ZoneInfo(timezone_str)
     cal = Calendar()
     cal.add('prodid', '-//Planning Sync//Mawaqit//FR')
     cal.add('version', '2.0')
@@ -80,27 +78,21 @@ def generate_slots_by_scope(masjid_id: str, scope: str, timezone_str: str, paddi
                     cal.add_component(component)
         tmp_file.unlink(missing_ok=True)
 
+    prayer_data, _tz = fetch_mosques_data(masjid_id, scope)
+
     if scope == "today":
-        response = requests.get(f"{BASE_URL}/prayer-times")
-        response.raise_for_status()
-        append_day_to_calendar(now, response.json())
+        append_day_to_calendar(now, prayer_data)
         filename = f"slots_{masjid_id}_{now.date()}.ics"
 
     elif scope == "month":
         month = now.month
-        response = requests.get(f"{BASE_URL}/calendar/{month}")
-        response.raise_for_status()
-        calendar_data = response.json()
-        for i, daily_times in enumerate(calendar_data):
+        for i, daily_times in enumerate(prayer_data):
             date_obj = datetime(YEAR, month, i + 1)
             append_day_to_calendar(date_obj, daily_times)
         filename = f"slots_{masjid_id}_{YEAR}_{month:02d}.ics"
 
     elif scope == "year":
-        response = requests.get(f"{BASE_URL}/calendar")
-        response.raise_for_status()
-        calendar_data = response.json()["calendar"]
-        for month_index, month_days in enumerate(calendar_data, start=1):
+        for month_index, month_days in enumerate(prayer_data, start=1):
             for day_str, time_list in month_days.items():
                 date_obj = datetime(YEAR, month_index, int(day_str))
                 times_dict = dict(zip(["fajr", "sunrise", "dohr", "asr", "maghreb", "icha"], time_list))

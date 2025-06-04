@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import datetime
 from flask import Flask, render_template, request, abort, jsonify
-from modules.mawaqit_api import fetch_mosques
+from modules.mawaqit_fetcher import fetch_mawaqit_data, fetch_mosques_data, get_prayer_times_of_the_day, get_month, get_calendar
 from modules.time_segmenter import segment_available_time
 from modules.prayer_generator import generate_prayer_ics_file
 from modules.empty_generator import generate_empty_by_scope
@@ -19,6 +19,32 @@ app.config['TRAP_HTTP_EXCEPTIONS'] = True
 def index():
     return render_template("index.html")
 
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('favicon.ico')
+    
+@app.route("/<masjid_id>/", methods=["GET"])
+def get_raw_data(masjid_id: str):
+    r = fetch_mawaqit_data(masjid_id)
+    return {"rawdata": r}
+
+@app.route("/<masjid_id>/today", methods=["GET"])
+def get_prayer_times(masjid_id: str):
+    prayer_times = get_prayer_times_of_the_day(masjid_id)
+    return prayer_times
+
+
+@app.route("/<masjid_id>/calendar", methods=["GET"])
+def get_year_calendar(masjid_id: str):
+    r = get_calendar(masjid_id)
+    return {"calendar": r}
+
+
+@app.route("/<masjid_id>/calendar/<int:month_number>", methods=["GET"])
+def get_month_calendar(masjid_id: str, month_number: int):
+    month_dict = get_month(masjid_id, month_number)
+    return jsonify(month_dict)
+
 @app.route('/planner', methods=['GET'])
 def redirect_planner():
     return render_template("error.html", error_message="Accès direct à /planner non autorisé. Merci de soumettre le formulaire.")
@@ -35,7 +61,7 @@ def planner():
         slots_download_link = None
 
         # 📥 Récupération des horaires de prière
-        prayer_times, tz_str = fetch_mosques(masjid_id, scope)
+        prayer_times, tz_str = fetch_mosques_data(masjid_id, scope)
 
         # 🕌 Génération du fichier .ics des prières
         ics_path = generate_prayer_ics_file(masjid_id, scope, tz_str, padding_before, padding_after)
@@ -131,18 +157,6 @@ def method_not_allowed(e):
 @app.errorhandler(500)
 def internal_error(e):
     return render_template("error.html", error_message="Erreur interne du serveur (500)"), 500
-
-@app.route("/debug/<masjid_id>")
-def debug_masjid_data(masjid_id):
-    import requests, json
-    try:
-        url = f"http://localhost:8000/api/v1/{masjid_id}"
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-        return f"<pre>{json.dumps(data, indent=2, ensure_ascii=False)}</pre>"
-    except Exception as e:
-        return f"❌ Erreur : {e}", 500
 
 if __name__ == "__main__":
     try:
