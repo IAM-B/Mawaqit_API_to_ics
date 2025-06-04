@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const marker = markers[mosqueSlug];
         if (marker) {
-          map.setView(marker.getLatLng(), 13);
+          map.setView(marker.getLatLng(), 250);
           marker.openPopup();
         }
       } else if (++attempts > maxAttempts) {
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mosqueSlug = mosqueSelectEl.value;
     const marker = markers[mosqueSlug];
     if (marker) {
-      map.setView(marker.getLatLng(), 13);
+      map.setView(marker.getLatLng(), 250);
       marker.openPopup();
     }
   });

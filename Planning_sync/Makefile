@@ -41,7 +41,7 @@ reset: clean install
 # Git commit avec message passé en paramètre : make gcommit "message ici"
 gcommit:
 	git add .
-	git commit -m "$(m)"
+	git commit
 
 # Git push (branche courante)
 gpush:

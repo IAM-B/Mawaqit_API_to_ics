@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+.leaflet-control-attribution.leaflet-control {
+    display: none;
+}
+
 /* ==================
    🎨 Couleurs / Thème
    ================== */

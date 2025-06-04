@@ -19,10 +19,13 @@ document.addEventListener("DOMContentLoaded", () => {
     onChange: (value) => {
       if (!value) return;
 
+      mosqueSelect.clear(true);
+      mosqueSelect.clearOptions();
+      mosqueSelect.disable();
+  
       fetch(`/get_mosques?country=${value}`)
         .then(res => res.json())
         .then(mosques => {
-          mosqueSelect.clearOptions();
           mosqueSelect.enable();
           mosqueSelect.addOptions(
             mosques.map(m => ({
