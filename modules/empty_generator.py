@@ -3,7 +3,6 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
-from modules.mawaqit_fetcher import fetch_mosques_data
 
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
 
@@ -90,7 +89,8 @@ def generate_empty_by_scope(
     scope: str,
     timezone_str: str,
     padding_before: int,
-    padding_after: int
+    padding_after: int,
+    prayer_times: list | dict
 ) -> str:
     YEAR = datetime.now().year
     now = datetime.now()
@@ -99,9 +99,9 @@ def generate_empty_by_scope(
     cal.add('prodid', '-//Planning Sync//Mawaqit//FR')
     cal.add('version', '2.0')
 
-    def append_day_to_calendar(base_date, prayer_times):
+    def append_day_to_calendar(base_date, daily_times: dict):
         tmp_file = Path("tmp_empty.ics")
-        generate_empty_slot_events(prayer_times, base_date, tmp_file, timezone_str, padding_before, padding_after)
+        generate_empty_slot_events(daily_times, base_date, tmp_file, timezone_str, padding_before, padding_after)
         with open(tmp_file, "rb") as f:
             sub_cal = Calendar.from_ical(f.read())
             for component in sub_cal.walk():
@@ -109,21 +109,19 @@ def generate_empty_by_scope(
                     cal.add_component(component)
         tmp_file.unlink(missing_ok=True)
 
-    prayer_data, _tz = fetch_mosques_data(masjid_id, scope)
-
     if scope == "today":
-        append_day_to_calendar(now, prayer_data)
+        append_day_to_calendar(now, prayer_times)
         filename = f"empty_slots_{masjid_id}_{now.date()}.ics"
 
     elif scope == "month":
         month = now.month
-        for i, daily_times in enumerate(prayer_data):
+        for i, daily_times in enumerate(prayer_times):
             date_obj = datetime(YEAR, month, i + 1)
             append_day_to_calendar(date_obj, daily_times)
         filename = f"empty_slots_{masjid_id}_{YEAR}_{month:02d}.ics"
 
     elif scope == "year":
-        for month_index, month_days in enumerate(prayer_data, start=1):
+        for month_index, month_days in enumerate(prayer_times, start=1):
             for day_str, time_list in month_days.items():
                 date_obj = datetime(YEAR, month_index, int(day_str))
                 times_dict = dict(zip(["fajr", "sunrise", "dohr", "asr", "maghreb", "icha"], time_list))
