@@ -123,10 +123,15 @@ def generate_empty_by_scope(
     elif scope == "year":
         for month_index, month_days in enumerate(prayer_times, start=1):
             for day_str, time_list in month_days.items():
-                date_obj = datetime(YEAR, month_index, int(day_str))
-                times_dict = dict(zip(["fajr", "sunrise", "dohr", "asr", "maghreb", "icha"], time_list))
-                filtered = {k: v for k, v in times_dict.items() if k in PRAYERS_ORDER}
-                append_day_to_calendar(date_obj, filtered)
+                try:
+                    date_obj = datetime(YEAR, month_index, int(day_str))
+                    if isinstance(time_list, list) and len(time_list) >= 6:
+                        # Suppression de l'heure du lever du soleil (index 1)
+                        cleaned_list = [v for i, v in enumerate(time_list) if i != 1]
+                        times_dict = dict(zip(PRAYERS_ORDER, cleaned_list[:len(PRAYERS_ORDER)]))
+                        append_day_to_calendar(date_obj, times_dict)
+                except Exception as e:
+                    print(f"⚠️ Erreur {day_str}/{month_index} : {e}")
         filename = f"empty_slots_{masjid_id}_{YEAR}.ics"
 
     else:

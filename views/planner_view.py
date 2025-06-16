@@ -36,7 +36,6 @@ def normalize_month_data(prayer_times: dict) -> list[dict]:
     return normalized
 
 def normalize_year_data(prayer_times: list) -> list[dict]:
-    PRAYERS_KEYS = ["fajr", "sunset", "dohr", "asr", "maghreb", "icha"]
     year_normalized = []
 
     for month_index, month_days in enumerate(prayer_times, start=1):
@@ -45,17 +44,16 @@ def normalize_year_data(prayer_times: list) -> list[dict]:
             continue
 
         normalized_month = {}
-        for day_str, raw in month_days.items():
-            if isinstance(raw, list) and len(raw) == 6:
-                normalized_month[day_str] = dict(zip(PRAYERS_KEYS, raw))
-            elif isinstance(raw, str) and "," in raw:
-                parts = raw.split(',')
-                if len(parts) == 6:
-                    normalized_month[day_str] = dict(zip(PRAYERS_KEYS, parts))
-            elif isinstance(raw, dict):
-                normalized_month[day_str] = raw
-            else:
-                print(f"⚠️ {day_str}/{month_index} ignoré : {raw}")
+        for day_str, time_list in month_days.items():
+            try:
+                if isinstance(time_list, list) and len(time_list) == 6:
+                    normalized_month[day_str] = time_list
+                else:
+                    print(f"⚠️ Format d'heure invalide pour {day_str}/{month_index} : {time_list}")
+            except Exception as e:
+                print(f"⚠️ Erreur lors du traitement de {day_str}/{month_index} : {e}")
+                continue
+
         year_normalized.append(normalized_month)
 
     return year_normalized
