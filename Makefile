@@ -4,56 +4,62 @@ PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 APP := app.py
 
-# 📦 Installation et configuration
+# 📦 Installation and Configuration
 init-direnv:
-	@echo "👉 Création du fichier .envrc pour direnv..."
+	@echo "👉 Creating .envrc file for direnv..."
 	@echo 'source env-planner/bin/activate' > .envrc
 	@direnv allow .
-	@echo "✅ direnv configuré. Il activera automatiquement l'environnement en entrant dans le dossier."
+	@echo "✅ direnv configured. It will automatically activate the environment when entering the directory."
 
 install: $(VENV)/bin/activate
 
 $(VENV)/bin/activate: requirements.txt
-	@echo "🔧 Création de l'environnement virtuel..."
+	@echo "🔧 Creating virtual environment..."
 	python -m venv $(VENV)
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 	@$(MAKE) init-direnv
-	@echo "✅ Installation terminée."
-	@echo "🧠 Astuce : direnv activera ton environnement automatiquement à l'avenir."
-	@echo "✅ Environnement prêt."
+	@echo "✅ Installation complete."
+	@echo "🧠 Tip: direnv will automatically activate your environment in the future."
+	@echo "✅ Environment ready."
 
-# 🚀 Lancer l'application
+# 🚀 Launch Application
 run-dev: install
-	@echo "🚀 Démarrage de l'application Flask en mode développement..."
-	$(PYTHON) $(APP) --env development
+	@echo "🚀 Starting Flask application in development mode..."
+	FLASK_ENV=development $(PYTHON) $(APP)
 
 run-prod: install
-	@echo "🚀 Démarrage de l'application Flask en mode production..."
-	$(PYTHON) $(APP) --env production
+	@echo "🚀 Starting Flask application in production mode..."
+	FLASK_ENV=production $(PYTHON) $(APP)
+
+run-test: install
+	@echo "🧪 Starting Flask application in test mode..."
+	FLASK_ENV=testing $(PYTHON) $(APP)
 
 # 🧪 Tests
 test-unit:
-	@echo "🧪 Exécution des tests unitaires..."
-	$(PYTHON) -m pytest tests/unit -v
+	@echo "🧪 Running unit tests..."
+	FLASK_ENV=testing $(PYTHON) -m pytest tests/unit -v
 
 test-integration:
-	@echo "🧪 Exécution des tests d'intégration..."
-	$(PYTHON) -m pytest tests/integration -v
+	@echo "🧪 Running integration tests..."
+	FLASK_ENV=testing $(PYTHON) -m pytest tests/integration -v
 
 test-all: test-unit test-integration
 
-# 🧼 Nettoyage
+# 🧼 Cleanup
 clean:
-	@echo "🗑️ Suppression de l'environnement virtuel..."
+	@echo "🗑️ Removing virtual environment..."
 	rm -rf $(VENV)
-	@echo "🗑️ Suppression des fichiers Python compilés..."
+	@echo "🗑️ Removing compiled Python files..."
 	find . -type d -name "__pycache__" -exec rm -r {} +
 	find . -type f -name "*.pyc" -delete
+	@echo "🗑️ Removing log files..."
+	rm -rf logs/*.log
 
-# 🔄 Réinitialisation
+# 🔄 Reset
 reset: clean install
-	@echo "♻️ Projet réinitialisé."
+	@echo "♻️ Project reset complete."
 
 # 📝 Git
 gcommit:
@@ -74,27 +80,46 @@ gstatus:
 
 # 📚 Documentation
 docs-serve:
-	@echo "📚 Démarrage du serveur de documentation..."
+	@echo "📚 Starting documentation server..."
 	cd docs && python -m http.server 8000
 
-# ℹ️ Aide
+# 🔧 Configuration
+config-dev:
+	@echo "🔧 Configuring development environment..."
+	cp config/development.py config/__init__.py
+
+config-prod:
+	@echo "🔧 Configuring production environment..."
+	cp config/production.py config/__init__.py
+
+config-test:
+	@echo "🔧 Configuring test environment..."
+	cp config/testing.py config/__init__.py
+
+# ℹ️ Help
 help:
 	@echo ""
-	@echo "Commandes disponibles :"
-	@echo "  make install        → Créer l'environnement et installer les dépendances"
-	@echo "  make run-dev        → Lancer l'application en mode développement"
-	@echo "  make run-prod       → Lancer l'application en mode production"
-	@echo "  make test-unit      → Exécuter les tests unitaires"
-	@echo "  make test-integration → Exécuter les tests d'intégration"
-	@echo "  make test-all       → Exécuter tous les tests"
-	@echo "  make clean          → Supprimer l'environnement virtuel et les fichiers compilés"
-	@echo "  make reset          → Nettoyer et réinstaller"
-	@echo "  make docs-serve     → Démarrer le serveur de documentation"
+	@echo "Available commands:"
+	@echo "  make install        → Create environment and install dependencies"
+	@echo "  make run-dev        → Launch application in development mode"
+	@echo "  make run-prod       → Launch application in production mode"
+	@echo "  make run-test       → Launch application in test mode"
+	@echo "  make test-unit      → Run unit tests"
+	@echo "  make test-integration → Run integration tests"
+	@echo "  make test-all       → Run all tests"
+	@echo "  make clean          → Remove virtual environment and compiled files"
+	@echo "  make reset          → Clean and reinstall"
+	@echo "  make docs-serve     → Start documentation server"
 	@echo ""
-	@echo "Commandes Git :"
-	@echo "  make gcommit m=\"message\"  → Ajouter, commit avec message"
-	@echo "  make gpush         → Pousser sur origin/master"
-	@echo "  make gpull         → Récupérer depuis origin/master"
-	@echo "  make greset        → Reset le dernier commit (soft)"
-	@echo "  make gstatus       → Afficher le status git"
+	@echo "Configuration commands:"
+	@echo "  make config-dev     → Configure development environment"
+	@echo "  make config-prod    → Configure production environment"
+	@echo "  make config-test    → Configure test environment"
+	@echo ""
+	@echo "Git commands:"
+	@echo "  make gcommit m=\"message\"  → Add, commit with message"
+	@echo "  make gpush         → Push to origin/master"
+	@echo "  make gpull         → Pull from origin/master"
+	@echo "  make greset        → Reset last commit (soft)"
+	@echo "  make gstatus       → Show git status"
 	@echo ""

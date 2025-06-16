@@ -8,6 +8,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+from flask import current_app
 
 # Main function: fetch confData from Mawaqit website
 def fetch_mawaqit_data(masjid_id: str) -> dict:
@@ -25,8 +26,14 @@ def fetch_mawaqit_data(masjid_id: str) -> dict:
         ValueError: If mosque not found or data extraction fails
         RuntimeError: If HTTP request fails
     """
-    url = f"https://mawaqit.net/fr/{masjid_id}"
-    r = requests.get(url)
+    base_url = current_app.config['MAWAQIT_BASE_URL']
+    timeout = current_app.config['MAWAQIT_REQUEST_TIMEOUT']
+    user_agent = current_app.config['MAWAQIT_USER_AGENT']
+    
+    url = f"{base_url}/{masjid_id}"
+    headers = {'User-Agent': user_agent}
+    
+    r = requests.get(url, headers=headers, timeout=timeout)
 
     if r.status_code == 404:
         raise ValueError(f"Mosque not found for masjid_id: {masjid_id}")

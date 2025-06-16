@@ -8,6 +8,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
+from flask import current_app
 
 # Order of prayers in the day
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
@@ -74,6 +75,11 @@ def generate_prayer_ics_file(
     tz = ZoneInfo(timezone_str)
     cal = Calendar()
     now = datetime.now()
+    
+    cal.add('prodid', f'-//{current_app.config["ICS_CALENDAR_NAME"]}//FR')
+    cal.add('version', '2.0')
+    cal.add('name', current_app.config['ICS_CALENDAR_NAME'])
+    cal.add('description', current_app.config['ICS_CALENDAR_DESCRIPTION'])
 
     def add_event(date_obj, times_dict):
         """

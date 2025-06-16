@@ -46,6 +46,9 @@ make run-dev
 
 # Production mode
 make run-prod
+
+# Test mode
+make run-test
 ```
 
 Then open your browser at: [http://localhost:5000](http://localhost:5000)
@@ -68,7 +71,8 @@ Mawaqit_API_to_ics/
 ├── config/
 │   ├── __init__.py
 │   ├── development.py
-│   └── production.py
+│   ├── production.py
+│   └── testing.py
 ├── tests/
 │   ├── unit/
 │   └── integration/

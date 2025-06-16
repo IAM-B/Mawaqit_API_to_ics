@@ -7,14 +7,15 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from datetime import datetime, timezone
 from unidecode import unidecode
+from flask import current_app
 
 # === CONFIG ===
-BASE_URL = "https://mawaqit.net"
-HTML_MAIN = f"{BASE_URL}/fr"
-API_URL_TEMPLATE = "https://mawaqit.net/api/2.0/mosque/map/{code}"
+BASE_URL = current_app.config['MAWAQIT_BASE_URL']
+HTML_MAIN = BASE_URL
+API_URL_TEMPLATE = f"{BASE_URL}/api/2.0/mosque/map/{{code}}"
 DATA_DIR = Path("data/mosques_by_country")
 META_FILE = Path("data/metadata.json")
-LOG_FILE = META_FILE.parent / f"log_{datetime.now().strftime('%Y%m%d')}.log"
+LOG_FILE = Path(current_app.config['LOG_FILE'])
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # === LOGGING SETUP ===
@@ -23,7 +24,7 @@ logging.basicConfig(
     filemode="a",
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    level=logging.INFO
+    level=getattr(logging, current_app.config['LOG_LEVEL'])
 )
 
 def log(msg, level="info"):

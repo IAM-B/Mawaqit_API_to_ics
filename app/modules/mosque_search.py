@@ -2,9 +2,10 @@ import os
 import re
 import json
 from pathlib import Path
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 
-MOSQUE_DIR = Path(__file__).resolve().parent.parent / "data" / "mosques_by_country"
+def get_mosque_dir():
+    return Path(current_app.config.get('MOSQUE_DATA_DIR', Path(__file__).resolve().parent.parent / "data" / "mosques_by_country"))
 
 def get_formatted_mosques():
     country = request.args.get("country")
@@ -32,11 +33,11 @@ def list_countries():
             "code": file.stem,
             "name": format_country_display(file.name)
         }
-        for file in MOSQUE_DIR.glob("*.json")
+        for file in get_mosque_dir().glob("*.json")
     ]
 
 def list_mosques_by_country(country_code: str):
-    filepath = MOSQUE_DIR / f"{country_code}.json"
+    filepath = get_mosque_dir() / f"{country_code}.json"
     if not filepath.exists():
         return []
     with open(filepath, "r", encoding="utf-8") as f:
