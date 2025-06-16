@@ -1,16 +1,42 @@
+"""
+Available slots generator module for creating ICS calendar files with time slots between prayers.
+This module handles the generation of calendar events for available time slots between prayer times.
+"""
+
 from uuid import uuid4
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
 
+# Order of prayers in the day
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
 
 def to_datetime(time_str: str, base_date: datetime, tz: ZoneInfo) -> datetime:
+    """
+    Convert a time string to a datetime object with timezone.
+    
+    Args:
+        time_str (str): Time string in format "HH:MM"
+        base_date (datetime): Base date to combine with the time
+        tz (ZoneInfo): Timezone information
+        
+    Returns:
+        datetime: Datetime object with timezone
+    """
     t = datetime.strptime(time_str, "%H:%M").time()
     return datetime.combine(base_date.date(), t).replace(tzinfo=tz)
 
 def format_duration(delta: timedelta) -> str:
+    """
+    Format a timedelta into a human-readable duration string.
+    
+    Args:
+        delta (timedelta): Time duration to format
+        
+    Returns:
+        str: Formatted duration string (e.g., "2h30")
+    """
     total_minutes = int(delta.total_seconds() // 60)
     hours = total_minutes // 60
     minutes = total_minutes % 60
@@ -24,11 +50,26 @@ def generate_slot_ics_file(
     padding_before: int,
     padding_after: int
 ) -> str:
+    """
+    Generate calendar events for available slots between prayers for a single day.
+    
+    Args:
+        prayer_times (dict): Dictionary of prayer times
+        base_date (datetime): Base date for the events
+        filename (str): Output ICS file path
+        timezone_str (str): Timezone string
+        padding_before (int): Minutes to add before prayer times
+        padding_after (int): Minutes to add after prayer times
+        
+    Returns:
+        str: Path to the generated ICS file
+    """
     tz = ZoneInfo(timezone_str)
     calendar = Calendar()
     calendar.add('prodid', '-//Planning Sync//Mawaqit//FR')
     calendar.add('version', '2.0')
 
+    # Generate slots between consecutive prayers
     for i in range(len(PRAYERS_ORDER) - 1):
         t1 = prayer_times.get(PRAYERS_ORDER[i])
         t2 = prayer_times.get(PRAYERS_ORDER[i + 1])
@@ -50,8 +91,8 @@ def generate_slot_ics_file(
         event.add("dtend", end)
         event.add("transp", "TRANSPARENT")
         event.add("categories", "Empty slots")
-        event.add("summary", f"Disponibilité ({formatted})")
-        event.add("description", f"Crenau libre entre {PRAYERS_ORDER[i]} et {PRAYERS_ORDER[i + 1]} — Durée : {formatted}")
+        event.add("summary", f"Availability ({formatted})")
+        event.add("description", f"Free slot between {PRAYERS_ORDER[i]} and {PRAYERS_ORDER[i + 1]} — Duration: {formatted}")
         calendar.add_component(event)
 
     with open(filename, "wb") as f:
@@ -59,7 +100,6 @@ def generate_slot_ics_file(
 
     return filename
 
-# ✅ Wrapper multi-scope
 def generate_slots_by_scope(
     masjid_id: str,
     scope: str,
@@ -68,6 +108,23 @@ def generate_slots_by_scope(
     padding_after: int,
     prayer_times: list | dict
 ) -> str:
+    """
+    Generate available slot events for a specific time scope (today/month/year).
+    
+    Args:
+        masjid_id (str): Mosque identifier
+        scope (str): Time scope (today/month/year)
+        timezone_str (str): Timezone string
+        padding_before (int): Minutes to add before prayer times
+        padding_after (int): Minutes to add after prayer times
+        prayer_times (list | dict): Prayer time data for the specified scope
+        
+    Returns:
+        str: Path to the generated ICS file
+        
+    Raises:
+        ValueError: If scope is invalid
+    """
     YEAR = datetime.now().year
     now = datetime.now()
     cal = Calendar()
@@ -75,6 +132,13 @@ def generate_slots_by_scope(
     cal.add('version', '2.0')
 
     def append_day_to_calendar(base_date, day_times: dict):
+        """
+        Generate and append available slot events for a single day to the calendar.
+        
+        Args:
+            base_date (datetime): Base date for the events
+            day_times (dict): Dictionary of prayer times for the day
+        """
         tmp_file = Path("tmp.ics")
         generate_slot_ics_file(day_times, base_date, tmp_file, timezone_str, padding_before, padding_after)
         with open(tmp_file, "rb") as f:
@@ -84,7 +148,7 @@ def generate_slots_by_scope(
                     cal.add_component(component)
         tmp_file.unlink(missing_ok=True)
 
-    # 👇 Dispatch par scope
+    # Handle different time scopes
     if scope == "today":
         append_day_to_calendar(now, prayer_times)
         filename = f"slots_{masjid_id}_{now.date()}.ics"
@@ -102,18 +166,18 @@ def generate_slots_by_scope(
                 try:
                     date_obj = datetime(YEAR, month_index, int(day_str))
                     if isinstance(time_list, list) and len(time_list) >= 6:
-                        # Suppression de l'heure du lever du soleil (index 1)
+                        # Remove sunrise time (index 1)
                         cleaned_list = [v for i, v in enumerate(time_list) if i != 1]
                         times_dict = dict(zip(PRAYERS_ORDER, cleaned_list[:len(PRAYERS_ORDER)]))
                         append_day_to_calendar(date_obj, times_dict)
                 except Exception as e:
-                    print(f"⚠️ Erreur {day_str}/{month_index} : {e}")
+                    print(f"⚠️ Error {day_str}/{month_index}: {e}")
         filename = f"slots_{masjid_id}_{YEAR}.ics"
 
     else:
         raise ValueError("Scope must be 'today', 'month' or 'year'")
 
-    output_path = Path("static/ics") / filename
+    output_path = Path("app/static/ics") / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "wb") as f:
         f.write(cal.to_ical())

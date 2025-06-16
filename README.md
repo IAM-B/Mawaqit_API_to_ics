@@ -1,10 +1,10 @@
-# Planning\_sync
+# Mawaqit to ICS
 
-**Planning\_sync** is a local tool to generate a personalized schedule synchronized with prayer times from your local mosque.
+**Mawaqit to ICS** is a local tool that generates a personalized schedule synchronized with prayer times from your local mosque.
 
-This app connects to the [Mawaqit API](https://mawaqit.net), fetches the prayer times of your chosen mosque, calculates the free time segments between prayers, and helps you plan your daily, monthly, or yearly routine accordingly.
+This application fetches prayer times from [Mawaqit](https://mawaqit.net), calculates free time slots between prayers, and helps you plan your daily, monthly, or yearly routine.
 
-It also generates an `.ics` calendar file that you can import into your favorite calendar app (Google Calendar, Proton Calendar, etc).
+It also generates an `.ics` calendar file that you can import into your favorite calendar app (Google Calendar, Proton Calendar, etc.).
 
 ---
 
@@ -12,9 +12,13 @@ It also generates an `.ics` calendar file that you can import into your favorite
 
 * 🌍 Select your mosque
 * 🕒 Choose scope: daily, monthly, or yearly prayer times
-* 📅 Get calculated free time slots between prayers
-* 📤 Export the schedule as `.ics` file
+* 📅 Calculate free time slots between prayers
+* 📤 Export schedule as `.ics` file
 * 📁 Local web interface via Flask
+* 🔄 Generate three types of ICS files:
+  * Prayer times
+  * Empty slots
+  * Available slots
 
 ---
 
@@ -27,27 +31,88 @@ git clone https://github.com/IAM-B/Mawaqit_API_to_ics
 cd Mawaqit_API_to_ics
 ```
 
-### 3. Set up and run Planning\_sync
-
-In a new terminal:
+### 2. Environment Setup
 
 ```bash
+# Create and activate virtual environment
 make install
-make run
+```
+
+### 3. Run the application
+
+```bash
+# Development mode
+make run-dev
+
+# Production mode
+make run-prod
 ```
 
 Then open your browser at: [http://localhost:5000](http://localhost:5000)
 
 ---
 
+## 🏗️ Project Structure
 
-## 🧩 Roadmap
+```
+Mawaqit_API_to_ics/
+├── app/
+│   ├── __init__.py
+│   ├── models/
+│   ├── views/
+│   ├── controllers/
+│   ├── utils/
+│   ├── modules/
+│   ├── static/
+│   └── templates/
+├── config/
+│   ├── __init__.py
+│   ├── development.py
+│   └── production.py
+├── tests/
+│   ├── unit/
+│   └── integration/
+├── docs/
+│   ├── api.md
+│   └── setup.md
+├── data/
+├── logs/
+├── requirements.txt
+├── Makefile
+└── app.py
+```
 
-* Add recurring tasks to free slots
-* Support monthly and yearly ICS generation from UI
-* Make ICS file downloadable from interface
-* Mobile interface optimization
-* Docker setup
+---
+
+## 🛠️ Available Commands
+
+```bash
+# Installation
+make install        # Create environment and install dependencies
+
+# Running
+make run-dev        # Run in development mode
+make run-prod       # Run in production mode
+
+# Testing
+make test-unit      # Run unit tests
+make test-integration # Run integration tests
+make test-all       # Run all tests
+
+# Maintenance
+make clean          # Clean environment
+make reset          # Reset project
+```
+
+---
+
+## 🗺️ Roadmap
+
+* [ ] Add unit and integration tests
+* [ ] Calendar simulator with slot editor
+* [ ] Add recurring tasks to free slots
+* [ ] Create mobile interface
+* [ ] Complete documentation
 
 ---
 
