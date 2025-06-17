@@ -33,6 +33,7 @@ def init_routes(app):
     Args:
         app (Flask): The Flask application instance
     """
+    app.register_blueprint(main_bp)
 
     @app.route("/")
     def index():
@@ -120,11 +121,6 @@ def init_routes(app):
     def edit_slot():
         """Handle slot editing interface."""
         return render_slot_editor(request)
-
-@main_bp.route('/')
-def home():
-    """Page d'accueil de l'application."""
-    return "Welcome to Mawaqit API to ICS Converter"
 
 @main_bp.route('/generate-ics', methods=['POST'])
 def generate_ics():
