@@ -13,7 +13,7 @@ def app():
     app.config['MAWAQIT_BASE_URL'] = 'http://example.com'
     app.config['MAWAQIT_REQUEST_TIMEOUT'] = 5
     app.config['MAWAQIT_USER_AGENT'] = 'pytest-agent'
-    app.config['MOSQUE_DATA_DIR'] = Path(__file__).resolve().parent.parent.parent / "data" / "mosques_by_country"
+    app.config['MOSQUE_DATA_DIR'] = Path(__file__).resolve().parents[3] / "data" / "mosques_by_country"
     return app
 
 @pytest.fixture
