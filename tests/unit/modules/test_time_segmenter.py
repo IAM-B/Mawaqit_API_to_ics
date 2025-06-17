@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from app.modules.time_segmenter import segment_available_time
+from app.modules.time_segmenter import segment_available_time, generate_empty_slots
 
 def test_segment_available_time_basic():
     """Test basic time segmenter"""
@@ -111,3 +111,52 @@ def test_segment_available_time_error_handling():
     assert segments[0]["end"] == "09:00"
     assert segments[1]["start"] == "09:00"
     assert segments[1]["end"] == "10:00"
+
+def test_segment_available_time_invalid_input():
+    """Test segment_available_time with invalid input types"""
+    # Test with non-dict input
+    result = segment_available_time("not a dict", "Europe/Paris", 0, 0)
+    assert result == []
+
+    # Test with empty dict
+    result = segment_available_time({}, "Europe/Paris", 0, 0)
+    assert result == []
+
+    # Test with invalid time format
+    result = segment_available_time({"fajr": "invalid"}, "Europe/Paris", 0, 0)
+    assert result == []
+
+def test_segment_available_time_invalid_slots():
+    """Test segment_available_time with invalid slots (start >= end)"""
+    prayer_times = {
+        "fajr": "08:00",
+        "dohr": "08:30"  # Too close with padding
+    }
+    segments = segment_available_time(prayer_times, "Europe/Paris", 20, 20)
+    assert len(segments) == 0  # No valid segments due to padding
+
+def test_generate_empty_slots_basic():
+    """Test basic empty slot generation"""
+    date = datetime(2024, 3, 1)
+    slots = generate_empty_slots("09:00", "11:00", date)
+    assert len(slots) == 2
+    assert slots[0][0].hour == 9
+    assert slots[0][1].hour == 10
+    assert slots[1][0].hour == 10
+    assert slots[1][1].hour == 11
+
+def test_generate_empty_slots_invalid_range():
+    """Test empty slot generation with invalid time range"""
+    date = datetime(2024, 3, 1)
+    slots = generate_empty_slots("11:00", "09:00", date)
+    assert slots == []
+
+def test_generate_empty_slots_partial_hour():
+    """Test empty slot generation with partial hours"""
+    date = datetime(2024, 3, 1)
+    slots = generate_empty_slots("09:30", "10:30", date)
+    assert len(slots) == 2
+    assert slots[0][0].minute == 30
+    assert slots[0][1].minute == 0
+    assert slots[1][0].minute == 0
+    assert slots[1][1].minute == 30
