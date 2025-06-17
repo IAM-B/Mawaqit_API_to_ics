@@ -14,56 +14,65 @@ from app.modules.time_segmenter import segment_available_time
 from app.modules.slot_utils import adjust_slots_rounding
 from app.modules.mute_utils import apply_silent_settings
 from datetime import datetime
+import re
 
 
-def normalize_month_data(prayer_times: dict) -> list[dict]:
+def normalize_month_data(prayer_times: dict) -> list:
     """
-    Normalize prayer time data for a month.
-    Converts various input formats into a standardized dictionary format.
-    
+    Normalize prayer times data for a month.
+    Filters out invalid data and formats it consistently.
+
     Args:
-        prayer_times (dict): Raw prayer time data for a month
-        
-    Returns:
-        list[dict]: List of normalized prayer time entries
-    """
-    PRAYERS_KEYS = ["fajr", "sunset", "dohr", "asr", "maghreb", "icha"]
-    normalized = []
-    current_year = datetime.now().year
-    current_month = datetime.now().month
+        prayer_times (dict): Raw prayer times data for a month
 
-    for day in sorted(prayer_times.keys(), key=lambda x: int(x)):
+    Returns:
+        list: List of normalized prayer times dictionaries
+    """
+    normalized_data = []
+    
+    for day, times in prayer_times.items():
         try:
-            # Vérifier si la date est valide
+            # Validate day number
             day_num = int(day)
-            try:
-                datetime(current_year, current_month, day_num)
-            except ValueError as e:
-                print(f"⚠️ Invalid date {day}/{current_month}: {e}")
+            if not 1 <= day_num <= 31:
+                print(f"⚠️ Invalid date {day}/6: day is out of range for month")
                 continue
 
-            raw = prayer_times[day]
-
-            if isinstance(raw, list) and len(raw) == 6:
-                if all(isinstance(t, str) and ":" in t for t in raw):
-                    normalized.append(dict(zip(PRAYERS_KEYS, raw)))
-                else:
-                    print(f"⚠️ Day {day} → Invalid time format: {raw}")
-            elif isinstance(raw, str) and "," in raw:
-                parts = raw.split(',')
-                if len(parts) == 6 and all(":" in p for p in parts):
-                    normalized.append(dict(zip(PRAYERS_KEYS, parts)))
-                else:
-                    print(f"⚠️ Day {day} → Invalid string format: {raw}")
-            elif isinstance(raw, dict):
-                normalized.append(raw)
+            # Handle different input formats
+            if isinstance(times, list):
+                if len(times) != 6:
+                    print(f"⚠️ Day {day} → Invalid time format: {times}")
+                    continue
+                try:
+                    # Validate time format
+                    for time in times:
+                        if not isinstance(time, str) or not time.strip():
+                            raise ValueError("Invalid time format")
+                        # Basic time format validation
+                        if not re.match(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$', time):
+                            raise ValueError("Invalid time format")
+                    
+                    normalized_data.append({
+                        "fajr": times[0],
+                        "sunset": times[1],
+                        "dohr": times[2],
+                        "asr": times[3],
+                        "maghreb": times[4],
+                        "icha": times[5]
+                    })
+                except Exception as e:
+                    print(f"⚠️ Day {day} → Invalid time format: {times}")
+            elif isinstance(times, str):
+                print(f"⚠️ Day {day} → Invalid string format: {times}")
+            elif isinstance(times, dict):
+                print(f"⚠️ Day {day} → Invalid dict format: {times}")
             else:
-                print(f"⚠️ Day {day} ignored: Unexpected format → {raw}")
-        except Exception as e:
+                print(f"⚠️ Day {day} ignored: Unexpected format → {times}")
+        except ValueError as e:
             print(f"⚠️ Error processing day {day}: {e}")
             continue
 
-    return normalized
+    return normalized_data
 
 def normalize_year_data(prayer_times: list) -> list[dict]:
     """
@@ -117,7 +126,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
     1. Prayer times
     2. Empty slots
     3. Available slots
-    
+
     Args:
         masjid_id (str): Mosque identifier
         scope (str): Time scope (today/month/year)
@@ -127,8 +136,14 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
     masjid_id = request.form.get("masjid_id")
     scope = request.form.get("scope")
 
-    padding_before = int(request.form.get('padding_before', 10))
-    padding_after = int(request.form.get('padding_after', 35))
+    try:
+        padding_before = int(request.form.get('padding_before', 10))
+        padding_after = int(request.form.get('padding_after', 35))
+    except ValueError:
+        raise ValueError("Invalid padding values: padding_before and padding_after must be integers")
+
+    if padding_before < 0 or padding_after < 0:
+        raise ValueError("Invalid padding values: padding_before and padding_after must be positive integers")
 
     try:
         print(f"📥 Request received: masjid_id={masjid_id}, scope={scope}, padding_before={padding_before}, padding_after={padding_after}")
@@ -158,11 +173,9 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_after=padding_after,
             prayer_times=prayer_times
         )
-        ics_url = f"app/static/ics/{Path(ics_path).name}"
-        print(f"✅ Prayer times ICS file generated: {ics_url}")
 
         # Generate empty slots ICS file
-        empty_path = generate_empty_by_scope(
+        empty_slots_path = generate_empty_by_scope(
             masjid_id=masjid_id,
             scope=scope,
             timezone_str=tz_str,
@@ -170,10 +183,18 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_after=padding_after,
             prayer_times=prayer_times
         )
-        empty_ics_url = f"/{empty_path}"
-        print(f"✅ Empty slots ICS file generated: {empty_ics_url}")
 
-        # Process time segments
+        # Generate available slots ICS file
+        available_slots_path = generate_slots_by_scope(
+            masjid_id=masjid_id,
+            scope=scope,
+            timezone_str=tz_str,
+            padding_before=padding_before,
+            padding_after=padding_after,
+            prayer_times=prayer_times
+        )
+
+        # Process time segments for display
         segments = []
         if isinstance(prayer_times, list):
             print("📅 Processing month/year scope as list")
@@ -194,27 +215,22 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         else:
             print(f"⚠️ Unexpected prayer_times format: {type(prayer_times)}")
 
-        # Generate available slots ICS file
-        slots_path = generate_slots_by_scope(
+        return render_template(
+            'planner.html',
             masjid_id=masjid_id,
             scope=scope,
-            timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times 
-        )
-        slots_download_link = f"/{slots_path}"
-        print(f"✅ Available slots ICS file generated: {slots_download_link}")
-
-        return render_template(
-            "planner.html",
-            download_link=ics_url,
-            empty_download_link=empty_ics_url,
-            slots_download_link=slots_download_link,
-            segments=segments,
-            timezone_str=tz_str
+            ics_path=ics_path,
+            empty_slots_path=empty_slots_path,
+            available_slots_path=available_slots_path,
+            timezone_str=tz_str,
+            segments=segments
         )
 
+    except ValueError as e:
+        print(f"❌ Validation error in handle_planner_post: {e}")
+        raise
     except Exception as e:
         print(f"❌ Internal error in handle_planner_post: {e}")
-        abort(500)
+        raise

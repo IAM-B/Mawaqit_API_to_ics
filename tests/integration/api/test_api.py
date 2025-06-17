@@ -32,7 +32,7 @@ def test_generate_ics_endpoint(client):
     """Test the ICS generation endpoint"""
     # Test data
     test_data = {
-        'masjid_id': '1-byt-llh-paris-75000-france',
+        'masjid_id': 'test-mosque',
         'scope': 'today',
         'timezone': 'Africa/Algiers',
         'padding_before': 5,
@@ -68,7 +68,7 @@ def test_invalid_request(client):
 
     # Test with invalid data
     invalid_data = {
-        'masjid_id': '1-byt-llh-paris-75000-france',
+        'masjid_id': 'test-mosque',
         'scope': 'invalid_scope',  # Invalid scope
         'timezone': 'Invalid/Timezone',  # Invalid timezone
         'padding_before': -1,  # Negative padding
@@ -101,7 +101,7 @@ def test_planner_post_with_mocked_mosque(mock_fetch_mawaqit, mock_fetch_mosques,
     )
     
     data = {
-        "masjid_id": "1-byt-llh-paris-75000-france",
+        "masjid_id": "test-mosque",
         "scope": "today",
         "padding_before": 10,
         "padding_after": 15

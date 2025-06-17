@@ -39,21 +39,23 @@
         <fieldset class="form-section">
           <legend>📂 Fichiers téléchargeables</legend>
 
-          {% if download_link %}
+          {% if ics_path %}
           <boutton class="btn-submit"
-            ><a href="{{ download_link }}" download
+            ><a href="{{ url_for('static', filename='ics/' + ics_path) }}" download
               >📥 Télécharger les horaires de prière (.ics)</a
             ></boutton
           >
-          {% endif %} {% if empty_download_link %}
+          {% endif %} 
+          {% if empty_slots_path %}
           <boutton class="btn-submit"
-            ><a href="{{ empty_download_link }}" download
+            ><a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download
               >📥 Télécharger les créneaux disponibles (.ics)</a
             ></boutton
           >
-          {% endif %} {% if slots_download_link %}
+          {% endif %} 
+          {% if available_slots_path %}
           <boutton class="btn-submit"
-            ><a href="{{ slots_download_link }}" download
+            ><a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download
               >📥 Télécharger les créneaux synchronisés (.ics)</a
             ></boutton
           >
