@@ -1,5 +1,23 @@
+# Data
 ics
-env-planner
-__pycache__/
 *.log
+
+# Coverage
+.coverage
+htmlcov/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Pytest
+.pytest_cache/
+
+# Environment
+env-planner
 .envrc
+.env
+venv/
+env/

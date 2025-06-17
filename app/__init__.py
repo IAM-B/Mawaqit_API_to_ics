@@ -23,8 +23,12 @@ def create_app(test_config=None):
         # Load test configuration
         app.config.from_mapping(test_config)
     
-    # Register blueprint
-    from app.controllers.main import main_bp
-    app.register_blueprint(main_bp)
+    # Initialize main routes
+    from app.controllers.main import init_routes
+    init_routes(app)
+    
+    # Initialize error handlers
+    from app.controllers.error_handlers import init_error_handlers
+    init_error_handlers(app)
     
     return app
