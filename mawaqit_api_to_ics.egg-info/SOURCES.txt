@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+setup.py
+app/__init__.py
+mawaqit_api_to_ics.egg-info/PKG-INFO
+mawaqit_api_to_ics.egg-info/SOURCES.txt
+mawaqit_api_to_ics.egg-info/dependency_links.txt
+mawaqit_api_to_ics.egg-info/requires.txt
+mawaqit_api_to_ics.egg-info/top_level.txt

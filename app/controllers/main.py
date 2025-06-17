@@ -5,7 +5,7 @@ Handles all route definitions and request processing.
 
 from pathlib import Path
 from datetime import datetime
-from flask import Flask, request, abort, jsonify, render_template
+from flask import Flask, request, abort, jsonify, render_template, Blueprint, send_file
 from app.controllers.error_handlers import init_error_handlers
 from app.views.planner_view import handle_planner_post
 from app.modules.mawaqit_fetcher import fetch_mawaqit_data, fetch_mosques_data, get_prayer_times_of_the_day, get_month, get_calendar
@@ -23,6 +23,8 @@ app = Flask(__name__)
 # Configure Flask to handle exceptions
 app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config['TRAP_HTTP_EXCEPTIONS'] = True
+
+main_bp = Blueprint('main', __name__)
 
 def init_routes(app):
     """
@@ -118,3 +120,49 @@ def init_routes(app):
     def edit_slot():
         """Handle slot editing interface."""
         return render_slot_editor(request)
+
+@main_bp.route('/')
+def home():
+    """Page d'accueil de l'application."""
+    return "Welcome to Mawaqit API to ICS Converter"
+
+@main_bp.route('/generate-ics', methods=['POST'])
+def generate_ics():
+    """Endpoint pour générer un fichier ICS."""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ['masjid_id', 'scope', 'timezone', 'padding_before', 'padding_after', 'prayer_times']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        # Validate values
+        if data['scope'] not in ['today', 'month', 'year']:
+            return jsonify({'error': 'Invalid scope. Must be one of: today, month, year'}), 400
+        
+        if data['padding_before'] < 0 or data['padding_after'] < 0:
+            return jsonify({'error': 'Padding values must be positive'}), 400
+        
+        # Generate ICS file
+        output_path = generate_prayer_ics_file(
+            masjid_id=data['masjid_id'],
+            scope=data['scope'],
+            timezone_str=data['timezone'],
+            padding_before=data['padding_before'],
+            padding_after=data['padding_after'],
+            prayer_times=data['prayer_times']
+        )
+        
+        # Send file
+        return send_file(
+            output_path,
+            mimetype='text/calendar',
+            as_attachment=True,
+            download_name=f"prayer_times_{data['masjid_id']}.ics"
+        )
+        
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'trace': traceback.format_exc()}), 400

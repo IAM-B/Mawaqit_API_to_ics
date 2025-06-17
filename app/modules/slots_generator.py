@@ -37,8 +37,11 @@ def format_duration(delta: timedelta) -> str:
         
     Returns:
         str: Formatted duration string (e.g., "2h30")
+        Returns "0h00" if the duration is negative or zero.
     """
     total_minutes = int(delta.total_seconds() // 60)
+    if total_minutes <= 0:
+        return "0h00"
     hours = total_minutes // 60
     minutes = total_minutes % 60
     return f"{hours}h{minutes:02d}"
@@ -182,7 +185,7 @@ def generate_slots_by_scope(
     else:
         raise ValueError("Scope must be 'today', 'month' or 'year'")
 
-    output_path = Path("app/static/ics") / filename
+    output_path = Path(current_app.static_folder) / "ics" / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "wb") as f:
         f.write(cal.to_ical())

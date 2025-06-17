@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: mawaqit-api-to-ics
+Version: 0.1.0
+Summary: Convert Mawaqit prayer times to ICS format
+Author-email: Your Name <your.email@example.com>
+Requires-Dist: flask
+Requires-Dist: requests
+Requires-Dist: icalendar
+Requires-Dist: python-dotenv

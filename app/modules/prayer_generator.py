@@ -152,7 +152,7 @@ def generate_prayer_ics_file(
     else:
         raise ValueError("Scope must be 'today', 'month', or 'year'")
 
-    output_path = Path("app/static/ics") / filename
+    output_path = Path(current_app.static_folder) / "ics" / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "wb") as f:
         f.write(cal.to_ical())
