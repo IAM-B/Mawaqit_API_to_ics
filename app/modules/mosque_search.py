@@ -23,6 +23,8 @@ def get_formatted_mosques():
     return jsonify(mosques)
     
 def format_country_display(filename):
+    if not filename:
+        return ""
     name = Path(filename).stem
     name = re.sub(r"\d+$", "", name)
     return name.replace("_", " ").upper()
