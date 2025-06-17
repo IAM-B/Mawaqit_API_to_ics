@@ -1,0 +1,204 @@
+import pytest
+from unittest.mock import patch, MagicMock
+from flask import current_app
+from app import create_app
+from app.modules.mawaqit_fetcher import fetch_mawaqit_data, fetch_mosques_data, get_prayer_times_of_the_day, get_month, get_calendar
+
+@pytest.fixture
+def app():
+    """Create and configure a Flask app for testing."""
+    test_config = {
+        'TESTING': True,
+        'DEBUG': True,
+        'ICS_CALENDAR_NAME': 'Prayer Times',
+        'ICS_CALENDAR_DESCRIPTION': 'Prayer times from Mawaqit',
+        'STATIC_FOLDER': 'static'
+    }
+    app = create_app(test_config)
+    app.config.update({
+        'MAWAQIT_BASE_URL': 'https://mawaqit.net',
+        'MAWAQIT_REQUEST_TIMEOUT': 5,
+        'MAWAQIT_USER_AGENT': 'Mozilla/5.0 (Test)'
+    })
+    return app
+
+def test_fetch_mawaqit_data_success(app):
+    """Test successful fetch of mawaqit data"""
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.text = '<script>var confData = {"times": ["05:00", "13:00", "16:00", "19:00", "21:00"], "shuruq": "06:00", "timezone": "Europe/Paris"};</script>'
+    
+    with app.app_context():
+        with patch('requests.get', return_value=mock_response):
+            data = fetch_mawaqit_data("123")
+            assert data["times"] == ["05:00", "13:00", "16:00", "19:00", "21:00"]
+            assert data["shuruq"] == "06:00"
+            assert data["timezone"] == "Europe/Paris"
+
+def test_fetch_mawaqit_data_404(app):
+    """Test fetch_mawaqit_data with 404 response"""
+    mock_response = MagicMock()
+    mock_response.status_code = 404
+    
+    with app.app_context():
+        with patch('requests.get', return_value=mock_response):
+            with pytest.raises(ValueError, match="Mosque not found"):
+                fetch_mawaqit_data("123")
+
+def test_fetch_mawaqit_data_http_error(app):
+    """Test fetch_mawaqit_data with non-200 response"""
+    mock_response = MagicMock()
+    mock_response.status_code = 500
+    
+    with app.app_context():
+        with patch('requests.get', return_value=mock_response):
+            with pytest.raises(RuntimeError, match="HTTP error 500"):
+                fetch_mawaqit_data("123")
+
+def test_fetch_mawaqit_data_no_script(app):
+    """Test fetch_mawaqit_data when no script tag is found"""
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.text = '<html><body>No script here</body></html>'
+    
+    with app.app_context():
+        with patch('requests.get', return_value=mock_response):
+            with pytest.raises(ValueError, match="No <script> tag containing confData"):
+                fetch_mawaqit_data("123")
+
+def test_fetch_mawaqit_data_invalid_json(app):
+    """Test fetch_mawaqit_data with invalid JSON in confData"""
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.text = '<script>var confData = {invalid json};</script>'
+    
+    with app.app_context():
+        with patch('requests.get', return_value=mock_response):
+            with pytest.raises(ValueError, match="JSON error in confData"):
+                fetch_mawaqit_data("123")
+
+def test_fetch_mosques_data_today(app):
+    """Test fetch_mosques_data with scope 'today'"""
+    mock_data = {
+        "times": ["05:00", "13:00", "16:00", "19:00", "21:00"],
+        "shuruq": "06:00",
+        "timezone": "Europe/Paris"
+    }
+    
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            data, tz = fetch_mosques_data("123", "today")
+            assert data["fajr"] == "05:00"
+            assert data["dohr"] == "13:00"
+            assert tz == "Europe/Paris"
+
+def test_fetch_mosques_data_month(app):
+    """Test fetch_mosques_data with scope 'month'"""
+    mock_data = {
+        "calendar": [
+            ["05:00", "13:00", "16:00", "19:00", "21:00"],
+            ["05:01", "13:01", "16:01", "19:01", "21:01"],
+            ["05:02", "13:02", "16:02", "19:02", "21:02"],
+            ["05:03", "13:03", "16:03", "19:03", "21:03"],
+            ["05:04", "13:04", "16:04", "19:04", "21:04"],
+            ["05:05", "13:05", "16:05", "19:05", "21:05"]
+        ],
+        "timezone": "Europe/Paris"
+    }
+
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            data, tz = fetch_mosques_data("123", "month")
+            assert data == ["05:05", "13:05", "16:05", "19:05", "21:05"]  # 6e jour
+            assert tz == "Europe/Paris"
+
+def test_fetch_mosques_data_year(app):
+    """Test fetch_mosques_data with scope 'year'"""
+    mock_data = {
+        "calendar": [["05:00", "13:00", "16:00", "19:00", "21:00"]],
+        "timezone": "Europe/Paris"
+    }
+    
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            data, tz = fetch_mosques_data("123", "year")
+            assert data == [["05:00", "13:00", "16:00", "19:00", "21:00"]]
+            assert tz == "Europe/Paris"
+
+def test_fetch_mosques_data_invalid_scope(app):
+    """Test fetch_mosques_data with invalid scope"""
+    mock_data = {
+        "calendar": [["05:00", "13:00", "16:00", "19:00", "21:00"]],
+        "timezone": "Europe/Paris"
+    }
+
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            with pytest.raises(ValueError, match="Unknown scope"):
+                fetch_mosques_data("123", "invalid")
+
+def test_get_prayer_times_of_the_day_success(app):
+    """Test get_prayer_times_of_the_day with valid data"""
+    mock_data = {
+        "times": ["05:00", "13:00", "16:00", "19:00", "21:00"],
+        "shuruq": "06:00"
+    }
+    
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            data = get_prayer_times_of_the_day("123")
+            assert data["fajr"] == "05:00"
+            assert data["dohr"] == "13:00"
+            assert data["asr"] == "16:00"
+            assert data["maghreb"] == "19:00"
+            assert data["icha"] == "21:00"
+            assert data["sunset"] == "06:00"
+
+def test_get_prayer_times_of_the_day_incomplete(app):
+    """Test get_prayer_times_of_the_day with incomplete data"""
+    mock_data = {
+        "times": ["05:00", "13:00"],
+        "shuruq": "06:00"
+    }
+    
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            with pytest.raises(ValueError, match="Incomplete prayer time data"):
+                get_prayer_times_of_the_day("123")
+
+def test_get_month_success(app):
+    """Test get_month with valid month number"""
+    mock_data = {
+        "calendar": [["05:00", "13:00", "16:00", "19:00", "21:00"]]
+    }
+    
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            data = get_month("123", 1)
+            assert data == ["05:00", "13:00", "16:00", "19:00", "21:00"]
+
+def test_get_month_invalid_month(app):
+    """Test get_month with invalid month number"""
+    with app.app_context():
+        with pytest.raises(ValueError, match="Month must be between 1 and 12"):
+            get_month("123", 13)
+
+def test_get_month_unavailable(app):
+    """Test get_month with unavailable month"""
+    mock_data = {"calendar": []}
+    
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            with pytest.raises(ValueError, match="This month is not available in the calendar"):
+                get_month("123", 1)
+
+def test_get_calendar_success(app):
+    """Test get_calendar with valid data"""
+    mock_data = {
+        "calendar": [["05:00", "13:00", "16:00", "19:00", "21:00"]]
+    }
+    
+    with app.app_context():
+        with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
+            data = get_calendar("123")
+            assert data == [["05:00", "13:00", "16:00", "19:00", "21:00"]] 
