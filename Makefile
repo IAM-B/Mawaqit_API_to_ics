@@ -40,15 +40,30 @@ run-test: install
 test-unit:
 	@echo "🧪 Running unit tests..."
 	FLASK_ENV=testing $(PYTHON) -m pytest tests/unit -v
+	@$(MAKE) clean-ics
 
 test-integration:
 	@echo "🧪 Running integration tests..."
 	FLASK_ENV=testing $(PYTHON) -m pytest tests/integration -v
+	@$(MAKE) clean-ics
 
 test-all: test-unit test-integration
 
 # 🧼 Cleanup
-clean:
+clean-ics:
+	@echo "🗑️ Cleaning test generated files..."
+	rm -f *.ics
+	rm -f tests/*.ics
+	rm -f tests/unit/*.ics
+	rm -f tests/integration/*.ics
+	rm -f tests/unit/modules/*.ics
+	rm -f tests/integration/modules/*.ics
+	rm -f tests/integration/api/*.ics
+	rm -f tests/integration/ics/*.ics
+	rm -f app/static/ics/*.ics
+	@echo "✅ Test files cleaned."
+
+cleanup:
 	@echo "🗑️ Removing virtual environment..."
 	rm -rf $(VENV)
 	@echo "🗑️ Removing compiled Python files..."
@@ -56,6 +71,8 @@ clean:
 	find . -type f -name "*.pyc" -delete
 	@echo "🗑️ Removing log files..."
 	rm -rf logs/*.log
+	@$(MAKE) clean-ics
+	@echo "✅ Cleanup complete."
 
 # 🔄 Reset
 reset: clean install

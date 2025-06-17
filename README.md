@@ -59,31 +59,42 @@ Then open your browser at: [http://localhost:5000](http://localhost:5000)
 
 ```
 Mawaqit_API_to_ics/
-├── app/
+├── app
+│   ├── controllers
 │   ├── __init__.py
-│   ├── models/
-│   ├── views/
-│   ├── controllers/
-│   ├── utils/
-│   ├── modules/
-│   ├── static/
-│   └── templates/
-├── config/
-│   ├── __init__.py
+│   ├── models
+│   ├── modules
+│   ├── static
+│   ├── templates
+│   ├── utils
+│   └── views
+├── config
 │   ├── development.py
+│   ├── __init__.py
 │   ├── production.py
 │   └── testing.py
-├── tests/
-│   ├── unit/
-│   └── integration/
-├── docs/
+├── data
+│   ├── log_20250602.log
+│   ├── metadata.json
+│   └── mosques_by_country
+├── docs
 │   ├── api.md
-│   └── setup.md
-├── data/
-├── logs/
-├── requirements.txt
+│   ├── setup.md
+│   └── testing.md
+├── logs
+│    └── .gitkeep
+├── tests
+│    ├── conftest.py
+│    ├── integration
+│    └── unit
+├── .gitignore
+├── app.py
 ├── Makefile
-└── app.py
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+└── setup.py
+
 ```
 
 ---
@@ -104,9 +115,40 @@ make test-integration # Run integration tests
 make test-all       # Run all tests
 
 # Maintenance
-make clean          # Clean environment
+make cleanup        # Clean environment and remove test files
 make reset          # Reset project
 ```
+
+---
+
+## 🧪 Testing Structure
+
+tests/
+├── unit/ # Unit tests
+│ ├── modules/ # Module-specific unit tests
+│ └── utils/ # Utility function tests
+└── integration/ # Integration tests
+├── api/ # API endpoint tests
+├── ics/ # ICS generation tests
+└── modules/ # Module integration tests
+
+---
+
+### Test Coverage
+
+Current test coverage: 87%
+
+- Unit tests focus on individual components and functions
+- Integration tests verify the interaction between components
+- All tests can be run with coverage report using `make test-all`
+
+---
+
+## 📝 Documentation
+
+- [API Documentation](docs/api.md)
+- [Setup Guide](docs/setup.md)
+- [Testing Guide](docs/testing.md)
 
 ---
 

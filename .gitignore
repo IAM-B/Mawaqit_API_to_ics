@@ -25,6 +25,7 @@ MANIFEST
 env-planner/
 venv/
 ENV/
+.vscode/
 .envrc
 .env
 
