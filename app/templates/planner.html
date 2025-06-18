@@ -5,6 +5,7 @@
     <title>🕌 Planning synchronisé</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <script src="/static/js/timeline.js"></script>
   </head>
   <body>
     <main class="container">
@@ -20,6 +21,61 @@
           </ul>
 
           {% if segments %}
+          <div class="timeline-date" id="currentDate">
+            {% if scope == "today" %}
+              {{ segments.date if segments.date else "Aujourd'hui" }}
+            {% elif scope == "month" %}
+              {{ segments[0].date if segments[0].date else "Jour " + segments[0].day|string }}
+            {% elif scope == "year" %}
+              {{ segments[0].date if segments[0].date else "Mois " + segments[0].month|string }}
+            {% endif %}
+          </div>
+
+          {% if scope != "today" %}
+          <div class="timeline-navigation">
+            <button class="timeline-nav-btn" id="prevBtn" onclick="navigate(-1)">← Précédent</button>
+            <button class="timeline-nav-btn" id="nextBtn" onclick="navigate(1)">Suivant →</button>
+          </div>
+          {% endif %}
+
+          <div class="timeline-container">
+            <div class="timeline-hours">
+              {% for hour in range(24) %}
+              <div class="timeline-hour">{{ hour }}h</div>
+              {% endfor %}
+            </div>
+            <div class="timeline-content" id="timelineContent">
+              <!-- Events will be added here dynamically -->
+            </div>
+          </div>
+
+          <!-- Store data in data attributes -->
+          <div id="timelineConfig" 
+               data-segments='{{ segments|tojson|safe }}'
+               data-scope="{{ scope }}"
+               style="display: none;">
+          </div>
+
+          <script>
+            // Initialize timeline once the DOM is loaded
+            document.addEventListener('DOMContentLoaded', function() {
+              const config = document.getElementById('timelineConfig');
+              const timelineData = JSON.parse(config.dataset.segments);
+              const timelineScope = config.dataset.scope;
+
+              window.timeline = new Timeline(
+                'timelineContent',
+                timelineData,
+                timelineScope
+              );
+            });
+
+            // Navigation function
+            function navigate(direction) {
+              window.timeline.navigate(direction);
+            }
+          </script>
+
           <label>Créneaux disponibles :</label>
           <ul>
             {% if scope == "today" %}

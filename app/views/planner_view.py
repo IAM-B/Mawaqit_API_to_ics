@@ -220,7 +220,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                         segments.append({
                             "day": i + 1,
                             "date": date.strftime("%d/%m/%Y"),
-                            "slots": slots
+                            "slots": slots,
+                            "prayer_times": daily
                         })
                     except Exception as e:
                         print(f"⚠️ Error processing day {i + 1}: {e}")
@@ -237,7 +238,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                             month_segments.append({
                                 "day": day_num,
                                 "date": date.strftime("%d/%m/%Y"),
-                                "slots": slots
+                                "slots": slots,
+                                "prayer_times": times_dict
                             })
                         except Exception as e:
                             print(f"⚠️ Error processing day {day_str} in month {month_index}: {e}")
@@ -252,7 +254,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
             segments = {
                 "date": today.strftime("%d/%m/%Y"),
-                "slots": slots
+                "slots": slots,
+                "prayer_times": prayer_times
             }
         else:
             print(f"⚠️ Unexpected prayer_times format: {type(prayer_times)}")
