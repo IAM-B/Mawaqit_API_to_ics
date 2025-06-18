@@ -1,21 +1,25 @@
+<!-- Main Page Template - Prayer Planner -->
 <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <title>🕌 Prayer Planner</title>
+    <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
-    <!-- Tom Select -->
+    
+    <!-- External CSS Libraries -->
+    <!-- Tom Select for enhanced dropdowns -->
     <link
       href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
       rel="stylesheet"
     />
-    <!-- Leaflet CSS -->
+    <!-- Leaflet for map functionality -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
-    <!-- MarkerCluster CSS -->
+    <!-- MarkerCluster for map markers -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -27,18 +31,25 @@
   </head>
   <body>
     <main class="container">
+      <!-- Page title -->
       <h1 class="page-title">🕌 Prayer Planner</h1>
+      
+      <!-- Map container -->
       <div
         id="mosque-map"
         style="height: 500px; margin-top: 1em; border-radius: 8px"
       ></div>
+
+      <!-- Main form for prayer planning -->
       <form action="/planner" method="post" class="form">
         <fieldset class="form-section">
+          <!-- Country selection -->
           <label for="country-select">Pays :</label>
           <select id="country-select" name="country" autocomplete="off">
             <option value="">-- Sélectionner un pays --</option>
           </select>
 
+          <!-- Mosque selection -->
           <label for="mosque-select">Mosquée :</label>
           <select
             id="mosque-select"
@@ -49,12 +60,14 @@
             <option value="">-- Sélectionner une mosquée --</option>
           </select>
 
+          <!-- Prayer time padding settings -->
           <label for="padding_before">Temps avant prière (min) :</label>
           <input type="number" name="padding_before" value="10" min="0" />
 
           <label for="padding_after">Temps après prière (min) :</label>
           <input type="number" name="padding_after" value="35" min="0" />
 
+          <!-- Time scope selection -->
           <label for="scope">Période :</label>
           <select name="scope" required>
             <option value="today">Aujourd'hui</option>
@@ -63,21 +76,22 @@
           </select>
         </fieldset>
 
+        <!-- Submit button -->
         <button type="submit" class="btn-submit" aria-label="Générer planning">
           📥 Générer planning
         </button>
       </form>
     </main>
 
-    <!-- Scripts -->
-     
-    <!-- Leaflet JS -->
+    <!-- External JavaScript Libraries -->
+    <!-- Leaflet for map functionality -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- MarkerCluster JS -->
+    <!-- MarkerCluster for map markers -->
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-    <!-- Tom Select -->
+    <!-- Tom Select for enhanced dropdowns -->
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-    <!-- Scripts locaux -->
+    
+    <!-- Local JavaScript files -->
     <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
     <script src="{{ url_for('static', filename='js/map_loader.js') }}"></script>
   </body>

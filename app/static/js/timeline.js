@@ -1,4 +1,15 @@
+/**
+ * Timeline class for displaying prayer times and available slots
+ * This class handles the visualization of prayer times and available time slots
+ * in a timeline format, with navigation capabilities.
+ */
 class Timeline {
+  /**
+   * Constructor initializes the timeline with segments data and scope
+   * @param {string} containerId - ID of the HTML container element
+   * @param {Object} segments - Prayer time segments data
+   * @param {string} scope - Time scope ('today', 'month', or 'year')
+   */
   constructor(containerId, segments, scope) {
     console.log('Timeline constructor called with:', { containerId, segments, scope });
     this.container = document.getElementById(containerId);
@@ -10,14 +21,26 @@ class Timeline {
     this.scope = scope;
     this.currentIndex = 0;
     this.currentDayIndex = 0;
+    this.slotsContainer = document.getElementById('availableSlotsList');
     this.init();
   }
 
+  /**
+   * Converts time string (HH:MM) to percentage position on timeline
+   * @param {string} time - Time in HH:MM format
+   * @returns {number} Position as percentage of 24-hour day
+   */
   formatTime(time) {
     const [hours, minutes] = time.split(':');
     return (parseInt(hours) + parseInt(minutes) / 60) * (100 / 24);
   }
 
+  /**
+   * Creates a visual element for an event on the timeline
+   * @param {Object} event - Event data with start/end times and content
+   * @param {string} type - Type of event ('prayer' or 'slot')
+   * @returns {HTMLElement} Created event element
+   */
   createEventElement(event, type) {
     const element = document.createElement('div');
     element.className = `timeline-event ${type}`;
@@ -31,6 +54,10 @@ class Timeline {
     return element;
   }
 
+  /**
+   * Gets the current data based on scope and navigation state
+   * @returns {Object} Current segment data
+   */
   getCurrentData() {
     console.log('Getting current data for scope:', this.scope);
     console.log('Current segments:', this.segments);
@@ -45,6 +72,11 @@ class Timeline {
     return null;
   }
 
+  /**
+   * Formats date for display based on scope and data
+   * @param {Object} data - Current segment data
+   * @returns {string} Formatted date string
+   */
   formatDate(data) {
     if (!data) {
       console.error('No data provided to formatDate');
@@ -64,6 +96,75 @@ class Timeline {
            this.scope === 'year' ? `Mois ${data.month}` : 'Aujourd\'hui';
   }
 
+  /**
+   * Updates the available slots display section
+   * @param {Object} data - Current segment data containing slots
+   */
+  updateAvailableSlots(data) {
+    if (!this.slotsContainer) {
+      console.error('Slots container not found');
+      return;
+    }
+
+    this.slotsContainer.innerHTML = '';
+
+    if (!data) {
+      this.slotsContainer.innerHTML = '<p>Aucune donnée disponible.</p>';
+      return;
+    }
+
+    const slotsList = document.createElement('ul');
+
+    // Handle different scopes (today/month vs year)
+    if (this.scope === 'today' || this.scope === 'month') {
+      if (data.slots && data.slots.length > 0) {
+        const formattedDate = this.formatDate(data);
+        const dateItem = document.createElement('li');
+        dateItem.innerHTML = `<strong>${formattedDate} :</strong>`;
+        
+        const slotsSubList = document.createElement('ul');
+        data.slots.forEach(slot => {
+          const slotItem = document.createElement('li');
+          slotItem.textContent = `${slot.start} - ${slot.end}`;
+          slotsSubList.appendChild(slotItem);
+        });
+
+        dateItem.appendChild(slotsSubList);
+        slotsList.appendChild(dateItem);
+      }
+    } else if (this.scope === 'year') {
+      const currentMonth = this.segments[this.currentIndex];
+      if (currentMonth && currentMonth.days && currentMonth.days.length > 0) {
+        const currentDay = currentMonth.days[this.currentDayIndex];
+        if (currentDay && currentDay.slots && currentDay.slots.length > 0) {
+          const formattedDate = this.formatDate(currentDay);
+          const dateItem = document.createElement('li');
+          dateItem.innerHTML = `<strong>${formattedDate} :</strong>`;
+          
+          const slotsSubList = document.createElement('ul');
+          currentDay.slots.forEach(slot => {
+            const slotItem = document.createElement('li');
+            slotItem.textContent = `${slot.start} - ${slot.end}`;
+            slotsSubList.appendChild(slotItem);
+          });
+
+          dateItem.appendChild(slotsSubList);
+          slotsList.appendChild(dateItem);
+        }
+      }
+    }
+
+    if (slotsList.children.length === 0) {
+      this.slotsContainer.innerHTML = '<p>Aucun créneau disponible pour cette période.</p>';
+    } else {
+      this.slotsContainer.appendChild(slotsList);
+    }
+  }
+
+  /**
+   * Updates the entire timeline display
+   * This includes prayer times, available slots, and navigation controls
+   */
   updateTimeline() {
     console.log('Updating timeline');
     this.container.innerHTML = '';
@@ -75,19 +176,20 @@ class Timeline {
       return;
     }
 
-    // Show prayer times with padding
+    // Calculate prayer periods with padding
     const prayerPeriods = [];
     if (currentData.prayer_times) {
       Object.entries(currentData.prayer_times).forEach(([prayer, time]) => {
+        // Calculate start and end times with padding
         const [hours, minutes] = time.split(':');
         const prayerTime = new Date();
         prayerTime.setHours(parseInt(hours), parseInt(minutes));
         
         const paddingBefore = new Date(prayerTime);
-        paddingBefore.setMinutes(paddingBefore.getMinutes() - 10); // padding_before default
+        paddingBefore.setMinutes(paddingBefore.getMinutes() - 10); // default padding_before
         
         const paddingAfter = new Date(prayerTime);
-        paddingAfter.setMinutes(paddingAfter.getMinutes() + 35); // padding_after default
+        paddingAfter.setMinutes(paddingAfter.getMinutes() + 35); // default padding_after
 
         prayerPeriods.push({
           start: paddingBefore.toTimeString().slice(0, 5),
@@ -95,7 +197,7 @@ class Timeline {
           prayer: prayer
         });
 
-        // Show prayer period
+        // Display prayer period
         this.container.appendChild(this.createEventElement({
           content: prayer,
           start: paddingBefore.toTimeString().slice(0, 5),
@@ -113,7 +215,7 @@ class Timeline {
       const currentPeriod = prayerPeriods[i];
       const nextPeriod = prayerPeriods[i + 1];
 
-      // If not the last period, create a slot until the next prayer
+      // If not the last period, create a slot until next prayer
       if (nextPeriod) {
         availableSlots.push({
           start: currentPeriod.end,
@@ -122,7 +224,7 @@ class Timeline {
       }
     }
 
-    // Show available slots
+    // Display available slots
     availableSlots.forEach(slot => {
       this.container.appendChild(this.createEventElement({
         content: 'Disponible',
@@ -153,8 +255,15 @@ class Timeline {
                          this.currentDayIndex === this.segments[this.currentIndex].days.length - 1;
       }
     }
+
+    // Update available slots display
+    this.updateAvailableSlots(currentData);
   }
 
+  /**
+   * Handles timeline navigation
+   * @param {number} direction - Navigation direction (-1 for previous, 1 for next)
+   */
   navigate(direction) {
     console.log('Navigating:', direction);
     if (this.scope === 'month') {
@@ -165,7 +274,7 @@ class Timeline {
       }
     } else if (this.scope === 'year') {
       if (direction > 0) {
-        // Navigate to the right
+        // Navigate right
         if (this.currentDayIndex < this.segments[this.currentIndex].days.length - 1) {
           this.currentDayIndex++;
         } else if (this.currentIndex < this.segments.length - 1) {
@@ -173,7 +282,7 @@ class Timeline {
           this.currentDayIndex = 0;
         }
       } else {
-        // Navigate to the left
+        // Navigate left
         if (this.currentDayIndex > 0) {
           this.currentDayIndex--;
         } else if (this.currentIndex > 0) {
@@ -185,11 +294,15 @@ class Timeline {
     this.updateTimeline();
   }
 
+  /**
+   * Initializes the timeline
+   * Called after constructor to set up initial display
+   */
   init() {
     console.log('Initializing timeline');
     this.updateTimeline();
   }
 }
 
-// Export the class to be used in the template
+// Export the class for use in template
 window.Timeline = Timeline;

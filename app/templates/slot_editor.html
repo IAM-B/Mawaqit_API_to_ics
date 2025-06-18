@@ -1,15 +1,19 @@
+<!-- Slot Editor Page Template -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Éditeur de créneaux</title>
+    <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
 </head>
 <body>
-    <h2>🕓 Édition d’un créneau disponible</h2>
+    <h2>🕓 Édition d'un créneau disponible</h2>
 
+    <!-- Slot editing form -->
     <form method="POST" action="/edit_slot">
+        <!-- Slot selection dropdown -->
         <label for="index">Sélectionner un créneau :</label>
         <select name="index" id="index" required>
             {% for slot in slots %}
@@ -21,6 +25,7 @@
 
         <br><br>
 
+        <!-- New time inputs -->
         <label for="start">Nouvelle heure de début :</label>
         <input type="time" name="start" id="start" required>
 
@@ -29,11 +34,13 @@
 
         <br><br>
 
+        <!-- Submit button -->
         <button type="submit">💾 Modifier ce créneau</button>
     </form>
 
     <br><br>
 
+    <!-- ICS file download link -->
     <a href="/generate_slots_ics">📥 Télécharger les créneaux disponibles (.ics)</a>
 </body>
 </html>

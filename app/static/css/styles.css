@@ -355,3 +355,51 @@ div#mosque-map {
   margin: 10px 0;
   color: var(--accent);
 }
+
+/* ==================
+   📅 Available slots
+   ================== */
+.available-slots {
+  margin-top: 2em;
+  padding: 1em;
+  background: var(--form-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.available-slots h2 {
+  color: var(--text-color);
+  margin-bottom: 1em;
+  font-size: 1.2em;
+}
+
+#availableSlotsList ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#availableSlotsList ul li {
+  margin-bottom: 1em;
+}
+
+#availableSlotsList ul li strong {
+  color: var(--primary);
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+#availableSlotsList ul li ul {
+  margin-left: 1em;
+}
+
+#availableSlotsList ul li ul li {
+  color: var(--text-color);
+  margin-bottom: 0.3em;
+  padding: 0.3em 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#availableSlotsList ul li ul li:last-child {
+  border-bottom: none;
+}

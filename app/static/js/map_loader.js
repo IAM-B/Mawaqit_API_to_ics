@@ -1,17 +1,31 @@
+/**
+ * Map Loader Module
+ * Handles the initialization and management of the mosque map interface
+ * Integrates with OpenStreetMap and manages mosque markers and interactions
+ */
 document.addEventListener("DOMContentLoaded", () => {
+  // Get DOM elements for mosque and country selection
   const mosqueSelectEl = document.getElementById("mosque-select");
   const countrySelectEl = document.getElementById("country-select");
 
+  // Initialize the map with a default view
   const map = L.map("mosque-map").setView([20, 0], 2);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "© OpenStreetMap contributors",
   }).addTo(map);
 
+  // Create a marker cluster group for better performance with many markers
   const markerCluster = L.markerClusterGroup();
   map.addLayer(markerCluster);
 
+  // Store markers by mosque slug for easy access
   const markers = {};
 
+  /**
+   * Attempts to select a mosque in the dropdown after it's loaded
+   * @param {Object} mosqueSelect - The TomSelect instance for mosque selection
+   * @param {string} mosqueSlug - The slug of the mosque to select
+   */
   function selectMosqueAfterLoad(mosqueSelect, mosqueSlug) {
     let attempts = 0;
     const maxAttempts = 20;
@@ -34,7 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   }
 
-  // Charge toutes les mosquées avec leurs marqueurs
+  /**
+   * Loads all mosques and creates markers for each one
+   * Fetches countries and their associated mosques from the server
+   */
   async function loadAllMosques() {
     const countries = await (await fetch("/get_countries")).json();
 
@@ -44,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mosques.forEach((mosque) => {
         if (!mosque.lat || !mosque.lng) return;
 
+        // Create popup content with mosque information
         const popupContent = `
           <div class="popup-content">
             <strong>${mosque.name}</strong><br>
@@ -57,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
 
+        // Create and add marker to the map
         const marker = L.marker([mosque.lat, mosque.lng]).bindPopup(popupContent);
         markerCluster.addLayer(marker);
         markers[mosque.slug] = marker;
@@ -64,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Délégation d’événement pour synchronisation à partir de la carte
+  // Event delegation for mosque selection from map
   map.on("popupopen", (e) => {
     const btn = e.popup.getElement().querySelector(".btn-sync-mosque");
     if (!btn) return;
@@ -78,8 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const countrySelect = countrySelectEl.tomselect;
       const mosqueSelect = mosqueSelectEl.tomselect;
 
+      // Update country selection
       countrySelect.setValue(countryCode, true);
 
+      // Fetch and update mosque options
       fetch(`/get_mosques?country=${countryCode}`)
         .then((res) => res.json())
         .then((mosques) => {
@@ -102,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Mise à jour de la carte lors de la sélection manuelle
+  // Update map view when mosque is selected manually
   mosqueSelectEl.addEventListener("change", () => {
     const mosqueSlug = mosqueSelectEl.value;
     const marker = markers[mosqueSlug];
@@ -112,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Focus automatique sur le pays sélectionné
+  // Auto-focus on selected country
   countrySelectEl.addEventListener("change", () => {
     const code = countrySelectEl.value;
     fetch(`/get_mosques?country=${code}`)
@@ -123,5 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
+  // Initial load of all mosques
   loadAllMosques();
 });

@@ -1,10 +1,13 @@
+<!-- Planner Page Template - Synchronized Schedule -->
 <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <title>🕌 Planning synchronisé</title>
+    <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <!-- Timeline JavaScript -->
     <script src="/static/js/timeline.js"></script>
   </head>
   <body>
@@ -15,122 +18,71 @@
         <fieldset class="form-section">
           <legend>📌 Informations Générales</legend>
 
+          <!-- Timezone information -->
           <label>Fuseau horaire détecté :</label>
           <ul>
             <li>{{ timezone_str }}</li>
           </ul>
 
           {% if segments %}
-          <div class="timeline-date" id="currentDate">
-            {% if scope == "today" %}
-              {{ segments.date if segments.date else "Aujourd'hui" }}
-            {% elif scope == "month" %}
-              {{ segments[0].date if segments[0].date else "Jour " + segments[0].day|string }}
-            {% elif scope == "year" %}
-              {{ segments[0].date if segments[0].date else "Mois " + segments[0].month|string }}
-            {% endif %}
-          </div>
-
-          {% if scope != "today" %}
-          <div class="timeline-navigation">
-            <button class="timeline-nav-btn" id="prevBtn" onclick="navigate(-1)">← Précédent</button>
-            <button class="timeline-nav-btn" id="nextBtn" onclick="navigate(1)">Suivant →</button>
-          </div>
-          {% endif %}
-
-          <div class="timeline-container">
-            <div class="timeline-hours">
-              {% for hour in range(24) %}
-              <div class="timeline-hour">{{ hour }}h</div>
-              {% endfor %}
-            </div>
-            <div class="timeline-content" id="timelineContent">
-              <!-- Events will be added here dynamically -->
-            </div>
-          </div>
-
-          <!-- Store data in data attributes -->
+          <!-- Hidden configuration for timeline -->
           <div id="timelineConfig" 
                data-segments='{{ segments|tojson|safe }}'
                data-scope="{{ scope }}"
                style="display: none;">
           </div>
 
+          <!-- Timeline section -->
+          <section class="timeline-section">
+            <h2>🕒 Timeline</h2>
+            <div class="timeline-navigation">
+              <button id="prevBtn" class="timeline-nav-btn">←</button>
+              <span id="currentDate"></span>
+              <button id="nextBtn" class="timeline-nav-btn">→</button>
+            </div>
+            <div id="timelineContent" class="timeline-container">
+              <div class="timeline-hours"></div>
+            </div>
+          </section>
+
+          <!-- Available slots section -->
+          <section class="available-slots">
+            <h2>🕒 Créneaux disponibles</h2>
+            <div id="availableSlotsList">
+              <!-- Slots will be displayed here dynamically -->
+            </div>
+          </section>
+
+          <!-- Timeline initialization script -->
           <script>
-            // Initialize timeline once the DOM is loaded
-            document.addEventListener('DOMContentLoaded', function() {
-              const config = document.getElementById('timelineConfig');
-              const timelineData = JSON.parse(config.dataset.segments);
-              const timelineScope = config.dataset.scope;
+            // Timeline configuration
+            const timelineConfig = document.getElementById('timelineConfig');
+            const timelineData = JSON.parse(timelineConfig.dataset.segments);
+            const timelineScope = timelineConfig.dataset.scope;
 
-              window.timeline = new Timeline(
-                'timelineContent',
-                timelineData,
-                timelineScope
-              );
-            });
+            // Initialize timeline
+            const timeline = new Timeline('timelineContent', timelineData, timelineScope);
 
-            // Navigation function
-            function navigate(direction) {
-              window.timeline.navigate(direction);
-            }
+            // Navigation event listeners
+            document.getElementById('prevBtn').addEventListener('click', () => timeline.navigate(-1));
+            document.getElementById('nextBtn').addEventListener('click', () => timeline.navigate(1));
           </script>
 
-          <label>Créneaux disponibles :</label>
-          <ul>
-            {% if scope == "today" %}
-              <li>
-                <strong>{{ segments.date if segments.date else "Aujourd'hui" }} :</strong>
-                <ul>
-                  {% for seg in segments.slots %}
-                  <li>{{ seg.start }} - {{ seg.end }}</li>
-                  {% endfor %}
-                </ul>
-              </li>
-            {% elif scope == "month" %}
-              {% for day in segments %}
-              <li>
-                <strong>{{ day.date if day.date else "Jour " + day.day|string }} :</strong>
-                <ul>
-                  {% for slot in day.slots %}
-                  <li>{{ slot.start }} - {{ slot.end }}</li>
-                  {% endfor %}
-                </ul>
-              </li>
-              {% endfor %}
-            {% elif scope == "year" %}
-              {% for month in segments %}
-              <li>
-                <strong>{{ month.date if month.date else "Mois " + month.month|string }} :</strong>
-                <ul>
-                  {% for day in month.days %}
-                  <li>
-                    <strong>{{ day.date if day.date else "Jour " + day.day|string }} :</strong>
-                    <ul>
-                      {% for slot in day.slots %}
-                      <li>{{ slot.start }} - {{ slot.end }}</li>
-                      {% endfor %}
-                    </ul>
-                  </li>
-                  {% endfor %}
-                </ul>
-              </li>
-              {% endfor %}
-            {% endif %}
-          </ul>
-          {% else %}
-          <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>
-          {% endif %}
-
+          <!-- Manual slot editing button -->
           <boutton class="btn-submit">
             <a href="/edit_slot">✏️ Modifier un créneau manuellement</a>
           </boutton>
           
+          {% else %}
+          <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>
+          {% endif %}
         </fieldset>
 
+        <!-- Downloadable files section -->
         <fieldset class="form-section">
           <legend>📂 Fichiers téléchargeables</legend>
 
+          <!-- Prayer times ICS file -->
           {% if ics_path %}
           <boutton class="btn-submit"
             ><a href="{{ url_for('static', filename='ics/' + ics_path) }}" download
@@ -138,6 +90,8 @@
             ></boutton
           >
           {% endif %} 
+
+          <!-- Available slots ICS file -->
           {% if empty_slots_path %}
           <boutton class="btn-submit"
             ><a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download
@@ -145,6 +99,8 @@
             ></boutton
           >
           {% endif %} 
+
+          <!-- Synchronized slots ICS file -->
           {% if available_slots_path %}
           <boutton class="btn-submit"
             ><a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download

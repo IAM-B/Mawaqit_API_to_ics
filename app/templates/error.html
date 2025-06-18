@@ -1,16 +1,20 @@
+<!-- Error Page Template -->
 <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <title>Erreur</title>
+    <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
   </head>
   <body class="error-page">
     <fieldset>
+      <!-- Error message display -->
       <h1>⚠️ Une erreur est survenue</h1>
       <h2>Erreur {{ error_code }} : {{ error_message }}</h2>
 
+      <!-- Home button -->
       <button class="btn-submit">
         <a href="/" >🏠 Retour à l'accueil</a>
       </button>

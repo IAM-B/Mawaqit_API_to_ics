@@ -1,7 +1,17 @@
+/**
+ * Mosque Search Module
+ * Handles the initialization and management of mosque search functionality
+ * Integrates with TomSelect for enhanced dropdown functionality
+ */
 document.addEventListener("DOMContentLoaded", () => {
+  // Get DOM elements for country and mosque selection
   const countrySelectEl = document.getElementById("country-select");
   const mosqueSelectEl = document.getElementById("mosque-select");
 
+  /**
+   * Initialize mosque selection dropdown with TomSelect
+   * Configures search fields and rendering options
+   */
   const mosqueSelect = new TomSelect(mosqueSelectEl, {
     placeholder: "Choisir une mosquée...",
     valueField: "value",
@@ -14,15 +24,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /**
+   * Initialize country selection dropdown with TomSelect
+   * Handles country change events and updates mosque options
+   */
   const countrySelect = new TomSelect(countrySelectEl, {
     placeholder: "Choisir un pays...",
     onChange: (value) => {
       if (!value) return;
 
+      // Clear and disable mosque selection while loading
       mosqueSelect.clear(true);
       mosqueSelect.clearOptions();
       mosqueSelect.disable();
   
+      // Fetch and update mosque options for selected country
       fetch(`/get_mosques?country=${value}`)
         .then(res => res.json())
         .then(mosques => {
@@ -42,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Charger les pays
+  // Load initial country list
   fetch("/get_countries")
     .then(res => res.json())
     .then(countries => {

@@ -77,7 +77,7 @@ def load_existing_metadata():
                 if isinstance(data, list):
                     return data
                 else:
-                    # ⚠️ Si le fichier contenait un ancien format (dict), on le convertit dans une liste
+                    # ⚠️ If the file contained an old format (dict), it is converted to a list
                     return [data]
         except Exception as e:
             log(f"[!] Erreur lecture metadata : {e}", "warning")
