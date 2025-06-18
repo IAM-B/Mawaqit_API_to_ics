@@ -17,7 +17,7 @@
 .clock-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 5px rgba(144, 202, 249, 0.3));
+  /* filter: drop-shadow(0 0 5px rgba(144, 202, 249, 0.3)); */
   overflow: visible;
 }
 
@@ -48,6 +48,7 @@
   text-anchor: middle;
   dominant-baseline: middle;
   font-weight: 500;
+  pointer-events: none;
 }
 
 /* ==================
@@ -59,16 +60,30 @@
   stroke-linecap: round;
   filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
   transition: all 0.3s ease;
+  z-index: 1;
 }
 
 .clock-arc.prayer {
   stroke: var(--success);
   opacity: 0.8;
+  cursor: pointer;
+}
+
+.clock-arc.prayer:hover {
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
 }
 
 .clock-arc.slot {
-  stroke: var(--success);
-  opacity: 0.7;
+  stroke: var(--primary);
+  stroke-width: 15;
+  opacity: 0.5;
+}
+
+.clock-arc.slot:hover,
+.clock-arc.slot.active {
+  opacity: 1;
+  stroke: var(--primary-hover);
+  stroke-width: 18;
 }
 
 /* ==================
@@ -79,10 +94,23 @@
   fill: var(--accent);
   text-anchor: middle;
   dominant-baseline: middle;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s ease;
   opacity: 0;
   filter: drop-shadow(0 0 3px rgba(67, 160, 71, 0.5));
+  z-index: 2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  pointer-events: none;
+  transform-origin: center center;
+}
+
+.clock-arc.prayer:hover + .clock-label {
+  opacity: 1;
+  fill: var(--accent);
+  transform: scale(1.2) translateY(-5px);
 }
 
 .tooltip-group {
@@ -90,16 +118,12 @@
   opacity: 0;
   transform: translateY(10px);
   transition: all 0.3s ease;
+  z-index: 3;
 }
 
 .clock-arc.prayer:hover + .tooltip-group {
   opacity: 1;
   transform: translateY(0);
-}
-
-.clock-arc.prayer:hover + .clock-label {
-  opacity: 1;
-  fill: var(--accent);
 }
 
 .tooltip-rect {
@@ -119,24 +143,6 @@
   dominant-baseline: middle;
   white-space: pre;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
-}
-
-.clock-arc.prayer {
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.clock-arc.prayer:hover {
-  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
-}
-
-/* Ajustement de la position des labels */
-.clock-arc.prayer + .clock-label {
-  transform: translateY(-45px);
-}
-
-.clock-arc.slot + .clock-label {
-  transform: translateY(45px);
 }
 
 /* ==================
@@ -221,8 +227,8 @@
 }
 
 .slot-item.active {
-  background: var(--success);
-  border-color: var(--success-hover);
+  background: var(--primary);
+  border-color: var(--primary-hover);
 }
 
 .slot-time {
@@ -230,10 +236,73 @@
   font-weight: 500;
 }
 
-.slot-item:hover .slot-time {
+.slot-item:hover .slot-time,
+.slot-item.active .slot-time {
   color: white;
 }
 
-.slot-item.active .slot-time {
-  color: white;
+/* ==================
+   🕒 Clock Slots
+   ================== */
+.clock-slot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: var(--form-bg);
+  border: 2px solid var(--border-color);
+  z-index: 1;
+}
+
+.slot-arc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%);
+  transform-origin: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.clock-arc.slot {
+  stroke: var(--primary);
+  stroke-width: 15;
+  fill: none;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+  
+.clock-arc.slot:hover,
+.clock-arc.slot.active {
+  opacity: 1;
+  stroke: var(--primary-hover);
+  stroke-width: 18;
+}
+
+.slot-arc:hover {
+  background: var(--primary);
+  opacity: 0.8;
+}
+
+.slot-arc.active {
+  background: var(--primary-hover);
+  opacity: 0.9;
+}
+
+.clock-label {
+  z-index: 2;
+}
+
+.clock-tooltip {
+  z-index: 3;
+}
+
+.clock-arc {
+  z-index: 1;
 } 
