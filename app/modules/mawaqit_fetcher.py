@@ -10,7 +10,9 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from flask import current_app
 
-# Main function: fetch confData from Mawaqit website
+# Cache to store retrieved data
+_data_cache = {}
+
 def fetch_mawaqit_data(masjid_id: str) -> dict:
     """
     Main function to fetch confData from the Mawaqit website.
@@ -26,6 +28,10 @@ def fetch_mawaqit_data(masjid_id: str) -> dict:
         ValueError: If mosque not found or data extraction fails
         RuntimeError: If HTTP request fails
     """
+    # Check if data is in cache
+    if masjid_id in _data_cache:
+        return _data_cache[masjid_id]
+
     base_url = current_app.config['MAWAQIT_BASE_URL']
     timeout = current_app.config['MAWAQIT_REQUEST_TIMEOUT']
     user_agent = current_app.config['MAWAQIT_USER_AGENT']
@@ -52,6 +58,8 @@ def fetch_mawaqit_data(masjid_id: str) -> dict:
 
     try:
         conf_data = json.loads(match.group(1))
+        # Cache the data
+        _data_cache[masjid_id] = conf_data
         return conf_data
     except json.JSONDecodeError as e:
         raise ValueError(f"JSON error in confData: {e}")
@@ -97,9 +105,14 @@ def get_prayer_times_of_the_day(masjid_id: str) -> dict:
     Raises:
         ValueError: If prayer time data is incomplete
     """
-    conf_data = fetch_mawaqit_data(masjid_id)
-    times = conf_data.get("times", [])
-    sunset = conf_data.get("shuruq", "")
+    # Use cached data if available
+    if masjid_id in _data_cache:
+        data = _data_cache[masjid_id]
+    else:
+        data = fetch_mawaqit_data(masjid_id)
+
+    times = data.get("times", [])
+    sunset = data.get("shuruq", "")
 
     if len(times) < 5:
         raise ValueError("Incomplete prayer time data.")
@@ -131,8 +144,13 @@ def get_month(masjid_id: str, month_number: int):
     if not 1 <= month_number <= 12:
         raise ValueError("Month must be between 1 and 12.")
 
-    conf_data = fetch_mawaqit_data(masjid_id)
-    calendar = conf_data.get("calendar", [])
+    # Use cached data if available
+    if masjid_id in _data_cache:
+        data = _data_cache[masjid_id]
+    else:
+        data = fetch_mawaqit_data(masjid_id)
+
+    calendar = data.get("calendar", [])
 
     if len(calendar) < month_number:
         raise ValueError("This month is not available in the calendar.")
@@ -150,6 +168,11 @@ def get_calendar(masjid_id: str):
     Returns:
         list: List of monthly prayer times for the year
     """
-    conf_data = fetch_mawaqit_data(masjid_id)
-    calendar = conf_data.get("calendar", [])
+    # Use cached data if available
+    if masjid_id in _data_cache:
+        data = _data_cache[masjid_id]
+    else:
+        data = fetch_mawaqit_data(masjid_id)
+
+    calendar = data.get("calendar", [])
     return calendar

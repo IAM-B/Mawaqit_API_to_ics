@@ -7,8 +7,9 @@
     <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <link rel="stylesheet" href="/static/css/clock.css" />
     <!-- Timeline JavaScript -->
-    <script src="/static/js/timeline.js"></script>
+    <script src="/static/js/clock.js"></script>
   </head>
   <body>
     <main class="container">
@@ -25,23 +26,22 @@
           </ul>
 
           {% if segments %}
-          <!-- Hidden configuration for timeline -->
-          <div id="timelineConfig" 
+          <!-- Hidden configuration for clock -->
+          <div id="clockConfig" 
                data-segments='{{ segments|tojson|safe }}'
                data-scope="{{ scope }}"
                style="display: none;">
           </div>
 
-          <!-- Timeline section -->
-          <section class="timeline-section">
-            <h2>🕒 Timeline</h2>
-            <div class="timeline-navigation">
-              <button id="prevBtn" class="timeline-nav-btn">←</button>
+          <section class="clock-section">
+            <h2>🕒 Horloge des prières</h2>
+            <div class="clock-navigation">
+              <button id="prevBtn" class="clock-nav-btn">←</button>
               <span id="currentDate"></span>
-              <button id="nextBtn" class="timeline-nav-btn">→</button>
+              <button id="nextBtn" class="clock-nav-btn">→</button>
             </div>
-            <div id="timelineContent" class="timeline-container">
-              <div class="timeline-hours"></div>
+            <div id="clockContent" class="clock-container">
+              <!-- Clock will be rendered here -->
             </div>
           </section>
 
@@ -53,19 +53,19 @@
             </div>
           </section>
 
-          <!-- Timeline initialization script -->
+          <!-- Clock initialization script -->
           <script>
-            // Timeline configuration
-            const timelineConfig = document.getElementById('timelineConfig');
-            const timelineData = JSON.parse(timelineConfig.dataset.segments);
-            const timelineScope = timelineConfig.dataset.scope;
+            // Configuration de l'horloge
+            const clockConfig = document.getElementById('clockConfig');
+            const clockData = JSON.parse(clockConfig.dataset.segments);
+            const clockScope = clockConfig.dataset.scope;
 
-            // Initialize timeline
-            const timeline = new Timeline('timelineContent', timelineData, timelineScope);
+            // Initialisation de l'horloge
+            const clock = new Clock('clockContent', clockData, clockScope);
 
-            // Navigation event listeners
-            document.getElementById('prevBtn').addEventListener('click', () => timeline.navigate(-1));
-            document.getElementById('nextBtn').addEventListener('click', () => timeline.navigate(1));
+            // Navigation
+            document.getElementById('prevBtn').addEventListener('click', () => clock.navigate(-1));
+            document.getElementById('nextBtn').addEventListener('click', () => clock.navigate(1));
           </script>
 
           <!-- Manual slot editing button -->

@@ -248,34 +248,19 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                         "date": month_date.strftime("%B %Y"),
                         "days": month_segments
                     })
-        elif isinstance(prayer_times, dict):
-            print("📅 Processing today scope as dictionary")
-            today = datetime.now()
-            slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
-            segments = {
-                "date": today.strftime("%d/%m/%Y"),
-                "slots": slots,
-                "prayer_times": prayer_times
-            }
-        else:
-            print(f"⚠️ Unexpected prayer_times format: {type(prayer_times)}")
 
         return render_template(
-            'planner.html',
+            "planner.html",
             masjid_id=masjid_id,
             scope=scope,
+            segments=segments,
             padding_before=padding_before,
             padding_after=padding_after,
             ics_path=ics_path,
             empty_slots_path=empty_slots_path,
-            available_slots_path=available_slots_path,
-            timezone_str=tz_str,
-            segments=segments
+            available_slots_path=available_slots_path
         )
 
-    except ValueError as e:
-        print(f"❌ Validation error in handle_planner_post: {e}")
-        raise
     except Exception as e:
-        print(f"❌ Internal error in handle_planner_post: {e}")
-        raise
+        print(f"❌ Error in handle_planner_post: {e}")
+        return render_template("error.html", error_message=str(e))
