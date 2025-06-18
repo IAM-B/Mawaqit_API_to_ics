@@ -3,14 +3,12 @@
    ================== */
 .clock-container {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 600px;
+  height: 600px;
   margin: 20px auto;
   background: var(--form-bg);
   border-radius: 50%;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3),
-              inset 0 0 20px rgba(0, 0, 0, 0.2);
-  padding: 20px;
+  overflow: visible;
 }
 
 /* ==================
@@ -20,6 +18,7 @@
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 0 5px rgba(144, 202, 249, 0.3));
+  overflow: visible;
 }
 
 /* ==================
@@ -44,7 +43,7 @@
    🕒 Hour labels
    ================== */
 .hour-label {
-  font-size: 14px;
+  font-size: 16px;
   fill: var(--text-color);
   text-anchor: middle;
   dominant-baseline: middle;
@@ -59,15 +58,11 @@
   stroke-width: 25;
   stroke-linecap: round;
   filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-  transition: stroke-width 0.3s ease;
-}
-
-.clock-arc:hover {
-  stroke-width: 30;
+  transition: all 0.3s ease;
 }
 
 .clock-arc.prayer {
-  stroke: var(--primary);
+  stroke: var(--success);
   opacity: 0.8;
 }
 
@@ -77,27 +72,71 @@
 }
 
 /* ==================
-   🕒 Event labels
+   🕒 Event labels and tooltips
    ================== */
 .clock-label {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  background: var(--form-bg);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: var(--text-color);
-  pointer-events: none;
-  white-space: nowrap;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border-color);
-  transition: transform 0.2s ease;
+  font-size: 14px;
+  fill: var(--accent);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px rgba(67, 160, 71, 0.5));
 }
 
-.clock-arc:hover + .clock-label {
-  transform: translate(-50%, -50%) scale(1.1);
-  background: var(--primary);
-  color: white;
+.tooltip-group {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.clock-arc.prayer:hover + .tooltip-group {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.clock-arc.prayer:hover + .clock-label {
+  opacity: 1;
+  fill: var(--accent);
+}
+
+.tooltip-rect {
+  fill: var(--primary);
+  stroke: var(--accent);
+  stroke-width: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  rx: 6;
+  ry: 6;
+}
+
+.tooltip-text {
+  fill: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  white-space: pre;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.clock-arc.prayer {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clock-arc.prayer:hover {
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+}
+
+/* Ajustement de la position des labels */
+.clock-arc.prayer + .clock-label {
+  transform: translateY(-45px);
+}
+
+.clock-arc.slot + .clock-label {
+  transform: translateY(45px);
 }
 
 /* ==================
@@ -151,47 +190,50 @@
 }
 
 /* ==================
-   🕒 Available slots list
+   🕒 Available slots section
    ================== */
 .available-slots {
   margin-top: 30px;
   padding: 20px;
   background: var(--form-bg);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border: 1px solid var(--border-color);
 }
 
-.available-slots h2 {
-  margin-bottom: 20px;
-  color: var(--accent);
-  font-size: 1.3em;
-  text-align: center;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.available-slots ul {
+.slots-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.available-slots li {
+.slot-item {
   margin: 10px 0;
-  padding: 12px 16px;
-  border-radius: 6px;
+  padding: 12px;
   background: var(--input-bg);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
   border: 1px solid var(--border-color);
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-.available-slots strong {
+.slot-item:hover {
+  background: var(--primary);
+  cursor: pointer;
+}
+
+.slot-item.active {
+  background: var(--success);
+  border-color: var(--success-hover);
+}
+
+.slot-time {
   color: var(--accent);
-  margin-right: 10px;
-  font-size: 1.1em;
+  font-weight: 500;
 }
 
-.available-slots li:hover strong {
+.slot-item:hover .slot-time {
+  color: white;
+}
+
+.slot-item.active .slot-time {
   color: white;
 } 
