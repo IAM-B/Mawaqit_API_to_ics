@@ -61,8 +61,12 @@ def test_normalize_year_data_valid():
     assert len(result) == 2  # 2 months
     assert len(result[0]) == 2  # 2 days in the first month
     assert len(result[1]) == 2  # 2 days in the second month
-    assert result[0]["1"][0] == "05:00"  # First day, first month
-    assert result[1]["1"][0] == "05:02"  # First day, second month
+    assert result[0]["1"]["fajr"] == "05:00"
+    assert result[0]["1"]["sunset"] == "13:00"
+    assert result[0]["1"]["dohr"] == "16:00"
+    assert result[0]["1"]["asr"] == "19:00"
+    assert result[0]["1"]["maghreb"] == "21:00"
+    assert result[0]["1"]["icha"] == "22:00"
 
 def test_normalize_year_data_invalid():
     """Test normalize_year_data with invalid data."""

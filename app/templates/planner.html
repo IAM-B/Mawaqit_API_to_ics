@@ -22,9 +22,45 @@
           {% if segments %}
           <label>Créneaux disponibles :</label>
           <ul>
-            {% for seg in segments %}
-            <li>{{ seg.start }} - {{ seg.end }}</li>
-            {% endfor %}
+            {% if scope == "today" %}
+              <li>
+                <strong>{{ segments.date if segments.date else "Aujourd'hui" }} :</strong>
+                <ul>
+                  {% for seg in segments.slots %}
+                  <li>{{ seg.start }} - {{ seg.end }}</li>
+                  {% endfor %}
+                </ul>
+              </li>
+            {% elif scope == "month" %}
+              {% for day in segments %}
+              <li>
+                <strong>{{ day.date if day.date else "Jour " + day.day|string }} :</strong>
+                <ul>
+                  {% for slot in day.slots %}
+                  <li>{{ slot.start }} - {{ slot.end }}</li>
+                  {% endfor %}
+                </ul>
+              </li>
+              {% endfor %}
+            {% elif scope == "year" %}
+              {% for month in segments %}
+              <li>
+                <strong>{{ month.date if month.date else "Mois " + month.month|string }} :</strong>
+                <ul>
+                  {% for day in month.days %}
+                  <li>
+                    <strong>{{ day.date if day.date else "Jour " + day.day|string }} :</strong>
+                    <ul>
+                      {% for slot in day.slots %}
+                      <li>{{ slot.start }} - {{ slot.end }}</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </li>
+              {% endfor %}
+            {% endif %}
           </ul>
           {% else %}
           <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>

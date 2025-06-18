@@ -106,7 +106,16 @@ def normalize_year_data(prayer_times: list) -> list[dict]:
 
                 if isinstance(time_list, list) and len(time_list) == 6:
                     if all(isinstance(t, str) and ":" in t for t in time_list):
-                        normalized_month[day_str] = time_list
+                        # Convertir la liste en dictionnaire avec les noms des prières
+                        times_dict = {
+                            "fajr": time_list[0],
+                            "sunset": time_list[1],
+                            "dohr": time_list[2],
+                            "asr": time_list[3],
+                            "maghreb": time_list[4],
+                            "icha": time_list[5]
+                        }
+                        normalized_month[day_str] = times_dict
                     else:
                         print(f"⚠️ Invalid time format for {day_str}/{month_index}: {time_list}")
                 else:
@@ -198,20 +207,53 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         segments = []
         if isinstance(prayer_times, list):
             print("📅 Processing month/year scope as list")
-            for i, daily in enumerate(prayer_times):
-                if not isinstance(daily, dict):
-                    print(f"⚠️ Unexpected format for day {i+1}: {type(daily)} → {daily}")
-                    continue
-                try:
-                    slots = segment_available_time(daily, tz_str, padding_before, padding_after)
-                    segments.append({"day": i + 1, "slots": slots})
-                except Exception as e:
-                    print(f"⚠️ Error processing day {i + 1}: {e}")
+            if scope == "month":
+                month = datetime.now().month
+                year = datetime.now().year
+                for i, daily in enumerate(prayer_times):
+                    if not isinstance(daily, dict):
+                        print(f"⚠️ Unexpected format for day {i+1}: {type(daily)} → {daily}")
+                        continue
+                    try:
+                        date = datetime(year, month, i + 1)
+                        slots = segment_available_time(daily, tz_str, padding_before, padding_after)
+                        segments.append({
+                            "day": i + 1,
+                            "date": date.strftime("%d/%m/%Y"),
+                            "slots": slots
+                        })
+                    except Exception as e:
+                        print(f"⚠️ Error processing day {i + 1}: {e}")
+            elif scope == "year":
+                year = datetime.now().year
+                for month_index, month_days in enumerate(prayer_times, start=1):
+                    month_segments = []
+                    month_date = datetime(year, month_index, 1)
+                    for day_str, times_dict in month_days.items():
+                        try:
+                            day_num = int(day_str)
+                            date = datetime(year, month_index, day_num)
+                            slots = segment_available_time(times_dict, tz_str, padding_before, padding_after)
+                            month_segments.append({
+                                "day": day_num,
+                                "date": date.strftime("%d/%m/%Y"),
+                                "slots": slots
+                            })
+                        except Exception as e:
+                            print(f"⚠️ Error processing day {day_str} in month {month_index}: {e}")
+                    segments.append({
+                        "month": month_index,
+                        "date": month_date.strftime("%B %Y"),
+                        "days": month_segments
+                    })
         elif isinstance(prayer_times, dict):
             print("📅 Processing today scope as dictionary")
-            segments = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
-            slots = adjust_slots_rounding(segments)
-            silent_slots = apply_silent_settings(slots)
+            today = datetime.now()
+            slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
+            segments = {
+                "date": today.strftime("%d/%m/%Y"),
+                "slots": slots
+            }
         else:
             print(f"⚠️ Unexpected prayer_times format: {type(prayer_times)}")
 
