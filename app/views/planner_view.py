@@ -205,7 +205,17 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
 
         # Process time segments for display
         segments = []
-        if isinstance(prayer_times, list):
+        if scope == "today":
+            print("📅 Processing today scope")
+            if isinstance(prayer_times, dict):
+                slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
+                segments.append({
+                    "day": datetime.now().day,
+                    "date": datetime.now().strftime("%d/%m/%Y"),
+                    "slots": slots,
+                    "prayer_times": prayer_times
+                })
+        elif isinstance(prayer_times, list):
             print("📅 Processing month/year scope as list")
             if scope == "month":
                 month = datetime.now().month
@@ -258,7 +268,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_after=padding_after,
             ics_path=ics_path,
             empty_slots_path=empty_slots_path,
-            available_slots_path=available_slots_path
+            available_slots_path=available_slots_path,
+            timezone_str=tz_str
         )
 
     except Exception as e:

@@ -39,12 +39,9 @@ class Clock {
    * Creates a visual element for an event on the clock
    * @param {Object} event - Event data with start/end times and content
    * @param {string} type - Type of event ('prayer' or 'slot')
-   * @returns {HTMLElement} Created event element
+   * @returns {SVGElement} Created event element
    */
   createEventElement(event, type) {
-    const element = document.createElement('div');
-    element.className = `clock-event ${type}`;
-    
     const startAngle = this.timeToAngle(event.start);
     const endAngle = event.end ? this.timeToAngle(event.end) : startAngle + 5;
     
@@ -62,7 +59,6 @@ class Clock {
     
     path.setAttribute("d", d);
     path.setAttribute("class", `clock-arc ${type}`);
-    element.appendChild(path);
     
     // Add label with better positioning
     const midAngle = (startAngle + endAngle) / 2;
@@ -70,8 +66,12 @@ class Clock {
     const labelX = 150 + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
     const labelY = 150 + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
     
-    const label = document.createElement("div");
-    label.className = "clock-label";
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", labelX);
+    label.setAttribute("y", labelY);
+    label.setAttribute("class", "clock-label");
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("dominant-baseline", "middle");
     
     // Format label content based on type
     if (type === 'prayer') {
@@ -80,11 +80,12 @@ class Clock {
       label.textContent = `${event.start.slice(0, 5)} - ${event.end.slice(0, 5)}`;
     }
     
-    label.style.left = `${labelX}px`;
-    label.style.top = `${labelY}px`;
-    element.appendChild(label);
+    // Create a group element to hold both the path and label
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.appendChild(path);
+    group.appendChild(label);
     
-    return element;
+    return group;
   }
 
   /**
@@ -93,7 +94,7 @@ class Clock {
    */
   getCurrentData() {
     if (this.scope === 'today') {
-      return this.segments;
+      return this.segments[0];
     } else if (this.scope === 'month') {
       return this.segments[this.currentIndex];
     } else if (this.scope === 'year') {
@@ -265,11 +266,12 @@ class Clock {
           prayer: prayer
         });
 
-        svg.appendChild(this.createEventElement({
+        const eventElement = this.createEventElement({
           content: prayer,
           start: paddingBefore.toTimeString().slice(0, 5),
           end: paddingAfter.toTimeString().slice(0, 5)
-        }, 'prayer'));
+        }, 'prayer');
+        svg.appendChild(eventElement);
       });
     }
 
@@ -282,11 +284,12 @@ class Clock {
       const nextPeriod = prayerPeriods[i + 1];
 
       if (nextPeriod) {
-        svg.appendChild(this.createEventElement({
+        const eventElement = this.createEventElement({
           content: 'Disponible',
           start: currentPeriod.end,
           end: nextPeriod.start
-        }, 'slot'));
+        }, 'slot');
+        svg.appendChild(eventElement);
       }
     }
 
