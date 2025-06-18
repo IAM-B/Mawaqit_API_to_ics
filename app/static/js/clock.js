@@ -17,9 +17,9 @@ class Clock {
   }
 
   /**
-   * Convertit une heure en minutes depuis minuit
+   * Converts time to minutes since midnight
    * @param {string} time - Format HH:MM
-   * @returns {number} Minutes depuis minuit
+   * @returns {number} Minutes since midnight
    */
   timeToMinutes(time) {
     const [hours, minutes] = time.split(':').map(Number);
@@ -27,16 +27,16 @@ class Clock {
   }
 
   /**
-   * Convertit des minutes en angle
-   * @param {number} minutes - Minutes depuis minuit
-   * @returns {number} Angle en degrés
+   * Converts minutes to angle
+   * @param {number} minutes - Minutes since midnight
+   * @returns {number} Angle in degrees
    */
   minutesToAngle(minutes) {
     return (minutes * 360) / (24 * 60);
   }
 
   /**
-   * Crée un élément SVG pour un événement
+   * Creates an SVG element for an event
    */
   createEventElement(event, type) {
     const startMinutes = this.timeToMinutes(event.start);
@@ -49,16 +49,16 @@ class Clock {
     const centerX = 150;
     const centerY = 150;
     
-    // Calcul des points de début et fin
+    // Calculate start and end points
     const startX = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
     const startY = centerY + radius * Math.sin((startAngle - 90) * Math.PI / 180);
     const endX = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
     const endY = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
     
-    // Création du chemin SVG
+    // Create SVG path
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     
-    // Calcul de la différence d'angle
+    // Calculate angle difference
     let angleDiff = endMinutes - startMinutes;
     if (angleDiff < 0) {
       angleDiff += 24 * 60;
@@ -70,7 +70,7 @@ class Clock {
     path.setAttribute("d", d);
     path.setAttribute("class", `clock-arc ${type}`);
     
-    // Ajout du label
+    // Add label
     const midAngle = (startAngle + endAngle) / 2;
     const labelRadius = type === 'prayer' ? radius + 20 : radius - 20;
     const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
@@ -93,34 +93,34 @@ class Clock {
     group.appendChild(path);
     group.appendChild(label);
 
-    // Ajout de l'infobulle pour les prières
+    // Add tooltip for prayers
     if (type === 'prayer') {
-      // Création du groupe pour l'infobulle
+      // Create tooltip group
       const tooltipGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
       tooltipGroup.setAttribute("class", "tooltip-group");
-      tooltipGroup.style.display = "none"; // Caché par défaut
+      tooltipGroup.style.display = "none"; // Hidden by default
 
-      // Création du rectangle de fond
+      // Create background rectangle
       const tooltipRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       tooltipRect.setAttribute("class", "tooltip-rect");
       tooltipRect.setAttribute("rx", "5");
       tooltipRect.setAttribute("ry", "5");
 
-      // Création du texte de l'infobulle
+      // Create tooltip text
       const tooltipText = document.createElementNS("http://www.w3.org/2000/svg", "text");
       tooltipText.setAttribute("class", "tooltip-text");
-      tooltipText.textContent = `${event.content}\nHeure: ${event.start}`;
+      tooltipText.textContent = `${event.content}\nTime: ${event.start}`;
 
-      // Ajout des éléments à l'infobulle
+      // Add elements to tooltip
       tooltipGroup.appendChild(tooltipRect);
       tooltipGroup.appendChild(tooltipText);
 
-      // Positionnement de l'infobulle
+      // Position tooltip
       const tooltipX = labelX;
       const tooltipY = labelY - 40;
       tooltipGroup.setAttribute("transform", `translate(${tooltipX}, ${tooltipY})`);
 
-      // Ajout des événements de survol
+      // Add hover events
       path.addEventListener("mouseover", () => {
         tooltipGroup.style.display = "block";
       });
@@ -136,7 +136,66 @@ class Clock {
   }
 
   /**
-   * Formate la date pour l'affichage
+   * Creates an SVG element for a slot
+   */
+  createSlotElement(slot) {
+    const startMinutes = this.timeToMinutes(slot.start);
+    const endMinutes = this.timeToMinutes(slot.end);
+    
+    // Add 25 minutes delay at the start
+    const delayedStartMinutes = startMinutes + 25;
+    const startAngle = this.minutesToAngle(delayedStartMinutes);
+    const endAngle = this.minutesToAngle(endMinutes);
+    
+    const radius = 100; // Smaller radius than prayers
+    const centerX = 150;
+    const centerY = 150;
+    
+    // Calculate start and end points
+    const startX = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
+    const startY = centerY + radius * Math.sin((startAngle - 90) * Math.PI / 180);
+    const endX = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
+    const endY = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
+    
+    // Create SVG path
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    
+    // Calculate angle difference
+    let angleDiff = endMinutes - delayedStartMinutes;
+    if (angleDiff < 0) {
+      angleDiff += 24 * 60;
+    }
+    
+    const largeArcFlag = angleDiff > 12 * 60 ? 1 : 0;
+    const d = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+    
+    path.setAttribute("d", d);
+    path.setAttribute("class", "clock-arc slot");
+    path.dataset.start = slot.start;
+    path.dataset.end = slot.end;
+    
+    // Add events
+    path.addEventListener("mouseover", () => {
+      path.classList.add("active");
+      const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (listItem) {
+        listItem.classList.add("active");
+      }
+    });
+
+    path.addEventListener("mouseout", () => {
+      path.classList.remove("active");
+      const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (listItem) {
+        listItem.classList.remove("active");
+      }
+    });
+    
+    return path;
+  }
+
+  /**
+   * Formats date for display
    */
   formatDate(data) {
     if (!data) return '';
@@ -150,12 +209,12 @@ class Clock {
         year: 'numeric'
       });
     }
-    return this.scope === 'month' ? `Jour ${data.day}` : 
-           this.scope === 'year' ? `Mois ${data.month}` : 'Aujourd\'hui';
+    return this.scope === 'month' ? `Day ${data.day}` : 
+           this.scope === 'year' ? `Month ${data.month}` : 'Today';
   }
 
   /**
-   * Met à jour la liste des créneaux disponibles
+   * Updates the available slots list
    */
   updateAvailableSlots(data) {
     if (!this.slotsContainer) return;
@@ -183,9 +242,9 @@ class Clock {
       slotItem.appendChild(slotTime);
       slotsList.appendChild(slotItem);
 
-      // Ajout des événements pour la synchronisation
+      // Add events for synchronization
       slotItem.addEventListener('mouseover', () => {
-        // Ici, on pourra ajouter la logique pour mettre en surbrillance l'arc correspondant
+        // Here we can add logic to highlight the corresponding arc
         const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
         if (arc) {
           arc.classList.add('active');
@@ -204,18 +263,18 @@ class Clock {
   }
 
   /**
-   * Met à jour l'affichage de l'horloge
+   * Updates the clock display
    */
   updateClock() {
     this.container.innerHTML = '';
     
-    // Création du conteneur SVG avec un viewBox plus grand
+    // Create SVG container with larger viewBox
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", "-50 -50 400 400"); // Ajusté pour avoir plus d'espace
+    svg.setAttribute("viewBox", "-50 -50 400 400"); // Adjusted for more space
     svg.setAttribute("class", "clock-svg");
     this.container.appendChild(svg);
 
-    // Création du cadran
+    // Create clock face
     const clockFace = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     clockFace.setAttribute("cx", "150");
     clockFace.setAttribute("cy", "150");
@@ -223,7 +282,7 @@ class Clock {
     clockFace.setAttribute("class", "clock-face");
     svg.appendChild(clockFace);
 
-    // Ajout des graduations des heures
+    // Add hour markers
     for (let hour = 0; hour < 24; hour++) {
       const angle = this.minutesToAngle(hour * 60);
       const x1 = 150 + 140 * Math.cos((angle - 90) * Math.PI / 180);
@@ -239,7 +298,7 @@ class Clock {
       marker.setAttribute("class", "hour-marker");
       svg.appendChild(marker);
 
-      // Ajout des labels des heures
+      // Add hour labels
       const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
       const labelX = 150 + 130 * Math.cos((angle - 90) * Math.PI / 180);
       const labelY = 150 + 130 * Math.sin((angle - 90) * Math.PI / 180);
@@ -250,9 +309,9 @@ class Clock {
       svg.appendChild(label);
     }
 
-    // Ajout des graduations des minutes
+    // Add minute markers
     for (let minute = 0; minute < 60; minute++) {
-      if (minute % 5 === 0) continue; // On saute les minutes qui sont des heures
+      if (minute % 5 === 0) continue; // Skip minutes that are hours
       const angle = this.minutesToAngle(minute);
       const x1 = 150 + 145 * Math.cos((angle - 90) * Math.PI / 180);
       const y1 = 150 + 145 * Math.sin((angle - 90) * Math.PI / 180);
@@ -268,7 +327,7 @@ class Clock {
       svg.appendChild(marker);
     }
 
-    // Affichage des événements
+    // Display events
     const currentData = this.getCurrentData();
     if (currentData && currentData.prayer_times) {
       Object.entries(currentData.prayer_times).forEach(([prayer, time]) => {
@@ -281,24 +340,32 @@ class Clock {
       });
     }
 
-    // Mise à jour de la date
+    // Display slots
+    if (currentData && currentData.slots) {
+      currentData.slots.forEach(slot => {
+        const slotElement = this.createSlotElement(slot);
+        svg.appendChild(slotElement);
+      });
+    }
+
+    // Update date
     const dateElement = document.getElementById('currentDate');
     if (dateElement) {
       dateElement.textContent = this.formatDate(currentData);
     }
 
-    // Mise à jour du fuseau horaire
+    // Update timezone
     const timezoneElement = document.getElementById('timezone');
     if (timezoneElement) {
       timezoneElement.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
 
-    // Mise à jour des créneaux disponibles
+    // Update available slots
     this.updateAvailableSlots(currentData);
   }
 
   /**
-   * Obtient les données actuelles
+   * Gets current data
    */
   getCurrentData() {
     if (this.scope === 'today') {
@@ -312,15 +379,15 @@ class Clock {
   }
 
   /**
-   * Initialise l'horloge
+   * Initializes the clock
    */
   init() {
     this.updateClock();
   }
 
   /**
-   * Navigue entre les jours/mois
-   * @param {number} direction - Direction de navigation (-1 pour précédent, 1 pour suivant)
+   * Navigates between days/months
+   * @param {number} direction - Navigation direction (-1 for previous, 1 for next)
    */
   navigate(direction) {
     if (this.scope === 'month') {
@@ -350,5 +417,5 @@ class Clock {
   }
 }
 
-// Export de la classe
+// Export the class
 window.Clock = Clock;
