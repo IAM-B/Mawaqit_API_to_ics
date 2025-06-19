@@ -154,6 +154,9 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
     if padding_before < 0 or padding_after < 0:
         raise ValueError("Invalid padding values: padding_before and padding_after must be positive integers")
 
+    if scope not in ("today", "month", "year"):
+        raise ValueError("Scope must be 'today', 'month', or 'year'")
+
     try:
         print(f"📥 Request received: masjid_id={masjid_id}, scope={scope}, padding_before={padding_before}, padding_after={padding_after}")
 
@@ -367,6 +370,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
 
     except Exception as e:
         print(f"❌ Error in handle_planner_post: {e}")
+        if isinstance(e, ValueError):
+            raise
         return render_template("error.html", error_message=str(e))
 
 def get_mosque_info_from_json(masjid_id):

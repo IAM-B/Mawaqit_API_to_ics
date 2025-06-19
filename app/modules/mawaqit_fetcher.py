@@ -13,6 +13,13 @@ from flask import current_app
 # Cache to store retrieved data
 _data_cache = {}
 
+def clear_mawaqit_cache():
+    """
+    Vide le cache interne utilisé par fetch_mawaqit_data.
+    À utiliser dans les tests pour garantir un comportement sans cache.
+    """
+    _data_cache.clear()
+
 def fetch_mawaqit_data(masjid_id: str) -> dict:
     """
     Main function to fetch confData from the Mawaqit website.

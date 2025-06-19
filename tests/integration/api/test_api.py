@@ -104,8 +104,14 @@ def test_planner_post_with_mocked_mosque(mock_fetch_mawaqit, mock_fetch_mosques,
         "masjid_id": "test-mosque",
         "scope": "today",
         "padding_before": 10,
-        "padding_after": 15
+        "padding_after": 15,
+        "mosque_name": "Mosquée Test",
+        "mosque_address": "1 rue de la Paix, Paris",
+        "mosque_lat": "48.8566",
+        "mosque_lng": "2.3522"
     }
-    response = client.post("/planner", data=data)
-    assert response.status_code == 200
-    assert b"Emploi du temps synchronis" in response.data 
+    # Block any real call to fetch_mawaqit_data (fallback)
+    with patch('app.views.planner_view.fetch_mawaqit_data', side_effect=Exception("fetch_mawaqit_data ne doit pas être appelé dans ce test")):
+        response = client.post("/planner", data=data)
+        assert response.status_code == 200
+        assert b"TEST-ID: planner-page" in response.data 

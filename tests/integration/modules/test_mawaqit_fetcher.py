@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock
 from flask import current_app
 from app import create_app
 from app.modules.mawaqit_fetcher import fetch_mawaqit_data, fetch_mosques_data, get_prayer_times_of_the_day, get_month, get_calendar
+from app.modules.mawaqit_fetcher import clear_mawaqit_cache
 
 @pytest.fixture
 def app():
@@ -37,6 +38,7 @@ def test_fetch_mawaqit_data_success(app):
 
 def test_fetch_mawaqit_data_404(app):
     """Test fetch_mawaqit_data with 404 response"""
+    clear_mawaqit_cache()
     mock_response = MagicMock()
     mock_response.status_code = 404
     
@@ -47,6 +49,7 @@ def test_fetch_mawaqit_data_404(app):
 
 def test_fetch_mawaqit_data_http_error(app):
     """Test fetch_mawaqit_data with non-200 response"""
+    clear_mawaqit_cache()
     mock_response = MagicMock()
     mock_response.status_code = 500
     
@@ -57,6 +60,7 @@ def test_fetch_mawaqit_data_http_error(app):
 
 def test_fetch_mawaqit_data_no_script(app):
     """Test fetch_mawaqit_data when no script tag is found"""
+    clear_mawaqit_cache()
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.text = '<html><body>No script here</body></html>'
@@ -68,6 +72,7 @@ def test_fetch_mawaqit_data_no_script(app):
 
 def test_fetch_mawaqit_data_invalid_json(app):
     """Test fetch_mawaqit_data with invalid JSON in confData"""
+    clear_mawaqit_cache()
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.text = '<script>var confData = {invalid json};</script>'
@@ -156,6 +161,7 @@ def test_get_prayer_times_of_the_day_success(app):
 
 def test_get_prayer_times_of_the_day_incomplete(app):
     """Test get_prayer_times_of_the_day with incomplete data"""
+    clear_mawaqit_cache()
     mock_data = {
         "times": ["05:00", "13:00"],
         "shuruq": "06:00"
