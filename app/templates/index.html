@@ -1,105 +1,122 @@
 <!-- TEST-ID: index-page -->
-<!-- Main Page Template - Prayer Planner -->
+<!-- Landing Page Template - Prayer Planner -->
 <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>🕌 Prayer Planner</title>
+    <title>🕌 Prayer Planner - Planifiez vos prières</title>
     <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
-    
-    <!-- External CSS Libraries -->
-    <!-- Tom Select for enhanced dropdowns -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
-      rel="stylesheet"
-    />
-    <!-- Leaflet for map functionality -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
-    <!-- MarkerCluster for map markers -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-    />
+    <link rel="stylesheet" href="/static/css/landing.css" />
   </head>
   <body>
-    <main class="container">
-      <!-- Page title -->
-      <h1 class="page-title">🕌 Prayer Planner</h1>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-title">🕌 Prayer Planner</h1>
+      <p class="hero-subtitle">
+        Planifiez vos prières avec précision et synchronisez-les avec votre calendrier
+      </p>
+      <div>
+        <a href="/planner" class="cta-button">🚀 Commencer maintenant</a>
+        <a href="#features" class="cta-button cta-secondary">📖 En savoir plus</a>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <h2 class="section-title">Fonctionnalités principales</h2>
+      <p class="section-subtitle">
+        Tout ce dont vous avez besoin pour organiser vos prières
+      </p>
       
-      <!-- Map container -->
-      <div
-        id="mosque-map"
-        style="height: 500px; margin-top: 1em; border-radius: 8px"
-      ></div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h3 class="feature-title">Sélection de mosquée</h3>
+          <p class="feature-description">
+            Trouvez facilement votre mosquée avec notre carte interactive et notre base de données de plus de 15 000 mosquées dans le monde.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3 class="feature-title">Génération de calendrier</h3>
+          <p class="feature-description">
+            Générez automatiquement des fichiers ICS avec les horaires de prière pour aujourd'hui, ce mois ou cette année.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🕒</div>
+          <h3 class="feature-title">Créneaux synchronisés</h3>
+          <p class="feature-description">
+            Créez des créneaux de temps personnalisés avant et après chaque prière pour une meilleure organisation.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">⚙️</div>
+          <h3 class="feature-title">Configuration flexible</h3>
+          <p class="feature-description">
+            Personnalisez les délais avant et après les prières selon vos besoins et préférences.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3 class="feature-title">Couverture mondiale</h3>
+          <p class="feature-description">
+            Support pour plus de 130 pays avec des données précises d'horaires de prière.
+          </p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3 class="feature-title">Interface moderne</h3>
+          <p class="feature-description">
+            Interface intuitive et responsive qui fonctionne parfaitement sur tous vos appareils.
+          </p>
+        </div>
+      </div>
+    </section>
 
-      <!-- Main form for prayer planning -->
-      <form action="/planner" method="post" class="form">
-        <fieldset class="form-section">
-          <!-- Country selection -->
-          <label for="country-select">Pays :</label>
-          <select id="country-select" name="country" autocomplete="off">
-            <option value="">-- Sélectionner un pays --</option>
-          </select>
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <h2 class="section-title">Chiffres clés</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">15,000+</div>
+          <div class="stat-label">Mosquées</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">130+</div>
+          <div class="stat-label">Pays</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Gratuit</div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Mosque selection -->
-          <label for="mosque-select">Mosquée :</label>
-          <select
-            id="mosque-select"
-            name="masjid_id"
-            autocomplete="off"
-            disabled
-          >
-            <option value="">-- Sélectionner une mosquée --</option>
-          </select>
+    <!-- Call to Action -->
+    <section class="cta-section">
+      <h2 class="section-title">Prêt à commencer ?</h2>
+      <p class="section-subtitle">
+        Rejoignez des milliers d'utilisateurs qui planifient leurs prières avec précision
+      </p>
+      <a href="/planner" class="cta-button cta-large">
+        🚀 Commencer maintenant
+      </a>
+    </section>
 
-          <!-- Prayer time padding settings -->
-          <label for="padding_before">Temps avant prière (min) :</label>
-          <input type="number" name="padding_before" value="10" min="0" />
-
-          <label for="padding_after">Temps après prière (min) :</label>
-          <input type="number" name="padding_after" value="35" min="0" />
-
-          <!-- Hidden fields for mosque coordinates -->
-          <input type="hidden" id="mosque_lat" name="mosque_lat" value="" />
-          <input type="hidden" id="mosque_lng" name="mosque_lng" value="" />
-          <input type="hidden" id="mosque_name" name="mosque_name" value="" />
-          <input type="hidden" id="mosque_address" name="mosque_address" value="" />
-
-          <!-- Time scope selection -->
-          <label for="scope">Période :</label>
-          <select name="scope" required>
-            <option value="today">Aujourd'hui</option>
-            <option value="month">Mois</option>
-            <option value="year">Année</option>
-          </select>
-        </fieldset>
-
-        <!-- Submit button -->
-        <button type="submit" class="btn-submit" aria-label="Générer planning">
-          📥 Générer planning
-        </button>
-      </form>
-    </main>
-
-    <!-- External JavaScript Libraries -->
-    <!-- Leaflet for map functionality -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- MarkerCluster for map markers -->
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-    <!-- Tom Select for enhanced dropdowns -->
-    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
-    
-    <!-- Local JavaScript files -->
-    <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/map_loader.js') }}"></script>
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2024 Prayer Planner. Tous droits réservés.</p>
+      <p class="footer-subtitle">
+        Données d'horaires de prière fournies par Mawaqit.net
+      </p>
+    </footer>
   </body>
-</html>
+</html> 

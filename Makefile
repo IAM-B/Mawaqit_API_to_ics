@@ -39,16 +39,21 @@ run-test: install
 # 🧪 Tests
 test-unit:
 	@echo "🧪 Running unit tests..."
+	@mkdir -p logs
 	FLASK_ENV=testing $(PYTHON) -m pytest tests/unit -v | tee logs/unit_tests.log
 	@$(MAKE) clean-ics
 
 test-integration:
 	@echo "🧪 Running integration tests..."
+	@mkdir -p logs
 	FLASK_ENV=testing $(PYTHON) -m pytest tests/integration -v | tee logs/integration_tests.log
 	@$(MAKE) clean-ics
 
 test-all:
+	@mkdir -p logs
+	@echo "🧪 Running unit tests..."
 	@$(MAKE) test-unit
+	@echo "🧪 Running integration tests..."
 	@$(MAKE) test-integration
 	@cat logs/unit_tests.log logs/integration_tests.log > logs/all_tests.log
 

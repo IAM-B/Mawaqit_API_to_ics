@@ -9,8 +9,23 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
     <link rel="stylesheet" href="/static/css/clock.css" />
+    <!-- External CSS Libraries -->
+    <!-- Tom Select for enhanced dropdowns -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
+      rel="stylesheet"
+    />
     <!-- Leaflet for map functionality -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- MarkerCluster for map markers -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
     <!-- Timeline JavaScript -->
     <script src="/static/js/clock.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -21,6 +36,66 @@
       <!-- Main title -->
       <h1 class="page-title">🕌 Planning synchronisé</h1>
 
+      <!-- Configuration Section (from index.html) -->
+      <section class="config-section">
+        <h2>⚙️ Configuration</h2>
+        
+        <!-- Map container -->
+        <div
+          id="mosque-map"
+          style="height: 400px; margin: 1em 0; border-radius: 8px"
+        ></div>
+
+        <!-- Main form for prayer planning -->
+        <form action="/planner" method="post" class="form">
+          <fieldset class="form-section">
+            <!-- Country selection -->
+            <label for="country-select">Pays :</label>
+            <select id="country-select" name="country" autocomplete="off">
+              <option value="">-- Sélectionner un pays --</option>
+            </select>
+
+            <!-- Mosque selection -->
+            <label for="mosque-select">Mosquée :</label>
+            <select
+              id="mosque-select"
+              name="masjid_id"
+              autocomplete="off"
+              disabled
+            >
+              <option value="">-- Sélectionner une mosquée --</option>
+            </select>
+
+            <!-- Prayer time padding settings -->
+            <label for="padding_before">Temps avant prière (min) :</label>
+            <input type="number" name="padding_before" value="10" min="0" />
+
+            <label for="padding_after">Temps après prière (min) :</label>
+            <input type="number" name="padding_after" value="35" min="0" />
+
+            <!-- Hidden fields for mosque coordinates -->
+            <input type="hidden" id="mosque_lat" name="mosque_lat" value="" />
+            <input type="hidden" id="mosque_lng" name="mosque_lng" value="" />
+            <input type="hidden" id="mosque_name" name="mosque_name" value="" />
+            <input type="hidden" id="mosque_address" name="mosque_address" value="" />
+
+            <!-- Time scope selection -->
+            <label for="scope">Période :</label>
+            <select name="scope" required>
+              <option value="today">Aujourd'hui</option>
+              <option value="month">Mois</option>
+              <option value="year">Année</option>
+            </select>
+          </fieldset>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn-submit" aria-label="Générer planning">
+            📥 Générer planning
+          </button>
+        </form>
+      </section>
+
+      {% if segments %}
       <!-- Quick actions section - Most important for user -->
       <section class="quick-actions">
         <h2>📥 Téléchargements rapides</h2>
@@ -58,7 +133,6 @@
         </div>
       </section>
 
-      {% if segments %}
       <!-- Interactive clock section - PRIORITY -->
       <section class="clock-section">
         <h2>🕒 Horloge des prières</h2>
@@ -181,5 +255,17 @@
       </script>
       {% endif %}
     </main>
+
+    <!-- External JavaScript Libraries -->
+    <!-- Leaflet for map functionality -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- MarkerCluster for map markers -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <!-- Tom Select for enhanced dropdowns -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    
+    <!-- Local JavaScript files -->
+    <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/map_loader.js') }}"></script>
   </body>
 </html>

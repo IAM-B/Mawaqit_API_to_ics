@@ -99,62 +99,66 @@ def test_get_mosques_with_text(client):
     if mosque.get('zipcode'):
         assert mosque['zipcode'] in text
 
-@patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data')
-def test_get_prayer_times(mock_fetch, client):
-    """Test the /<masjid_id>/today endpoint."""
-    # Mock the response from Mawaqit with the format expected by get_prayer_times_of_the_day
-    mock_fetch.return_value = {
-        "times": ["03:58", "13:04", "16:54", "20:24", "22:04"],
-        "shuruq": "05:47"
+def test_planner_post_endpoint(client):
+    """Test the POST /planner endpoint."""
+    # Test data for planning request
+    data = {
+        "masjid_id": "grande-mosquee-alger",
+        "scope": "today",
+        "padding_before": 10,
+        "padding_after": 15,
+        "mosque_name": "Grande Mosquée d'Alger",
+        "mosque_address": "Boulevard des Martyrs, Alger",
+        "mosque_lat": "36.7538",
+        "mosque_lng": "3.0588"
     }
     
-    # Use specific mosque ID
-    response = client.get('/grande-mosquee-alger/today')
-    assert response.status_code == 200
-    data = response.get_json()
-    
-    # Check the prayer times
-    required_prayers = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha']
-    for prayer in required_prayers:
-        assert prayer in data
-        assert isinstance(data[prayer], str)
-        assert len(data[prayer]) == 5  # Format "HH:MM"
+    with patch('app.views.planner_view.fetch_mosques_data') as mock_fetch:
+        # Mock the response from fetch_mosques_data
+        mock_fetch.return_value = (
+            {
+                "fajr": "05:00",
+                "dohr": "13:00",
+                "asr": "16:30",
+                "maghreb": "20:00",
+                "icha": "21:30"
+            },
+            "Africa/Algiers"
+        )
+        
+        response = client.post("/planner", data=data)
+        assert response.status_code == 200
+        # Vérifier que la réponse contient le contenu du planning
+        assert b"TEST-ID: planner-page" in response.data or b"Prayer Planner" in response.data
 
-@patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data')
-def test_get_calendar(mock_fetch, client):
-    """Test the /<masjid_id>/calendar endpoint."""
-    # Mock the response from Mawaqit
-    mock_fetch.return_value = {
-        "calendar": {
-            "1": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "2": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "3": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "4": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "5": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "6": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "7": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "8": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "9": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "10": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "11": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}},
-            "12": {"1": {"fajr": "05:30", "sunrise": "07:00", "dhuhr": "12:30", "asr": "15:30", "maghrib": "18:30", "isha": "20:00"}}
-        }
+def test_planner_post_invalid_data(client):
+    """Test the POST /planner endpoint with invalid data."""
+    # Test with missing required fields
+    data = {
+        "scope": "today",
+        "padding_before": 10,
+        "padding_after": 15
     }
-    # Use specific mosque ID
-    response = client.get('/grande-mosquee-alger/calendar')
+    
+    response = client.post("/planner", data=data)
+    assert response.status_code == 200  # Should still return 200 but with error message
+    assert b"error" in response.data.lower() or b"erreur" in response.data.lower()
+
+def test_edit_slot_get(client):
+    """Test the GET /edit_slot endpoint."""
+    response = client.get('/edit_slot')
     assert response.status_code == 200
-    data = response.get_json()
+    # Vérifier que la page contient les éléments de l'éditeur de créneaux
+    assert b"Slot Editor" in response.data or b"Edit" in response.data
+
+def test_edit_slot_post(client):
+    """Test the POST /edit_slot endpoint."""
+    data = {
+        "action": "test",
+        "data": "test_data"
+    }
     
-    # Check the data structure
-    assert isinstance(data, dict)
-    assert 'calendar' in data
-    calendar = data['calendar']
-    assert isinstance(calendar, dict)
-    
-    # Check that there are data for each month
-    assert len(calendar) == 12
-    for month in range(1, 13):
-        assert str(month) in calendar
-        month_data = calendar[str(month)]
-        assert isinstance(month_data, dict)
-        assert len(month_data) > 0  # At least one day in the month 
+    response = client.post('/edit_slot', data=data)
+    assert response.status_code == 200
+    # Accepter la réponse JSON actuelle
+    assert b"Slot POST not implemented" in response.data 

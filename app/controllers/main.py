@@ -44,55 +44,10 @@ def init_routes(app):
         """Serve the application favicon."""
         return app.send_static_file('favicon.ico')
 
-    @app.route("/<masjid_id>/", methods=["GET"])
-    def get_raw_data(masjid_id: str):
-        """
-        Fetch raw prayer time data for a specific mosque.
-        
-        Args:
-            masjid_id (str): The unique identifier of the mosque
-        """
-        r = fetch_mawaqit_data(masjid_id)
-        return {"rawdata": r}
-
-    @app.route("/<masjid_id>/today", methods=["GET"])
-    def get_prayer_times(masjid_id: str):
-        """
-        Get today's prayer times for a specific mosque.
-        
-        Args:
-            masjid_id (str): The unique identifier of the mosque
-        """
-        prayer_times = get_prayer_times_of_the_day(masjid_id)
-        return prayer_times
-
-    @app.route("/<masjid_id>/calendar", methods=["GET"])
-    def get_year_calendar(masjid_id: str):
-        """
-        Get the entire year's calendar for a specific mosque.
-        
-        Args:
-            masjid_id (str): The unique identifier of the mosque
-        """
-        r = get_calendar(masjid_id)
-        return {"calendar": r}
-
-    @app.route("/<masjid_id>/calendar/<int:month_number>", methods=["GET"])
-    def get_month_calendar(masjid_id: str, month_number: int):
-        """
-        Get a specific month's calendar for a mosque.
-        
-        Args:
-            masjid_id (str): The unique identifier of the mosque
-            month_number (int): The month number (1-12)
-        """
-        month_dict = get_month(masjid_id, month_number)
-        return jsonify(month_dict)
-
     @app.route('/planner', methods=['GET'])
-    def redirect_planner():
-        """Handle direct access to planner page (not allowed)."""
-        return render_template("error.html", error_message="Direct access to /planner not allowed. Please submit the form.")
+    def planner_page():
+        """Display the planner page with configuration form."""
+        return render_template("planner.html")
 
     @app.route('/planner', methods=['POST'])
     def planner():
@@ -100,11 +55,34 @@ def init_routes(app):
         Handle prayer time planning requests.
         Processes form data and generates ICS files.
         """
-        masjid_id = request.form.get("masjid_id")
-        scope = request.form.get("scope")
-        padding_before = int(request.form.get('padding_before', 10))
-        padding_after = int(request.form.get('padding_after', 35))
-        return handle_planner_post(masjid_id, scope, padding_before, padding_after)
+        try:
+            masjid_id = request.form.get("masjid_id")
+            scope = request.form.get("scope")
+            padding_before = int(request.form.get('padding_before', 10))
+            padding_after = int(request.form.get('padding_after', 35))
+            
+            # Get mosque details from hidden fields
+            mosque_name = request.form.get("mosque_name", "")
+            mosque_address = request.form.get("mosque_address", "")
+            mosque_lat = request.form.get("mosque_lat", "")
+            mosque_lng = request.form.get("mosque_lng", "")
+            
+            # Generate planning data using the existing function
+            result = handle_planner_post(masjid_id, scope, padding_before, padding_after)
+            
+            # If result is a response (redirect), follow it
+            if hasattr(result, 'status_code') and result.status_code == 302:
+                return result
+            
+            # If result is a string (HTML), return it
+            if isinstance(result, str):
+                return result
+            
+            # Otherwise, return the result as is
+            return result
+            
+        except Exception as e:
+            return render_template("error.html", error_message=str(e))
 
     @app.route("/get_countries", methods=["GET"])
     def get_countries():
@@ -120,44 +98,3 @@ def init_routes(app):
     def edit_slot():
         """Handle slot editing interface."""
         return render_slot_editor(request)
-
-@main_bp.route('/generate-ics', methods=['POST'])
-def generate_ics():
-    """Endpoint pour générer un fichier ICS."""
-    try:
-        data = request.get_json()
-        
-        # Validate required fields
-        required_fields = ['masjid_id', 'scope', 'timezone', 'padding_before', 'padding_after', 'prayer_times']
-        for field in required_fields:
-            if field not in data:
-                return jsonify({'error': f'Missing required field: {field}'}), 400
-        
-        # Validate values
-        if data['scope'] not in ['today', 'month', 'year']:
-            return jsonify({'error': 'Invalid scope. Must be one of: today, month, year'}), 400
-        
-        if data['padding_before'] < 0 or data['padding_after'] < 0:
-            return jsonify({'error': 'Padding values must be positive'}), 400
-        
-        # Generate ICS file
-        output_path = generate_prayer_ics_file(
-            masjid_id=data['masjid_id'],
-            scope=data['scope'],
-            timezone_str=data['timezone'],
-            padding_before=data['padding_before'],
-            padding_after=data['padding_after'],
-            prayer_times=data['prayer_times']
-        )
-        
-        # Send file
-        return send_file(
-            output_path,
-            mimetype='text/calendar',
-            as_attachment=True,
-            download_name=f"prayer_times_{data['masjid_id']}.ics"
-        )
-        
-    except Exception as e:
-        import traceback
-        return jsonify({'error': str(e), 'trace': traceback.format_exc()}), 400
