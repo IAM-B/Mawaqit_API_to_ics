@@ -21,6 +21,19 @@ document.addEventListener("DOMContentLoaded", () => {
     shouldLoad: () => false,
     render: {
       no_results: () => '<div class="no-results">Aucune mosquée trouvée</div>'
+    },
+    onChange: (value) => {
+      if (!value) return;
+      
+      // Get selected mosque data
+      const selectedOption = mosqueSelect.options[value];
+      if (selectedOption) {
+        // Store coordinates in hidden fields
+        document.getElementById('mosque_lat').value = selectedOption.lat || '';
+        document.getElementById('mosque_lng').value = selectedOption.lng || '';
+        document.getElementById('mosque_name').value = selectedOption.name || '';
+        document.getElementById('mosque_address').value = selectedOption.address || '';
+      }
     }
   });
 
@@ -51,7 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
               slug: m.slug,
               city: m.city,
               address: m.address,
-              zipcode: m.zipcode
+              zipcode: m.zipcode,
+              lat: m.lat,
+              lng: m.lng
             }))
           );
         });

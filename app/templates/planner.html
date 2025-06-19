@@ -8,108 +8,177 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="/static/css/styles.css" />
     <link rel="stylesheet" href="/static/css/clock.css" />
+    <!-- Leaflet for map functionality -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Timeline JavaScript -->
     <script src="/static/js/clock.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/js/compact_map.js"></script>
   </head>
   <body>
     <main class="container">
-      <h1 class="page-title">🕌 Emploi du temps synchronisé</h1>
+      <!-- Main title -->
+      <h1 class="page-title">🕌 Planning synchronisé</h1>
 
-      <section class="form">
-        <fieldset class="form-section">
-          <legend>📌 Informations Générales</legend>
+      <!-- Quick actions section - Most important for user -->
+      <section class="quick-actions">
+        <h2>📥 Téléchargements rapides</h2>
+        <div class="download-grid">
+          {% if ics_path %}
+          <a href="{{ url_for('static', filename='ics/' + ics_path) }}" download class="download-card primary">
+            <span class="download-icon">📅</span>
+            <span class="download-title">Horaires de prière</span>
+            <span class="download-format">.ics</span>
+          </a>
+          {% endif %}
+          
+          {% if available_slots_path %}
+          <a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download class="download-card secondary">
+            <span class="download-icon">🕒</span>
+            <span class="download-title">Créneaux synchronisés</span>
+            <span class="download-format">.ics</span>
+          </a>
+          {% endif %}
+          
+          {% if empty_slots_path %}
+          <a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download class="download-card secondary">
+            <span class="download-icon">📋</span>
+            <span class="download-title">Créneaux disponibles</span>
+            <span class="download-format">.ics</span>
+          </a>
+          {% endif %}
+          
+          <!-- Manual editing card -->
+          <a href="/edit_slot" class="download-card edit">
+            <span class="download-icon">✏️</span>
+            <span class="download-title">Modifier manuellement</span>
+            <span class="download-format">Créneaux</span>
+          </a>
+        </div>
+      </section>
 
-          <!-- Timezone information -->
-          <label>Fuseau horaire détecté :</label>
-          <ul>
-            <li>{{ timezone_str }}</li>
-          </ul>
+      {% if segments %}
+      <!-- Interactive clock section - PRIORITY -->
+      <section class="clock-section">
+        <h2>🕒 Horloge des prières</h2>
+        <div class="clock-navigation">
+          <button id="prevBtn" class="clock-nav-btn">←</button>
+          <span id="currentDate" class="current-date"></span>
+          <button id="nextBtn" class="clock-nav-btn">→</button>
+        </div>
+        <div id="clockContent" class="clock-container">
+          <!-- Clock will be rendered here -->
+        </div>
+      </section>
 
-          {% if segments %}
-          <!-- Hidden configuration for clock -->
-          <div id="clockConfig" 
-               data-segments='{{ segments|tojson|safe }}'
-               data-scope="{{ scope }}"
-               style="display: none;">
+      <!-- Available slots section -->
+      <section class="available-slots">
+        <h2>🕒 Créneaux disponibles</h2>
+        <div id="availableSlotsList" class="slots-list">
+          <!-- Slots will be displayed here dynamically -->
+        </div>
+      </section>
+
+      <!-- Mosque and configuration summary -->
+      <section class="summary-section">
+        <div class="summary-grid">
+          <!-- Mosque information -->
+          <div class="summary-card mosque-info">
+            <h3>🕌 Mosquée sélectionnée</h3>
+            <div class="mosque-details">
+              <h4>{{ mosque_name }}</h4>
+              {% if mosque_address %}
+              <p class="address">{{ mosque_address }}</p>
+              {% endif %}
+              
+              <!-- Compact map container -->
+              <div id="mosque-location-map" 
+                   class="compact-map"
+                   {% if mosque_lat and mosque_lng %}
+                   data-lat="{{ mosque_lat }}"
+                   data-lng="{{ mosque_lng }}"
+                   data-name="{{ mosque_name }}"
+                   {% endif %}>
+              </div>
+              
+              <!-- Map links -->
+              <div class="map-links">
+                <a href="{{ google_maps_url }}" target="_blank" class="map-link">
+                  🗺️ Google Maps
+                </a>
+                <a href="{{ osm_url }}" target="_blank" class="map-link">
+                  🗺️ OpenStreetMap
+                </a>
+                <a href="{{ mawaqit_url }}" target="_blank" class="map-link">
+                  🌐 Mawaqit.net
+                </a>
+              </div>
+            </div>
           </div>
 
-          <section class="clock-section">
-            <h2>🕒 Horloge des prières</h2>
-            <div class="clock-navigation">
-              <button id="prevBtn" class="clock-nav-btn">←</button>
-              <span id="currentDate"></span>
-              <button id="nextBtn" class="clock-nav-btn">→</button>
+          <!-- Configuration summary -->
+          <div class="summary-card config-info">
+            <h3>⚙️ Configuration</h3>
+            <div class="config-details">
+              <div class="config-item">
+                <span class="config-label">📅 Période :</span>
+                <span class="config-value">{{ start_date }} → {{ end_date }}</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">⏰ Délai avant :</span>
+                <span class="config-value">{{ padding_before }} min</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">⏰ Délai après :</span>
+                <span class="config-value">{{ padding_after }} min</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">🌍 Fuseau horaire :</span>
+                <span class="config-value">{{ timezone_str }}</span>
+              </div>
+              <div class="config-item">
+                <span class="config-label">📊 Portée :</span>
+                <span class="config-value">{{ scope_display }}</span>
+              </div>
             </div>
-            <div id="clockContent" class="clock-container">
-              <!-- Clock will be rendered here -->
-            </div>
-          </section>
-
-          <!-- Available slots section -->
-          <section class="available-slots">
-            <h2>🕒 Créneaux disponibles</h2>
-            <div id="availableSlotsList">
-              <!-- Slots will be displayed here dynamically -->
-            </div>
-          </section>
-
-          <!-- Clock initialization script -->
-          <script>
-            // Configuration de l'horloge
-            const clockConfig = document.getElementById('clockConfig');
-            const clockData = JSON.parse(clockConfig.dataset.segments);
-            const clockScope = clockConfig.dataset.scope;
-
-            // Initialisation de l'horloge
-            const clock = new Clock('clockContent', clockData, clockScope);
-
-            // Navigation
-            document.getElementById('prevBtn').addEventListener('click', () => clock.navigate(-1));
-            document.getElementById('nextBtn').addEventListener('click', () => clock.navigate(1));
-          </script>
-
-          <!-- Manual slot editing button -->
-          <boutton class="btn-submit">
-            <a href="/edit_slot">✏️ Modifier un créneau manuellement</a>
-          </boutton>
-          
-          {% else %}
-          <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>
-          {% endif %}
-        </fieldset>
-
-        <!-- Downloadable files section -->
-        <fieldset class="form-section">
-          <legend>📂 Fichiers téléchargeables</legend>
-
-          <!-- Prayer times ICS file -->
-          {% if ics_path %}
-          <boutton class="btn-submit"
-            ><a href="{{ url_for('static', filename='ics/' + ics_path) }}" download
-              >📥 Télécharger les horaires de prière (.ics)</a
-            ></boutton
-          >
-          {% endif %} 
-
-          <!-- Available slots ICS file -->
-          {% if empty_slots_path %}
-          <boutton class="btn-submit"
-            ><a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download
-              >📥 Télécharger les créneaux disponibles (.ics)</a
-            ></boutton
-          >
-          {% endif %} 
-
-          <!-- Synchronized slots ICS file -->
-          {% if available_slots_path %}
-          <boutton class="btn-submit"
-            ><a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download
-              >📥 Télécharger les créneaux synchronisés (.ics)</a
-            ></boutton
-          >
-          {% endif %}
-        </fieldset>
+          </div>
+        </div>
       </section>
+      
+      {% else %}
+      <!-- No data message -->
+      <section class="no-data">
+        <div class="no-data-content">
+          <h2>📭 Aucun créneau disponible</h2>
+          <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>
+          <a href="/" class="back-button">← Retour à la sélection</a>
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- Hidden configuration for clock -->
+      {% if segments %}
+      <div id="clockConfig" 
+           data-segments='{{ segments|tojson|safe }}'
+           data-scope="{{ scope }}"
+           style="display: none;">
+      </div>
+      
+      <!-- Clock initialization script -->
+      <script>
+        // Configuration de l'horloge
+        const clockConfig = document.getElementById('clockConfig');
+        const clockData = JSON.parse(clockConfig.dataset.segments);
+        const clockScope = clockConfig.dataset.scope;
+
+        // Initialisation de l'horloge
+        const clock = new Clock('clockContent', clockData, clockScope);
+
+        // Navigation
+        document.getElementById('prevBtn').addEventListener('click', () => clock.navigate(-1));
+        document.getElementById('nextBtn').addEventListener('click', () => clock.navigate(1));
+      </script>
+      {% endif %}
     </main>
   </body>
 </html>

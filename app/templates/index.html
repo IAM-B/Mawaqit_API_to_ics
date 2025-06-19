@@ -67,6 +67,12 @@
           <label for="padding_after">Temps après prière (min) :</label>
           <input type="number" name="padding_after" value="35" min="0" />
 
+          <!-- Hidden fields for mosque coordinates -->
+          <input type="hidden" id="mosque_lat" name="mosque_lat" value="" />
+          <input type="hidden" id="mosque_lng" name="mosque_lng" value="" />
+          <input type="hidden" id="mosque_name" name="mosque_name" value="" />
+          <input type="hidden" id="mosque_address" name="mosque_address" value="" />
+
           <!-- Time scope selection -->
           <label for="scope">Période :</label>
           <select name="scope" required>

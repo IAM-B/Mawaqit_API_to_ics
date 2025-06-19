@@ -12,16 +12,50 @@
    🎨 Couleurs / Thème
    ================== */
 :root {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --primary: #1976d2;
-  --primary-hover: #1565c0;
+  /* Dark theme colors */
+  --bg-color: #1a202c;
+  --text-color: #e2e8f0;
+  --text-muted: #a0aec0;
+  --text-bright: #f7fafc;
+  
+  /* Primary colors */
+  --primary: #4299e1;
+  --primary-hover: #3182ce;
+  --primary-light: rgba(66, 153, 225, 0.2);
+  --primary-border: rgba(66, 153, 225, 0.4);
+  
+  /* Accent colors */
   --accent: #90caf9;
-  --form-bg: #1e1e1e;
-  --input-bg: #2a2a2a;
-  --border-color: #444;
-  --success: #43a047;
-  --success-hover: #388e3c;
+  --accent-hover: #64b5f6;
+  
+  /* Background colors */
+  --form-bg: #2d3748;
+  --input-bg: #4a5568;
+  --card-bg: #2d3748;
+  --surface-bg: #1a202c;
+  
+  /* Border colors */
+  --border-color: #4a5568;
+  --border-light: #718096;
+  --border-dark: #2d3748;
+  
+  /* Success colors */
+  --success: #48bb78;
+  --success-hover: #38a169;
+  --success-light: rgba(72, 187, 120, 0.2);
+  
+  /* Gradient colors */
+  --gradient-start: #2d3748;
+  --gradient-end: #4a5568;
+  
+  /* Shadow colors */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  
+  /* Overlay colors */
+  --overlay-light: rgba(255, 255, 255, 0.05);
+  --overlay-medium: rgba(255, 255, 255, 0.1);
+  --overlay-dark: rgba(255, 255, 255, 0.2);
 }
 
 /* ==================
@@ -43,10 +77,11 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 1em;
+  background-color: var(--bg-color);
 }
 
 .page-title {
-  color: var(--accent);
+  color: var(--text-bright);
   text-align: center;
   margin-bottom: 1em;
 }
@@ -58,7 +93,7 @@ body {
   background-color: var(--form-bg);
   padding: 2em;
   border-radius: 0 0 8px 8px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 12px var(--shadow-color);
 }
 
 .form-section {
@@ -96,13 +131,13 @@ input#mosque-select-ts-control {
 }
 
 ::placeholder {
-  color:  var(--text-color);
+  color: var(--text-color);
   font-size: 1em !important;
   opacity: 1;
 }
 
 .ts-control input::placeholder {
-  color:  var(--text-color);
+  color: var(--text-color);
   font-size: 1em !important;
 }
 
@@ -163,7 +198,7 @@ input#mosque-select-ts-control {
 .ts-dropdown-content {
   max-height: 250px;
   overflow-y: auto;
-  color:  var(--text-color);
+  color: var(--text-color);
   background-color: var(--input-bg);
   border-top: 1px solid var(--border-color);
   padding: 0.3em 0;
@@ -250,7 +285,7 @@ div#mosque-map {
   padding: 5px 10px;
   font-size: 0.9em;
   cursor: pointer;
-  background-color: #4CAF50;
+  background-color: var(--success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -360,46 +395,394 @@ div#mosque-map {
    📅 Available slots
    ================== */
 .available-slots {
-  margin-top: 2em;
-  padding: 1em;
-  background: var(--form-bg);
+  margin-bottom: 2rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
 }
 
 .available-slots h2 {
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.slots-list {
+  background: var(--surface-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
   color: var(--text-color);
-  margin-bottom: 1em;
-  font-size: 1.2em;
 }
 
-#availableSlotsList ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* ==================
+   📌 Information groups
+   ================== */
+.info-group {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--surface-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
-#availableSlotsList ul li {
-  margin-bottom: 1em;
-}
-
-#availableSlotsList ul li strong {
-  color: var(--primary);
+.info-group label {
   display: block;
-  margin-bottom: 0.5em;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-size: 1.1em;
 }
 
-#availableSlotsList ul li ul {
-  margin-left: 1em;
+.info-group ul {
+  margin: 0;
+  padding-left: 20px;
 }
 
-#availableSlotsList ul li ul li {
+.info-group li {
+  margin-bottom: 5px;
   color: var(--text-color);
-  margin-bottom: 0.3em;
-  padding: 0.3em 0;
+}
+
+.info-group li:last-child {
+  margin-bottom: 0;
+}
+
+.mawaqit-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: var(--primary-light);
+}
+
+.mawaqit-link:hover {
+  color: var(--primary-hover);
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* ==================
+   🗺️ Compact map styles
+   ================== */
+.compact-map {
+  height: 200px;
+  width: 100%;
+  border-radius: 8px;
+  margin: 10px 0;
+  border: 1px solid var(--border-color);
+}
+
+.map-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.map-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: var(--primary-light);
+  font-size: 0.9em;
+}
+
+.map-link:hover {
+  color: var(--primary-hover);
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* ==================
+   📥 Planner page
+   ================== */
+.quick-actions {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  border-radius: 12px;
+  color: white;
+  border: 1px solid var(--border-color);
+}
+
+.quick-actions h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.download-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--overlay-light);
+  border-radius: 8px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  border: 2px solid var(--overlay-light);
+}
+
+.download-card:hover {
+  background: var(--overlay-medium);
+  transform: translateY(-2px);
+  border-color: var(--overlay-dark);
+}
+
+.download-card.primary {
+  background: var(--primary-light);
+  border-color: var(--primary-border);
+}
+
+.download-card.primary:hover {
+  background: rgba(66, 153, 225, 0.3);
+  border-color: rgba(66, 153, 225, 0.6);
+}
+
+.download-card.edit {
+  background: var(--success-light);
+  border-color: var(--success);
+}
+
+.download-card.edit:hover {
+  background: var(--success);
+  border-color: var(--success-hover);
+}
+
+.download-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.download-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.download-format {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ==================
+   📊 Summary section
+   ================== */
+.summary-section {
+  margin-bottom: 2rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.summary-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  color: var(--text-bright);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.mosque-details h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--text-bright);
+}
+
+.address {
+  color: var(--text-muted);
+  margin: 0 0 1rem 0;
+  font-style: italic;
+}
+
+.config-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.config-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
   border-bottom: 1px solid var(--border-color);
 }
 
-#availableSlotsList ul li ul li:last-child {
+.config-item:last-child {
   border-bottom: none;
+}
+
+.config-label {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.config-value {
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+/* ==================
+   🗺️ Map links
+   ================== */
+.map-links {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.map-link:hover {
+  background: var(--border-light);
+  border-color: var(--text-muted);
+  color: var(--text-bright);
+}
+
+/* ==================
+   🕒 Clock section
+   ================== */
+.clock-section {
+  margin-bottom: 2rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.clock-section h2 {
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.clock-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.current-date {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  min-width: 150px;
+  text-align: center;
+}
+
+.clock-nav-btn {
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.clock-nav-btn:hover {
+  background: var(--primary-hover);
+}
+
+.clock-container {
+  background: var(--surface-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+/* ==================
+   📭 No data
+   ================== */
+.no-data {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.no-data-content h2 {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.back-button:hover {
+  background: var(--primary-hover);
+}
+
+/* ==================
+   🔄 Responsive design
+   ================== */
+@media (max-width: 768px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .download-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .config-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .map-links {
+    justify-content: center;
+  }
 }

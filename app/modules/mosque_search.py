@@ -19,6 +19,12 @@ def get_formatted_mosques():
             m.get("zipcode", ""),
             m.get("slug", "")
         ]))
+        
+        # S'assurer que les coordonnées sont présentes
+        if "lat" not in m:
+            m["lat"] = None
+        if "lng" not in m:
+            m["lng"] = None
 
     return jsonify(mosques)
     

@@ -25,7 +25,7 @@
    🕒 Clock face
    ================== */
 .clock-face {
-  fill: var(--input-bg);
+  fill: var(--surface-bg);
   stroke: var(--border-color);
   stroke-width: 2;
 }
@@ -58,7 +58,7 @@
   fill: none;
   stroke-width: 25;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 0 3px var(--shadow-color));
   transition: all 0.3s ease;
   z-index: 1;
 }
@@ -99,9 +99,9 @@
   opacity: 0;
   filter: drop-shadow(0 0 3px rgba(67, 160, 71, 0.5));
   z-index: 2;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px var(--shadow-color);
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--overlay-light);
   border-radius: 4px;
   pointer-events: none;
   transform-origin: center center;
@@ -144,7 +144,7 @@
   fill: var(--primary);
   stroke: var(--accent);
   stroke-width: 1;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 2px 4px var(--shadow-color));
   rx: 6;
   ry: 6;
 }
@@ -156,7 +156,7 @@
   text-anchor: middle;
   dominant-baseline: middle;
   white-space: pre;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 1px 2px var(--shadow-color));
 }
 
 /* ==================
@@ -179,13 +179,13 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1.1em;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .clock-nav-btn:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 .clock-nav-btn:disabled {
@@ -202,7 +202,7 @@
   font-size: 1.3em;
   font-weight: bold;
   color: var(--accent);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 4px var(--shadow-color);
   padding: 10px 20px;
   background: var(--form-bg);
   border-radius: 4px;
@@ -227,7 +227,8 @@
 }
 
 .slot-item {
-  margin: 10px 0;
+  width: 90%;
+  margin: 10px auto;
   padding: 12px;
   background: var(--input-bg);
   border-radius: 6px;

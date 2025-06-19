@@ -6,14 +6,14 @@ This module processes prayer time data and generates various ICS calendar files.
 import json
 from pathlib import Path
 from flask import render_template, abort, request
-from app.modules.mawaqit_fetcher import fetch_mosques_data
+from app.modules.mawaqit_fetcher import fetch_mosques_data, fetch_mawaqit_data
 from app.modules.prayer_generator import generate_prayer_ics_file
 from app.modules.empty_generator import generate_empty_by_scope
 from app.modules.slots_generator import generate_slots_by_scope
 from app.modules.time_segmenter import segment_available_time
 from app.modules.slot_utils import adjust_slots_rounding
 from app.modules.mute_utils import apply_silent_settings
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 
@@ -96,7 +96,7 @@ def normalize_year_data(prayer_times: list) -> list[dict]:
         normalized_month = {}
         for day_str, time_list in month_days.items():
             try:
-                # Vérifier si la date est valide
+                # Check if date is valid
                 day_num = int(day_str)
                 try:
                     datetime(current_year, month_index, day_num)
@@ -106,7 +106,7 @@ def normalize_year_data(prayer_times: list) -> list[dict]:
 
                 if isinstance(time_list, list) and len(time_list) == 6:
                     if all(isinstance(t, str) and ":" in t for t in time_list):
-                        # Convertir la liste en dictionnaire avec les noms des prières
+                        # Convert list to dictionary with prayer names
                         times_dict = {
                             "fajr": time_list[0],
                             "sunset": time_list[1],
@@ -157,6 +157,15 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
     try:
         print(f"📥 Request received: masjid_id={masjid_id}, scope={scope}, padding_before={padding_before}, padding_after={padding_after}")
 
+        # Get coordinates from form
+        mosque_lat = request.form.get("mosque_lat")
+        mosque_lng = request.form.get("mosque_lng")
+        mosque_name = request.form.get("mosque_name")
+        mosque_address = request.form.get("mosque_address")
+        
+        print(f"📍 Coordinates from form: lat={mosque_lat}, lng={mosque_lng}")
+        print(f"🕌 Mosque info from form: name={mosque_name}, address={mosque_address}")
+
         # Fetch prayer times and timezone
         prayer_times, tz_str = fetch_mosques_data(masjid_id, scope)
 
@@ -164,6 +173,80 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         print(f"⏰ Timezone: {tz_str}")
         print(f"📊 prayer_times type: {type(prayer_times)}")
         print(f"📊 Raw prayer_times preview: {str(prayer_times)[:500]}")
+
+        # Use form coordinates if available, otherwise retrieve from JSON
+        if mosque_lat and mosque_lng and mosque_name:
+            lat = float(mosque_lat)
+            lng = float(mosque_lng)
+            mosque_slug = masjid_id
+            print(f"🕌 Using coordinates from form: lat={lat}, lng={lng}")
+        else:
+            # Fallback: retrieve from JSON files
+            mosque_info = get_mosque_info_from_json(masjid_id)
+            
+            if mosque_info:
+                mosque_name = mosque_info["name"]
+                mosque_address = mosque_info["address"]
+                lat = mosque_info["lat"]
+                lng = mosque_info["lng"]
+                mosque_slug = mosque_info["slug"]
+                
+                print(f"🕌 Mosque info from JSON: name={mosque_name}, lat={lat}, lng={lng}")
+            else:
+                # Fallback to web scraping if not found in JSON
+                mosque_data = fetch_mawaqit_data(masjid_id)
+                mosque_name = mosque_data.get("name", "Unknown Mosque")
+                mosque_address = mosque_data.get("address", "")
+                lat = mosque_data.get("lat")
+                lng = mosque_data.get("lng")
+                mosque_slug = mosque_data.get("slug", masjid_id)
+                
+                print(f"🕌 Mosque info from web: name={mosque_name}, lat={lat}, lng={lng}")
+        
+        # Use GPS coordinates if address is not available
+        if not mosque_address and lat and lng:
+            mosque_address = f"GPS Coordinates: {lat}, {lng}"
+        elif not mosque_address:
+            mosque_address = "Adresse non disponible"
+        
+        # Create map links
+        google_maps_url = ""
+        osm_url = ""
+        if lat and lng:
+            google_maps_url = f"https://www.google.com/maps?q={lat},{lng}"
+            osm_url = f"https://www.openstreetmap.org/?mlat={lat}&mlon={lng}&zoom=15"
+        
+        # Build Mawaqit link with correct format
+        mawaqit_url = f"https://mawaqit.net/fr/{mosque_slug}"
+
+        # Format scope display
+        scope_display_map = {
+            "today": "Aujourd'hui",
+            "month": "Ce mois",
+            "year": "Cette année"
+        }
+        scope_display = scope_display_map.get(scope, scope)
+
+        # Format dates
+        today = datetime.now()
+        start_date = today.strftime("%d/%m/%Y")
+        
+        if scope == "month":
+            # From beginning to end of month
+            start_date = today.replace(day=1).strftime("%d/%m/%Y")
+            # Find last day of month
+            if today.month == 12:
+                end_date = today.replace(year=today.year + 1, month=1, day=1) - timedelta(days=1)
+            else:
+                end_date = today.replace(month=today.month + 1, day=1) - timedelta(days=1)
+            end_date = end_date.strftime("%d/%m/%Y")
+        elif scope == "year":
+            # From beginning to end of year
+            start_date = today.replace(month=1, day=1).strftime("%d/%m/%Y")
+            end_date = today.replace(month=12, day=31).strftime("%d/%m/%Y")
+        else:
+            # For today, same date
+            end_date = start_date
 
         # Normalize data for long scopes
         if scope == "month":
@@ -269,9 +352,47 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             ics_path=ics_path,
             empty_slots_path=empty_slots_path,
             available_slots_path=available_slots_path,
-            timezone_str=tz_str
+            timezone_str=tz_str,
+            mosque_name=mosque_name,
+            mosque_address=mosque_address,
+            mawaqit_url=mawaqit_url,
+            scope_display=scope_display,
+            start_date=start_date,
+            end_date=end_date,
+            google_maps_url=google_maps_url,
+            osm_url=osm_url,
+            mosque_lat=lat,
+            mosque_lng=lng
         )
 
     except Exception as e:
         print(f"❌ Error in handle_planner_post: {e}")
         return render_template("error.html", error_message=str(e))
+
+def get_mosque_info_from_json(masjid_id):
+    """
+    Retrieve mosque information from local JSON files
+    """
+    data_dir = Path("data/mosques_by_country")
+    
+    for json_file in data_dir.glob("*.json"):
+        try:
+            with open(json_file, 'r', encoding='utf-8') as f:
+                mosques = json.load(f)
+                
+            for mosque in mosques:
+                if mosque.get("slug") == masjid_id:
+                    return {
+                        "name": mosque.get("name", "Unknown Mosque"),
+                        "address": mosque.get("address", ""),
+                        "city": mosque.get("city", ""),
+                        "zipcode": mosque.get("zipcode", ""),
+                        "lat": mosque.get("lat"),
+                        "lng": mosque.get("lng"),
+                        "slug": mosque.get("slug")
+                    }
+        except Exception as e:
+            print(f"⚠️ Error reading {json_file}: {e}")
+            continue
+    
+    return None
