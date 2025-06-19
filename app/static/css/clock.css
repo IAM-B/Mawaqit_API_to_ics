@@ -107,10 +107,24 @@
   transform-origin: center center;
 }
 
+/* Afficher les labels pour les slots */
+.clock-arc.slot + .clock-label {
+  opacity: 0;
+}
+
+.clock-arc.slot:hover + .clock-label {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Afficher les labels pour les prières */
+.clock-arc.prayer + .clock-label {
+  opacity: 0;
+}
+
 .clock-arc.prayer:hover + .clock-label {
   opacity: 1;
-  fill: var(--accent);
-  transform: scale(1.2) translateY(-5px);
+  transform: scale(1.1);
 }
 
 .tooltip-group {
@@ -219,6 +233,10 @@
   border-radius: 6px;
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .slot-item:hover {
@@ -239,6 +257,12 @@
 .slot-item:hover .slot-time,
 .slot-item.active .slot-time {
   color: white;
+}
+
+.slot-duration {
+  font-size: 0.9em;
+  color: var(--accent);
+  font-weight: 500;
 }
 
 /* ==================

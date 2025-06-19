@@ -36,6 +36,35 @@ class Clock {
   }
 
   /**
+   * Calculates duration between two times
+   * @param {string} start - Start time (HH:MM)
+   * @param {string} end - End time (HH:MM)
+   * @returns {string} Duration in format "Xh YYmin"
+   */
+  calculateDuration(start, end) {
+    const startMinutes = this.timeToMinutes(start);
+    const endMinutes = this.timeToMinutes(end);
+    let duration = endMinutes - startMinutes;
+    
+    if (duration < 0) {
+      duration += 24 * 60; // Add 24 hours if end time is next day
+    }
+    
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    
+    if (hours === 0) {
+      return `(${minutes}min)`;
+    } else if (minutes === 0) {
+      return `(${hours}h)`;
+    } else {
+      // Format minutes with leading zero
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      return `(${hours}h${formattedMinutes}min)`;
+    }
+  }
+
+  /**
    * Creates an SVG element for an event
    */
   createEventElement(event, type) {
@@ -174,6 +203,24 @@ class Clock {
     path.dataset.start = slot.start;
     path.dataset.end = slot.end;
     
+    // Add label for duration
+    const midAngle = (startAngle + endAngle) / 2;
+    const labelRadius = radius - 20;
+    const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
+    const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
+    
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", labelX);
+    label.setAttribute("y", labelY);
+    label.setAttribute("class", "clock-label");
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("dominant-baseline", "middle");
+    label.textContent = this.calculateDuration(slot.start, slot.end);
+    
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.appendChild(path);
+    group.appendChild(label);
+    
     // Add events
     path.addEventListener("mouseover", () => {
       path.classList.add("active");
@@ -191,7 +238,7 @@ class Clock {
       }
     });
     
-    return path;
+    return group;
   }
 
   /**
@@ -239,7 +286,12 @@ class Clock {
       slotTime.className = 'slot-time';
       slotTime.textContent = `${slot.start} - ${slot.end}`;
       
+      const slotDuration = document.createElement('span');
+      slotDuration.className = 'slot-duration';
+      slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
+      
       slotItem.appendChild(slotTime);
+      slotItem.appendChild(slotDuration);
       slotsList.appendChild(slotItem);
 
       // Add events for synchronization
