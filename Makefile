@@ -52,6 +52,11 @@ test-all:
 	@$(MAKE) test-integration
 	@cat logs/unit_tests.log logs/integration_tests.log > logs/all_tests.log
 
+# 📊 Coverage
+coverage:
+	@mkdir -p logs
+	PYTHONPATH=. $(PYTHON) -m pytest --cov=app --cov-report=term-missing --disable-warnings -q | tee logs/coverage_report.log
+
 # 🧼 Cleanup
 clean-ics:
 	@echo "🗑️ Cleaning test generated files..."

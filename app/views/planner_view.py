@@ -12,7 +12,6 @@ from app.modules.empty_generator import generate_empty_by_scope
 from app.modules.slots_generator import generate_slots_by_scope
 from app.modules.time_segmenter import segment_available_time
 from app.modules.slot_utils import adjust_slots_rounding
-from app.modules.mute_utils import apply_silent_settings
 from datetime import datetime, timedelta
 import re
 

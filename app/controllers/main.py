@@ -14,7 +14,6 @@ from app.modules.prayer_generator import generate_prayer_ics_file
 from app.modules.empty_generator import generate_empty_by_scope
 from app.modules.slots_generator import generate_slots_by_scope
 from app.modules.slot_utils import adjust_slots_rounding
-from app.modules.mute_utils import apply_silent_settings
 from app.modules.slot_editor import render_slot_editor
 from app.modules.mosque_search import list_countries, list_mosques_by_country, get_formatted_mosques
 
