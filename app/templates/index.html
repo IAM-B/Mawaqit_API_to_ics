@@ -4,119 +4,218 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <title>🕌 Prayer Planner - Planifiez vos prières</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mawaqit API to ICS - Planificateur de Prières Islamiques</title>
+    <meta name="description" content="Générez facilement vos plannings de prières islamiques avec l'API Mawaqit. Interface moderne et intuitive pour organiser vos temps de prière.">
     <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="/static/css/styles.css" />
-    <link rel="stylesheet" href="/static/css/landing.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+    <script src="{{ url_for('static', filename='js/landing.js') }}" defer></script>
   </head>
   <body>
     <!-- Hero Section -->
     <section class="hero-section">
-      <h1 class="hero-title">🕌 Prayer Planner</h1>
+      <h1 class="hero-title">Planificateur de Prières Islamiques</h1>
       <p class="hero-subtitle">
-        Planifiez vos prières avec précision et synchronisez-les avec votre calendrier
+        Générez facilement vos <strong>plannings de prières</strong> avec l'API Mawaqit. 
+        Interface moderne et intuitive pour organiser vos temps de prière.
       </p>
-      <div>
-        <a href="/planner" class="cta-button">🚀 Commencer maintenant</a>
-        <a href="#features" class="cta-button cta-secondary">📖 En savoir plus</a>
+      <div class="cta-buttons">
+        <a href="{{ url_for('planner_page') }}" class="cta-button cta-large">
+          Commencer Maintenant
+        </a>
+        <a href="#how-it-works" class="cta-button cta-secondary">
+          Comment ça marche ?
+        </a>
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features-section">
-      <h2 class="section-title">Fonctionnalités principales</h2>
+    <!-- Value Proposition Section -->
+    <section id="how-it-works" class="value-section">
+      <h2 class="section-title">Pourquoi choisir notre planificateur ?</h2>
       <p class="section-subtitle">
-        Tout ce dont vous avez besoin pour organiser vos prières
+        Une solution complète et moderne pour organiser vos prières quotidiennes
       </p>
       
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🗺️</div>
-          <h3 class="feature-title">Sélection de mosquée</h3>
-          <p class="feature-description">
-            Trouvez facilement votre mosquée avec notre carte interactive et notre base de données de plus de 15 000 mosquées dans le monde.
+      <div class="value-grid">
+        <div class="value-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <h3 class="value-title">Précision Temporelle</h3>
+          <p class="value-description">
+            Horaires de prières <strong>précis</strong> basés sur l'API Mawaqit, 
+            avec calculs astronomiques fiables pour votre localisation.
           </p>
         </div>
         
-        <div class="feature-card">
-          <div class="feature-icon">📅</div>
-          <h3 class="feature-title">Génération de calendrier</h3>
-          <p class="feature-description">
-            Générez automatiquement des fichiers ICS avec les horaires de prière pour aujourd'hui, ce mois ou cette année.
+        <div class="value-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <h3 class="value-title">Interface Moderne</h3>
+          <p class="value-description">
+            Design <strong>élégant</strong> et intuitif avec thème sombre professionnel, 
+            adapté à tous les appareils.
           </p>
         </div>
         
-        <div class="feature-card">
-          <div class="feature-icon">🕒</div>
-          <h3 class="feature-title">Créneaux synchronisés</h3>
-          <p class="feature-description">
-            Créez des créneaux de temps personnalisés avant et après chaque prière pour une meilleure organisation.
-          </p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon">⚙️</div>
-          <h3 class="feature-title">Configuration flexible</h3>
-          <p class="feature-description">
-            Personnalisez les délais avant et après les prières selon vos besoins et préférences.
-          </p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon">🌍</div>
-          <h3 class="feature-title">Couverture mondiale</h3>
-          <p class="feature-description">
-            Support pour plus de 130 pays avec des données précises d'horaires de prière.
-          </p>
-        </div>
-        
-        <div class="feature-card">
-          <div class="feature-icon">📱</div>
-          <h3 class="feature-title">Interface moderne</h3>
-          <p class="feature-description">
-            Interface intuitive et responsive qui fonctionne parfaitement sur tous vos appareils.
+        <div class="value-card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          <h3 class="value-title">Personnalisation</h3>
+          <p class="value-description">
+            Créez des <strong>plannings sur mesure</strong> avec des créneaux horaires 
+            flexibles et des options d'exportation.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-      <h2 class="section-title">Chiffres clés</h2>
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+      <h2 class="section-title">Fonctionnalités Avancées</h2>
+      <p class="section-subtitle">
+        Tout ce dont vous avez besoin pour organiser vos prières efficacement
+      </p>
+      
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <h4>Recherche de Mosquées</h4>
+          <p>Trouvez facilement les mosquées près de chez vous avec notre système de recherche avancé.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3a4 4 0 118 0v4m-4 6v6m-4-6h8m-8 0H4"/>
+          </svg>
+          <h4>Exportation ICS</h4>
+          <p>Exportez vos plannings au format ICS pour les intégrer à votre calendrier personnel.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <h4>Créneaux Flexibles</h4>
+          <p>Créez des créneaux horaires personnalisés pour adapter les horaires à votre emploi du temps.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <h4>Statistiques</h4>
+          <p>Suivez vos habitudes de prière avec des statistiques détaillées et des analyses.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          <h4>Sécurisé</h4>
+          <p>Vos données sont protégées avec des standards de sécurité élevés et un chiffrement.</p>
+        </div>
+        
+        <div class="benefit-card">
+          <svg class="icon icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <h4>Performance</h4>
+          <p>Interface rapide et réactive optimisée pour une expérience utilisateur fluide.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section">
+      <h2 class="section-title">Comment ça marche ?</h2>
+      <p class="section-subtitle">
+        En quelques étapes simples, créez votre planning de prières personnalisé
+      </p>
+      
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <h4>Recherchez votre mosquée</h4>
+          <p>Utilisez notre moteur de recherche pour trouver la mosquée la plus proche de votre localisation.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3a4 4 0 118 0v4m-4 6v6m-4-6h8m-8 0H4"/>
+          </svg>
+          <h4>Configurez vos créneaux</h4>
+          <p>Définissez vos créneaux horaires personnalisés pour adapter les horaires à votre emploi du temps.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <h4>Générez et exportez</h4>
+          <p>Générez votre planning et exportez-le au format ICS pour l'intégrer à votre calendrier.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="social-proof-section">
+      <h2 class="section-title">Utilisé par des milliers de fidèles</h2>
+      <p class="section-subtitle">
+        Rejoignez notre communauté grandissante d'utilisateurs satisfaits
+      </p>
+      
       <div class="stats-grid">
         <div class="stat-item">
-          <div class="stat-number">15,000+</div>
-          <div class="stat-label">Mosquées</div>
+          <span class="stat-number">50+</span>
+          <div class="stat-label">Pays couverts</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number">130+</div>
-          <div class="stat-label">Pays</div>
+          <span class="stat-number">10k+</span>
+          <div class="stat-label">Mosquées répertoriées</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Gratuit</div>
+          <span class="stat-number">100k+</span>
+          <div class="stat-label">Plannings générés</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">99.9%</span>
+          <div class="stat-label">Disponibilité</div>
         </div>
       </div>
     </section>
 
-    <!-- Call to Action -->
-    <section class="cta-section">
-      <h2 class="section-title">Prêt à commencer ?</h2>
+    <!-- Final CTA Section -->
+    <section class="final-cta-section">
+      <h2 class="section-title">Prêt à organiser vos prières ?</h2>
       <p class="section-subtitle">
-        Rejoignez des milliers d'utilisateurs qui planifient leurs prières avec précision
+        Commencez dès maintenant et découvrez la simplicité de notre planificateur
       </p>
-      <a href="/planner" class="cta-button cta-large">
-        🚀 Commencer maintenant
+      <a href="{{ url_for('planner_page') }}" class="cta-button cta-large">
+        Créer mon Planning
       </a>
+      <p class="cta-note">Gratuit et sans inscription requise</p>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-      <p>&copy; 2024 Prayer Planner. Tous droits réservés.</p>
+      <h3>Mawaqit API to ICS</h3>
       <p class="footer-subtitle">
-        Données d'horaires de prière fournies par Mawaqit.net
+        Planificateur de prières islamiques moderne et intuitif
       </p>
     </footer>
   </body>
-</html> 
+</html>

@@ -12,32 +12,33 @@
    🎨 Couleurs / Thème
    ================== */
 :root {
-  /* Dark theme colors */
-  --bg-color: #1a202c;
+  /* Dark theme colors - Noir plus profond */
+  --bg-color: #0a0a0a;
   --text-color: #e2e8f0;
   --text-muted: #a0aec0;
   --text-bright: #f7fafc;
+  --text-dark: #1a202c;
   
-  /* Primary colors */
-  --primary: #4299e1;
-  --primary-hover: #3182ce;
-  --primary-light: rgba(66, 153, 225, 0.2);
-  --primary-border: rgba(66, 153, 225, 0.4);
+  /* Primary colors - Doré */
+  --primary: #d4af37;
+  --primary-hover: #b8941f;
+  --primary-light: rgba(212, 175, 55, 0.2);
+  --primary-border: rgba(212, 175, 55, 0.4);
   
-  /* Accent colors */
-  --accent: #90caf9;
-  --accent-hover: #64b5f6;
+  /* Accent colors - Doré clair */
+  --accent: #f4d03f;
+  --accent-hover: #f1c40f;
   
-  /* Background colors */
-  --form-bg: #2d3748;
-  --input-bg: #4a5568;
-  --card-bg: #2d3748;
-  --surface-bg: #1a202c;
+  /* Background colors - Noir profond */
+  --form-bg: #1a1a1a;
+  --input-bg: #2a2a2a;
+  --card-bg: #1a1a1a;
+  --surface-bg: #0a0a0a;
   
   /* Border colors */
-  --border-color: #4a5568;
-  --border-light: #718096;
-  --border-dark: #2d3748;
+  --border-color: #333333;
+  --border-light: #444444;
+  --border-dark: #1a1a1a;
   
   /* Success colors */
   --success: #48bb78;
@@ -45,12 +46,12 @@
   --success-light: rgba(72, 187, 120, 0.2);
   
   /* Gradient colors */
-  --gradient-start: #2d3748;
-  --gradient-end: #4a5568;
+  --gradient-start: #1a1a1a;
+  --gradient-end: #2a2a2a;
   
   /* Shadow colors */
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --shadow-light: rgba(0, 0, 0, 0.2);
   
   /* Overlay colors */
   --overlay-light: rgba(255, 255, 255, 0.05);
@@ -551,8 +552,8 @@ div#mosque-map {
 }
 
 .download-card.primary:hover {
-  background: rgba(66, 153, 225, 0.3);
-  border-color: rgba(66, 153, 225, 0.6);
+  background: rgba(212, 175, 55, 0.3);
+  border-color: rgba(212, 175, 55, 0.6);
 }
 
 .download-card.edit {
