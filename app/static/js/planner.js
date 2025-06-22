@@ -14,6 +14,7 @@ class PlannerPage {
   init() {
     this.setupFormHandling();
     this.setupPlanningAnimation();
+    this.restoreFormData();
   }
 
   /**
@@ -24,7 +25,19 @@ class PlannerPage {
     const submitBtn = document.querySelector('.btn-submit');
     
     if (form && submitBtn) {
+      // Save form data on any change
+      form.addEventListener('change', () => {
+        this.saveFormData();
+      });
+      
+      form.addEventListener('input', () => {
+        this.saveFormData();
+      });
+      
       form.addEventListener('submit', () => {
+        // Save form data before submission
+        this.saveFormData();
+        
         // Add loading state
         submitBtn.classList.add('loading');
         submitBtn.textContent = '🔄 Génération en cours...';
@@ -35,6 +48,48 @@ class PlannerPage {
           submitBtn.textContent = '📥 Générer planning';
         }, 2000);
       });
+    }
+  }
+
+  /**
+   * Save form data to sessionStorage
+   */
+  saveFormData() {
+    const formData = {
+      padding_before: document.querySelector('input[name="padding_before"]')?.value || '10',
+      padding_after: document.querySelector('input[name="padding_after"]')?.value || '35',
+      scope: document.querySelector('select[name="scope"]')?.value || 'today'
+    };
+    
+    sessionStorage.setItem('plannerFormData', JSON.stringify(formData));
+  }
+
+  /**
+   * Restore form data from sessionStorage
+   */
+  restoreFormData() {
+    const savedData = sessionStorage.getItem('plannerFormData');
+    if (!savedData) return;
+    
+    try {
+      const formData = JSON.parse(savedData);
+      
+      // Restore form values
+      const paddingBefore = document.querySelector('input[name="padding_before"]');
+      const paddingAfter = document.querySelector('input[name="padding_after"]');
+      const scope = document.querySelector('select[name="scope"]');
+      
+      if (paddingBefore && formData.padding_before) {
+        paddingBefore.value = formData.padding_before;
+      }
+      if (paddingAfter && formData.padding_after) {
+        paddingAfter.value = formData.padding_after;
+      }
+      if (scope && formData.scope) {
+        scope.value = formData.scope;
+      }
+    } catch (error) {
+      console.error('Error restoring form data:', error);
     }
   }
 

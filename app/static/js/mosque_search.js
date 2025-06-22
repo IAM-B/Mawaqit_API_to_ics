@@ -33,6 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('mosque_lng').value = selectedOption.lng || '';
         document.getElementById('mosque_name').value = selectedOption.name || '';
         document.getElementById('mosque_address').value = selectedOption.address || '';
+        
+        // Save selection to sessionStorage
+        sessionStorage.setItem('selectedMosque', value);
       }
     }
   });
@@ -45,6 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
     placeholder: "Choisir un pays...",
     onChange: (value) => {
       if (!value) return;
+
+      // Save selection to sessionStorage
+      sessionStorage.setItem('selectedCountry', value);
 
       // Clear and disable mosque selection while loading
       mosqueSelect.clear(true);
@@ -69,6 +75,14 @@ document.addEventListener("DOMContentLoaded", () => {
               lng: m.lng
             }))
           );
+          
+          // Restore mosque selection if available
+          const savedMosque = sessionStorage.getItem('selectedMosque');
+          if (savedMosque) {
+            setTimeout(() => {
+              mosqueSelect.setValue(savedMosque);
+            }, 100);
+          }
         });
     }
   });
@@ -80,5 +94,15 @@ document.addEventListener("DOMContentLoaded", () => {
       countrySelect.addOptions(
         countries.map(c => ({ value: c.code, text: c.name }))
       );
+      
+      // Restore country selection if available
+      const savedCountry = sessionStorage.getItem('selectedCountry');
+      if (savedCountry) {
+        countrySelect.setValue(savedCountry);
+      }
     });
+
+  // Make instances globally accessible for planner.js
+  window.countrySelectInstance = countrySelect;
+  window.mosqueSelectInstance = mosqueSelect;
 });
