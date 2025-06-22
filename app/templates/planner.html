@@ -38,7 +38,6 @@
 
       <!-- Configuration Section (from index.html) -->
       <section class="config-section">
-        <h2>⚙️ Configuration</h2>
         
         <!-- Map container -->
         <div
@@ -49,6 +48,7 @@
         <!-- Main form for prayer planning -->
         <form action="/planner" method="post" class="form">
           <fieldset class="form-section">
+            <h2>⚙️ Configuration</h2>
             <!-- Country selection -->
             <label for="country-select">Pays :</label>
             <select id="country-select" name="country" autocomplete="off">
@@ -238,21 +238,6 @@
            data-scope="{{ scope }}"
            style="display: none;">
       </div>
-      
-      <!-- Clock initialization script -->
-      <script>
-        // Configuration de l'horloge
-        const clockConfig = document.getElementById('clockConfig');
-        const clockData = JSON.parse(clockConfig.dataset.segments);
-        const clockScope = clockConfig.dataset.scope;
-
-        // Initialisation de l'horloge
-        const clock = new Clock('clockContent', clockData, clockScope);
-
-        // Navigation
-        document.getElementById('prevBtn').addEventListener('click', () => clock.navigate(-1));
-        document.getElementById('nextBtn').addEventListener('click', () => clock.navigate(1));
-      </script>
       {% endif %}
     </main>
 
@@ -267,5 +252,6 @@
     <!-- Local JavaScript files -->
     <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
     <script src="{{ url_for('static', filename='js/map_loader.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/planner.js') }}"></script>
   </body>
 </html>

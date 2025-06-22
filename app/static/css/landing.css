@@ -1,17 +1,22 @@
 /* ==================
-   🏠 Landing Page
+   🏠 LANDING PAGE
    ================== */
 
-/* Global Styles */
+/* ==================
+   🎨 GLOBAL STYLES
+   ================== */
 body {
   background: linear-gradient(135deg, var(--bg-color) 0%, var(--surface-bg) 100%);
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   position: relative;
   overflow-x: hidden;
+  line-height: 1.6;
 }
 
-/* Icon Styles */
+/* ==================
+   🎯 ICONS
+   ================== */
 .icon {
   width: 48px;
   height: 48px;
@@ -42,7 +47,9 @@ body {
   color: var(--accent);
 }
 
-/* Hero Section */
+/* ==================
+   🏆 HERO SECTION
+   ================== */
 .hero-section {
   text-align: center;
   padding: 6rem 2rem;
@@ -54,29 +61,34 @@ body {
     0 0 0 1px rgba(255, 215, 0, 0.1);
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
+  backdrop-filter: blur(10px);
 }
 
-.hero-section::before {
+.hero-section::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  pointer-events: none;
+  background: linear-gradient(135deg, rgba(10, 10, 10, 0.1) 0%, rgba(26, 26, 26, 0.1) 100%);
+  z-index: -1;
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: clamp(2rem, 5vw, 4rem);
   margin-bottom: 1.5rem;
   font-weight: 800;
   color: var(--text-bright);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-subtitle {
-  font-size: 1.4rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   margin-bottom: 3rem;
   opacity: 0.95;
   color: var(--text-bright);
@@ -85,6 +97,8 @@ body {
   margin-left: auto;
   margin-right: auto;
   animation: fadeInUp 0.8s ease-out 0.2s both;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-subtitle strong {
@@ -93,7 +107,14 @@ body {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* CTA Buttons */
+.cta-buttons {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================
+   🎯 CTA BUTTONS
+   ================== */
 .cta-button {
   display: inline-block;
   background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
@@ -137,7 +158,6 @@ body {
   border: 2px solid rgba(255, 215, 0, 0.6);
   color: var(--text-bright);
   backdrop-filter: blur(10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cta-button.cta-secondary:hover {
@@ -149,27 +169,6 @@ body {
 .cta-button.cta-secondary:active {
   transform: scale(0.95);
   transition: transform 0.1s ease;
-}
-
-/* Smooth redirect animation */
-.cta-button.cta-secondary.redirecting {
-  animation: fadeOutRedirect 0.5s ease-out forwards;
-  pointer-events: none;
-}
-
-@keyframes fadeOutRedirect {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(0.98);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.95);
-  }
 }
 
 .cta-button.cta-large {
@@ -208,7 +207,9 @@ body {
   opacity: 1;
 }
 
-/* Value Proposition Section */
+/* ==================
+   💎 VALUE PROPOSITION
+   ================== */
 .value-section {
   text-align: center;
   padding: 6rem 2rem;
@@ -220,6 +221,8 @@ body {
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 215, 0, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
 .value-grid {
@@ -229,7 +232,6 @@ body {
   margin-top: 3rem;
 }
 
-/* Value Cards */
 .value-card {
   background: rgba(26, 26, 26, 0.8);
   border: 1px solid var(--border-color);
@@ -240,22 +242,6 @@ body {
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(5px);
-}
-
-.value-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.value-card:hover::before {
-  transform: scaleX(1);
 }
 
 .value-card:hover {
@@ -281,7 +267,9 @@ body {
   font-weight: 600;
 }
 
-/* Benefits Section */
+/* ==================
+   ⭐ BENEFITS SECTION
+   ================== */
 .benefits-section {
   padding: 6rem 2rem;
   margin: 2rem;
@@ -292,6 +280,8 @@ body {
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(255, 215, 0, 0.03);
+  position: relative;
+  overflow: hidden;
 }
 
 .benefits-grid {
@@ -313,22 +303,6 @@ body {
   backdrop-filter: blur(5px);
 }
 
-.benefit-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.benefit-card:hover::before {
-  transform: scaleX(1);
-}
-
 .benefit-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
@@ -348,7 +322,9 @@ body {
   line-height: 1.5;
 }
 
-/* How it works Section */
+/* ==================
+   🔄 HOW IT WORKS
+   ================== */
 .how-it-works-section {
   padding: 6rem 2rem;
   margin: 2rem;
@@ -359,6 +335,8 @@ body {
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.18),
     0 0 0 1px rgba(255, 215, 0, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
 .steps-grid {
@@ -378,22 +356,6 @@ body {
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(5px);
-}
-
-.step-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.step-card:hover::before {
-  transform: scaleX(1);
 }
 
 .step-card:hover {
@@ -428,7 +390,9 @@ body {
   line-height: 1.6;
 }
 
-/* Social Proof Section */
+/* ==================
+   📊 SOCIAL PROOF
+   ================== */
 .social-proof-section {
   padding: 6rem 2rem;
   margin: 2rem;
@@ -439,6 +403,8 @@ body {
   box-shadow: 
     0 20px 40px rgba(0, 0, 0, 0.12),
     0 0 0 1px rgba(255, 215, 0, 0.03);
+  position: relative;
+  overflow: hidden;
 }
 
 .stats-grid {
@@ -508,7 +474,9 @@ body {
   font-size: 1.1rem;
 }
 
-/* Final CTA Section */
+/* ==================
+   🎯 FINAL CTA
+   ================== */
 .final-cta-section {
   text-align: center;
   padding: 6rem 2rem;
@@ -531,10 +499,12 @@ body {
   opacity: 0.8;
 }
 
-/* Section Titles */
+/* ==================
+   📝 SECTION TITLES
+   ================== */
 .section-title {
   text-align: center;
-  font-size: 2.8rem;
+  font-size: clamp(2rem, 4vw, 2.8rem);
   margin-bottom: 1rem;
   color: var(--text-bright);
   font-weight: 700;
@@ -547,7 +517,7 @@ body {
 .section-subtitle {
   text-align: center;
   color: var(--text-muted);
-  font-size: 1.3rem;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
   margin-bottom: 3rem;
   max-width: 800px;
   margin-left: auto;
@@ -555,7 +525,9 @@ body {
   line-height: 1.6;
 }
 
-/* Footer */
+/* ==================
+   🦶 FOOTER
+   ================== */
 .footer {
   background: var(--form-bg);
   color: var(--text-bright);
@@ -572,7 +544,9 @@ body {
   color: var(--text-muted);
 }
 
-/* Animations */
+/* ==================
+   🎬 ANIMATIONS
+   ================== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -605,14 +579,19 @@ body {
   }
 }
 
-/* Responsive Design */
+/* ==================
+   📱 RESPONSIVE DESIGN
+   ================== */
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.5rem;
-  }
-  
-  .hero-subtitle {
-    font-size: 1.2rem;
+  .hero-section,
+  .value-section,
+  .benefits-section,
+  .how-it-works-section,
+  .social-proof-section,
+  .final-cta-section,
+  .footer {
+    margin: 1rem;
+    padding: 3rem 1.5rem;
   }
   
   .cta-button {
@@ -630,32 +609,16 @@ body {
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
-  
-  .section-title {
-    font-size: 2.2rem;
-  }
-  
-  .hero-section,
-  .benefits-section,
-  .social-proof-section,
-  .final-cta-section,
-  .footer {
-    margin: 1rem;
-    padding: 3rem 1.5rem;
-  }
 }
 
 @media (max-width: 480px) {
-  .hero-title {
-    font-size: 2rem;
-  }
-  
-  .hero-subtitle {
-    font-size: 1.1rem;
-  }
-  
-  .section-title {
-    font-size: 1.8rem;
+  .hero-section,
+  .value-section,
+  .benefits-section,
+  .how-it-works-section,
+  .social-proof-section,
+  .final-cta-section {
+    padding: 2rem 1rem;
   }
   
   .value-card,
@@ -666,5 +629,10 @@ body {
   
   .stat-number {
     font-size: 2.5rem;
+  }
+  
+  .cta-button {
+    padding: 1rem 2rem;
+    font-size: 1rem;
   }
 } 

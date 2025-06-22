@@ -17,6 +17,60 @@ class Clock {
   }
 
   /**
+   * Handles planning generation with smooth scroll to clock section
+   */
+  static handlePlanningGeneration() {
+    console.log('Planning generation animation triggered');
+    
+    // Add fade-in animation to the entire planning content
+    const planningContent = document.querySelector('.quick-actions');
+    if (planningContent) {
+      planningContent.classList.add('planning-generated');
+      console.log('Added planning-generated class to quick-actions');
+    }
+
+    // Show clock section with animation
+    const clockSection = document.querySelector('.clock-section');
+    if (clockSection) {
+      // Add visible class to trigger animation
+      clockSection.classList.add('visible');
+      console.log('Added visible class to clock-section');
+      
+      // Smooth scroll to clock section after a short delay
+      setTimeout(() => {
+        try {
+          clockSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          console.log('Scrolled to clock section');
+        } catch (error) {
+          console.error('Error scrolling to clock section:', error);
+          // Fallback: scroll to top of clock section
+          clockSection.scrollIntoView();
+        }
+      }, 500); // Increased delay to ensure animations are ready
+    } else {
+      console.warn('Clock section not found');
+    }
+
+    // Add animation to other sections
+    const sections = document.querySelectorAll('.available-slots, .summary-section');
+    sections.forEach((section, index) => {
+      setTimeout(() => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'all 0.6s ease';
+        
+        setTimeout(() => {
+          section.style.opacity = '1';
+          section.style.transform = 'translateY(0)';
+        }, 100);
+      }, (index + 1) * 300); // Increased delay between sections
+    });
+  }
+
+  /**
    * Converts time to minutes since midnight
    * @param {string} time - Format HH:MM
    * @returns {number} Minutes since midnight

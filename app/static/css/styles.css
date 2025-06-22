@@ -1,18 +1,20 @@
+/* ==================
+   🎨 GLOBAL STYLES & THEME
+   ================== */
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
-
 .leaflet-control-attribution.leaflet-control {
-    display: none;
+  display: none;
 }
-
 /* ==================
-   🎨 Couleurs / Thème
+   🎨 COULEURS & THÈME
    ================== */
 :root {
-  /* Dark theme colors - Noir plus profond */
+  /* Dark theme colors */
   --bg-color: #0a0a0a;
   --text-color: #e2e8f0;
   --text-muted: #a0aec0;
@@ -25,11 +27,11 @@
   --primary-light: rgba(212, 175, 55, 0.2);
   --primary-border: rgba(212, 175, 55, 0.4);
   
-  /* Accent colors - Doré clair */
+  /* Accent colors */
   --accent: #f4d03f;
   --accent-hover: #f1c40f;
   
-  /* Background colors - Noir profond */
+  /* Background colors */
   --form-bg: #1a1a1a;
   --input-bg: #2a2a2a;
   --card-bg: #1a1a1a;
@@ -45,22 +47,16 @@
   --success-hover: #38a169;
   --success-light: rgba(72, 187, 120, 0.2);
   
-  /* Gradient colors */
-  --gradient-start: #1a1a1a;
-  --gradient-end: #2a2a2a;
-  
-  /* Shadow colors */
+  /* Shadow & overlay */
   --shadow-color: rgba(0, 0, 0, 0.5);
   --shadow-light: rgba(0, 0, 0, 0.2);
-  
-  /* Overlay colors */
   --overlay-light: rgba(255, 255, 255, 0.05);
   --overlay-medium: rgba(255, 255, 255, 0.1);
   --overlay-dark: rgba(255, 255, 255, 0.2);
 }
 
 /* ==================
-   🧱 Layout & global
+   🧱 LAYOUT & GLOBAL
    ================== */
 html {
   font-size: 16px;
@@ -69,9 +65,10 @@ html {
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 2em;
+  line-height: 1.6;
 }
 
 .container {
@@ -85,16 +82,23 @@ body {
   color: var(--text-bright);
   text-align: center;
   margin-bottom: 1em;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 /* ==================
-   📝 Formulaire
+   📝 FORMULAIRES
    ================== */
 .form {
   background-color: var(--form-bg);
   padding: 2em;
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 0 12px var(--shadow-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.config-section {
+  margin-bottom: 2rem;
 }
 
 .form-section {
@@ -106,112 +110,87 @@ body {
 label {
   display: block;
   margin-top: 1em;
-  margin-bottom: 0.3em;
+  margin-bottom: 0.5em;
   color: var(--accent);
+  font-weight: 500;
 }
 
 input,
-select,
-.ts-control input {
+select {
   width: 100%;
-  padding: 9px;
+  padding: 12px;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-color) !important;
+  border-radius: 6px;
+  color: var(--text-color);
   font-size: 1em;
-  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input#country-select-ts-control,
-input#mosque-select-ts-control {
-    width: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: none !important;
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
 }
 
 ::placeholder {
-  color: var(--text-color);
-  font-size: 1em !important;
-  opacity: 1;
-}
-
-.ts-control input::placeholder {
-  color: var(--text-color);
-  font-size: 1em !important;
+  color: var(--text-muted);
+  opacity: 0.8;
 }
 
 /* ==================
-   🔍 Tom Select
+   🔍 TOM SELECT - OPTIMISÉ
    ================== */
 .ts-wrapper {
   width: 100%;
 }
 
-.ts-control,
-.ts-control input,
-.ts-control .item {
-  font-family: 'Segoe UI', sans-serif;
-  font-size: 1rem !important;
-  color: var(--text-color);
-}
-
 .ts-control {
-  background-color: var(--input-bg);
-  color: var(--text-color);
-  min-height: 38px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
+  background-color: var(--input-bg) !important;
+  color: var(--text-color) !important;
+  min-height: 44px;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .ts-control input {
-  background: transparent;
-  color: var(--text-color);
+  background: transparent !important;
+  color: var(--text-color) !important;
+  font-size: 1rem !important;
+}
+
+.ts-wrapper.focus .ts-control {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px var(--primary-light) !important;
 }
 
 .ts-dropdown {
   background-color: var(--input-bg);
-  color: var(--text-color);
   border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .ts-dropdown .option {
-  padding: 0.5em;
+  padding: 12px;
+  color: var(--text-color);
+  transition: background-color 0.2s ease;
 }
 
+.ts-dropdown .option:hover,
 .ts-dropdown .active {
-  background-color: var(--primary);
-  color: white;
-}
-
-.ts-wrapper.focus .ts-control {
-  box-shadow: 0 0 0 1px var(--text-color);
-}
-
-.ts-control,
-.ts-wrapper.single.input-active .ts-control {
-  background: var(--input-bg) !important;
-  color: var(--text-color) !important;
-  border-color: var(--border-color) !important;
+  background-color: var(--primary) !important;
+  color: var(--text-dark);
 }
 
 .ts-dropdown-content {
+  background-color: var(--input-bg);
   max-height: 250px;
   overflow-y: auto;
-  color: var(--text-color);
-  background-color: var(--input-bg);
-  border-top: 1px solid var(--border-color);
-  padding: 0.3em 0;
   scrollbar-width: thin;
-  scrollbar-color: var(--accent) var(--input-bg);
-  transition: background-color 0.3s ease;
-}
-
-.ts-dropdown-content .option {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  scrollbar-color: var(--primary) var(--input-bg);
 }
 
 .ts-dropdown-content::-webkit-scrollbar {
@@ -219,7 +198,7 @@ input#mosque-select-ts-control {
 }
 
 .ts-dropdown-content::-webkit-scrollbar-thumb {
-  background-color: var(--accent);
+  background-color: var(--primary);
   border-radius: 3px;
 }
 
@@ -227,248 +206,61 @@ input#mosque-select-ts-control {
   background: var(--input-bg);
 }
 
-.ts-dropdown .option:hover {
-  background-color: var(--text-color);
-  color: var(--form-bg);
-}
-
 /* ==================
-   ✅ Bouton
+   ✅ BOUTONS
    ================== */
 .btn-submit {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  background-color: var(--success);
-  color: white;
-  border: none;
-  padding: 1em;
   width: 100%;
-  margin-top: 2em;
+  padding: 14px 24px;
+  background: var(--primary);
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
   font-size: 1.1em;
-  border-radius: 4px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 2em;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
 .btn-submit:hover {
-  background-color: var(--success-hover)
-}
-
-/* ==================
-   🗺️ Popup Map
-   ================== */
-div#mosque-map {
-  border-radius: 8px 8px 0 0 !important;
-}
-
-.popup-mosque {
-  text-align: center;
-}
-
-.popup-mosque-name {
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-.popup-content {
-  text-align: center;
-}
-
-.popup-image {
-  width: 100%;
-  max-width: 150px;
-  margin-top: 5px;
-  border-radius: 6px;
-}
-
-.btn-sync-mosque {
-  margin-top: 8px;
-  padding: 5px 10px;
-  font-size: 0.9em;
-  cursor: pointer;
-  background-color: var(--success);
-  color: white;
-  border: none;
-  border-radius: 4px;
-}
-
-/* ==================
-   🕒 Timeline
-   ================== */
-.timeline-container {
-  width: 100%;
-  height: 100px;
-  margin: 20px 0;
-  position: relative;
-  background: var(--form-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-}
-
-.timeline-hours {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: var(--input-bg);
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-}
-
-.timeline-hour {
-  flex: 1;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-color);
-}
-
-.timeline-content {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.timeline-event {
-  position: absolute;
-  height: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  border-radius: 4px;
-  z-index: 1;
-}
-
-.timeline-event.slot {
-  background: var(--success);
-  opacity: 0.5;
-}
-
-.timeline-event.prayer {
-  background: var(--primary);
-  color: white;
-  text-align: center;
-  line-height: 30px;
-  font-size: 0.8rem;
-}
-
-.timeline-event.padding {
-  background: var(--accent);
-  opacity: 0.3;
-}
-
-.timeline-navigation {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px 0;
-}
-
-.timeline-nav-btn {
-  padding: 8px 16px;
-  background: var(--success);
-  color: var(--text-color);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.timeline-nav-btn:hover {
-  background: var(--success-hover);
-  opacity: 0.8;
-}
-
-.timeline-nav-btn:disabled {
-  background: var(--input-bg);
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.timeline-date {
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  margin: 10px 0;
-  color: var(--accent);
-}
-
-/* ==================
-   📅 Available slots
-   ================== */
-.available-slots {
-  margin-bottom: 2rem;
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1.5rem;
-  border: 1px solid var(--border-color);
-}
-
-.available-slots h2 {
-  color: var(--text-bright);
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.slots-list {
-  background: var(--surface-bg);
-  border-radius: 8px;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-}
-
-/* ==================
-   📌 Information groups
-   ================== */
-.info-group {
-  margin-bottom: 20px;
-  padding: 15px;
-  background: var(--surface-bg);
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-}
-
-.info-group label {
-  display: block;
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 8px;
-  font-size: 1.1em;
-}
-
-.info-group ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.info-group li {
-  margin-bottom: 5px;
-  color: var(--text-color);
-}
-
-.info-group li:last-child {
-  margin-bottom: 0;
-}
-
-.mawaqit-link {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  padding: 5px 10px;
-  border-radius: 4px;
-  background: var(--primary-light);
-}
-
-.mawaqit-link:hover {
-  color: var(--primary-hover);
   background: var(--primary-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+.btn-submit.loading {
+  pointer-events: none;
+  opacity: 0.8;
+  background: var(--border-color);
+}
+
+.btn-submit.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--text-dark);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* ==================
-   🗺️ Compact map styles
+   🗺️ MAPS & LINKS
    ================== */
 .compact-map {
   height: 200px;
@@ -490,28 +282,30 @@ div#mosque-map {
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 5px 10px;
-  border-radius: 4px;
+  padding: 8px 16px;
+  border-radius: 6px;
   background: var(--primary-light);
   font-size: 0.9em;
+  border: 1px solid var(--primary-border);
 }
 
 .map-link:hover {
-  color: var(--primary-hover);
-  background: var(--primary-hover);
+  color: var(--text-bright);
+  background: var(--primary);
   transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
 /* ==================
-   📥 Planner page
+   📥 QUICK ACTIONS
    ================== */
 .quick-actions {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--form-bg) 100%);
   border-radius: 12px;
-  color: white;
   border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--shadow-light);
 }
 
 .quick-actions h2 {
@@ -544,6 +338,7 @@ div#mosque-map {
   background: var(--overlay-medium);
   transform: translateY(-2px);
   border-color: var(--overlay-dark);
+  box-shadow: 0 4px 12px var(--shadow-light);
 }
 
 .download-card.primary {
@@ -583,7 +378,7 @@ div#mosque-map {
 }
 
 /* ==================
-   📊 Summary section
+   📊 SUMMARY SECTION
    ================== */
 .summary-section {
   margin-bottom: 2rem;
@@ -599,8 +394,14 @@ div#mosque-map {
   background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 6px var(--shadow-color);
+  box-shadow: 0 4px 12px var(--shadow-light);
   border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  box-shadow: 0 6px 16px var(--shadow-color);
+  transform: translateY(-1px);
 }
 
 .summary-card h3 {
@@ -652,36 +453,7 @@ div#mosque-map {
 }
 
 /* ==================
-   🗺️ Map links
-   ================== */
-.map-links {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.map-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: var(--input-bg);
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  text-decoration: none;
-  color: var(--text-color);
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-}
-
-.map-link:hover {
-  background: var(--border-light);
-  border-color: var(--text-muted);
-  color: var(--text-bright);
-}
-
-/* ==================
-   🕒 Clock section
+   🕒 CLOCK SECTION
    ================== */
 .clock-section {
   margin-bottom: 2rem;
@@ -689,6 +461,7 @@ div#mosque-map {
   border-radius: 12px;
   padding: 1.5rem;
   border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--shadow-light);
 }
 
 .clock-section h2 {
@@ -715,17 +488,20 @@ div#mosque-map {
 }
 
 .clock-nav-btn {
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   background: var(--primary);
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .clock-nav-btn:hover {
   background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
 .clock-container {
@@ -736,7 +512,7 @@ div#mosque-map {
 }
 
 /* ==================
-   📭 No data
+   📭 NO DATA
    ================== */
 .no-data {
   text-align: center;
@@ -752,23 +528,34 @@ div#mosque-map {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
   background: var(--primary);
   color: white;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 500;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
 .back-button:hover {
   background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
 }
 
 /* ==================
-   🔄 Responsive design
+   🔄 RESPONSIVE DESIGN
    ================== */
 @media (max-width: 768px) {
+  body {
+    padding: 1em;
+  }
+  
+  .container {
+    padding: 0.5em;
+  }
+  
   .summary-grid {
     grid-template-columns: 1fr;
   }
@@ -785,5 +572,29 @@ div#mosque-map {
   
   .map-links {
     justify-content: center;
+  }
+  
+  .form {
+    padding: 1.5em;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0.5em;
+  }
+  
+  .form {
+    padding: 1em;
+  }
+  
+  .quick-actions,
+  .summary-card,
+  .clock-section {
+    padding: 1rem;
   }
 }
