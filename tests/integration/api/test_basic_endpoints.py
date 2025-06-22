@@ -50,7 +50,8 @@ def test_planner_page(client):
     assert response.status_code == 200
     # Vérifier la présence du marqueur unique du template
     assert b'<!-- TEST-ID: planner-page -->' in response.data
-    assert b'form action="/planner" method="post"' in response.data
+    # Le formulaire n'a plus d'action/method car il utilise AJAX
+    assert b'id="plannerForm"' in response.data
     assert b'id="mosque-map"' in response.data
     assert b'id="country-select"' in response.data
     assert b'id="mosque-select"' in response.data

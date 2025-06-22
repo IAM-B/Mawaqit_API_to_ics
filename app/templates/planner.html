@@ -31,7 +31,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/static/js/compact_map.js"></script>
   </head>
-  <body>
+  <body class="page-transition">
     <main class="container">
       <!-- Main title -->
       <h1 class="page-title">🕌 Planning synchronisé</h1>
@@ -46,7 +46,7 @@
         ></div>
 
         <!-- Main form for prayer planning -->
-        <form action="/planner" method="post" class="form">
+        <form class="form" id="plannerForm">
           <fieldset class="form-section">
             <h2>⚙️ Configuration</h2>
             <!-- Country selection -->
@@ -97,7 +97,7 @@
 
       {% if segments %}
       <!-- Quick actions section - Most important for user -->
-      <section class="quick-actions">
+      <section class="quick-actions" style="display: none;">
         <h2>📥 Téléchargements rapides</h2>
         <div class="download-grid">
           {% if ics_path %}
@@ -134,7 +134,7 @@
       </section>
 
       <!-- Interactive clock section - PRIORITY -->
-      <section class="clock-section">
+      <section class="clock-section" style="display: none;">
         <h2>🕒 Horloge des prières</h2>
         <div class="clock-navigation">
           <button id="prevBtn" class="clock-nav-btn">←</button>
@@ -147,7 +147,7 @@
       </section>
 
       <!-- Available slots section -->
-      <section class="available-slots">
+      <section class="available-slots" style="display: none;">
         <h2>🕒 Créneaux disponibles</h2>
         <div id="availableSlotsList" class="slots-list">
           <!-- Slots will be displayed here dynamically -->
@@ -155,7 +155,7 @@
       </section>
 
       <!-- Mosque and configuration summary -->
-      <section class="summary-section">
+      <section class="summary-section" style="display: none;">
         <div class="summary-grid">
           <!-- Mosque information -->
           <div class="summary-card mosque-info">
@@ -222,7 +222,7 @@
       
       {% else %}
       <!-- No data message -->
-      <section class="no-data">
+      <section class="no-data" style="display: none;">
         <div class="no-data-content">
           <h2>📭 Aucun créneau disponible</h2>
           <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>

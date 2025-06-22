@@ -400,3 +400,215 @@ def get_mosque_info_from_json(masjid_id):
             continue
     
     return None
+
+def handle_planner_ajax():
+    """
+    Handle AJAX prayer time planning requests and return JSON response.
+    """
+    try:
+        # Get form data
+        masjid_id = request.form.get("masjid_id")
+        scope = request.form.get("scope")
+        padding_before = int(request.form.get('padding_before', 10))
+        padding_after = int(request.form.get('padding_after', 35))
+
+        if not masjid_id or not scope:
+            return {"error": "Missing required parameters"}, 400
+
+        if padding_before < 0 or padding_after < 0:
+            return {"error": "Invalid padding values"}, 400
+
+        if scope not in ("today", "month", "year"):
+            return {"error": "Invalid scope"}, 400
+
+        print(f"📥 AJAX Request received: masjid_id={masjid_id}, scope={scope}, padding_before={padding_before}, padding_after={padding_after}")
+
+        # Get coordinates from form
+        mosque_lat = request.form.get("mosque_lat")
+        mosque_lng = request.form.get("mosque_lng")
+        mosque_name = request.form.get("mosque_name")
+        mosque_address = request.form.get("mosque_address")
+
+        # Fetch prayer times and timezone
+        prayer_times, tz_str = fetch_mosques_data(masjid_id, scope)
+
+        # Use form coordinates if available, otherwise retrieve from JSON
+        if mosque_lat and mosque_lng and mosque_name:
+            lat = float(mosque_lat)
+            lng = float(mosque_lng)
+            mosque_slug = masjid_id
+        else:
+            # Fallback: retrieve from JSON files
+            mosque_info = get_mosque_info_from_json(masjid_id)
+            
+            if mosque_info:
+                mosque_name = mosque_info["name"]
+                mosque_address = mosque_info["address"]
+                lat = mosque_info["lat"]
+                lng = mosque_info["lng"]
+                mosque_slug = mosque_info["slug"]
+            else:
+                # Fallback to web scraping if not found in JSON
+                mosque_data = fetch_mawaqit_data(masjid_id)
+                mosque_name = mosque_data.get("name", "Unknown Mosque")
+                mosque_address = mosque_data.get("address", "")
+                lat = mosque_data.get("lat")
+                lng = mosque_data.get("lng")
+                mosque_slug = mosque_data.get("slug", masjid_id)
+
+        # Use GPS coordinates if address is not available
+        if not mosque_address and lat and lng:
+            mosque_address = f"GPS Coordinates: {lat}, {lng}"
+        elif not mosque_address:
+            mosque_address = "Adresse non disponible"
+
+        # Create map links
+        google_maps_url = ""
+        osm_url = ""
+        if lat and lng:
+            google_maps_url = f"https://www.google.com/maps?q={lat},{lng}"
+            osm_url = f"https://www.openstreetmap.org/?mlat={lat}&mlon={lng}&zoom=15"
+
+        # Build Mawaqit link
+        mawaqit_url = f"https://mawaqit.net/fr/{mosque_slug}"
+
+        # Format scope display
+        scope_display_map = {
+            "today": "Aujourd'hui",
+            "month": "Ce mois",
+            "year": "Cette année"
+        }
+        scope_display = scope_display_map.get(scope, scope)
+
+        # Format dates
+        today = datetime.now()
+        start_date = today.strftime("%d/%m/%Y")
+        
+        if scope == "month":
+            start_date = today.replace(day=1).strftime("%d/%m/%Y")
+            if today.month == 12:
+                end_date = today.replace(year=today.year + 1, month=1, day=1) - timedelta(days=1)
+            else:
+                end_date = today.replace(month=today.month + 1, day=1) - timedelta(days=1)
+            end_date = end_date.strftime("%d/%m/%Y")
+        elif scope == "year":
+            start_date = today.replace(month=1, day=1).strftime("%d/%m/%Y")
+            end_date = today.replace(month=12, day=31).strftime("%d/%m/%Y")
+        else:
+            end_date = start_date
+
+        # Normalize data for long scopes
+        if scope == "month":
+            prayer_times = normalize_month_data(prayer_times)
+        elif scope == "year":
+            prayer_times = normalize_year_data(prayer_times)
+
+        # Generate ICS files
+        ics_path = generate_prayer_ics_file(
+            masjid_id=masjid_id,
+            scope=scope,
+            timezone_str=tz_str,
+            padding_before=padding_before,
+            padding_after=padding_after,
+            prayer_times=prayer_times
+        )
+
+        empty_slots_path = generate_empty_by_scope(
+            masjid_id=masjid_id,
+            scope=scope,
+            timezone_str=tz_str,
+            padding_before=padding_before,
+            padding_after=padding_after,
+            prayer_times=prayer_times
+        )
+
+        available_slots_path = generate_slots_by_scope(
+            masjid_id=masjid_id,
+            scope=scope,
+            timezone_str=tz_str,
+            padding_before=padding_before,
+            padding_after=padding_after,
+            prayer_times=prayer_times
+        )
+
+        # Process time segments for display
+        segments = []
+        if scope == "today":
+            if isinstance(prayer_times, dict):
+                slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
+                segments.append({
+                    "day": datetime.now().day,
+                    "date": datetime.now().strftime("%d/%m/%Y"),
+                    "slots": slots,
+                    "prayer_times": prayer_times
+                })
+        elif isinstance(prayer_times, list):
+            if scope == "month":
+                month = datetime.now().month
+                year = datetime.now().year
+                for i, daily in enumerate(prayer_times):
+                    if not isinstance(daily, dict):
+                        continue
+                    try:
+                        date = datetime(year, month, i + 1)
+                        slots = segment_available_time(daily, tz_str, padding_before, padding_after)
+                        segments.append({
+                            "day": i + 1,
+                            "date": date.strftime("%d/%m/%Y"),
+                            "slots": slots,
+                            "prayer_times": daily
+                        })
+                    except Exception as e:
+                        print(f"⚠️ Error processing day {i + 1}: {e}")
+            elif scope == "year":
+                year = datetime.now().year
+                for month_index, month_days in enumerate(prayer_times, start=1):
+                    month_segments = []
+                    month_date = datetime(year, month_index, 1)
+                    for day_str, times_dict in month_days.items():
+                        try:
+                            day_num = int(day_str)
+                            date = datetime(year, month_index, day_num)
+                            slots = segment_available_time(times_dict, tz_str, padding_before, padding_after)
+                            month_segments.append({
+                                "day": day_num,
+                                "date": date.strftime("%d/%m/%Y"),
+                                "slots": slots,
+                                "prayer_times": times_dict
+                            })
+                        except Exception as e:
+                            print(f"⚠️ Error processing day {day_str} in month {month_index}: {e}")
+                    segments.append({
+                        "month": month_index,
+                        "date": month_date.strftime("%B %Y"),
+                        "days": month_segments
+                    })
+
+        # Return JSON response
+        return {
+            "success": True,
+            "data": {
+                "segments": segments,
+                "ics_path": ics_path,
+                "empty_slots_path": empty_slots_path,
+                "available_slots_path": available_slots_path,
+                "timezone_str": tz_str,
+                "mosque_name": mosque_name,
+                "mosque_address": mosque_address,
+                "mawaqit_url": mawaqit_url,
+                "scope_display": scope_display,
+                "start_date": start_date,
+                "end_date": end_date,
+                "google_maps_url": google_maps_url,
+                "osm_url": osm_url,
+                "mosque_lat": lat,
+                "mosque_lng": lng,
+                "padding_before": padding_before,
+                "padding_after": padding_after,
+                "scope": scope
+            }
+        }
+
+    except Exception as e:
+        print(f"❌ Error in handle_planner_ajax: {e}")
+        return {"error": str(e)}, 500
