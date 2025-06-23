@@ -139,9 +139,15 @@ class PlannerPage {
     // Generate download links
     this.generateDownloadLinks(data);
     
-    // Initialize clock if segments are available (after sections are shown)
+    // Initialize calendar views if segments are available
     if (data.segments && data.segments.length > 0) {
       setTimeout(() => {
+        // Initialize calendar views
+        if (window.calendarViewsManager) {
+          window.calendarViewsManager.initializeViews(data.segments, data.scope);
+        }
+        
+        // Initialize clock
         this.initializeClock(data);
       }, 100);
     }
@@ -287,6 +293,11 @@ class PlannerPage {
       // Create a new Clock instance
       const clock = new Clock('clockContent', data.segments, data.scope);
       
+      // Pass clock instance to calendar views manager for synchronization
+      if (window.calendarViewsManager) {
+        window.calendarViewsManager.setClockInstance(clock);
+      }
+      
       // Setup navigation
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
@@ -381,9 +392,48 @@ class PlannerPage {
       const availableSlots = document.createElement('section');
       availableSlots.className = 'available-slots';
       availableSlots.innerHTML = `
-        <h2>🕒 Créneaux disponibles</h2>
-        <div id="availableSlotsList" class="slots-list">
-          <!-- Slots will be displayed here dynamically -->
+        <h2>📅 Vue calendrier</h2>
+        
+        <!-- Month Calendar View (Google Calendar style) -->
+        <div id="monthCalendarView" class="calendar-view month-view" style="display: none;">
+          <div class="calendar-header">
+            <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
+            <h3 id="currentMonthTitle" class="calendar-title"></h3>
+            <button id="nextMonthBtn" class="calendar-nav-btn">→</button>
+          </div>
+          <div class="calendar-grid">
+            <div class="calendar-weekdays">
+              <div class="weekday">Lun</div>
+              <div class="weekday">Mar</div>
+              <div class="weekday">Mer</div>
+              <div class="weekday">Jeu</div>
+              <div class="weekday">Ven</div>
+              <div class="weekday">Sam</div>
+              <div class="weekday">Dim</div>
+            </div>
+            <div id="monthCalendarDays" class="calendar-days">
+              <!-- Calendar days will be generated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Year Calendar View (Phone calendar style) -->
+        <div id="yearCalendarView" class="calendar-view year-view" style="display: none;">
+          <div class="year-header">
+            <button id="prevYearBtn" class="calendar-nav-btn">←</button>
+            <h3 id="currentYearTitle" class="calendar-title"></h3>
+            <button id="nextYearBtn" class="calendar-nav-btn">→</button>
+          </div>
+          <div id="yearMonthsGrid" class="year-months-grid">
+            <!-- Months will be generated here -->
+          </div>
+        </div>
+
+        <!-- Default slots list (for today scope) -->
+        <div id="defaultSlotsView" class="slots-view">
+          <div id="availableSlotsList" class="slots-list">
+            <!-- Slots will be displayed here dynamically -->
+          </div>
         </div>
       `;
       configSection.parentNode.insertBefore(availableSlots, configSection.nextSibling);

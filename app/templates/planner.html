@@ -7,13 +7,14 @@
     <title>🕌 Planning synchronisé</title>
     <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="/static/css/styles.css" />
-    <link rel="stylesheet" href="/static/css/clock.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clock.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}" />
     <!-- External CSS Libraries -->
     <!-- Tom Select for enhanced dropdowns -->
     <link
       href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
-      rel="stylesheet"
+      rel="stylesheet"l
     />
     <!-- Leaflet for map functionality -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -133,7 +134,7 @@
         </div>
       </section>
 
-      <!-- Interactive clock section - PRIORITY -->
+      <!-- Interactive clock section - ALWAYS VISIBLE -->
       <section class="clock-section" style="display: none;">
         <h2>🕒 Horloge des prières</h2>
         <div class="clock-navigation">
@@ -148,9 +149,49 @@
 
       <!-- Available slots section -->
       <section class="available-slots" style="display: none;">
-        <h2>🕒 Créneaux disponibles</h2>
-        <div id="availableSlotsList" class="slots-list">
-          <!-- Slots will be displayed here dynamically -->
+        <!-- TEST-ICI-MON-CALENDRIER -->
+        <h2>📅 Vue calendrier</h2>
+        
+        <!-- Month Calendar View (Google Calendar style) -->
+        <div id="monthCalendarView" class="calendar-view month-view" style="display: none;">
+          <div class="calendar-header">
+            <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
+            <h3 id="currentMonthTitle" class="calendar-title"></h3>
+            <button id="nextMonthBtn" class="calendar-nav-btn">→</button>
+          </div>
+          <div class="calendar-grid">
+            <div class="calendar-weekdays">
+              <div class="weekday">Lun</div>
+              <div class="weekday">Mar</div>
+              <div class="weekday">Mer</div>
+              <div class="weekday">Jeu</div>
+              <div class="weekday">Ven</div>
+              <div class="weekday">Sam</div>
+              <div class="weekday">Dim</div>
+            </div>
+            <div id="monthCalendarDays" class="calendar-days">
+              <!-- Calendar days will be generated here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Year Calendar View (Phone calendar style) -->
+        <div id="yearCalendarView" class="calendar-view year-view" style="display: none;">
+          <div class="year-header">
+            <button id="prevYearBtn" class="calendar-nav-btn">←</button>
+            <h3 id="currentYearTitle" class="calendar-title"></h3>
+            <button id="nextYearBtn" class="calendar-nav-btn">→</button>
+          </div>
+          <div id="yearMonthsGrid" class="year-months-grid">
+            <!-- Months will be generated here -->
+          </div>
+        </div>
+
+        <!-- Default slots list (for today scope) -->
+        <div id="defaultSlotsView" class="slots-view">
+          <div id="availableSlotsList" class="slots-list">
+            <!-- Slots will be displayed here dynamically -->
+          </div>
         </div>
       </section>
 
@@ -253,5 +294,6 @@
     <script src="{{ url_for('static', filename='js/mosque_search.js') }}"></script>
     <script src="{{ url_for('static', filename='js/map_loader.js') }}"></script>
     <script src="{{ url_for('static', filename='js/planner.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
   </body>
 </html>
