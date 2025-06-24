@@ -16,13 +16,14 @@ from datetime import datetime, timedelta
 import re
 
 
-def normalize_month_data(prayer_times: dict) -> list:
+def normalize_month_data(prayer_times: dict, include_sunset: bool = True) -> list:
     """
     Normalize prayer times data for a month.
     Filters out invalid data and formats it consistently.
 
     Args:
         prayer_times (dict): Raw prayer times data for a month
+        include_sunset (bool): Whether to include sunset in the data
 
     Returns:
         list: List of normalized prayer times dictionaries
@@ -65,14 +66,23 @@ def normalize_month_data(prayer_times: dict) -> list:
                         if not re.match(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$', time):
                             raise ValueError("Invalid time format")
                     
-                    normalized_data.append({
-                        "fajr": times[0],
-                        "sunset": times[1],
-                        "dohr": times[2],
-                        "asr": times[3],
-                        "maghreb": times[4],
-                        "icha": times[5]
-                    })
+                    if include_sunset:
+                        normalized_data.append({
+                            "fajr": times[0],
+                            "sunset": times[1],
+                            "dohr": times[2],
+                            "asr": times[3],
+                            "maghreb": times[4],
+                            "icha": times[5]
+                        })
+                    else:
+                        normalized_data.append({
+                            "fajr": times[0],
+                            "dohr": times[2],
+                            "asr": times[3],
+                            "maghreb": times[4],
+                            "icha": times[5]
+                        })
                 except Exception as e:
                     print(f"⚠️ Day {day} → Invalid time format: {times}")
             elif isinstance(times, str):
@@ -99,13 +109,14 @@ def normalize_month_data(prayer_times: dict) -> list:
 
     return normalized_data
 
-def normalize_year_data(prayer_times: list) -> list[dict]:
+def normalize_year_data(prayer_times: list, include_sunset: bool = True) -> list[dict]:
     """
     Normalize prayer time data for a year.
     Processes monthly data and ensures consistent format.
     
     Args:
         prayer_times (list): Raw prayer time data for a year
+        include_sunset (bool): Whether to include sunset in the data
         
     Returns:
         list[dict]: List of normalized monthly prayer time entries
@@ -145,14 +156,23 @@ def normalize_year_data(prayer_times: list) -> list[dict]:
                 if isinstance(time_list, list) and len(time_list) == 6:
                     if all(isinstance(t, str) and ":" in t for t in time_list):
                         # Convert list to dictionary with prayer names
-                        times_dict = {
-                            "fajr": time_list[0],
-                            "sunset": time_list[1],
-                            "dohr": time_list[2],
-                            "asr": time_list[3],
-                            "maghreb": time_list[4],
-                            "icha": time_list[5]
-                        }
+                        if include_sunset:
+                            times_dict = {
+                                "fajr": time_list[0],
+                                "sunset": time_list[1],
+                                "dohr": time_list[2],
+                                "asr": time_list[3],
+                                "maghreb": time_list[4],
+                                "icha": time_list[5]
+                            }
+                        else:
+                            times_dict = {
+                                "fajr": time_list[0],
+                                "dohr": time_list[2],
+                                "asr": time_list[3],
+                                "maghreb": time_list[4],
+                                "icha": time_list[5]
+                            }
                         normalized_month[day_str] = times_dict
                     else:
                         print(f"⚠️ Invalid time format for {day_str}/{month_index}: {time_list}")
@@ -200,6 +220,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
     try:
         padding_before = int(request.form.get('padding_before', 10))
         padding_after = int(request.form.get('padding_after', 35))
+        include_sunset = request.form.get('include_sunset') == 'on'
     except ValueError:
         raise ValueError("Invalid padding values: padding_before and padding_after must be integers")
 
@@ -306,10 +327,10 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         # Normalize data for long scopes
         if scope == "month":
             print("🔧 Normalizing monthly data...")
-            prayer_times = normalize_month_data(prayer_times)
+            prayer_times = normalize_month_data(prayer_times, include_sunset=include_sunset)
         elif scope == "year":
             print("🔧 Normalizing yearly data...")
-            prayer_times = normalize_year_data(prayer_times)
+            prayer_times = normalize_year_data(prayer_times, include_sunset=include_sunset)
 
         # Generate prayer times ICS file
         ics_path = generate_prayer_ics_file(
@@ -318,7 +339,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times
+            prayer_times=prayer_times,
+            include_sunset=include_sunset
         )
 
         # Generate empty slots ICS file
@@ -328,7 +350,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times
+            prayer_times=prayer_times,
+            include_sunset=include_sunset
         )
 
         # Generate available slots ICS file
@@ -338,7 +361,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times
+            prayer_times=prayer_times,
+            include_sunset=include_sunset
         )
 
         # Process time segments for display
@@ -470,6 +494,7 @@ def handle_planner_ajax():
         scope = request.form.get("scope")
         padding_before = int(request.form.get('padding_before', 10))
         padding_after = int(request.form.get('padding_after', 35))
+        include_sunset = request.form.get('include_sunset') == 'on'
         
         # Get target month/year for navigation (optional)
         target_month = request.form.get("target_month")
@@ -562,9 +587,9 @@ def handle_planner_ajax():
 
         # Normalize data for long scopes
         if scope == "month":
-            prayer_times = normalize_month_data(prayer_times)
+            prayer_times = normalize_month_data(prayer_times, include_sunset=include_sunset)
         elif scope == "year":
-            prayer_times = normalize_year_data(prayer_times)
+            prayer_times = normalize_year_data(prayer_times, include_sunset=include_sunset)
 
         # Generate ICS files
         ics_path = generate_prayer_ics_file(
@@ -573,7 +598,8 @@ def handle_planner_ajax():
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times
+            prayer_times=prayer_times,
+            include_sunset=include_sunset
         )
 
         empty_slots_path = generate_empty_by_scope(
@@ -582,7 +608,8 @@ def handle_planner_ajax():
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times
+            prayer_times=prayer_times,
+            include_sunset=include_sunset
         )
 
         available_slots_path = generate_slots_by_scope(
@@ -591,7 +618,8 @@ def handle_planner_ajax():
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times
+            prayer_times=prayer_times,
+            include_sunset=include_sunset
         )
 
         # Process time segments for display
@@ -724,7 +752,8 @@ def handle_generate_ics():
             timezone_str=tz_str,
             padding_before=padding_before,
             padding_after=padding_after,
-            prayer_times=prayer_times
+            prayer_times=prayer_times,
+            include_sunset=include_sunset
         )
 
         # Return JSON response

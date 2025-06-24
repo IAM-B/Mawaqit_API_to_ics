@@ -52,7 +52,8 @@ def generate_slot_ics_file(
     filename: str,
     timezone_str: str,
     padding_before: int,
-    padding_after: int
+    padding_after: int,
+    PRAYERS_ORDER: list = None
 ) -> str:
     """
     Generate calendar events for available slots between prayers for a single day.
@@ -64,6 +65,7 @@ def generate_slot_ics_file(
         timezone_str (str): Timezone string
         padding_before (int): Minutes to add before prayer times
         padding_after (int): Minutes to add after prayer times
+        PRAYERS_ORDER (list): List of prayer times in order
         
     Returns:
         str: Path to the generated ICS file
@@ -74,6 +76,9 @@ def generate_slot_ics_file(
     calendar.add('version', '2.0')
     calendar.add('name', current_app.config['ICS_CALENDAR_NAME'])
     calendar.add('description', current_app.config['ICS_CALENDAR_DESCRIPTION'])
+
+    if PRAYERS_ORDER is None:
+        PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
 
     # Generate slots between consecutive prayers
     for i in range(len(PRAYERS_ORDER) - 1):
@@ -112,7 +117,8 @@ def generate_slots_by_scope(
     timezone_str: str,
     padding_before: int,
     padding_after: int,
-    prayer_times: list | dict
+    prayer_times: list | dict,
+    include_sunset: bool = False
 ) -> str:
     """
     Generate available slot events for a specific time scope (today/month/year).
@@ -124,6 +130,7 @@ def generate_slots_by_scope(
         padding_before (int): Minutes to add before prayer times
         padding_after (int): Minutes to add after prayer times
         prayer_times (list | dict): Prayer time data for the specified scope
+        include_sunset (bool): Whether to include 'sunset' in the prayer order
         
     Returns:
         str: Path to the generated ICS file
@@ -139,6 +146,12 @@ def generate_slots_by_scope(
     cal.add('name', current_app.config['ICS_CALENDAR_NAME'])
     cal.add('description', current_app.config['ICS_CALENDAR_DESCRIPTION'])
 
+    # Order of prayers in the day (dynamique)
+    PRAYERS_ORDER = ["fajr"]
+    if include_sunset:
+        PRAYERS_ORDER.append("sunset")
+    PRAYERS_ORDER += ["dohr", "asr", "maghreb", "icha"]
+
     def append_day_to_calendar(base_date, day_times: dict):
         """
         Generate and append available slot events for a single day to the calendar.
@@ -148,7 +161,7 @@ def generate_slots_by_scope(
             day_times (dict): Dictionary of prayer times for the day
         """
         tmp_file = Path("tmp.ics")
-        generate_slot_ics_file(day_times, base_date, tmp_file, timezone_str, padding_before, padding_after)
+        generate_slot_ics_file(day_times, base_date, tmp_file, timezone_str, padding_before, padding_after, PRAYERS_ORDER)
         with open(tmp_file, "rb") as f:
             sub_cal = Calendar.from_ical(f.read())
             for component in sub_cal.walk():
@@ -170,13 +183,19 @@ def generate_slots_by_scope(
 
     elif scope == "year":
         for month_index, month_days in enumerate(prayer_times, start=1):
-            for day_str, time_list in month_days.items():
+            if not isinstance(month_days, dict):
+                continue
+            for day_str, times_dict in month_days.items():
                 try:
                     date_obj = datetime(YEAR, month_index, int(day_str))
-                    if isinstance(time_list, list) and len(time_list) >= 6:
-                        # Remove sunrise time (index 1)
-                        cleaned_list = [v for i, v in enumerate(time_list) if i != 1]
-                        times_dict = dict(zip(PRAYERS_ORDER, cleaned_list[:len(PRAYERS_ORDER)]))
+                    # Compatibility: also accepts the old format (list)
+                    if isinstance(times_dict, list) and len(times_dict) >= 6:
+                        keys = ["fajr"]
+                        if "sunset" in PRAYERS_ORDER:
+                            keys.append("sunset")
+                        keys += ["dohr", "asr", "maghreb", "icha"]
+                        times_dict = {k: v for k, v in zip(keys, times_dict)}
+                    if isinstance(times_dict, dict):
                         append_day_to_calendar(date_obj, times_dict)
                 except Exception as e:
                     print(f"⚠️ Error {day_str}/{month_index}: {e}")

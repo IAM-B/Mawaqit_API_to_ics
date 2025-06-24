@@ -49,6 +49,12 @@ class PlannerPage {
             combinedFormData.append(key, value);
           }
           
+          // Explicit inclusion of the include_sunset checkbox (to avoid any omission)
+          const includeSunsetCheckbox = document.getElementById('include_sunset');
+          if (includeSunsetCheckbox) {
+            combinedFormData.set('include_sunset', includeSunsetCheckbox.checked ? 'on' : '');
+          }
+          
           // Send AJAX request
           const response = await fetch('/api/generate_planning', {
             method: 'POST',
@@ -361,47 +367,40 @@ class PlannerPage {
         const mosqueId = data.masjid_id;
         const paddingBefore = data.padding_before || 10;
         const paddingAfter = data.padding_after || 35;
+        // Recup checkbox include_sunset
+        const includeSunsetCheckbox = document.getElementById('include_sunset');
+        const includeSunset = includeSunsetCheckbox ? includeSunsetCheckbox.checked : false;
         
         // Show loading state
         button.classList.add('loading');
         button.disabled = true;
         
         try {
-          // Generate ICS for the selected scope
-          const response = await fetch('/api/generate_ics', {
+          // Slot generation for the selected scope
+          const response = await fetch('/api/generate_planning', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              masjid_id: mosqueId,
-              scope: scope,
-              padding_before: paddingBefore,
-              padding_after: paddingAfter
-            })
+            body: (() => {
+              const formData = new FormData();
+              formData.append('masjid_id', mosqueId);
+              formData.append('scope', scope);
+              formData.append('padding_before', paddingBefore);
+              formData.append('padding_after', paddingAfter);
+              formData.append('include_sunset', includeSunset ? 'on' : '');
+              return formData;
+            })()
           });
-          
           const result = await response.json();
-          
           if (result.success) {
-            // Create download link
-            const link = document.createElement('a');
-            link.href = `/static/ics/${result.ics_path}`;
-            link.download = `prayer_times_${scope}.ics`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            this.showSuccessMessage(`Fichier ICS pour ${scope} téléchargé !`);
+            // Update download-cards with new links
+            this.generateDownloadLinks(result.data);
+            this.showSuccessMessage(`Fichiers ICS pour ${scope} générés !`);
           } else {
             throw new Error(result.error || 'Erreur lors de la génération');
           }
-          
         } catch (error) {
           console.error('Error generating ICS:', error);
           this.showErrorMessage(error.message);
         } finally {
-          // Hide loading state
           button.classList.remove('loading');
           button.disabled = false;
         }

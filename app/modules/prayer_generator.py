@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, time
 from flask import current_app
 
 # Order of prayers in the day
-PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
+PRAYERS_ORDER = ["fajr"]
 
 def parse_time_str(time_str: str, date_ref=None) -> datetime:
     """
@@ -52,7 +52,8 @@ def generate_prayer_ics_file(
     timezone_str: str,
     padding_before: int,
     padding_after: int,
-    prayer_times: list | dict
+    prayer_times: list | dict,
+    include_sunset: bool = False
 ) -> str:
     """
     Generate an ICS file containing prayer times with customizable padding.
@@ -64,6 +65,7 @@ def generate_prayer_ics_file(
         padding_before (int): Minutes to add before prayer time
         padding_after (int): Minutes to add after prayer time
         prayer_times (list | dict): Prayer time data for the specified scope
+        include_sunset (bool): Whether to include sunset in the prayer times
         
     Returns:
         str: Path to the generated ICS file
@@ -81,6 +83,12 @@ def generate_prayer_ics_file(
     cal.add('name', current_app.config['ICS_CALENDAR_NAME'])
     cal.add('description', current_app.config['ICS_CALENDAR_DESCRIPTION'])
 
+    # Order of prayers in the day (dynamique)
+    PRAYERS_ORDER = ["fajr"]
+    if include_sunset:
+        PRAYERS_ORDER.append("sunset")
+    PRAYERS_ORDER += ["dohr", "asr", "maghreb", "icha"]
+
     def add_event(date_obj, times_dict):
         """
         Add prayer events to the calendar for a specific date.
@@ -97,23 +105,22 @@ def generate_prayer_ics_file(
                 base_dt = parse_time_str(time_str, date_obj).replace(tzinfo=tz)
                 dt_start = base_dt - timedelta(minutes=padding_before)
                 dt_end = base_dt + timedelta(minutes=padding_after)
-
                 event = Event()
                 event.add('uid', str(uuid4()))
                 event.add('dtstart', dt_start)
                 event.add('dtend', dt_end)
-                event.add('summary', f"{name.capitalize()} ({time_str})")
+                if name == "sunset":
+                    event.add('summary', f"Sunset (Chourouk) ({time_str})")
+                else:
+                    event.add('summary', f"{name.capitalize()} ({time_str})")
                 event.add('location', f"Mosque {masjid_id.replace('-', ' ').title()}")
                 event.add('description', f"Prayer including {padding_before} min before and {padding_after} min after")
-
                 alarm = Event()
                 alarm.add('action', 'AUDIO')
                 alarm.add('trigger', timedelta(minutes=0))
                 alarm.add('description', f"🔊 Prayer call for {name.capitalize()}")
-
                 event.add_component(alarm)
                 cal.add_component(event)
-
             except Exception as e:
                 print(f"⚠️ Error for {name} ({time_str}) on {date_obj}: {e}")
 
@@ -138,13 +145,20 @@ def generate_prayer_ics_file(
         for month_index, month_days in enumerate(prayer_times, start=1):
             if not isinstance(month_days, dict):
                 continue
-            for day_str, time_list in month_days.items():
+            for day_str, times_dict in month_days.items():
                 try:
                     date_obj = datetime(YEAR, month_index, int(day_str))
-                    if isinstance(time_list, list) and len(time_list) >= 6:
-                        cleaned_list = [v for i, v in enumerate(time_list) if i != 1]  # remove sunrise
-                        times_dict = dict(zip(PRAYERS_ORDER, cleaned_list[:len(PRAYERS_ORDER)]))
-                        add_event(date_obj, times_dict)
+                    # Compatibility: also accepts the old format (list)
+                    if isinstance(times_dict, list) and len(times_dict) >= 6:
+                        # We assume the order: fajr, sunset, dohr, asr, maghreb, icha
+                        keys = ["fajr"]
+                        if "sunset" in PRAYERS_ORDER:
+                            keys.append("sunset")
+                        keys += ["dohr", "asr", "maghreb", "icha"]
+                        times_dict = {k: v for k, v in zip(keys, times_dict)}
+                    if isinstance(times_dict, dict):
+                        filtered_times = {k: v for k, v in times_dict.items() if k in PRAYERS_ORDER}
+                        add_event(date_obj, filtered_times)
                 except Exception as e:
                     print(f"⚠️ Error {day_str}/{month_index}: {e}")
         filename = f"prayer_times_{masjid_id}_{YEAR}.ics"
