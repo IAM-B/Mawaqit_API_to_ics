@@ -479,7 +479,9 @@ class Clock {
     } else if (this.scope === 'month') {
       return this.segments[this.currentIndex];
     } else if (this.scope === 'year') {
-      return this.segments[this.currentIndex].days[this.currentDayIndex];
+      // For year scope, segments now represent days of the current month
+      // (not months of the year as before)
+      return this.segments[this.currentIndex];
     }
     return null;
   }
@@ -503,20 +505,11 @@ class Clock {
         this.currentIndex = this.segments.length - 1;
       }
     } else if (this.scope === 'year') {
-      if (direction > 0) {
-        if (this.currentDayIndex < this.segments[this.currentIndex].days.length - 1) {
-          this.currentDayIndex++;
-        } else if (this.currentIndex < this.segments.length - 1) {
-          this.currentIndex++;
-          this.currentDayIndex = 0;
-        }
-      } else {
-        if (this.currentDayIndex > 0) {
-          this.currentDayIndex--;
-        } else if (this.currentIndex > 0) {
-          this.currentIndex--;
-          this.currentDayIndex = this.segments[this.currentIndex].days.length - 1;
-        }
+      // For year scope, navigate between days of the current month
+      this.currentIndex += direction;
+      if (this.currentIndex < 0) this.currentIndex = 0;
+      if (this.currentIndex >= this.segments.length) {
+        this.currentIndex = this.segments.length - 1;
       }
     }
     this.updateClock();

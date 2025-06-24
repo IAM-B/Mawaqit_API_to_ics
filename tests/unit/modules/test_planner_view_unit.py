@@ -23,16 +23,18 @@ class TestNormalizeMonthData:
         
         result = normalize_month_data(prayer_times)
         
-        assert len(result) == 2
+        assert 28 <= len(result) <= 31
         assert result[0]["fajr"] == "05:30"
         assert result[0]["dohr"] == "12:30"
         assert result[0]["asr"] == "15:30"
         assert result[0]["maghreb"] == "18:30"
         assert result[0]["icha"] == "20:30"
         assert result[0]["sunset"] == "07:00"
-        
         assert result[1]["fajr"] == "05:31"
         assert result[1]["dohr"] == "12:31"
+        # Les jours suivants doivent être des duplications du dernier jour connu
+        for day in result[2:]:
+            assert day["fajr"] == "05:31"
     
     def test_normalize_month_data_invalid_list_length(self):
         """Test with invalid list length"""
@@ -43,9 +45,11 @@ class TestNormalizeMonthData:
         
         result = normalize_month_data(prayer_times)
         
-        # Should skip invalid day and only process valid one
-        assert len(result) == 1
+        # On attend la génération complète du mois avec duplication du dernier jour connu
+        assert 28 <= len(result) <= 31
         assert result[0]["fajr"] == "05:31"
+        for day in result[1:]:
+            assert day["fajr"] == "05:31"
     
     def test_normalize_month_data_invalid_time_format(self):
         """Test with invalid time format"""
@@ -56,9 +60,10 @@ class TestNormalizeMonthData:
         
         result = normalize_month_data(prayer_times)
         
-        # Should skip invalid day and only process valid one
-        assert len(result) == 1
+        assert 28 <= len(result) <= 31
         assert result[0]["fajr"] == "05:31"
+        for day in result[1:]:
+            assert day["fajr"] == "05:31"
     
     def test_normalize_month_data_string_format(self):
         """Test with string format (should be skipped)"""
@@ -69,9 +74,10 @@ class TestNormalizeMonthData:
         
         result = normalize_month_data(prayer_times)
         
-        # Should skip string format and only process valid one
-        assert len(result) == 1
+        assert 28 <= len(result) <= 31
         assert result[0]["fajr"] == "05:31"
+        for day in result[1:]:
+            assert day["fajr"] == "05:31"
     
     def test_normalize_month_data_dict_format(self):
         """Test with dict format (should be skipped)"""
@@ -82,9 +88,10 @@ class TestNormalizeMonthData:
         
         result = normalize_month_data(prayer_times)
         
-        # Should skip dict format and only process valid one
-        assert len(result) == 1
+        assert 28 <= len(result) <= 31
         assert result[0]["fajr"] == "05:31"
+        for day in result[1:]:
+            assert day["fajr"] == "05:31"
     
     def test_normalize_month_data_invalid_day_number(self):
         """Test with invalid day number"""
@@ -95,9 +102,10 @@ class TestNormalizeMonthData:
         
         result = normalize_month_data(prayer_times)
         
-        # Should skip invalid day and only process valid one
-        assert len(result) == 1
+        assert 28 <= len(result) <= 31
         assert result[0]["fajr"] == "05:31"
+        for day in result[1:]:
+            assert day["fajr"] == "05:31"
     
     def test_normalize_month_data_empty_input(self):
         """Test with empty input"""
@@ -116,9 +124,10 @@ class TestNormalizeMonthData:
         
         result = normalize_month_data(prayer_times)
         
-        # Should skip invalid day and only process valid one
-        assert len(result) == 1
+        assert 28 <= len(result) <= 31
         assert result[0]["fajr"] == "05:31"
+        for day in result[1:]:
+            assert day["fajr"] == "05:31"
 
 
 class TestNormalizeYearData:
@@ -139,16 +148,18 @@ class TestNormalizeYearData:
         result = normalize_year_data(prayer_times)
         
         assert len(result) == 2  # Two months
-        assert len(result[0]) == 2  # January has 2 days
-        assert len(result[1]) == 1  # February has 1 day
-        
-        # Check January data
-        assert result[0]["1"]["fajr"] == "05:30"
-        assert result[0]["1"]["dohr"] == "12:30"
-        assert result[0]["2"]["fajr"] == "05:31"
-        
-        # Check February data
-        assert result[1]["1"]["fajr"] == "05:32"
+        for i, (month, expected_first, expected_second) in enumerate(zip(result, ["05:30", "05:32"], ["05:31", "05:32"])):
+            assert 28 <= len(month) <= 31
+            days = list(month.keys())
+            assert month[days[0]]["fajr"] == expected_first
+            # Pour janvier, on a deux jours d'entrée, pour février un seul
+            if i == 0:
+                assert month[days[1]]["fajr"] == expected_second
+                for d in days[2:]:
+                    assert month[d]["fajr"] == expected_second
+            else:
+                for d in days[1:]:
+                    assert month[d]["fajr"] == expected_first
     
     def test_normalize_year_data_invalid_month_format(self):
         """Test with invalid month format (not dict)"""
@@ -163,7 +174,10 @@ class TestNormalizeYearData:
         
         # Should skip invalid month and only process valid one
         assert len(result) == 1
-        assert result[0]["1"]["fajr"] == "05:32"
+        days = list(result[0].keys())
+        assert result[0][days[0]]["fajr"] == "05:32"
+        for d in days[1:]:
+            assert result[0][d]["fajr"] == "05:32"
     
     def test_normalize_year_data_invalid_time_format(self):
         """Test with invalid time format in year data"""
@@ -176,10 +190,11 @@ class TestNormalizeYearData:
         
         result = normalize_year_data(prayer_times)
         
-        # Should skip invalid day and only process valid one
         assert len(result) == 1
-        assert len(result[0]) == 1  # Only one valid day
-        assert result[0]["2"]["fajr"] == "05:31"
+        days = list(result[0].keys())
+        assert result[0][days[0]]["fajr"] == "05:31"
+        for d in days[1:]:
+            assert result[0][d]["fajr"] == "05:31"
     
     def test_normalize_year_data_invalid_date(self):
         """Test with invalid date (e.g., February 30th)"""
@@ -194,11 +209,13 @@ class TestNormalizeYearData:
         
         result = normalize_year_data(prayer_times)
         
-        # Should skip invalid date and only process valid one
         assert len(result) == 2
-        assert len(result[0]) == 1  # January has 1 valid day
-        assert len(result[1]) == 0  # February has 0 valid days
-        assert result[0]["30"]["fajr"] == "05:30"
+        days_jan = list(result[0].keys())
+        assert 28 <= len(result[0]) <= 31
+        assert result[0][days_jan[0]]["fajr"] == "05:30"
+        for d in days_jan[1:]:
+            assert result[0][d]["fajr"] == "05:30"
+        assert len(result[1]) == 0
     
     def test_normalize_year_data_empty_input(self):
         """Test with empty input"""
@@ -219,10 +236,12 @@ class TestNormalizeYearData:
         
         result = normalize_year_data(prayer_times)
         
-        # Should skip invalid day and only process valid one
         assert len(result) == 1
-        assert len(result[0]) == 1
-        assert result[0]["2"]["fajr"] == "05:31"
+        days = list(result[0].keys())
+        assert 28 <= len(result[0]) <= 31
+        assert result[0][days[0]]["fajr"] == "05:31"
+        for d in days[1:]:
+            assert result[0][d]["fajr"] == "05:31"
 
 
 class TestGetMosqueInfoFromJson:

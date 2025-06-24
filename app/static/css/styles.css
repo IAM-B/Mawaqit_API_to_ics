@@ -732,3 +732,78 @@ a:hover {
     background: var(--primary-hover, #b8941f);
     color: #fff;
   }
+
+/* ==================
+   📥 SCOPE DOWNLOADS
+   ================== */
+.scope-downloads {
+  grid-column: 1 / -1;
+  background: var(--surface-bg);
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid var(--border-color);
+  margin-top: 20px;
+}
+
+.scope-downloads h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-size: 1.2em;
+}
+
+.scope-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.scope-download-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  background: var(--form-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  font-size: 1em;
+}
+
+.scope-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border-color: var(--primary);
+}
+
+.scope-download-btn.today {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  color: white;
+  border-color: var(--accent);
+}
+
+.scope-download-btn.month {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white;
+  border-color: var(--primary);
+}
+
+.scope-download-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.scope-icon {
+  font-size: 1.5em;
+  margin-bottom: 8px;
+}
+
+.scope-title {
+  font-weight: 600;
+  font-size: 0.9em;
+}

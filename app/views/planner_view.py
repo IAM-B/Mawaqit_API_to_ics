@@ -28,7 +28,21 @@ def normalize_month_data(prayer_times: dict) -> list:
         list: List of normalized prayer times dictionaries
     """
     normalized_data = []
+    current_year = datetime.now().year
+    current_month = datetime.now().month
     
+    # Get the number of days in this month
+    try:
+        if current_month == 12:
+            last_day = datetime(current_year + 1, 1, 1) - timedelta(days=1)
+        else:
+            last_day = datetime(current_year, current_month + 1, 1) - timedelta(days=1)
+        days_in_month = last_day.day
+    except Exception as e:
+        print(f"⚠️ Error calculating days for month {current_month}: {e}")
+        days_in_month = 31  # Fallback to 31 days
+    
+    # Process existing days from the data
     for day, times in prayer_times.items():
         try:
             # Validate day number
@@ -70,6 +84,18 @@ def normalize_month_data(prayer_times: dict) -> list:
         except ValueError as e:
             print(f"⚠️ Error processing day {day}: {e}")
             continue
+    
+    # Fill missing days with the last available day's data
+    if normalized_data:
+        # Get the last available day's data as template
+        template_data = normalized_data[-1]
+        
+        # Fill missing days
+        for day_num in range(1, days_in_month + 1):
+            if day_num > len(normalized_data):
+                # Use template data for missing days
+                normalized_data.append(template_data.copy())
+                print(f"📅 Generated data for day {day_num}/{current_month} using template")
 
     return normalized_data
 
@@ -93,6 +119,19 @@ def normalize_year_data(prayer_times: list) -> list[dict]:
             continue
 
         normalized_month = {}
+        
+        # Get the number of days in this month
+        try:
+            if month_index == 12:
+                last_day = datetime(current_year + 1, 1, 1) - timedelta(days=1)
+            else:
+                last_day = datetime(current_year, month_index + 1, 1) - timedelta(days=1)
+            days_in_month = last_day.day
+        except Exception as e:
+            print(f"⚠️ Error calculating days for month {month_index}: {e}")
+            days_in_month = 31  # Fallback to 31 days
+        
+        # Process existing days from the data
         for day_str, time_list in month_days.items():
             try:
                 # Check if date is valid
@@ -122,7 +161,21 @@ def normalize_year_data(prayer_times: list) -> list[dict]:
             except Exception as e:
                 print(f"⚠️ Error processing {day_str}/{month_index}: {e}")
                 continue
-
+        
+        # Fill missing days with the last available day's data
+        if normalized_month:
+            # Get the last available day's data as template
+            last_available_day = max(normalized_month.keys(), key=int)
+            template_data = normalized_month[last_available_day]
+            
+            # Fill missing days
+            for day_num in range(1, days_in_month + 1):
+                day_str = str(day_num)
+                if day_str not in normalized_month:
+                    # Use template data for missing days
+                    normalized_month[day_str] = template_data.copy()
+                    print(f"📅 Generated data for day {day_str}/{month_index} using template")
+        
         year_normalized.append(normalized_month)
 
     return year_normalized
@@ -303,8 +356,14 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         elif isinstance(prayer_times, list):
             print("📅 Processing month/year scope as list")
             if scope == "month":
-                month = datetime.now().month
-                year = datetime.now().year
+                # Use target month/year if provided, otherwise use current
+                if target_month and target_year:
+                    month = int(target_month)
+                    year = int(target_year)
+                else:
+                    month = datetime.now().month
+                    year = datetime.now().year
+                    
                 for i, daily in enumerate(prayer_times):
                     if not isinstance(daily, dict):
                         print(f"⚠️ Unexpected format for day {i+1}: {type(daily)} → {daily}")
@@ -411,6 +470,10 @@ def handle_planner_ajax():
         scope = request.form.get("scope")
         padding_before = int(request.form.get('padding_before', 10))
         padding_after = int(request.form.get('padding_after', 35))
+        
+        # Get target month/year for navigation (optional)
+        target_month = request.form.get("target_month")
+        target_year = request.form.get("target_year")
 
         if not masjid_id or not scope:
             return {"error": "Missing required parameters"}, 400
@@ -544,8 +607,14 @@ def handle_planner_ajax():
                 })
         elif isinstance(prayer_times, list):
             if scope == "month":
-                month = datetime.now().month
-                year = datetime.now().year
+                # Use target month/year if provided, otherwise use current
+                if target_month and target_year:
+                    month = int(target_month)
+                    year = int(target_year)
+                else:
+                    month = datetime.now().month
+                    year = datetime.now().year
+                    
                 for i, daily in enumerate(prayer_times):
                     if not isinstance(daily, dict):
                         continue
@@ -599,16 +668,72 @@ def handle_planner_ajax():
                 "scope_display": scope_display,
                 "start_date": start_date,
                 "end_date": end_date,
-                "google_maps_url": google_maps_url,
-                "osm_url": osm_url,
-                "mosque_lat": lat,
-                "mosque_lng": lng,
                 "padding_before": padding_before,
                 "padding_after": padding_after,
-                "scope": scope
+                "scope": scope,
+                "mosque_lat": lat,
+                "mosque_lng": lng,
+                "masjid_id": masjid_id,
+                "google_maps_url": google_maps_url,
+                "osm_url": osm_url
             }
         }
 
     except Exception as e:
         print(f"❌ Error in handle_planner_ajax: {e}")
+        return {"error": str(e)}, 500
+
+def handle_generate_ics():
+    """
+    Handle AJAX requests to generate ICS files for specific scopes.
+    """
+    try:
+        # Get JSON data
+        data = request.get_json()
+        
+        if not data:
+            return {"error": "No data provided"}, 400
+            
+        masjid_id = data.get("masjid_id")
+        scope = data.get("scope")
+        padding_before = int(data.get('padding_before', 10))
+        padding_after = int(data.get('padding_after', 35))
+
+        if not masjid_id or not scope:
+            return {"error": "Missing required parameters"}, 400
+
+        if padding_before < 0 or padding_after < 0:
+            return {"error": "Invalid padding values"}, 400
+
+        if scope not in ("today", "month"):
+            return {"error": "Invalid scope. Only 'today' and 'month' are supported for ICS generation"}, 400
+
+        print(f"📥 ICS Generation Request: masjid_id={masjid_id}, scope={scope}, padding_before={padding_before}, padding_after={padding_after}")
+
+        # Fetch prayer times and timezone
+        prayer_times, tz_str = fetch_mosques_data(masjid_id, scope)
+
+        # Normalize data for month scope
+        if scope == "month":
+            prayer_times = normalize_month_data(prayer_times)
+
+        # Generate ICS file
+        ics_path = generate_prayer_ics_file(
+            masjid_id=masjid_id,
+            scope=scope,
+            timezone_str=tz_str,
+            padding_before=padding_before,
+            padding_after=padding_after,
+            prayer_times=prayer_times
+        )
+
+        # Return JSON response
+        return {
+            "success": True,
+            "ics_path": ics_path,
+            "scope": scope
+        }
+
+    except Exception as e:
+        print(f"❌ Error in handle_generate_ics: {e}")
         return {"error": str(e)}, 500

@@ -29,9 +29,14 @@ def test_normalize_month_data_valid():
         "2": ["05:01", "13:01", "16:01", "19:01", "21:01", "22:01"]
     }
     result = normalize_month_data(prayer_times)
-    assert len(result) == 2
+    # On attend 30 ou 31 jours selon le mois courant (on ne connaît pas le mois ici, donc on accepte 28 à 31)
+    assert 28 <= len(result) <= 31
+    # Les deux premiers jours doivent correspondre aux données d'entrée
     assert result[0]["fajr"] == "05:00"
     assert result[1]["fajr"] == "05:01"
+    # Les jours suivants doivent être des duplications du dernier jour connu
+    for day in result[2:]:
+        assert day["fajr"] == "05:01"
 
 def test_normalize_month_data_invalid():
     """Test normalize_month_data with invalid data."""
@@ -43,7 +48,8 @@ def test_normalize_month_data_invalid():
         "4": None  # Invalid type
     }
     result = normalize_month_data(prayer_times)
-    assert len(result) == 0
+    # Aucun jour valide, donc aucun jour généré
+    assert result == []
 
 def test_normalize_year_data_valid():
     """Test normalize_year_data with valid data."""
@@ -58,15 +64,18 @@ def test_normalize_year_data_valid():
         }
     ]
     result = normalize_year_data(prayer_times)
-    assert len(result) == 2  # 2 months
-    assert len(result[0]) == 2  # 2 days in the first month
-    assert len(result[1]) == 2  # 2 days in the second month
-    assert result[0]["1"]["fajr"] == "05:00"
-    assert result[0]["1"]["sunset"] == "13:00"
-    assert result[0]["1"]["dohr"] == "16:00"
-    assert result[0]["1"]["asr"] == "19:00"
-    assert result[0]["1"]["maghreb"] == "21:00"
-    assert result[0]["1"]["icha"] == "22:00"
+    # On attend 2 mois
+    assert len(result) == 2
+    # Pour chaque mois, on attend 28 à 31 jours
+    for month, expected_first, expected_second in zip(result, ["05:00", "05:02"], ["05:01", "05:03"]):
+        assert 28 <= len(month) <= 31
+        # Les deux premiers jours doivent correspondre aux données d'entrée
+        days = list(month.keys())
+        assert month[days[0]]["fajr"] == expected_first
+        assert month[days[1]]["fajr"] == expected_second
+        # Les jours suivants doivent être des duplications du dernier jour connu
+        for d in days[2:]:
+            assert month[d]["fajr"] == expected_second
 
 def test_normalize_year_data_invalid():
     """Test normalize_year_data with invalid data."""
@@ -82,9 +91,9 @@ def test_normalize_year_data_invalid():
         }
     ]
     result = normalize_year_data(prayer_times)
-    assert len(result) == 2  # 2 months
-    assert len(result[0]) == 0  # First month is empty because all data is invalid
-    assert len(result[1]) == 0  # Second month is empty because all data is invalid
+    # Les deux mois sont invalides, donc chaque dict doit être vide
+    assert len(result) == 2
+    assert all(len(month) == 0 for month in result)
 
 def test_handle_planner_post_today(app):
     """Test handle_planner_post with today scope."""

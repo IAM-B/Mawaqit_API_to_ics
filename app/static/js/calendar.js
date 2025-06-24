@@ -1,6 +1,6 @@
 /**
  * Calendar Views Manager
- * Handles different calendar views for month and year scopes
+ * Handles clock calendar functionality
  */
 class CalendarViewsManager {
   constructor() {
@@ -20,16 +20,12 @@ class CalendarViewsManager {
   }
 
   bindEvents() {
-    // Month navigation
+    // Month navigation for clock calendar
     document.addEventListener('click', (e) => {
       if (e.target.id === 'prevMonthBtn') {
         this.navigateMonth(-1);
       } else if (e.target.id === 'nextMonthBtn') {
         this.navigateMonth(1);
-      } else if (e.target.id === 'prevYearBtn') {
-        this.navigateYear(-1);
-      } else if (e.target.id === 'nextYearBtn') {
-        this.navigateYear(1);
       }
     });
   }
@@ -48,53 +44,24 @@ class CalendarViewsManager {
     this.segments = segments;
     this.scope = scope;
     
-    // Hide all views first
-    this.hideAllViews();
+    // Always show the clock calendar
+    this.showClockCalendar();
+    this.renderClockCalendar();
+  }
+
+  showClockCalendar() {
+    const calendar = document.getElementById('clockCalendar');
+    const slotsView = document.getElementById('defaultSlotsView');
     
-    if (scope === 'month') {
-      this.showMonthView();
-      this.renderMonthCalendar();
-    } else if (scope === 'year') {
-      this.showYearView();
-      this.renderYearCalendar();
-    } else {
-      this.showDefaultView();
-    }
-  }
-
-  hideAllViews() {
-    const views = [
-      'monthCalendarView',
-      'yearCalendarView', 
-      'defaultSlotsView'
-    ];
-    
-    views.forEach(viewId => {
-      const view = document.getElementById(viewId);
-      if (view) view.style.display = 'none';
-    });
-  }
-
-  showMonthView() {
-    const view = document.getElementById('monthCalendarView');
-    if (view) view.style.display = 'block';
-  }
-
-  showYearView() {
-    const view = document.getElementById('yearCalendarView');
-    if (view) view.style.display = 'block';
-  }
-
-  showDefaultView() {
-    const view = document.getElementById('defaultSlotsView');
-    if (view) view.style.display = 'block';
+    if (calendar) calendar.style.display = 'block';
+    if (slotsView) slotsView.style.display = 'block';
   }
 
   /**
-   * Render month calendar (Google Calendar style)
+   * Render clock calendar
    */
-  renderMonthCalendar() {
-    const container = document.getElementById('monthCalendarDays');
+  renderClockCalendar() {
+    const container = document.getElementById('clockCalendarDays');
     const titleElement = document.getElementById('currentMonthTitle');
     
     if (!container || !titleElement) return;
@@ -111,7 +78,6 @@ class CalendarViewsManager {
 
     // Get first day of month and number of days
     const firstDay = new Date(this.selectedYear, this.selectedMonth, 1);
-    const lastDay = new Date(this.selectedYear, this.selectedMonth + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay() + 1); // Start from Monday
 
@@ -152,7 +118,7 @@ class CalendarViewsManager {
     }
 
     // Check if day has slots data
-    if (this.scope === 'month' && this.segments.length > 0) {
+    if (this.segments.length > 0) {
       const dayIndex = date.getDate() - 1;
       if (dayIndex >= 0 && dayIndex < this.segments.length) {
         const dayData = this.segments[dayIndex];
@@ -188,90 +154,6 @@ class CalendarViewsManager {
   }
 
   /**
-   * Render year calendar (Phone calendar style)
-   */
-  renderYearCalendar() {
-    const container = document.getElementById('yearMonthsGrid');
-    const titleElement = document.getElementById('currentYearTitle');
-    
-    if (!container || !titleElement) return;
-
-    // Update title
-    titleElement.textContent = this.selectedYear.toString();
-
-    // Clear container
-    container.innerHTML = '';
-
-    // Generate month cards
-    const monthNames = [
-      'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
-      'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'
-    ];
-
-    for (let month = 0; month < 12; month++) {
-      const monthCard = this.createMonthCard(month, monthNames[month]);
-      container.appendChild(monthCard);
-    }
-  }
-
-  createMonthCard(monthIndex, monthName) {
-    const monthCard = document.createElement('div');
-    monthCard.className = 'month-card';
-    
-    const monthNameElement = document.createElement('div');
-    monthNameElement.className = 'month-name';
-    monthNameElement.textContent = monthName;
-    
-    const monthYearElement = document.createElement('div');
-    monthYearElement.className = 'month-year';
-    monthYearElement.textContent = this.selectedYear.toString();
-    
-    monthCard.appendChild(monthNameElement);
-    monthCard.appendChild(monthYearElement);
-
-    // Check if it's current month
-    if (monthIndex === this.currentMonth && this.selectedYear === this.currentYear) {
-      monthCard.classList.add('current-month');
-    }
-
-    // Check if it's selected month
-    if (monthIndex === this.selectedMonth) {
-      monthCard.classList.add('selected');
-    }
-
-    // Check if month has data
-    if (this.scope === 'year' && this.segments.length > 0) {
-      const monthData = this.segments[monthIndex];
-      if (monthData && monthData.days && monthData.days.length > 0) {
-        monthCard.classList.add('has-data');
-        
-        const slotsInfo = document.createElement('div');
-        slotsInfo.className = 'month-slots-info';
-        
-        // Count total slots in month
-        let totalSlots = 0;
-        monthData.days.forEach(day => {
-          if (day.slots) totalSlots += day.slots.length;
-        });
-        
-        const slotsCount = document.createElement('div');
-        slotsCount.className = 'month-slots-count';
-        slotsCount.textContent = `${totalSlots} créneau${totalSlots > 1 ? 'x' : ''}`;
-        
-        slotsInfo.appendChild(slotsCount);
-        monthCard.appendChild(slotsInfo);
-      }
-    }
-
-    // Add click event to select month and update clock
-    monthCard.addEventListener('click', () => {
-      this.selectMonth(monthIndex);
-    });
-
-    return monthCard;
-  }
-
-  /**
    * Select a day and update clock
    */
   selectDay(day, dayData = null) {
@@ -282,55 +164,62 @@ class CalendarViewsManager {
     }
 
     // Add selection to current day
-    const currentDay = document.querySelector(`.calendar-day:not(.other-month)`);
-    if (currentDay) {
-      currentDay.classList.add('selected');
+    const dayElements = document.querySelectorAll('.calendar-day:not(.other-month)');
+    const dayIndex = day - 1;
+    if (dayElements[dayIndex]) {
+      dayElements[dayIndex].classList.add('selected');
     }
 
     this.selectedDay = day;
 
     // Update clock if available
-    if (this.clockInstance && this.scope === 'month') {
-      const dayIndex = day - 1;
+    if (this.clockInstance && this.segments.length > 0) {
       if (dayIndex >= 0 && dayIndex < this.segments.length) {
         this.clockInstance.currentIndex = dayIndex;
         this.clockInstance.updateClock();
       }
     }
+
+    // Update slots list if day data is available
+    if (dayData) {
+      this.updateSlotsList(dayData);
+    }
   }
 
   /**
-   * Select a month and update clock
+   * Update slots list with selected day data
    */
-  selectMonth(monthIndex) {
-    // Remove previous selection
-    const previousSelected = document.querySelector('.month-card.selected');
-    if (previousSelected) {
-      previousSelected.classList.remove('selected');
-    }
+  updateSlotsList(dayData) {
+    const slotsList = document.getElementById('availableSlotsList');
+    if (!slotsList || !dayData.slots) return;
 
-    // Add selection to current month
-    const monthCards = document.querySelectorAll('.month-card');
-    if (monthCards[monthIndex]) {
-      monthCards[monthIndex].classList.add('selected');
-    }
-
-    this.selectedMonth = monthIndex;
-
-    // Update clock if available
-    if (this.clockInstance && this.scope === 'year') {
-      this.clockInstance.currentIndex = monthIndex;
-      this.clockInstance.currentDayIndex = 0; // Reset to first day of month
-      this.clockInstance.updateClock();
-    }
+    slotsList.innerHTML = '';
+    
+    dayData.slots.forEach(slot => {
+      const slotItem = document.createElement('div');
+      slotItem.className = 'slot-item';
+      
+      const slotTime = document.createElement('span');
+      slotTime.className = 'slot-time';
+      slotTime.textContent = `${slot.start} - ${slot.end}`;
+      
+      const slotDuration = document.createElement('span');
+      slotDuration.className = 'slot-duration';
+      slotDuration.textContent = `(${this.calculateDuration(slot.start, slot.end)})`;
+      
+      slotItem.appendChild(slotTime);
+      slotItem.appendChild(slotDuration);
+      slotsList.appendChild(slotItem);
+    });
   }
 
   /**
-   * Navigate between months
+   * Navigate to previous/next month
    */
   navigateMonth(direction) {
     this.selectedMonth += direction;
     
+    // Handle year boundary
     if (this.selectedMonth < 0) {
       this.selectedMonth = 11;
       this.selectedYear--;
@@ -339,210 +228,8 @@ class CalendarViewsManager {
       this.selectedYear++;
     }
     
-    this.renderMonthCalendar();
-  }
-
-  /**
-   * Navigate between years
-   */
-  navigateYear(direction) {
-    this.selectedYear += direction;
-    this.renderYearCalendar();
-  }
-
-  /**
-   * Show day details in a modal or expand view
-   */
-  showDayDetails(dayData, date) {
-    // Create modal for day details
-    const modal = document.createElement('div');
-    modal.className = 'day-modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>${date.toLocaleDateString('fr-FR', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}</h3>
-          <button class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="day-slots-list">
-            ${this.renderDaySlots(dayData)}
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Add modal styles
-    const style = document.createElement('style');
-    style.textContent = `
-      .day-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-      }
-      .modal-content {
-        background: var(--form-bg);
-        border-radius: 12px;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80%;
-        overflow-y: auto;
-      }
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        border-bottom: 1px solid var(--border-color);
-      }
-      .modal-close {
-        background: none;
-        border: none;
-        font-size: 1.5em;
-        cursor: pointer;
-        color: var(--text-muted);
-      }
-      .modal-body {
-        padding: 20px;
-      }
-      .day-slots-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Add close functionality
-    modal.querySelector('.modal-close').addEventListener('click', () => {
-      document.body.removeChild(modal);
-    });
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        document.body.removeChild(modal);
-      }
-    });
-
-    document.body.appendChild(modal);
-  }
-
-  /**
-   * Show month details in a modal or expand view
-   */
-  showMonthDetails(monthData, monthIndex, monthName) {
-    // Create modal for month details
-    const modal = document.createElement('div');
-    modal.className = 'month-modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>${monthName} ${this.selectedYear}</h3>
-          <button class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="month-days-grid">
-            ${this.renderMonthDays(monthData)}
-          </div>
-        </div>
-      </div>
-    `;
-
-    // Add modal styles
-    const style = document.createElement('style');
-    style.textContent = `
-      .month-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-      }
-      .month-days-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 5px;
-      }
-      .month-day-item {
-        padding: 8px;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-      .month-day-item:hover {
-        background: var(--primary);
-        color: white;
-      }
-      .month-day-item.has-slots {
-        background: var(--primary);
-        color: white;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Add close functionality
-    modal.querySelector('.modal-close').addEventListener('click', () => {
-      document.body.removeChild(modal);
-    });
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        document.body.removeChild(modal);
-      }
-    });
-
-    document.body.appendChild(modal);
-  }
-
-  /**
-   * Render day slots for modal
-   */
-  renderDaySlots(dayData) {
-    if (!dayData.slots || dayData.slots.length === 0) {
-      return '<p>Aucun créneau disponible pour ce jour.</p>';
-    }
-
-    return dayData.slots.map(slot => `
-      <div class="slot-item">
-        <span class="slot-time">${slot.start} - ${slot.end}</span>
-        <span class="slot-duration">${this.calculateDuration(slot.start, slot.end)}</span>
-      </div>
-    `).join('');
-  }
-
-  /**
-   * Render month days for modal
-   */
-  renderMonthDays(monthData) {
-    if (!monthData.days || monthData.days.length === 0) {
-      return '<p>Aucune donnée disponible pour ce mois.</p>';
-    }
-
-    return monthData.days.map(day => `
-      <div class="month-day-item ${day.slots && day.slots.length > 0 ? 'has-slots' : ''}">
-        <div class="day-number">${day.day}</div>
-        ${day.slots && day.slots.length > 0 ? 
-          `<div class="day-slots-count">${day.slots.length}</div>` : 
-          ''
-        }
-      </div>
-    `).join('');
+    // Re-render calendar
+    this.renderClockCalendar();
   }
 
   /**
@@ -551,15 +238,21 @@ class CalendarViewsManager {
   calculateDuration(start, end) {
     const startMinutes = this.timeToMinutes(start);
     const endMinutes = this.timeToMinutes(end);
-    const duration = endMinutes - startMinutes;
+    let duration = endMinutes - startMinutes;
+    
+    if (duration < 0) {
+      duration += 24 * 60; // Add 24 hours if end time is next day
+    }
     
     const hours = Math.floor(duration / 60);
     const minutes = duration % 60;
     
-    if (hours > 0) {
-      return `${hours}h${minutes > 0 ? minutes : ''}`;
-    } else {
+    if (hours === 0) {
       return `${minutes}min`;
+    } else if (minutes === 0) {
+      return `${hours}h`;
+    } else {
+      return `${hours}h${minutes.toString().padStart(2, '0')}min`;
     }
   }
 

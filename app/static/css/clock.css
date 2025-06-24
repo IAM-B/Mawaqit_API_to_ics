@@ -215,7 +215,7 @@
   color: var(--accent);
   text-shadow: 0 2px 4px var(--shadow-color);
   padding: 12px 24px;
-  background: var(--form-bg);
+  background: var(--bg-color);
   border-radius: 8px;
   border: 1px solid var(--border-color);
   box-shadow: 0 2px 8px var(--shadow-light);
@@ -351,11 +351,6 @@
    📱 RESPONSIVE DESIGN
    ================== */
 @media (max-width: 768px) {
-  .clock-container {
-    width: 400px;
-    height: 400px;
-  }
-  
   .clock-navigation {
     flex-direction: column;
     gap: 15px;

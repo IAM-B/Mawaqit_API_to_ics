@@ -80,13 +80,8 @@
             <input type="hidden" id="mosque_name" name="mosque_name" value="" />
             <input type="hidden" id="mosque_address" name="mosque_address" value="" />
 
-            <!-- Time scope selection -->
-            <label for="scope">Période :</label>
-            <select name="scope" required>
-              <option value="today">Aujourd'hui</option>
-              <option value="month">Mois</option>
-              <option value="year">Année</option>
-            </select>
+            <!-- Hidden scope field - always year -->
+            <input type="hidden" name="scope" value="year" />
           </fieldset>
 
           <!-- Submit button -->
@@ -149,48 +144,38 @@
 
       <!-- Available slots section -->
       <section class="available-slots" style="display: none;">
-        <!-- TEST-ICI-MON-CALENDRIER -->
         <h2>📅 Vue calendrier</h2>
         
-        <!-- Month Calendar View (Google Calendar style) -->
-        <div id="monthCalendarView" class="calendar-view month-view" style="display: none;">
-          <div class="calendar-header">
-            <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
-            <h3 id="currentMonthTitle" class="calendar-title"></h3>
-            <button id="nextMonthBtn" class="calendar-nav-btn">→</button>
-          </div>
-          <div class="calendar-grid">
-            <div class="calendar-weekdays">
-              <div class="weekday">Lun</div>
-              <div class="weekday">Mar</div>
-              <div class="weekday">Mer</div>
-              <div class="weekday">Jeu</div>
-              <div class="weekday">Ven</div>
-              <div class="weekday">Sam</div>
-              <div class="weekday">Dim</div>
+        <!-- Calendar and slots container -->
+        <div class="calendar-slots-container">
+          <!-- Calendar for month navigation -->
+          <div id="clockCalendar" class="clock-calendar">
+            <div class="calendar-header">
+              <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
+              <h3 id="currentMonthTitle" class="calendar-title"></h3>
+              <button id="nextMonthBtn" class="calendar-nav-btn">→</button>
             </div>
-            <div id="monthCalendarDays" class="calendar-days">
-              <!-- Calendar days will be generated here -->
+            <div class="calendar-grid">
+              <div class="calendar-weekdays">
+                <div class="weekday">Lun</div>
+                <div class="weekday">Mar</div>
+                <div class="weekday">Mer</div>
+                <div class="weekday">Jeu</div>
+                <div class="weekday">Ven</div>
+                <div class="weekday">Sam</div>
+                <div class="weekday">Dim</div>
+              </div>
+              <div id="clockCalendarDays" class="calendar-days">
+                <!-- Calendar days will be generated here -->
+              </div>
             </div>
           </div>
-        </div>
-
-        <!-- Year Calendar View (Phone calendar style) -->
-        <div id="yearCalendarView" class="calendar-view year-view" style="display: none;">
-          <div class="year-header">
-            <button id="prevYearBtn" class="calendar-nav-btn">←</button>
-            <h3 id="currentYearTitle" class="calendar-title"></h3>
-            <button id="nextYearBtn" class="calendar-nav-btn">→</button>
-          </div>
-          <div id="yearMonthsGrid" class="year-months-grid">
-            <!-- Months will be generated here -->
-          </div>
-        </div>
-
-        <!-- Default slots list (for today scope) -->
-        <div id="defaultSlotsView" class="slots-view">
-          <div id="availableSlotsList" class="slots-list">
-            <!-- Slots will be displayed here dynamically -->
+          
+          <!-- Default slots list (for today scope) -->
+          <div id="defaultSlotsView" class="slots-view">
+            <div id="availableSlotsList" class="slots-list">
+              <!-- Slots will be displayed here dynamically -->
+            </div>
           </div>
         </div>
       </section>
