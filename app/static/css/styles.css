@@ -964,3 +964,90 @@ a:hover {
   font-weight: 600;
   color: var(--text-bright);
 }
+
+/* === HEADER & BREADCRUMB === */
+.page-header {
+  margin-bottom: 2rem;
+  text-align: center;
+  animation: fadeInUp 0.7s;
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.95em;
+  color: var(--text-muted);
+  margin-bottom: 0.5em;
+  justify-content: flex-start;
+}
+.breadcrumb a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* === PROGRESS BAR === */
+.progress-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5em;
+  margin-bottom: 2em;
+  margin-top: 1em;
+  padding: 0.5em 0;
+  background: var(--form-bg);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1em;
+  color: var(--text-muted);
+  font-weight: 500;
+  position: relative;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  transition: background 0.3s, color 0.3s;
+}
+.progress-step.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: 0 2px 8px var(--primary-light);
+}
+.progress-step i {
+  margin-right: 0.4em;
+}
+
+/* === ANIMATIONS === */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.7s forwards;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === HIDDEN UTILITY === */
+.hidden {
+  display: none !important;
+}

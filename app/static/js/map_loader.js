@@ -63,14 +63,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Create popup content with mosque information
         const popupContent = `
-          <div class="popup-content">
-            <strong>${mosque.name}</strong><br>
-            ${mosque.city || ""}<br>
-            ${mosque.address || ""}<br>
-            <img src="${mosque.image1}" alt="mosquée" class="popup-image" />
-            <br>
-            <button class="btn-sync-mosque" data-country="${country.code}" data-slug="${mosque.slug}">
-              Sélectionner cette mosquée
+          <div class="popup-content" style="min-width:220px;max-width:320px;padding:1em 1.2em;background:var(--form-bg,#1a1a1a);color:var(--text-color,#e2e8f0);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.25);">
+            <div style="display:flex;align-items:center;gap:0.5em;margin-bottom:0.5em;">
+              <i class="fa-solid fa-mosque" style="font-size:1.3em;color:var(--primary,#d4af37);"></i>
+              <strong style="font-size:1.1em;">${mosque.name}</strong>
+            </div>
+            <div style="color:var(--text-muted,#a0aec0);font-size:0.95em;margin-bottom:0.3em;">
+              ${mosque.city ? `<span><i class='fa-solid fa-location-dot'></i> ${mosque.city}</span><br>` : ''}
+              ${mosque.address ? `<span><i class='fa-solid fa-map-pin'></i> ${mosque.address}</span><br>` : ''}
+            </div>
+            ${mosque.image1 ? `<img id="popup-img-${mosque.slug}" src="${mosque.image1}" alt="mosquée" class="popup-image" style="width:100%;max-height:120px;object-fit:cover;border-radius:6px;margin:0.5em 0;" />` : ''}
+            <hr style="border:0;border-top:1px solid var(--border-color,#333);margin:0.5em 0;">
+            <button class="btn-sync-mosque" data-country="${country.code}" data-slug="${mosque.slug}" style="display:block;width:100%;margin-top:0.7em;padding:0.5em 0;background:var(--primary,#d4af37);color:#222;border:none;border-radius:6px;font-weight:600;cursor:pointer;transition:background 0.2s;font-size:1em;">
+              <i class="fa-solid fa-check"></i> Sélectionner cette mosquée
             </button>
           </div>
         `;
@@ -121,6 +126,19 @@ document.addEventListener("DOMContentLoaded", () => {
           selectMosqueAfterLoad(mosqueSelect, mosqueSlug);
         });
     });
+
+    // Correction du positionnement du popup après chargement de l'image
+    const img = e.popup.getElement().querySelector('img[id^="popup-img-"]');
+    if (img) {
+      if (!img.complete) {
+        img.addEventListener('load', () => {
+          e.popup.update();
+        });
+      } else {
+        // Si déjà chargée (cache), on force l'update
+        setTimeout(() => e.popup.update(), 50);
+      }
+    }
   });
 
   // Update map view when mosque is selected manually

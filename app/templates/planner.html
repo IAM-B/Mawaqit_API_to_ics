@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/clock.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}" />
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- External CSS Libraries -->
     <!-- Tom Select for enhanced dropdowns -->
     <link
@@ -34,20 +36,33 @@
   </head>
   <body class="page-transition">
     <main class="container">
-      <!-- Main title -->
-      <h1 class="page-title">🕌 Planning synchronisé</h1>
+      <!-- Header avec breadcrumb et titre -->
+      <header class="page-header fade-in-up">
+        <h1 class="page-title"><i class="fa-solid fa-mosque"></i> Planning synchronisé</h1>
+        <nav class="breadcrumb">
+          <a href="/">Accueil</a> &gt; <span>Planning synchronisé</span>
+        </nav>
+      </header>
+
+      <!-- Barre de progression -->
+      <div class="progress-indicator fade-in-up">
+        <div class="progress-step active"><i class="fa-solid fa-mosque"></i> Sélection</div>
+        <div class="progress-step"><i class="fa-solid fa-cog"></i> Configuration</div>
+        <div class="progress-step"><i class="fa-regular fa-clock"></i> Horaires</div>
+        <div class="progress-step"><i class="fa-solid fa-download"></i> Téléchargement</div>
+      </div>
 
       <!-- Configuration and Summary Section -->
       <section class="summary-section">
         <div class="summary-grid">
           <!-- Mosque selection and map -->
           <div class="summary-card mosque-info">
-            <h3>🕌 Sélection de mosquée</h3>
+            <h3><i class="fa-solid fa-mosque"></i> Sélection de mosquée</h3>
             
             <!-- Map container -->
             <div
               id="mosque-map"
-              style="height: 300px; margin: 1em 0; border-radius: 8px"
+              style="height: 400px; margin: 1em 0; border-radius: 8px"
             ></div>
 
             <!-- Mosque selection form -->
@@ -82,7 +97,7 @@
 
           <!-- Configuration settings -->
           <div class="summary-card config-info">
-            <h3>⚙️ Configuration</h3>
+            <h3><i class="fa-solid fa-cog"></i> Configuration</h3>
             
             <!-- Configuration form -->
             <form class="form" id="configForm">
@@ -128,12 +143,12 @@
 
       {% if segments %}
       <!-- Quick actions section - Most important for user -->
-      <section class="quick-actions" style="display: none;">
-        <h2>📥 Téléchargements rapides</h2>
+      <section class="quick-actions hidden">
+        <h2><i class="fa-solid fa-download"></i> Téléchargements rapides</h2>
         <div class="download-grid">
           {% if ics_path %}
           <a href="{{ url_for('static', filename='ics/' + ics_path) }}" download class="download-card primary">
-            <span class="download-icon">📅</span>
+            <span class="download-icon"><i class="fa-regular fa-calendar"></i></span>
             <span class="download-title">Horaires de prière</span>
             <span class="download-format">.ics</span>
           </a>
@@ -141,7 +156,7 @@
           
           {% if available_slots_path %}
           <a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download class="download-card secondary">
-            <span class="download-icon">🕒</span>
+            <span class="download-icon"><i class="fa-regular fa-clock"></i></span>
             <span class="download-title">Créneaux synchronisés</span>
             <span class="download-format">.ics</span>
           </a>
@@ -149,7 +164,7 @@
           
           {% if empty_slots_path %}
           <a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download class="download-card secondary">
-            <span class="download-icon">📋</span>
+            <span class="download-icon"><i class="fa-regular fa-clipboard"></i></span>
             <span class="download-title">Créneaux disponibles</span>
             <span class="download-format">.ics</span>
           </a>
@@ -157,7 +172,7 @@
           
           <!-- Manual editing card -->
           <a href="/edit_slot" class="download-card edit">
-            <span class="download-icon">✏️</span>
+            <span class="download-icon"><i class="fa-solid fa-pen"></i></span>
             <span class="download-title">Modifier manuellement</span>
             <span class="download-format">Créneaux</span>
           </a>
@@ -165,8 +180,8 @@
       </section>
 
       <!-- Interactive clock section - ALWAYS VISIBLE -->
-      <section class="clock-section" style="display: none;">
-        <h2>🕒 Horloge des prières</h2>
+      <section class="clock-section hidden">
+        <h2><i class="fa-regular fa-clock"></i> Horloge des prières</h2>
         <div class="clock-navigation">
           <button id="prevBtn" class="clock-nav-btn">←</button>
           <span id="currentDate" class="current-date"></span>
@@ -178,8 +193,8 @@
       </section>
 
       <!-- Available slots section -->
-      <section class="available-slots" style="display: none;">
-        <h2>📅 Vue calendrier</h2>
+      <section class="available-slots hidden">
+        <h2><i class="fa-regular fa-calendar"></i> Vue calendrier</h2>
         
         <!-- Calendar and slots container -->
         <div class="calendar-slots-container">
@@ -216,11 +231,11 @@
       </section>
 
       <!-- Mosque and configuration summary (for display after generation) -->
-      <section class="summary-display" style="display: none;">
+      <section class="summary-display hidden">
         <div class="summary-grid">
           <!-- Mosque information -->
           <div class="summary-card mosque-info">
-            <h3>🕌 Mosquée sélectionnée</h3>
+            <h3><i class="fa-solid fa-mosque"></i> Mosquée sélectionnée</h3>
             <div class="mosque-details">
               <h4>{{ mosque_name }}</h4>
               {% if mosque_address %}
@@ -239,22 +254,16 @@
               
               <!-- Map links -->
               <div class="map-links">
-                <a href="{{ google_maps_url }}" target="_blank" class="map-link">
-                  🗺️ Google Maps
-                </a>
-                <a href="{{ osm_url }}" target="_blank" class="map-link">
-                  🗺️ OpenStreetMap
-                </a>
-                <a href="{{ mawaqit_url }}" target="_blank" class="map-link">
-                  🌐 Mawaqit.net
-                </a>
+                <a href="{{ google_maps_url }}" target="_blank" class="map-link"><i class="fa-solid fa-map-location-dot"></i> Google Maps</a>
+                <a href="{{ osm_url }}" target="_blank" class="map-link"><i class="fa-brands fa-openstreetmap"></i> OpenStreetMap</a>
+                <a href="{{ mawaqit_url }}" target="_blank" class="map-link"><i class="fa-solid fa-globe"></i> Mawaqit.net</a>
               </div>
             </div>
           </div>
 
           <!-- Configuration summary -->
           <div class="summary-card config-info">
-            <h3>⚙️ Configuration</h3>
+            <h3><i class="fa-solid fa-cog"></i> Configuration</h3>
             <div class="config-details">
               <div class="config-item">
                 <span class="config-label">📅 Période :</span>
@@ -283,11 +292,11 @@
       
       {% else %}
       <!-- No data message -->
-      <section class="no-data" style="display: none;">
+      <section class="no-data hidden">
         <div class="no-data-content">
-          <h2>📭 Aucun créneau disponible</h2>
+          <h2><i class="fa-regular fa-envelope-open"></i> Aucun créneau disponible</h2>
           <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>
-          <a href="/" class="back-button">← Retour à la sélection</a>
+          <a href="/" class="back-button"><i class="fa-solid fa-arrow-left"></i> Retour à la sélection</a>
         </div>
       </section>
       {% endif %}

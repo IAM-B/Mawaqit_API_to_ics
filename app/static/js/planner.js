@@ -185,15 +185,13 @@ class PlannerPage {
   hideConfigurationForms() {
     const summarySection = document.querySelector('.summary-section');
     const summaryDisplay = document.querySelector('.summary-display');
-    
     if (summarySection) {
-      summarySection.style.display = 'none';
+      summarySection.classList.add('hidden');
     }
-    
     if (summaryDisplay) {
-      summaryDisplay.style.display = 'block';
-      summaryDisplay.style.opacity = '1';
-      summaryDisplay.style.visibility = 'visible';
+      summaryDisplay.classList.remove('hidden');
+      summaryDisplay.classList.add('fade-in-up');
+      setTimeout(() => summaryDisplay.classList.add('visible'), 100);
     }
   }
 
@@ -203,14 +201,9 @@ class PlannerPage {
   showSummaryDisplay() {
     const summaryDisplay = document.querySelector('.summary-display');
     if (summaryDisplay) {
-      summaryDisplay.style.display = 'block';
-      summaryDisplay.style.opacity = '1';
-      summaryDisplay.style.visibility = 'visible';
-      
-      // Add visible class for animation
-      setTimeout(() => {
-        summaryDisplay.classList.add('visible');
-      }, 100);
+      summaryDisplay.classList.remove('hidden');
+      summaryDisplay.classList.add('fade-in-up');
+      setTimeout(() => summaryDisplay.classList.add('visible'), 100);
     }
   }
 
@@ -795,33 +788,25 @@ class PlannerPage {
   showPlanningSections() {
     // Create sections if they don't exist
     this.createPlanningSections();
-    
-    const sections = [
+    const selectors = [
       '.quick-actions',
       '.clock-section',
       '.available-slots',
       '.summary-display'
     ];
-    
-    sections.forEach(selector => {
+    selectors.forEach(selector => {
       const section = document.querySelector(selector);
       if (section) {
-        section.style.display = 'block';
-        section.style.opacity = '1';
-        section.style.visibility = 'visible';
-        console.log(`Section ${selector} displayed`);
-      } else {
-        console.warn(`Section ${selector} not found`);
+        section.classList.remove('hidden');
+        section.classList.add('fade-in-up');
+        setTimeout(() => section.classList.add('visible'), 100);
       }
     });
-    
     // Hide no-data section if it exists
     const noDataSection = document.querySelector('.no-data');
     if (noDataSection) {
-      noDataSection.style.display = 'none';
+      noDataSection.classList.add('hidden');
     }
-    
-    console.log('All planning sections should now be visible');
   }
 
   /**
