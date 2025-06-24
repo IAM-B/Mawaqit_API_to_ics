@@ -52,141 +52,106 @@
         <div class="progress-step"><i class="fa-solid fa-download"></i> Téléchargement</div>
       </div>
 
-      <!-- Configuration and Summary Section -->
-      <section class="summary-section">
-        <div class="summary-grid">
-          <!-- Mosque selection and map -->
-          <div class="summary-card mosque-info">
-            <h3><i class="fa-solid fa-mosque"></i> Sélection de mosquée</h3>
-            
-            <!-- Map container -->
-            <div
-              id="mosque-map"
-              style="height: 400px; margin: 1em 0; border-radius: 8px"
-            ></div>
+      <!-- Nouvelle grille principale -->
+      <div class="planner-main-grid">
+        <section class="summary-section">
+          <div class="summary-grid">
+            <div class="summary-card mosque-info">
+              <h3><i class="fa-solid fa-mosque"></i> Sélection de mosquée</h3>
+              
+              <!-- Map container -->
+              <div
+                id="mosque-map"
+                style="height: 400px; margin: 1em 0; border-radius: 8px"
+              ></div>
 
-            <!-- Mosque selection form -->
-            <form class="form" id="plannerForm">
-              <!-- Country selection -->
-              <label for="country-select">Pays :</label>
-              <select id="country-select" name="country" autocomplete="off">
-                <option value="">-- Sélectionner un pays --</option>
-              </select>
+              <!-- Mosque selection form -->
+              <form class="form" id="plannerForm">
+                <!-- Country selection -->
+                <label for="country-select">Pays :</label>
+                <select id="country-select" name="country" autocomplete="off">
+                  <option value="">-- Sélectionner un pays --</option>
+                </select>
 
-              <!-- Mosque selection -->
-              <label for="mosque-select">Mosquée :</label>
-              <select
-                id="mosque-select"
-                name="masjid_id"
-                autocomplete="off"
-                disabled
-              >
-                <option value="">-- Sélectionner une mosquée --</option>
-              </select>
+                <!-- Mosque selection -->
+                <label for="mosque-select">Mosquée :</label>
+                <select
+                  id="mosque-select"
+                  name="masjid_id"
+                  autocomplete="off"
+                  disabled
+                >
+                  <option value="">-- Sélectionner une mosquée --</option>
+                </select>
 
-              <!-- Hidden fields for mosque coordinates -->
-              <input type="hidden" id="mosque_lat" name="mosque_lat" value="" />
-              <input type="hidden" id="mosque_lng" name="mosque_lng" value="" />
-              <input type="hidden" id="mosque_name" name="mosque_name" value="" />
-              <input type="hidden" id="mosque_address" name="mosque_address" value="" />
+                <!-- Hidden fields for mosque coordinates -->
+                <input type="hidden" id="mosque_lat" name="mosque_lat" value="" />
+                <input type="hidden" id="mosque_lng" name="mosque_lng" value="" />
+                <input type="hidden" id="mosque_name" name="mosque_name" value="" />
+                <input type="hidden" id="mosque_address" name="mosque_address" value="" />
 
-              <!-- Hidden scope field - always year -->
-              <input type="hidden" name="scope" value="year" />
-            </form>
-          </div>
+                <!-- Hidden scope field - always year -->
+                <input type="hidden" name="scope" value="year" />
+              </form>
+            </div>
+            <div class="summary-card config-info">
+              <h3><i class="fa-solid fa-cog"></i> Configuration</h3>
+              
+              <!-- Configuration form -->
+              <form class="form" id="configForm">
+                <!-- Prayer time padding settings -->
+                <label for="padding_before">Temps avant prière (min) :</label>
+                <input type="number" name="padding_before" value="10" min="0" />
 
-          <!-- Configuration settings -->
-          <div class="summary-card config-info">
-            <h3><i class="fa-solid fa-cog"></i> Configuration</h3>
-            
-            <!-- Configuration form -->
-            <form class="form" id="configForm">
-              <!-- Prayer time padding settings -->
-              <label for="padding_before">Temps avant prière (min) :</label>
-              <input type="number" name="padding_before" value="10" min="0" />
+                <label for="padding_after">Temps après prière (min) :</label>
+                <input type="number" name="padding_after" value="35" min="0" />
 
-              <label for="padding_after">Temps après prière (min) :</label>
-              <input type="number" name="padding_after" value="35" min="0" />
+                <!-- Submit button -->
+                <button type="submit" class="btn-submit" aria-label="Générer planning">
+                  📥 Générer planning
+                </button>
+              </form>
 
-              <!-- Submit button -->
-              <button type="submit" class="btn-submit" aria-label="Générer planning">
-                📥 Générer planning
-              </button>
-            </form>
-
-            <!-- Configuration summary (displayed after generation) -->
-            <div class="config-details" style="display: none;">
-              <div class="config-item">
-                <span class="config-label">📅 Période :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">⏰ Délai avant :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">⏰ Délai après :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">🌍 Fuseau horaire :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">📊 Portée :</span>
-                <span class="config-value"></span>
+              <!-- Configuration summary (displayed after generation) -->
+              <div class="config-details" style="display: none;">
+                <div class="config-item">
+                  <span class="config-label">📅 Période :</span>
+                  <span class="config-value"></span>
+                </div>
+                <div class="config-item">
+                  <span class="config-label">⏰ Délai avant :</span>
+                  <span class="config-value"></span>
+                </div>
+                <div class="config-item">
+                  <span class="config-label">⏰ Délai après :</span>
+                  <span class="config-value"></span>
+                </div>
+                <div class="config-item">
+                  <span class="config-label">🌍 Fuseau horaire :</span>
+                  <span class="config-value"></span>
+                </div>
+                <div class="config-item">
+                  <span class="config-label">📊 Portée :</span>
+                  <span class="config-value"></span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+        <section class="clock-section">
+          <h2><i class="fa-regular fa-clock"></i> Horloge des prières</h2>
+          <div id="clockContent" class="clock-container">
+            <!-- Clock will be rendered here -->
+          </div>
+          <div class="clock-navigation">
+            <button id="prevBtn" class="clock-nav-btn">←</button>
+            <span id="currentDate" class="current-date"></span>
+            <button id="nextBtn" class="clock-nav-btn">→</button>
+          </div>
+        </section>
+      </div>
 
-      <!-- Sections dynamiques toujours présentes, cachées par défaut -->
-      <section class="quick-actions hidden">
-        <h2><i class="fa-solid fa-download"></i> Téléchargements rapides</h2>
-        <div class="download-grid">
-          {% if ics_path %}
-          <a href="{{ url_for('static', filename='ics/' + ics_path) }}" download class="download-card primary">
-            <span class="download-icon"><i class="fa-regular fa-calendar"></i></span>
-            <span class="download-title">Horaires de prière</span>
-            <span class="download-format">.ics</span>
-          </a>
-          {% endif %}
-          {% if available_slots_path %}
-          <a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download class="download-card secondary">
-            <span class="download-icon"><i class="fa-regular fa-clock"></i></span>
-            <span class="download-title">Créneaux synchronisés</span>
-            <span class="download-format">.ics</span>
-          </a>
-          {% endif %}
-          {% if empty_slots_path %}
-          <a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download class="download-card secondary">
-            <span class="download-icon"><i class="fa-regular fa-clipboard"></i></span>
-            <span class="download-title">Créneaux disponibles</span>
-            <span class="download-format">.ics</span>
-          </a>
-          {% endif %}
-          <a href="/edit_slot" class="download-card edit">
-            <span class="download-icon"><i class="fa-solid fa-pen"></i></span>
-            <span class="download-title">Modifier manuellement</span>
-            <span class="download-format">Créneaux</span>
-          </a>
-        </div>
-      </section>
-
-      <section class="clock-section hidden">
-        <h2><i class="fa-regular fa-clock"></i> Horloge des prières</h2>
-        <div id="clockContent" class="clock-container">
-          <!-- Clock will be rendered here -->
-        </div>
-        <div class="clock-navigation">
-          <button id="prevBtn" class="clock-nav-btn">←</button>
-          <span id="currentDate" class="current-date"></span>
-          <button id="nextBtn" class="clock-nav-btn">→</button>
-        </div>
-      </section>
-
-      <section class="available-slots hidden">
+      <section class="available-slots">
         <h2><i class="fa-regular fa-calendar"></i> Vue calendrier</h2>
         <div class="calendar-slots-container">
           <div id="clockCalendar" class="clock-calendar">
@@ -218,7 +183,7 @@
         </div>
       </section>
 
-      <section class="summary-display hidden">
+      <section class="summary-display">
         <div class="summary-grid">
           <div class="summary-card mosque-info">
             <h3><i class="fa-solid fa-mosque"></i> Mosquée sélectionnée</h3>
@@ -269,14 +234,39 @@
         </div>
       </section>
 
-      <section class="no-data hidden">
-        <div class="no-data-content">
-          <h2><i class="fa-regular fa-envelope-open"></i> Aucun créneau disponible</h2>
-          <p>Aucun créneau disponible détecté pour la période sélectionnée.</p>
-          <a href="/" class="back-button"><i class="fa-solid fa-arrow-left"></i> Retour à la sélection</a>
+      <!-- Le reste en dessous -->
+      <section class="quick-actions">
+        <h2><i class="fa-solid fa-download"></i> Téléchargements rapides</h2>
+        <div class="download-grid">
+          {% if ics_path %}
+          <a href="{{ url_for('static', filename='ics/' + ics_path) }}" download class="download-card primary">
+            <span class="download-icon"><i class="fa-regular fa-calendar"></i></span>
+            <span class="download-title">Horaires de prière</span>
+            <span class="download-format">.ics</span>
+          </a>
+          {% endif %}
+          {% if available_slots_path %}
+          <a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download class="download-card secondary">
+            <span class="download-icon"><i class="fa-regular fa-clock"></i></span>
+            <span class="download-title">Créneaux synchronisés</span>
+            <span class="download-format">.ics</span>
+          </a>
+          {% endif %}
+          {% if empty_slots_path %}
+          <a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download class="download-card secondary">
+            <span class="download-icon"><i class="fa-regular fa-clipboard"></i></span>
+            <span class="download-title">Créneaux disponibles</span>
+            <span class="download-format">.ics</span>
+          </a>
+          {% endif %}
+          <a href="/edit_slot" class="download-card edit">
+            <span class="download-icon"><i class="fa-solid fa-pen"></i></span>
+            <span class="download-title">Modifier manuellement</span>
+            <span class="download-format">Créneaux</span>
+          </a>
         </div>
       </section>
-
+      
       <!-- Bloc de config caché pour l'horloge -->
       {% if segments %}
       <div id="clockConfig" 
