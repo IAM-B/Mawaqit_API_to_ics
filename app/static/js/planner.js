@@ -219,13 +219,13 @@ class PlannerPage {
     if (mosqueNameEl) mosqueNameEl.textContent = data.mosque_name;
     if (mosqueAddressEl) mosqueAddressEl.textContent = data.mosque_address;
     
-    // Initialize compact map if coordinates are available
+    // Met à jour les attributs data du conteneur de la carte
     if (mapContainer && data.mosque_lat && data.mosque_lng) {
       mapContainer.dataset.lat = data.mosque_lat;
       mapContainer.dataset.lng = data.mosque_lng;
       mapContainer.dataset.name = data.mosque_name;
       
-      // Initialize the compact map
+      // Initialise la carte compacte si la fonction existe
       if (window.initializeCompactMap) {
         window.initializeCompactMap(
           'mosque-location-map',
@@ -236,18 +236,33 @@ class PlannerPage {
       }
     }
     
+    // Met à jour les liens de la carte
     if (mapLinksEl) {
-      mapLinksEl.innerHTML = `
-        <a href="${data.google_maps_url}" target="_blank" class="map-link">
-          🗺️ Google Maps
-        </a>
-        <a href="${data.osm_url}" target="_blank" class="map-link">
-          🗺️ OpenStreetMap
-        </a>
-        <a href="${data.mawaqit_url}" target="_blank" class="map-link">
-          🌐 Mawaqit.net
-        </a>
-      `;
+      mapLinksEl.innerHTML = '';
+      if (data.google_maps_url) {
+        const a = document.createElement('a');
+        a.href = data.google_maps_url;
+        a.target = '_blank';
+        a.className = 'map-link';
+        a.innerHTML = '🗺️ Google Maps';
+        mapLinksEl.appendChild(a);
+      }
+      if (data.osm_url) {
+        const a = document.createElement('a');
+        a.href = data.osm_url;
+        a.target = '_blank';
+        a.className = 'map-link';
+        a.innerHTML = '🗺️ OpenStreetMap';
+        mapLinksEl.appendChild(a);
+      }
+      if (data.mawaqit_url) {
+        const a = document.createElement('a');
+        a.href = data.mawaqit_url;
+        a.target = '_blank';
+        a.className = 'map-link';
+        a.innerHTML = '🌐 Mawaqit.net';
+        mapLinksEl.appendChild(a);
+      }
     }
   }
 
@@ -256,14 +271,11 @@ class PlannerPage {
    */
   updateConfigSummary(data) {
     const configItems = document.querySelectorAll('.summary-display .config-item');
-    
     configItems.forEach(item => {
       const label = item.querySelector('.config-label');
       const value = item.querySelector('.config-value');
-      
       if (label && value) {
         const labelText = label.textContent;
-        
         if (labelText.includes('Période')) {
           value.textContent = `${data.start_date} → ${data.end_date}`;
         } else if (labelText.includes('Délai avant')) {
@@ -284,69 +296,53 @@ class PlannerPage {
    */
   generateDownloadLinks(data) {
     const downloadGrid = document.querySelector('.download-grid');
-    
     if (downloadGrid) {
-      let linksHTML = '';
-      
-      // Original scope links (if available)
+      downloadGrid.innerHTML = '';
+      // Ajoute les liens de téléchargement si disponibles
       if (data.ics_path) {
-        linksHTML += `
-          <a href="/static/ics/${data.ics_path}" download class="download-card primary">
-            <span class="download-icon">📅</span>
-            <span class="download-title">Horaires de prière (${data.scope})</span>
-            <span class="download-format">.ics</span>
-          </a>
-        `;
+        const a = document.createElement('a');
+        a.href = `/static/ics/${data.ics_path}`;
+        a.download = '';
+        a.className = 'download-card primary';
+        a.innerHTML = `<span class="download-icon">📅</span><span class="download-title">Horaires de prière (${data.scope})</span><span class="download-format">.ics</span>`;
+        downloadGrid.appendChild(a);
       }
-      
       if (data.available_slots_path) {
-        linksHTML += `
-          <a href="/static/ics/${data.available_slots_path}" download class="download-card secondary">
-            <span class="download-icon">🕒</span>
-            <span class="download-title">Créneaux synchronisés (${data.scope})</span>
-            <span class="download-format">.ics</span>
-          </a>
-        `;
+        const a = document.createElement('a');
+        a.href = `/static/ics/${data.available_slots_path}`;
+        a.download = '';
+        a.className = 'download-card secondary';
+        a.innerHTML = `<span class="download-icon">🕒</span><span class="download-title">Créneaux synchronisés (${data.scope})</span><span class="download-format">.ics</span>`;
+        downloadGrid.appendChild(a);
       }
-      
       if (data.empty_slots_path) {
-        linksHTML += `
-          <a href="/static/ics/${data.empty_slots_path}" download class="download-card secondary">
-            <span class="download-icon">📋</span>
-            <span class="download-title">Créneaux disponibles (${data.scope})</span>
-            <span class="download-format">.ics</span>
-          </a>
-        `;
+        const a = document.createElement('a');
+        a.href = `/static/ics/${data.empty_slots_path}`;
+        a.download = '';
+        a.className = 'download-card secondary';
+        a.innerHTML = `<span class="download-icon">📋</span><span class="download-title">Créneaux disponibles (${data.scope})</span><span class="download-format">.ics</span>`;
+        downloadGrid.appendChild(a);
       }
-      
-      linksHTML += `
-      <a href="/edit_slot" class="download-card edit">
-        <span class="download-icon">✏️</span>
-        <span class="download-title">Modifier manuellement</span>
-        <span class="download-format">Créneaux</span>
-      </a>
-    `;
-    
-      // Add scope-specific download buttons
-      linksHTML += `
-        <div class="scope-downloads">
-          <h3>📥 Téléchargements par période</h3>
-          <div class="scope-buttons">
-            <button class="scope-download-btn today" data-scope="today">
-              <span class="scope-icon">📅</span>
-              <span class="scope-title">Aujourd'hui</span>
-            </button>
-            <button class="scope-download-btn month" data-scope="month">
-              <span class="scope-icon">📅</span>
-              <span class="scope-title">Ce mois</span>
-            </button>
-          </div>
-        </div>
-      `;
-      
-      downloadGrid.innerHTML = linksHTML;
-      
-      // Setup scope download buttons
+      // Lien pour édition manuelle
+      const editA = document.createElement('a');
+      editA.href = '/edit_slot';
+      editA.className = 'download-card edit';
+      editA.innerHTML = `<span class="download-icon">✏️</span><span class="download-title">Modifier manuellement</span><span class="download-format">Créneaux</span>`;
+      downloadGrid.appendChild(editA);
+      // Ajoute les boutons de téléchargement par période
+      const scopeDownloads = document.createElement('div');
+      scopeDownloads.className = 'scope-downloads';
+      scopeDownloads.innerHTML = `<h3>📥 Téléchargements par période</h3><div class="scope-buttons"></div>`;
+      const scopeButtons = scopeDownloads.querySelector('.scope-buttons');
+      ['today', 'month'].forEach(scope => {
+        const btn = document.createElement('button');
+        btn.className = `scope-download-btn ${scope}`;
+        btn.dataset.scope = scope;
+        btn.innerHTML = `<span class="scope-icon">📅</span><span class="scope-title">${scope === 'today' ? "Aujourd'hui" : 'Ce mois'}</span>`;
+        scopeButtons.appendChild(btn);
+      });
+      downloadGrid.appendChild(scopeDownloads);
+      // Active les boutons
       this.setupScopeDownloadButtons(data);
     }
   }
@@ -786,8 +782,7 @@ class PlannerPage {
    * Show planning sections
    */
   showPlanningSections() {
-    // Create sections if they don't exist
-    this.createPlanningSections();
+    // Affiche les sections existantes sans les créer dynamiquement
     const selectors = [
       '.quick-actions',
       '.clock-section',
@@ -802,142 +797,10 @@ class PlannerPage {
         setTimeout(() => section.classList.add('visible'), 100);
       }
     });
-    // Hide no-data section if it exists
+    // Masque la section no-data si elle existe
     const noDataSection = document.querySelector('.no-data');
     if (noDataSection) {
       noDataSection.classList.add('hidden');
-    }
-  }
-
-  /**
-   * Create planning sections if they don't exist
-   */
-  createPlanningSections() {
-    const mainContainer = document.querySelector('main.container');
-    if (!mainContainer) return;
-
-    // Create quick actions section
-    if (!document.querySelector('.quick-actions')) {
-      const quickActions = document.createElement('section');
-      quickActions.className = 'quick-actions';
-      quickActions.innerHTML = `
-        <h2>📥 Téléchargements rapides</h2>
-        <div class="download-grid"></div>
-      `;
-      mainContainer.appendChild(quickActions);
-    }
-
-    // Create clock section
-    if (!document.querySelector('.clock-section')) {
-      const clockSection = document.createElement('section');
-      clockSection.className = 'clock-section';
-      clockSection.innerHTML = `
-        <h2>🕒 Horloge des prières</h2>
-        <div class="clock-navigation">
-          <button id="prevBtn" class="clock-nav-btn">←</button>
-          <span id="currentDate" class="current-date"></span>
-          <button id="nextBtn" class="clock-nav-btn">→</button>
-        </div>
-        <div id="clockContent" class="clock-container">
-          <!-- Clock will be rendered here -->
-        </div>
-      `;
-      mainContainer.appendChild(clockSection);
-    }
-
-    // Create available slots section
-    if (!document.querySelector('.available-slots')) {
-      const availableSlots = document.createElement('section');
-      availableSlots.className = 'available-slots';
-      availableSlots.innerHTML = `
-        <h2>📅 Vue calendrier</h2>
-        
-        <!-- Calendar and slots container -->
-        <div class="calendar-slots-container">
-          <!-- Calendar for month navigation -->
-          <div id="clockCalendar" class="clock-calendar">
-            <div class="calendar-header">
-              <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
-              <h3 id="currentMonthTitle" class="calendar-title"></h3>
-              <button id="nextMonthBtn" class="calendar-nav-btn">→</button>
-            </div>
-            <div class="calendar-grid">
-              <div class="calendar-weekdays">
-                <div class="weekday">Lun</div>
-                <div class="weekday">Mar</div>
-                <div class="weekday">Mer</div>
-                <div class="weekday">Jeu</div>
-                <div class="weekday">Ven</div>
-                <div class="weekday">Sam</div>
-                <div class="weekday">Dim</div>
-              </div>
-              <div id="clockCalendarDays" class="calendar-days">
-                <!-- Calendar days will be generated here -->
-              </div>
-            </div>
-          </div>
-          
-          <!-- Default slots list (for today scope) -->
-          <div id="defaultSlotsView" class="slots-view">
-            <div id="availableSlotsList" class="slots-list">
-              <!-- Slots will be displayed here dynamically -->
-            </div>
-          </div>
-        </div>
-      `;
-      mainContainer.appendChild(availableSlots);
-    }
-
-    // Create summary display section
-    if (!document.querySelector('.summary-display')) {
-      const summaryDisplay = document.createElement('section');
-      summaryDisplay.className = 'summary-display';
-      summaryDisplay.innerHTML = `
-        <div class="summary-grid">
-          <!-- Mosque information -->
-          <div class="summary-card mosque-info">
-            <h3>🕌 Mosquée sélectionnée</h3>
-            <div class="mosque-details">
-              <h4></h4>
-              <p class="address"></p>
-              
-              <!-- Compact map container -->
-              <div id="mosque-location-map" class="compact-map"></div>
-              
-              <!-- Map links -->
-              <div class="map-links"></div>
-            </div>
-          </div>
-
-          <!-- Configuration summary -->
-          <div class="summary-card config-info">
-            <h3>⚙️ Configuration</h3>
-            <div class="config-details">
-              <div class="config-item">
-                <span class="config-label">📅 Période :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">⏰ Délai avant :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">⏰ Délai après :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">🌍 Fuseau horaire :</span>
-                <span class="config-value"></span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">📊 Portée :</span>
-                <span class="config-value"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      mainContainer.appendChild(summaryDisplay);
     }
   }
 

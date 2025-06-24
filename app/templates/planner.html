@@ -141,8 +141,7 @@
         </div>
       </section>
 
-      {% if segments %}
-      <!-- Quick actions section - Most important for user -->
+      <!-- Sections dynamiques toujours présentes, cachées par défaut -->
       <section class="quick-actions hidden">
         <h2><i class="fa-solid fa-download"></i> Téléchargements rapides</h2>
         <div class="download-grid">
@@ -153,7 +152,6 @@
             <span class="download-format">.ics</span>
           </a>
           {% endif %}
-          
           {% if available_slots_path %}
           <a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download class="download-card secondary">
             <span class="download-icon"><i class="fa-regular fa-clock"></i></span>
@@ -161,7 +159,6 @@
             <span class="download-format">.ics</span>
           </a>
           {% endif %}
-          
           {% if empty_slots_path %}
           <a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download class="download-card secondary">
             <span class="download-icon"><i class="fa-regular fa-clipboard"></i></span>
@@ -169,8 +166,6 @@
             <span class="download-format">.ics</span>
           </a>
           {% endif %}
-          
-          <!-- Manual editing card -->
           <a href="/edit_slot" class="download-card edit">
             <span class="download-icon"><i class="fa-solid fa-pen"></i></span>
             <span class="download-title">Modifier manuellement</span>
@@ -179,26 +174,21 @@
         </div>
       </section>
 
-      <!-- Interactive clock section - ALWAYS VISIBLE -->
       <section class="clock-section hidden">
         <h2><i class="fa-regular fa-clock"></i> Horloge des prières</h2>
+        <div id="clockContent" class="clock-container">
+          <!-- Clock will be rendered here -->
+        </div>
         <div class="clock-navigation">
           <button id="prevBtn" class="clock-nav-btn">←</button>
           <span id="currentDate" class="current-date"></span>
           <button id="nextBtn" class="clock-nav-btn">→</button>
         </div>
-        <div id="clockContent" class="clock-container">
-          <!-- Clock will be rendered here -->
-        </div>
       </section>
 
-      <!-- Available slots section -->
       <section class="available-slots hidden">
         <h2><i class="fa-regular fa-calendar"></i> Vue calendrier</h2>
-        
-        <!-- Calendar and slots container -->
         <div class="calendar-slots-container">
-          <!-- Calendar for month navigation -->
           <div id="clockCalendar" class="clock-calendar">
             <div class="calendar-header">
               <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
@@ -220,8 +210,6 @@
               </div>
             </div>
           </div>
-          
-          <!-- Default slots list (for today scope) -->
           <div id="defaultSlotsView" class="slots-view">
             <div id="availableSlotsList" class="slots-list">
               <!-- Slots will be displayed here dynamically -->
@@ -230,10 +218,8 @@
         </div>
       </section>
 
-      <!-- Mosque and configuration summary (for display after generation) -->
       <section class="summary-display hidden">
         <div class="summary-grid">
-          <!-- Mosque information -->
           <div class="summary-card mosque-info">
             <h3><i class="fa-solid fa-mosque"></i> Mosquée sélectionnée</h3>
             <div class="mosque-details">
@@ -241,18 +227,13 @@
               {% if mosque_address %}
               <p class="address">{{ mosque_address }}</p>
               {% endif %}
-              
-              <!-- Compact map container -->
-              <div id="mosque-location-map" 
-                   class="compact-map"
+              <div id="mosque-location-map" class="compact-map"
                    {% if mosque_lat and mosque_lng %}
                    data-lat="{{ mosque_lat }}"
                    data-lng="{{ mosque_lng }}"
                    data-name="{{ mosque_name }}"
                    {% endif %}>
               </div>
-              
-              <!-- Map links -->
               <div class="map-links">
                 <a href="{{ google_maps_url }}" target="_blank" class="map-link"><i class="fa-solid fa-map-location-dot"></i> Google Maps</a>
                 <a href="{{ osm_url }}" target="_blank" class="map-link"><i class="fa-brands fa-openstreetmap"></i> OpenStreetMap</a>
@@ -260,8 +241,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Configuration summary -->
           <div class="summary-card config-info">
             <h3><i class="fa-solid fa-cog"></i> Configuration</h3>
             <div class="config-details">
@@ -289,9 +268,7 @@
           </div>
         </div>
       </section>
-      
-      {% else %}
-      <!-- No data message -->
+
       <section class="no-data hidden">
         <div class="no-data-content">
           <h2><i class="fa-regular fa-envelope-open"></i> Aucun créneau disponible</h2>
@@ -299,9 +276,8 @@
           <a href="/" class="back-button"><i class="fa-solid fa-arrow-left"></i> Retour à la sélection</a>
         </div>
       </section>
-      {% endif %}
 
-      <!-- Hidden configuration for clock -->
+      <!-- Bloc de config caché pour l'horloge -->
       {% if segments %}
       <div id="clockConfig" 
            data-segments='{{ segments|tojson|safe }}'
