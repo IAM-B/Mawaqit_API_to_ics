@@ -412,6 +412,80 @@ select:focus {
   padding-bottom: 0.5rem;
 }
 
+/* Form styles within summary cards */
+.summary-card .form {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  margin-top: 1rem;
+}
+
+.summary-card .form-section {
+  margin-bottom: 1rem;
+  border: none;
+  padding: 0;
+}
+
+.summary-card label {
+  display: block;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5em;
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.summary-card input,
+.summary-card select {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.95em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card input:focus,
+.summary-card select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.summary-card .btn-submit {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card .btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+}
+
+.summary-card .btn-submit:active {
+  transform: translateY(0);
+}
+
+.summary-card .btn-submit.loading {
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
 .mosque-details h4 {
   margin: 0 0 0.5rem 0;
   font-size: 1.2rem;
@@ -806,4 +880,87 @@ a:hover {
 .scope-title {
   font-weight: 600;
   font-size: 0.9em;
+}
+
+/* ==================
+   📊 SUMMARY DISPLAY SECTION
+   ================== */
+.summary-display {
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.summary-display.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.summary-display .summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-display .summary-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-light);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.summary-display .summary-card:hover {
+  box-shadow: 0 6px 16px var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.summary-display .summary-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  color: var(--text-bright);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.summary-display .mosque-details h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--text-bright);
+}
+
+.summary-display .address {
+  color: var(--text-muted);
+  margin: 0 0 1rem 0;
+  font-style: italic;
+}
+
+.summary-display .config-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summary-display .config-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-display .config-item:last-child {
+  border-bottom: none;
+}
+
+.summary-display .config-label {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.summary-display .config-value {
+  font-weight: 600;
+  color: var(--text-bright);
 }

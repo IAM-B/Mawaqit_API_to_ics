@@ -20,24 +20,39 @@ class PlannerPage {
    * Setup form submission handling with AJAX
    */
   setupFormHandling() {
-    const form = document.getElementById('plannerForm');
+    const plannerForm = document.getElementById('plannerForm');
+    const configForm = document.getElementById('configForm');
     const submitBtn = document.querySelector('.btn-submit');
     
-    if (form && submitBtn) {
-      form.addEventListener('submit', async (e) => {
+    if (configForm && submitBtn) {
+      configForm.addEventListener('submit', async (e) => {
         e.preventDefault(); // Prevent default form submission
         
         // Show loading state
         this.showLoadingState(submitBtn);
         
         try {
-          // Get form data
-          const formData = new FormData(form);
+          // Get form data from both forms
+          const plannerFormData = new FormData(plannerForm);
+          const configFormData = new FormData(configForm);
+          
+          // Combine the form data
+          const combinedFormData = new FormData();
+          
+          // Add planner form data
+          for (let [key, value] of plannerFormData.entries()) {
+            combinedFormData.append(key, value);
+          }
+          
+          // Add config form data
+          for (let [key, value] of configFormData.entries()) {
+            combinedFormData.append(key, value);
+          }
           
           // Send AJAX request
           const response = await fetch('/api/generate_planning', {
             method: 'POST',
-            body: formData
+            body: combinedFormData
           });
           
           const result = await response.json();
@@ -134,6 +149,10 @@ class PlannerPage {
     window.currentMonth = new Date().getMonth();
     window.currentYear = new Date().getFullYear();
     
+    // Hide the configuration forms and show the display version
+    this.hideConfigurationForms();
+    this.showSummaryDisplay();
+    
     // Show the planning sections first
     this.showPlanningSections();
     
@@ -161,12 +180,47 @@ class PlannerPage {
   }
 
   /**
+   * Hide configuration forms and show summary display
+   */
+  hideConfigurationForms() {
+    const summarySection = document.querySelector('.summary-section');
+    const summaryDisplay = document.querySelector('.summary-display');
+    
+    if (summarySection) {
+      summarySection.style.display = 'none';
+    }
+    
+    if (summaryDisplay) {
+      summaryDisplay.style.display = 'block';
+      summaryDisplay.style.opacity = '1';
+      summaryDisplay.style.visibility = 'visible';
+    }
+  }
+
+  /**
+   * Show summary display section
+   */
+  showSummaryDisplay() {
+    const summaryDisplay = document.querySelector('.summary-display');
+    if (summaryDisplay) {
+      summaryDisplay.style.display = 'block';
+      summaryDisplay.style.opacity = '1';
+      summaryDisplay.style.visibility = 'visible';
+      
+      // Add visible class for animation
+      setTimeout(() => {
+        summaryDisplay.classList.add('visible');
+      }, 100);
+    }
+  }
+
+  /**
    * Update mosque information
    */
   updateMosqueInfo(data) {
-    const mosqueNameEl = document.querySelector('.mosque-details h4');
-    const mosqueAddressEl = document.querySelector('.mosque-details .address');
-    const mapLinksEl = document.querySelector('.map-links');
+    const mosqueNameEl = document.querySelector('.summary-display .mosque-details h4');
+    const mosqueAddressEl = document.querySelector('.summary-display .mosque-details .address');
+    const mapLinksEl = document.querySelector('.summary-display .map-links');
     const mapContainer = document.getElementById('mosque-location-map');
     
     if (mosqueNameEl) mosqueNameEl.textContent = data.mosque_name;
@@ -208,7 +262,7 @@ class PlannerPage {
    * Update configuration summary
    */
   updateConfigSummary(data) {
-    const configItems = document.querySelectorAll('.config-item');
+    const configItems = document.querySelectorAll('.summary-display .config-item');
     
     configItems.forEach(item => {
       const label = item.querySelector('.config-label');
@@ -746,7 +800,7 @@ class PlannerPage {
       '.quick-actions',
       '.clock-section',
       '.available-slots',
-      '.summary-section'
+      '.summary-display'
     ];
     
     sections.forEach(selector => {
@@ -774,8 +828,8 @@ class PlannerPage {
    * Create planning sections if they don't exist
    */
   createPlanningSections() {
-    const configSection = document.querySelector('.config-section');
-    if (!configSection) return;
+    const mainContainer = document.querySelector('main.container');
+    if (!mainContainer) return;
 
     // Create quick actions section
     if (!document.querySelector('.quick-actions')) {
@@ -785,7 +839,7 @@ class PlannerPage {
         <h2>📥 Téléchargements rapides</h2>
         <div class="download-grid"></div>
       `;
-      configSection.parentNode.insertBefore(quickActions, configSection.nextSibling);
+      mainContainer.appendChild(quickActions);
     }
 
     // Create clock section
@@ -803,7 +857,7 @@ class PlannerPage {
           <!-- Clock will be rendered here -->
         </div>
       `;
-      configSection.parentNode.insertBefore(clockSection, configSection.nextSibling);
+      mainContainer.appendChild(clockSection);
     }
 
     // Create available slots section
@@ -846,14 +900,14 @@ class PlannerPage {
           </div>
         </div>
       `;
-      configSection.parentNode.insertBefore(availableSlots, configSection.nextSibling);
+      mainContainer.appendChild(availableSlots);
     }
 
-    // Create summary section
-    if (!document.querySelector('.summary-section')) {
-      const summarySection = document.createElement('section');
-      summarySection.className = 'summary-section';
-      summarySection.innerHTML = `
+    // Create summary display section
+    if (!document.querySelector('.summary-display')) {
+      const summaryDisplay = document.createElement('section');
+      summaryDisplay.className = 'summary-display';
+      summaryDisplay.innerHTML = `
         <div class="summary-grid">
           <!-- Mosque information -->
           <div class="summary-card mosque-info">
@@ -898,44 +952,8 @@ class PlannerPage {
           </div>
         </div>
       `;
-      configSection.parentNode.insertBefore(summarySection, configSection.nextSibling);
+      mainContainer.appendChild(summaryDisplay);
     }
-
-    // Hidden fields for mosque coordinates
-    const mosqueLatField = document.createElement('input');
-    mosqueLatField.type = 'hidden';
-    mosqueLatField.id = 'mosque_lat';
-    mosqueLatField.name = 'mosque_lat';
-    mosqueLatField.value = '';
-    configSection.appendChild(mosqueLatField);
-
-    const mosqueLngField = document.createElement('input');
-    mosqueLngField.type = 'hidden';
-    mosqueLngField.id = 'mosque_lng';
-    mosqueLngField.name = 'mosque_lng';
-    mosqueLngField.value = '';
-    configSection.appendChild(mosqueLngField);
-
-    const mosqueNameField = document.createElement('input');
-    mosqueNameField.type = 'hidden';
-    mosqueNameField.id = 'mosque_name';
-    mosqueNameField.name = 'mosque_name';
-    mosqueNameField.value = '';
-    configSection.appendChild(mosqueNameField);
-
-    const mosqueAddressField = document.createElement('input');
-    mosqueAddressField.type = 'hidden';
-    mosqueAddressField.id = 'mosque_address';
-    mosqueAddressField.name = 'mosque_address';
-    mosqueAddressField.value = '';
-    configSection.appendChild(mosqueAddressField);
-
-    // Hidden scope field - always year
-    const scopeField = document.createElement('input');
-    scopeField.type = 'hidden';
-    scopeField.name = 'scope';
-    scopeField.value = 'year';
-    configSection.appendChild(scopeField);
   }
 
   /**
