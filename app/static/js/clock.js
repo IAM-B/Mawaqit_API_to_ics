@@ -512,6 +512,18 @@ class Clock {
         this.currentIndex = this.segments.length - 1;
       }
     }
+    
+    // Update timeline if available
+    if (window.timeline && this.segments.length > 0) {
+      const currentData = this.getCurrentData();
+      if (currentData && currentData.date) {
+        // Parse the date from the data
+        const [day, month, year] = currentData.date.split('/');
+        const selectedDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        window.timeline.navigateToDay(selectedDate);
+      }
+    }
+    
     this.updateClock();
   }
 }

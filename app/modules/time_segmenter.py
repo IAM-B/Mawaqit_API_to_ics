@@ -54,6 +54,49 @@ def segment_available_time(prayer_times: dict, tz_str: str, padding_before: int,
     return segments
 
 
+def generate_empty_slots_for_timeline(slots: list) -> list:
+    """
+    Generate empty slots between available slots for timeline display.
+    
+    Args:
+        slots (list): List of available slots with start and end times
+        
+    Returns:
+        list: List of empty slots with start and end times
+    """
+    if not slots or len(slots) == 0:
+        return [{"start": "00:00", "end": "23:59"}]
+    
+    empty_slots = []
+    
+    # Add empty slot before first slot (if not starting at 00:00)
+    if slots[0].get('start') != '00:00':
+        empty_slots.append({
+            "start": "00:00",
+            "end": slots[0].get('start')
+        })
+    
+    # Add empty slots between available slots
+    for i in range(len(slots) - 1):
+        current_slot = slots[i]
+        next_slot = slots[i + 1]
+        
+        if current_slot.get('end') != next_slot.get('start'):
+            empty_slots.append({
+                "start": current_slot.get('end'),
+                "end": next_slot.get('start')
+            })
+    
+    # Add empty slot after last slot (if not ending at 23:59)
+    if slots[-1].get('end') != '23:59':
+        empty_slots.append({
+            "start": slots[-1].get('end'),
+            "end": "23:59"
+        })
+    
+    return empty_slots
+
+
 def generate_empty_slots(start_time: str, end_time: str, date: datetime) -> list[tuple[datetime, datetime]]:
     """
     Generate empty time slots between start and end times, divided into hour-long segments.

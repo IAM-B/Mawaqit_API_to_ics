@@ -180,6 +180,12 @@ class CalendarViewsManager {
       }
     }
 
+    // Update timeline if available
+    if (window.timeline && this.segments.length > 0) {
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth, day);
+      window.timeline.navigateToDay(selectedDate);
+    }
+
     // Update slots list if day data is available
     if (dayData) {
       this.updateSlotsList(dayData);

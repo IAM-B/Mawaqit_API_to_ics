@@ -179,6 +179,11 @@ class PlannerPage {
           window.calendarViewsManager.initializeViews(data.segments, data.scope);
         }
         
+        // Initialize timeline
+        if (window.timeline) {
+          window.timeline.initializeTimeline(data.segments, data.scope);
+        }
+        
         // Initialize clock
         this.initializeClock(data);
       }, 100);

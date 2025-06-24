@@ -10,7 +10,7 @@ from app.modules.mawaqit_fetcher import fetch_mosques_data, fetch_mawaqit_data
 from app.modules.prayer_generator import generate_prayer_ics_file
 from app.modules.empty_generator import generate_empty_by_scope
 from app.modules.slots_generator import generate_slots_by_scope
-from app.modules.time_segmenter import segment_available_time
+from app.modules.time_segmenter import segment_available_time, generate_empty_slots_for_timeline
 from app.modules.slot_utils import adjust_slots_rounding
 from datetime import datetime, timedelta
 import re
@@ -371,10 +371,12 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             print("📅 Processing today scope")
             if isinstance(prayer_times, dict):
                 slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
+                empty_slots = generate_empty_slots_for_timeline(slots)
                 segments.append({
                     "day": datetime.now().day,
                     "date": datetime.now().strftime("%d/%m/%Y"),
                     "slots": slots,
+                    "empty_slots": empty_slots,
                     "prayer_times": prayer_times
                 })
         elif isinstance(prayer_times, list):
@@ -395,10 +397,12 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                     try:
                         date = datetime(year, month, i + 1)
                         slots = segment_available_time(daily, tz_str, padding_before, padding_after)
+                        empty_slots = generate_empty_slots_for_timeline(slots)
                         segments.append({
                             "day": i + 1,
                             "date": date.strftime("%d/%m/%Y"),
                             "slots": slots,
+                            "empty_slots": empty_slots,
                             "prayer_times": daily
                         })
                     except Exception as e:
@@ -413,10 +417,12 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                             day_num = int(day_str)
                             date = datetime(year, month_index, day_num)
                             slots = segment_available_time(times_dict, tz_str, padding_before, padding_after)
+                            empty_slots = generate_empty_slots_for_timeline(slots)
                             month_segments.append({
                                 "day": day_num,
                                 "date": date.strftime("%d/%m/%Y"),
                                 "slots": slots,
+                                "empty_slots": empty_slots,
                                 "prayer_times": times_dict
                             })
                         except Exception as e:
@@ -627,10 +633,12 @@ def handle_planner_ajax():
         if scope == "today":
             if isinstance(prayer_times, dict):
                 slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
+                empty_slots = generate_empty_slots_for_timeline(slots)
                 segments.append({
                     "day": datetime.now().day,
                     "date": datetime.now().strftime("%d/%m/%Y"),
                     "slots": slots,
+                    "empty_slots": empty_slots,
                     "prayer_times": prayer_times
                 })
         elif isinstance(prayer_times, list):
@@ -649,10 +657,12 @@ def handle_planner_ajax():
                     try:
                         date = datetime(year, month, i + 1)
                         slots = segment_available_time(daily, tz_str, padding_before, padding_after)
+                        empty_slots = generate_empty_slots_for_timeline(slots)
                         segments.append({
                             "day": i + 1,
                             "date": date.strftime("%d/%m/%Y"),
                             "slots": slots,
+                            "empty_slots": empty_slots,
                             "prayer_times": daily
                         })
                     except Exception as e:
@@ -667,10 +677,12 @@ def handle_planner_ajax():
                             day_num = int(day_str)
                             date = datetime(year, month_index, day_num)
                             slots = segment_available_time(times_dict, tz_str, padding_before, padding_after)
+                            empty_slots = generate_empty_slots_for_timeline(slots)
                             month_segments.append({
                                 "day": day_num,
                                 "date": date.strftime("%d/%m/%Y"),
                                 "slots": slots,
+                                "empty_slots": empty_slots,
                                 "prayer_times": times_dict
                             })
                         except Exception as e:
