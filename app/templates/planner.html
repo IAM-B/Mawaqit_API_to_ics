@@ -144,61 +144,64 @@
           </div>
         </section>
         <section class="clock-section">
-          <h2><i class="fa-regular fa-clock"></i> Horloge des prières</h2>
-          <div id="clockContent" class="clock-container">
-            <!-- Clock will be rendered here -->
+          <h2><i class="fa-regular fa-calendar"></i> Agenda des prières</h2>
+          <div class="clock-layout">
+            <!-- Left half: defaultSlotsView -->
+            <div class="slots-half">
+              <div id="defaultSlotsView" class="slots-view">
+                <!-- Timeline Header -->
+                <div class="timeline-header">
+                  <button id="prevBtn" class="calendar-nav-btn">←</button>
+                  <h3 id="currentDate" class="calendar-title"></h3>
+                  <button id="nextBtn" class="calendar-nav-btn">→</button>
+                </div>
+                
+                <!-- Timeline Content -->
+                <div class="timeline-content">
+                  <div class="timeline-svg-container">
+                    <svg class="timeline-svg" viewBox="0 0 1000 1440" preserveAspectRatio="xMidYMid meet">
+                      <!-- La grille SVG sera générée dynamiquement par JavaScript -->
+                    </svg>
+                  </div>
+                </div>
+                
+                <!-- Fallback slots list (caché par défaut) -->
+                <div id="availableSlotsList" class="slots-list" style="display: none;">
+                  <!-- Slots will be displayed here dynamically -->
+                </div>
+              </div>
+            </div>
+            
+            <!-- Right half: clockCalendar and clockContent -->
+            <div class="clock-half">
+              <div id="clockCalendar" class="clock-calendar">
+                <div class="calendar-header">
+                  <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
+                  <h3 id="currentMonthTitle" class="calendar-title"></h3>
+                  <button id="nextMonthBtn" class="calendar-nav-btn">→</button>
+                </div>
+                <div class="calendar-grid">
+                  <div class="calendar-weekdays">
+                    <div class="weekday">Lun</div>
+                    <div class="weekday">Mar</div>
+                    <div class="weekday">Mer</div>
+                    <div class="weekday">Jeu</div>
+                    <div class="weekday">Ven</div>
+                    <div class="weekday">Sam</div>
+                    <div class="weekday">Dim</div>
+                  </div>
+                  <div id="clockCalendarDays" class="calendar-days">
+                    <!-- Calendar days will be generated here -->
+                  </div>
+                </div>
+              </div>
+              <div id="clockContent" class="clock-container">
+                <!-- Clock will be rendered here -->
+              </div>
+            </div>
           </div>
         </section>
       </div>
-
-      <section class="available-slots">
-        <h2><i class="fa-regular fa-calendar"></i> Vue calendrier</h2>
-        <div class="calendar-slots-container">
-          <div id="clockCalendar" class="clock-calendar">
-            <div class="calendar-header">
-              <button id="prevMonthBtn" class="calendar-nav-btn">←</button>
-              <h3 id="currentMonthTitle" class="calendar-title"></h3>
-              <button id="nextMonthBtn" class="calendar-nav-btn">→</button>
-            </div>
-            <div class="calendar-grid">
-              <div class="calendar-weekdays">
-                <div class="weekday">Lun</div>
-                <div class="weekday">Mar</div>
-                <div class="weekday">Mer</div>
-                <div class="weekday">Jeu</div>
-                <div class="weekday">Ven</div>
-                <div class="weekday">Sam</div>
-                <div class="weekday">Dim</div>
-              </div>
-              <div id="clockCalendarDays" class="calendar-days">
-                <!-- Calendar days will be generated here -->
-              </div>
-            </div>
-          </div>
-          <div id="defaultSlotsView" class="slots-view">
-            <!-- Timeline Header -->
-            <div class="timeline-header">
-              <button id="prevBtn" class="calendar-nav-btn">←</button>
-              <h3 id="currentDate" class="calendar-title"></h3>
-              <button id="nextBtn" class="calendar-nav-btn">→</button>
-            </div>
-            
-            <!-- Timeline Content -->
-            <div class="timeline-content">
-              <div class="timeline-svg-container">
-                <svg class="timeline-svg" viewBox="0 0 1000 1440" preserveAspectRatio="xMidYMid meet">
-                  <!-- La grille SVG sera générée dynamiquement par JavaScript -->
-                </svg>
-              </div>
-            </div>
-            
-            <!-- Fallback slots list (caché par défaut) -->
-            <div id="availableSlotsList" class="slots-list" style="display: none;">
-              <!-- Slots will be displayed here dynamically -->
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section class="summary-display">
         <div class="summary-grid">

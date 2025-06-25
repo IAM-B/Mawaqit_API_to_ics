@@ -252,47 +252,76 @@
   background: var(--card-bg);
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid var(--border-color);
   box-shadow: 0 4px 12px var(--shadow-light);
+  border: 1px solid var(--border-color);
 }
 
 .clock-section h2 {
-  color: var(--text-bright);
-  margin-bottom: 1rem;
+  margin: 0 0 1.5rem 0;
   font-size: 1.5rem;
-  font-weight: 600;
+  color: var(--text-bright);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
 }
 
-.clock-navigation {
+/* New clock layout structure */
+.clock-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  min-height: 600px;
+  height: auto;
+}
+
+/* Left half: slots view */
+.slots-half {
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+}
+
+.slots-half .slots-view {
+  flex: 1;
+  padding: 20px;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Right half: calendar and clock */
+.clock-half {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 600px;
+}
+
+.clock-half .clock-calendar {
+  flex: 1;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.clock-half .clock-container {
+  flex: 1;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  overflow: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.clock-nav-btn {
-  padding: 8px 16px;
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.clock-nav-btn:hover {
-  background: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
-}
-
-.clock-container {
-  background: var(--surface-bg);
-  border-radius: 8px;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
+  min-height: 200px;
+  max-height: 300px;
 }
 
 /* ==================
@@ -300,14 +329,14 @@
    ================== */
 .clock-container {
   position: relative;
-  width: 600px;
-  height: 600px;
-  margin: 20px auto;
-  background: var(--form-bg);
-  border-radius: 50%;
-  overflow: visible;
-  box-shadow: 0 8px 24px var(--shadow-color);
-  border: 2px solid var(--border-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .clock-svg {
@@ -441,38 +470,6 @@
 }
 
 /* ==================
-   📋 CALENDAR-SLOTS LAYOUT
-   ================== */
-.calendar-slots-container {
-  display: flex;
-  align-items: flex-start;
-  gap: 30px;
-  justify-content: center;
-  flex-wrap: nowrap;
-  margin: 20px 0;
-}
-
-.calendar-slots-container .clock-calendar {
-  flex-shrink: 0;
-  margin: 0;
-}
-
-.calendar-slots-container .slots-view {
-  flex: 1;
-  min-width: 300px;
-  max-width: 500px;
-  background: var(--form-bg);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 16px var(--shadow-color);
-  border: 1px solid var(--border-color);
-  height: 355px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* ==================
    📋 TIMELINE STYLES
    ================== */
 .timeline-title {
@@ -523,21 +520,24 @@
 
 .timeline-content {
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   background: var(--surface-bg);
+  min-height: 0;
 }
 
 .timeline-svg-container {
   width: 100%;
   height: 100%;
   position: relative;
+  min-height: 400px;
 }
 
 .timeline-svg {
   width: 100%;
   height: 100%;
   display: block;
+  min-height: 400px;
 }
 
 /* Grille horaire SVG */
@@ -826,30 +826,27 @@
     grid-template-columns: 1fr;
   }
   
-  .calendar-slots-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .clock-calendar {
-    min-width: 280px;
-    max-width: 320px;
-  }
-  
-  .calendar-slots-container .slots-view {
-    min-width: 280px;
-    max-width: 320px;
+  /* New clock layout responsive */
+  .clock-layout {
+    grid-template-columns: 1fr;
     height: auto;
+    gap: 1rem;
+  }
+  
+  .slots-half .slots-view {
     min-height: 400px;
   }
   
-  .clock-calendar .calendar-day {
-    padding: 2px;
+  .clock-half {
+    gap: 1rem;
   }
   
-  .clock-calendar .day-number {
-    font-size: 0.8em;
+  .clock-half .clock-calendar {
+    min-height: 300px;
+  }
+  
+  .clock-half .clock-container {
+    min-height: 250px;
   }
   
   .timeline-header {
@@ -918,15 +915,25 @@
 }
 
 @media (max-width: 480px) {
-  .clock-calendar {
-    min-width: 260px;
-    max-width: 280px;
-    padding: 15px;
+  /* New clock layout responsive for small screens */
+  .clock-layout {
+    gap: 0.75rem;
   }
   
-  .calendar-slots-container .slots-view {
-    min-width: 260px;
-    max-width: 280px;
+  .slots-half .slots-view {
+    min-height: 350px;
+  }
+  
+  .clock-half .clock-calendar {
+    min-height: 250px;
+  }
+  
+  .clock-half .clock-container {
+    min-height: 200px;
+  }
+  
+  .clock-calendar {
+    padding: 15px;
   }
   
   .clock-calendar .calendar-title, .current-date {
@@ -1052,9 +1059,10 @@
   padding: 20px;
   box-shadow: 0 4px 16px var(--shadow-color);
   border: 1px solid var(--border-color);
-  min-width: 300px;
-  max-width: 350px;
-  height: 355px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .clock-calendar .calendar-header, .timeline-header {
