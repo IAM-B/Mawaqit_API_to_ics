@@ -8,8 +8,7 @@
     <!-- Favicon and stylesheet links -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/clock.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/planner.css') }}" />
     <!-- Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- External CSS Libraries -->
@@ -149,11 +148,6 @@
           <div id="clockContent" class="clock-container">
             <!-- Clock will be rendered here -->
           </div>
-          <div class="clock-navigation">
-            <button id="prevBtn" class="clock-nav-btn">←</button>
-            <span id="currentDate" class="current-date"></span>
-            <button id="nextBtn" class="clock-nav-btn">→</button>
-          </div>
         </section>
       </div>
 
@@ -182,7 +176,24 @@
             </div>
           </div>
           <div id="defaultSlotsView" class="slots-view">
-            <div id="availableSlotsList" class="slots-list">
+            <!-- Timeline Header -->
+            <div class="timeline-header">
+              <button id="prevBtn" class="calendar-nav-btn">←</button>
+              <h3 id="currentDate" class="calendar-title"></h3>
+              <button id="nextBtn" class="calendar-nav-btn">→</button>
+            </div>
+            
+            <!-- Timeline Content -->
+            <div class="timeline-content">
+              <div class="timeline-svg-container">
+                <svg class="timeline-svg" viewBox="0 0 1000 1440" preserveAspectRatio="xMidYMid meet">
+                  <!-- La grille SVG sera générée dynamiquement par JavaScript -->
+                </svg>
+              </div>
+            </div>
+            
+            <!-- Fallback slots list (caché par défaut) -->
+            <div id="availableSlotsList" class="slots-list" style="display: none;">
               <!-- Slots will be displayed here dynamically -->
             </div>
           </div>

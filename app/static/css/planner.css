@@ -1,0 +1,1187 @@
+/* ==================
+   📋 PLANNER PAGE STYLES
+   ================== */
+
+/* ==================
+   📋 PLANNER LAYOUT & GRID
+   ================== */
+.planner-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* ==================
+   📋 SUMMARY SECTION
+   ================== */
+.summary-section {
+  margin-bottom: 2rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-light);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  box-shadow: 0 6px 16px var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.summary-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  color: var(--text-bright);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+/* Form styles within summary cards */
+.summary-card .form {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  margin-top: 1rem;
+}
+
+.summary-card .form-section {
+  margin-bottom: 1rem;
+  border: none;
+  padding: 0;
+}
+
+.summary-card label {
+  display: block;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5em;
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.summary-card input,
+.summary-card select {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.95em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card input:focus,
+.summary-card select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.summary-card .btn-submit {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card .btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+}
+
+.summary-card .btn-submit:active {
+  transform: translateY(0);
+}
+
+.summary-card .btn-submit.loading {
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.mosque-details h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--text-bright);
+}
+
+.address {
+  color: var(--text-muted);
+  margin: 0 0 1rem 0;
+  font-style: italic;
+}
+
+.config-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.config-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.config-item:last-child {
+  border-bottom: none;
+}
+
+.config-label {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.config-value {
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+/* ==================
+   📋 SUMMARY DISPLAY SECTION
+   ================== */
+.summary-display {
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.summary-display.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.summary-display .summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-display .summary-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow-light);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.summary-display .summary-card:hover {
+  box-shadow: 0 6px 16px var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.summary-display .summary-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  color: var(--text-bright);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.summary-display .mosque-details h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--text-bright);
+}
+
+.summary-display .address {
+  color: var(--text-muted);
+  margin: 0 0 1rem 0;
+  font-style: italic;
+}
+
+.summary-display .config-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summary-display .config-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-display .config-item:last-child {
+  border-bottom: none;
+}
+
+.summary-display .config-label {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.summary-display .config-value {
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+/* ==================
+   📋 CLOCK SECTION
+   ================== */
+.clock-section {
+  margin-bottom: 2rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.clock-section h2 {
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.clock-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.clock-nav-btn {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.clock-nav-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.clock-container {
+  background: var(--surface-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+/* ==================
+   📋 CLOCK SVG STYLES
+   ================== */
+.clock-container {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  margin: 20px auto;
+  background: var(--form-bg);
+  border-radius: 50%;
+  overflow: visible;
+  box-shadow: 0 8px 24px var(--shadow-color);
+  border: 2px solid var(--border-color);
+}
+
+.clock-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.clock-face {
+  fill: var(--surface-bg);
+  stroke: var(--border-color);
+  stroke-width: 2;
+}
+
+.hour-marker {
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+.hour-label {
+  font-size: 16px;
+  fill: var(--text-color);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.clock-arc {
+  fill: none;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px var(--shadow-color));
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.clock-arc.prayer {
+  stroke: var(--success);
+  stroke-width: 25;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.clock-arc.prayer:hover {
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  stroke-width: 28;
+}
+
+.clock-arc.slot {
+  stroke: var(--primary);
+  stroke-width: 15;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.clock-arc.slot:hover,
+.clock-arc.slot.active {
+  opacity: 1;
+  stroke: var(--primary-hover);
+  stroke-width: 18;
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
+}
+
+.clock-label {
+  font-size: 14px;
+  fill: var(--accent);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px rgba(67, 160, 71, 0.5));
+  z-index: 2;
+  text-shadow: 0 1px 2px var(--shadow-color);
+  padding: 2px 6px;
+  background: var(--overlay-light);
+  border-radius: 4px;
+  pointer-events: none;
+  transform-origin: center center;
+}
+
+.clock-arc.slot + .clock-label {
+  opacity: 0;
+}
+
+.clock-arc.slot:hover + .clock-label {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.clock-arc.prayer + .clock-label {
+  opacity: 0;
+}
+
+.clock-arc.prayer:hover + .clock-label {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.tooltip-group {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.clock-arc.prayer:hover + .tooltip-group {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tooltip-rect {
+  fill: var(--primary);
+  stroke: var(--accent);
+  stroke-width: 1;
+  filter: drop-shadow(0 2px 4px var(--shadow-color));
+  rx: 6;
+  ry: 6;
+}
+
+.tooltip-text {
+  fill: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  white-space: pre;
+  filter: drop-shadow(0 1px 2px var(--shadow-color));
+}
+
+/* ==================
+   📋 CALENDAR-SLOTS LAYOUT
+   ================== */
+.calendar-slots-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin: 20px 0;
+}
+
+.calendar-slots-container .clock-calendar {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.calendar-slots-container .slots-view {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  background: var(--form-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  height: 355px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ==================
+   📋 TIMELINE STYLES
+   ================== */
+.timeline-title {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.2em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.timeline-date {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.timeline-toggle-btn {
+  background: var(--primary);
+  color: var(--text-bright);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeline-toggle-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.timeline-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.timeline-content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: var(--surface-bg);
+}
+
+.timeline-svg-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.timeline-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Grille horaire SVG */
+.timeline-grid {
+  stroke: var(--border-light);
+  stroke-width: 1;
+  fill: none;
+}
+
+.timeline-hour-line {
+  stroke: var(--border-light);
+  stroke-width: 1;
+  fill: none;
+}
+
+.timeline-hour-text {
+  font-size: 12px;
+  fill: var(--text-muted);
+  font-weight: 500;
+  text-anchor: end;
+  dominant-baseline: middle;
+}
+
+/* Événements SVG */
+.timeline-event {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 4px var(--shadow-color));
+}
+
+.timeline-event.prayer {
+  fill: var(--primary);
+  stroke: var(--primary-hover);
+  stroke-width: 1;
+}
+
+.timeline-event.slot {
+  fill: var(--success);
+  stroke: var(--success-hover);
+  stroke-width: 1;
+}
+
+.timeline-event.empty {
+  fill: var(--accent);
+  stroke: var(--accent-hover);
+  stroke-width: 1;
+}
+
+.timeline-event:hover {
+  filter: drop-shadow(0 4px 8px var(--shadow-color));
+  transform: translateY(-1px);
+}
+
+.timeline-event-text {
+  font-size: 11px;
+  fill: var(--text-bright);
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+/* Tooltip SVG */
+.timeline-tooltip {
+  position: absolute;
+  background: var(--text-color);
+  color: var(--text-bright);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.timeline-tooltip.show {
+  opacity: 1;
+}
+
+/* ==================
+   📋 MAPS & LINKS
+   ================== */
+.compact-map {
+  height: 200px;
+  width: 100%;
+  border-radius: 8px;
+  margin: 10px 0;
+  border: 1px solid var(--border-color);
+}
+
+.map-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.map-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: var(--primary-light);
+  font-size: 0.9em;
+  border: 1px solid var(--primary-border);
+}
+
+.map-link:hover {
+  color: var(--text-bright);
+  background: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+/* ==================
+   📋 QUICK ACTIONS
+   ================== */
+.quick-actions {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--form-bg) 100%);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.quick-actions h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.download-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--overlay-light);
+  border-radius: 8px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+  border: 2px solid var(--overlay-light);
+}
+
+.download-card:hover {
+  background: var(--overlay-medium);
+  transform: translateY(-2px);
+  border-color: var(--overlay-dark);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.download-card.primary {
+  background: var(--primary-light);
+  border-color: var(--primary-border);
+}
+
+.download-card.primary:hover {
+  background: rgba(212, 175, 55, 0.3);
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+.download-card.edit {
+  background: var(--success-light);
+  border-color: var(--success);
+}
+
+.download-card.edit:hover {
+  background: var(--success);
+  border-color: var(--success-hover);
+}
+
+.download-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.download-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.download-format {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ==================
+   📋 SCOPE DOWNLOADS
+   ================== */
+.scope-downloads {
+  grid-column: 1 / -1;
+  background: var(--surface-bg);
+  border-radius: 12px;
+  padding: 20px;
+  border: 2px solid var(--border-color);
+  margin-top: 20px;
+}
+
+.scope-downloads h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-size: 1.2em;
+}
+
+.scope-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.scope-download-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  background: var(--form-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  font-size: 1em;
+}
+
+.scope-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border-color: var(--primary);
+}
+
+.scope-download-btn.today {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  color: white;
+  border-color: var(--accent);
+}
+
+.scope-download-btn.month {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white;
+  border-color: var(--primary);
+}
+
+.scope-download-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.scope-icon {
+  font-size: 1.5em;
+  margin-bottom: 8px;
+}
+
+.scope-title {
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+/* ==================
+   📋 RESPONSIVE DESIGN
+   ================== */
+@media (max-width: 768px) {
+  .planner-main-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .calendar-slots-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .clock-calendar {
+    min-width: 280px;
+    max-width: 320px;
+  }
+  
+  .calendar-slots-container .slots-view {
+    min-width: 280px;
+    max-width: 320px;
+    height: auto;
+    min-height: 400px;
+  }
+  
+  .clock-calendar .calendar-day {
+    padding: 2px;
+  }
+  
+  .clock-calendar .day-number {
+    font-size: 0.8em;
+  }
+  
+  .timeline-header {
+    padding: 10px 15px;
+  }
+  
+  .timeline-header .clock-navigation {
+    gap: 0.5rem;
+  }
+  
+  .timeline-header .current-date {
+    font-size: 1rem;
+    min-width: 120px;
+  }
+  
+  .timeline-header .clock-nav-btn {
+    padding: 6px 10px;
+    font-size: 0.9em;
+  }
+  
+  .timeline-hour-text {
+    font-size: 9px;
+  }
+  
+  .timeline-event-text {
+    font-size: 9px;
+  }
+  
+  .clock-container {
+    width: 320px;
+    height: 320px;
+  }
+  
+  .clock-navigation {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .clock-nav-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .slot-item {
+    width: 95%;
+    padding: 10px 12px;
+  }
+  
+  .slot-time {
+    font-size: 1em;
+  }
+  
+  .download-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .config-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .map-links {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .clock-calendar {
+    min-width: 260px;
+    max-width: 280px;
+    padding: 15px;
+  }
+  
+  .calendar-slots-container .slots-view {
+    min-width: 260px;
+    max-width: 280px;
+  }
+  
+  .clock-calendar .calendar-title, .current-date {
+    font-size: 1.1em;
+  }
+  
+  .clock-calendar .weekday {
+    padding: 6px 2px;
+    font-size: 0.7em;
+  }
+  
+  .clock-calendar .calendar-day {
+    padding: 1px;
+  }
+  
+  .clock-calendar .day-number {
+    font-size: 0.7em;
+  }
+  
+  .clock-container {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .hour-label {
+    font-size: 12px;
+  }
+  
+  .clock-arc.prayer {
+    stroke-width: 20;
+  }
+  
+  .clock-arc.slot {
+    stroke-width: 12;
+  }
+  
+  .available-slots {
+    padding: 15px;
+  }
+  
+  .slot-item {
+    padding: 8px 10px;
+  }
+  
+  .quick-actions,
+  .summary-card,
+  .clock-section {
+    padding: 1rem;
+  }
+}
+
+/* ==================
+   📋 AVAILABLE SLOTS
+   ================== */
+.available-slots {
+  margin-bottom: 2rem;
+}
+
+.slots-list {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slot-item {
+  width: 90%;
+  margin: 0 auto;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.slot-item:hover {
+  background: var(--primary);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.slot-item.active {
+  background: var(--primary);
+  border-color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+.slot-time {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.slot-item:hover .slot-time,
+.slot-item.active .slot-time {
+  color: white;
+}
+
+.slot-duration {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.slot-item:hover .slot-duration,
+.slot-item.active .slot-duration {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ==================
+   📋 CALENDAR STYLES
+   ================== */
+.clock-calendar {
+  background: var(--form-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  min-width: 300px;
+  max-width: 350px;
+  height: 355px;
+}
+
+.clock-calendar .calendar-header, .timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.calendar-title {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.calendar-nav-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.2s ease;
+}
+
+.calendar-nav-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.clock-calendar .calendar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.clock-calendar .calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 5px;
+}
+
+.clock-calendar .weekday {
+  text-align: center;
+  padding: 8px 4px;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--surface-bg);
+  border-radius: 4px;
+}
+
+.clock-calendar .calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.clock-calendar .calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-bg);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 4px;
+}
+
+.clock-calendar .calendar-day:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.clock-calendar .calendar-day.other-month {
+  opacity: 0.4;
+  background: var(--form-bg);
+}
+
+.clock-calendar .calendar-day.today {
+  color: var(--accent) !important;
+  font-weight: 600;
+}
+
+.calendar-day.today.selected.has-slots {
+  background: var(--bg-color) !important;
+}
+
+.clock-calendar .calendar-day.selected {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+
+.clock-calendar .calendar-day.has-slots {
+  color: white;
+}
+
+.clock-calendar .calendar-day.has-slots:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+}
+
+.clock-calendar .day-number {
+  font-size: 0.8em;
+  font-weight: 500;
+  z-index: 1;
+}
+
+.clock-calendar .day-slots-indicator {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  text-align: center;
+}
+
+.clock-calendar .day-slots-count {
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 0.6em;
+  font-weight: 500;
+} 

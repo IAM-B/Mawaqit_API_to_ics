@@ -1,4 +1,23 @@
 /**
+ * Clock Component
+ * Handles the circular clock display with prayer times and slots
+ */
+
+/**
+ * Utility function to format date consistently
+ * @param {Date} date - The date to format
+ * @returns {string} - The formatted date (ex: "Mon 15 Jan")
+ */
+function formatDateForDisplay(date) {
+  const options = { 
+    weekday: 'short', 
+    day: 'numeric',
+    month: 'short'
+  };
+  return date.toLocaleDateString('fr-FR', options);
+}
+
+/**
  * Clock class for displaying prayer times and available slots
  */
 class Clock {
@@ -296,25 +315,6 @@ class Clock {
   }
 
   /**
-   * Formats date for display
-   */
-  formatDate(data) {
-    if (!data) return '';
-    if (data.date) {
-      const [day, month, year] = data.date.split('/');
-      const date = new Date(year, month - 1, day);
-      return date.toLocaleDateString('fr-FR', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      });
-    }
-    return this.scope === 'month' ? `Day ${data.day}` : 
-           this.scope === 'year' ? `Month ${data.month}` : 'Today';
-  }
-
-  /**
    * Updates the available slots list
    */
   updateAvailableSlots(data) {
@@ -323,7 +323,7 @@ class Clock {
     this.slotsContainer.innerHTML = '';
 
     if (!data || !data.slots || data.slots.length === 0) {
-      this.slotsContainer.innerHTML = '<p>Aucun créneau disponible pour cette période.</p>';
+      this.slotsContainer.innerHTML = '<p>No slots available for this period.</p>';
       return;
     }
 
@@ -456,8 +456,10 @@ class Clock {
 
     // Update date
     const dateElement = document.getElementById('currentDate');
-    if (dateElement) {
-      dateElement.textContent = this.formatDate(currentData);
+    if (dateElement && currentData && currentData.date) {
+      const [day, month, year] = currentData.date.split('/');
+      const date = new Date(year, month - 1, day);
+      dateElement.textContent = formatDateForDisplay(date);
     }
 
     // Update timezone

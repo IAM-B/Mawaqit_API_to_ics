@@ -1,16 +1,36 @@
 /**
- * Timeline verticale (agenda) pour visualiser les créneaux de prières, slots et empty
- * Inspiré de Google/Apple Calendar avec une grille horaire verticale
+ * Vertical Timeline (agenda) to visualize prayer slots, slots and empty slots
+ * Inspired by Google/Apple Calendar with a vertical time grid
+ * 
+ * This class handles:
+ * - Display of an SVG timeline with time grid
+ * - Toggle between timeline view and traditional slots view
+ * - Display of events (prayers, slots, empty slots)
+ * - User interactions (tooltips, clicks)
  */
 
-console.log('timeline.js chargé');
-console.log('Timeline instanciée');
+console.log('timeline.js loaded');
+console.log('Timeline instantiated');
 
-// Constante pour la graduation : 60px par heure
+// Constant for graduation: 60px per hour
 const HOUR_HEIGHT = 60;
-const TIMELINE_HEIGHT = 24 * HOUR_HEIGHT; // 1440px pour 24 heures
+const TIMELINE_HEIGHT = 24 * HOUR_HEIGHT; // 1440px for 24 hours
 const HOUR_LABEL_WIDTH = 50;
 const EVENT_MARGIN = 4;
+
+/**
+ * Utility function to format date consistently
+ * @param {Date} date - The date to format
+ * @returns {string} - The formatted date (ex: "Mon 15 Jan")
+ */
+function formatDateForDisplay(date) {
+  const options = { 
+    weekday: 'short', 
+    day: 'numeric',
+    month: 'short'
+  };
+  return date.toLocaleDateString('fr-FR', options);
+}
 
 class Timeline {
   constructor() {
@@ -21,86 +41,59 @@ class Timeline {
     this.scope = 'today';
     this.icsDays = [];
     this.tooltip = null;
+    this.currentView = 'timeline'; // 'timeline' or 'slots'
     this.init();
   }
 
   /**
-   * Initialiser la timeline
+   * Initialize the timeline
    */
   init() {
     this.createTimelineContainer();
     this.createTooltip();
+    this.setupViewToggle();
+    
+    // Check that initialization went well
+    if (this.container && this.svg) {
+      console.log('✅ Timeline initialized successfully');
+      this.showTimelineView();
+    } else {
+      console.warn('⚠️ Timeline not initialized, using slots view by default');
+      this.showSlotsView();
+    }
   }
 
   /**
-   * Créer le conteneur de la timeline
+   * Create the timeline container
    */
   createTimelineContainer() {
-    // Remplacer le defaultSlotsView par la timeline
-    const defaultSlotsView = document.getElementById('defaultSlotsView');
-    if (defaultSlotsView) {
-      // Créer le nouveau conteneur timeline
-      const timelineContainer = document.createElement('div');
-      timelineContainer.id = 'timelineContainer';
-      timelineContainer.className = 'timeline-container';
+    // Use the existing HTML structure in the template
+    this.container = document.getElementById('defaultSlotsView');
+    this.svg = document.querySelector('.timeline-svg');
+    
+    if (this.container && this.svg) {
+      console.log('✅ Timeline structure found in template');
       
-      // Créer l'en-tête de la timeline
-      const timelineHeader = document.createElement('div');
-      timelineHeader.className = 'timeline-header';
-      
-      const timelineTitle = document.createElement('h3');
-      timelineTitle.className = 'timeline-title';
-      timelineTitle.innerHTML = '<i class="fa-regular fa-clock"></i> Agenda vertical';
-      
-      const timelineDate = document.createElement('div');
-      timelineDate.className = 'timeline-date';
-      timelineDate.id = 'timelineDate';
-      
-      timelineHeader.appendChild(timelineTitle);
-      timelineHeader.appendChild(timelineDate);
-      
-      // Créer le contenu SVG de la timeline
-      const timelineContent = document.createElement('div');
-      timelineContent.className = 'timeline-content';
-      
-      const svgContainer = document.createElement('div');
-      svgContainer.className = 'timeline-svg-container';
-      
-      // Créer l'élément SVG principal
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('class', 'timeline-svg');
-      svg.setAttribute('viewBox', `0 0 1000 ${TIMELINE_HEIGHT}`);
-      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      
-      // Créer la grille horaire SVG
-      this.createSVGGrid(svg);
-      
-      svgContainer.appendChild(svg);
-      timelineContent.appendChild(svgContainer);
-      timelineContainer.appendChild(timelineHeader);
-      timelineContainer.appendChild(timelineContent);
-      
-      // Remplacer l'ancien conteneur
-      defaultSlotsView.parentNode.replaceChild(timelineContainer, defaultSlotsView);
-      
-      this.container = timelineContainer;
-      this.svg = svg;
+      // Create the SVG time grid
+      this.createSVGGrid(this.svg);
+    } else {
+      console.error('❌ Timeline structure not found in template');
     }
   }
 
   createSVGGrid(svg) {
-    console.log('🔧 Création de la grille SVG');
+    console.log('🔧 Creating SVG grid');
     console.log(`📏 Dimensions: HOUR_HEIGHT=${HOUR_HEIGHT}px, TIMELINE_HEIGHT=${TIMELINE_HEIGHT}px`);
     
-    // Créer le groupe pour la grille
+    // Create the grid group
     const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     gridGroup.setAttribute('class', 'timeline-grid');
     
-    // Créer les lignes horizontales pour chaque heure
+    // Create horizontal lines for each hour
     for (let hour = 0; hour <= 24; hour++) {
       const y = hour * HOUR_HEIGHT;
       
-      // Ligne horizontale
+      // Horizontal line
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('x1', HOUR_LABEL_WIDTH);
       line.setAttribute('y1', y);
@@ -108,7 +101,7 @@ class Timeline {
       line.setAttribute('y2', y);
       line.setAttribute('class', 'timeline-hour-line');
       
-      // Texte de l'heure (seulement pour les heures 0-23)
+      // Hour text (only for hours 0-23)
       if (hour < 24) {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', HOUR_LABEL_WIDTH - 10);
@@ -121,10 +114,10 @@ class Timeline {
       
       gridGroup.appendChild(line);
       
-      console.log(`🕐 Heure ${hour.toString().padStart(2, '0')}:00 → y=${y}px`);
+      console.log(`🕐 Hour ${hour.toString().padStart(2, '0')}:00 → y=${y}px`);
     }
     
-    // Ligne verticale pour séparer les labels des événements
+    // Vertical line to separate labels from events
     const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     verticalLine.setAttribute('x1', HOUR_LABEL_WIDTH);
     verticalLine.setAttribute('y1', 0);
@@ -135,77 +128,79 @@ class Timeline {
     gridGroup.appendChild(verticalLine);
     svg.appendChild(gridGroup);
     
-    console.log('✅ Grille SVG créée avec succès');
+    console.log('✅ SVG grid created successfully');
   }
 
   createTooltip() {
-    this.tooltip = document.createElement('div');
-    this.tooltip.className = 'timeline-tooltip';
-    this.tooltip.style.position = 'absolute';
-    this.tooltip.style.zIndex = '1000';
-    this.tooltip.style.pointerEvents = 'none';
-    document.body.appendChild(this.tooltip);
+    // Check if tooltip already exists
+    this.tooltip = document.querySelector('.timeline-tooltip');
+    
+    if (!this.tooltip) {
+      this.tooltip = document.createElement('div');
+      this.tooltip.className = 'timeline-tooltip';
+      this.tooltip.style.position = 'absolute';
+      this.tooltip.style.zIndex = '1000';
+      this.tooltip.style.pointerEvents = 'none';
+      document.body.appendChild(this.tooltip);
+      console.log('✅ Timeline tooltip created');
+    } else {
+      console.log('✅ Existing timeline tooltip found');
+    }
   }
 
   /**
-   * Initialiser la timeline avec des données
+   * Initialize the timeline with data
    */
   initializeTimeline(segments, scope) {
     this.segments = segments;
     this.scope = scope;
     
-    // Mettre à jour la date affichée
+    // Update the displayed date
     this.updateTimelineDate();
     
-    // Afficher les événements du jour sélectionné (par défaut aujourd'hui)
+    // Display events for the selected day (default today)
     this.displayDayEvents(new Date());
   }
 
   /**
-   * Mettre à jour la date affichée dans l'en-tête
+   * Update the date displayed in the header
    */
   updateTimelineDate() {
-    const timelineDate = document.getElementById('timelineDate');
-    if (timelineDate) {
-      const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      };
-      timelineDate.textContent = this.currentDate.toLocaleDateString('fr-FR', options);
+    const currentDateElement = document.getElementById('currentDate');
+    if (currentDateElement) {
+      currentDateElement.textContent = formatDateForDisplay(this.currentDate);
     }
   }
 
   /**
-   * Afficher les événements d'un jour spécifique
+   * Display events for a specific day
    */
   displayDayEvents(date) {
     this.currentDate = date;
     this.updateTimelineDate();
     
-    // Vider les événements existants
+    // Clear existing events
     this.clearEvents();
     
-    // Trouver les données du jour
+    // Find the day's data
     const dayData = this.getDayData(date);
     if (!dayData) {
       this.showEmptyState();
       return;
     }
     
-    // Afficher les prières
+    // Display prayers
     this.displayPrayers(dayData.prayer_times);
     
-    // Afficher les slots
+    // Display slots
     this.displaySlots(dayData.slots);
     
-    // Afficher les empty slots
+    // Display empty slots
     this.displayEmptySlots(dayData.slots);
   }
 
   /**
-   * Obtenir les données d'un jour spécifique
+   * Get data for a specific day
    */
   getDayData(date) {
     if (!this.segments || this.segments.length === 0) {
@@ -216,12 +211,12 @@ class Timeline {
     const month = date.getMonth();
     const year = date.getFullYear();
     
-    // Pour le scope "today"
+    // For "today" scope
     if (this.scope === 'today' && this.segments.length > 0) {
       return this.segments[0];
     }
     
-    // Pour le scope "month"
+    // For "month" scope
     if (this.scope === 'month') {
       const dayIndex = day - 1;
       if (dayIndex >= 0 && dayIndex < this.segments.length) {
@@ -229,7 +224,7 @@ class Timeline {
       }
     }
     
-    // Pour le scope "year"
+    // For "year" scope
     if (this.scope === 'year') {
       const monthIndex = month;
       if (monthIndex >= 0 && monthIndex < this.segments.length) {
@@ -247,7 +242,7 @@ class Timeline {
   }
 
   /**
-   * Afficher les prières
+   * Display prayers
    */
   displayPrayers(prayerTimes) {
     if (!prayerTimes) return;
@@ -278,117 +273,117 @@ class Timeline {
   }
 
   /**
-   * Afficher les slots
+   * Display slots
    */
   displaySlots(slots) {
     if (!slots || !Array.isArray(slots)) {
-      console.log('⚠️ Aucun slot à afficher ou format invalide');
+      console.log('⚠️ No slots to display or invalid format');
       return;
     }
     
-    console.log('🕐 Traitement des slots:', slots);
-    console.log('📊 Structure du premier slot:', JSON.stringify(slots[0], null, 2));
+    console.log('🕐 Processing slots:', slots);
+    console.log('📊 First slot structure:', JSON.stringify(slots[0], null, 2));
     
     slots.forEach((slot, index) => {
       console.log(`  [${index + 1}] Slot:`, slot);
       
-      // Vérifier les propriétés disponibles
+      // Check available properties
       const startTime = slot.start_time || slot.start || slot.startTime;
       const endTime = slot.end_time || slot.end || slot.endTime;
       const title = slot.title || slot.summary || `Slot ${index + 1}`;
       
       if (startTime && endTime) {
-        console.log(`    ✅ Création événement: ${title} (${startTime}-${endTime})`);
+        console.log(`    ✅ Creating event: ${title} (${startTime}-${endTime})`);
         this.createSVGEvent(title, startTime, endTime, 'slot', 'slot');
       } else {
-        console.warn(`    ⚠️ Slot ${index + 1} sans horaires valides:`, { startTime, endTime });
+        console.warn(`    ⚠️ Slot ${index + 1} without valid times:`, { startTime, endTime });
       }
     });
   }
 
   /**
-   * Afficher les empty slots
+   * Display empty slots
    */
   displayEmptySlots(slots) {
     if (!slots || !Array.isArray(slots)) {
-      console.log('⚠️ Aucun créneau vide à afficher ou format invalide');
+      console.log('⚠️ No empty slots to display or invalid format');
       return;
     }
     
-    console.log('🕳️ Traitement des créneaux vides:', slots);
+    console.log('🕳️ Processing empty slots:', slots);
     
     slots.forEach((slot, index) => {
       console.log(`  [${index + 1}] Empty slot:`, slot);
       
-      // Vérifier si c'est un créneau vide (différentes propriétés possibles)
+      // Check if it's an empty slot (different possible properties)
       const isEmpty = slot.is_empty || slot.isEmpty || slot.empty || slot.available === false || slot.status === 'empty';
       
-      // Si aucune propriété spécifique, on peut aussi vérifier s'il y a des événements dans ce créneau
+      // If no specific property, we can also check if there are events in this slot
       const hasEvents = slot.events && slot.events.length > 0;
       const isActuallyEmpty = isEmpty || (!hasEvents && slot.available !== true);
       
       if (isActuallyEmpty) {
-        // Vérifier les propriétés disponibles
+        // Check available properties
         const startTime = slot.start_time || slot.start || slot.startTime;
         const endTime = slot.end_time || slot.end || slot.endTime;
-        const title = slot.title || slot.summary || 'Créneau libre';
+        const title = slot.title || slot.summary || 'Free slot';
         
         if (startTime && endTime) {
-          console.log(`    ✅ Création événement vide: ${title} (${startTime}-${endTime})`);
+          console.log(`    ✅ Creating empty event: ${title} (${startTime}-${endTime})`);
           this.createSVGEvent(title, startTime, endTime, 'empty', 'empty');
         } else {
-          console.warn(`    ⚠️ Empty slot ${index + 1} sans horaires valides:`, { startTime, endTime });
+          console.warn(`    ⚠️ Empty slot ${index + 1} without valid times:`, { startTime, endTime });
         }
       } else {
-        console.log(`    ℹ️ Slot ${index + 1} n'est pas vide (${isEmpty}, hasEvents: ${hasEvents})`);
+        console.log(`    ℹ️ Slot ${index + 1} is not empty (${isEmpty}, hasEvents: ${hasEvents})`);
       }
     });
   }
 
   /**
-   * Créer un événement SVG avec calculs précis
+   * Create an SVG event with precise calculations
    */
   createSVGEvent(title, startTime, endTime, type, className) {
-    console.log(`🔧 Création événement SVG: ${title} (${startTime}-${endTime})`);
+    console.log(`🔧 Creating SVG event: ${title} (${startTime}-${endTime})`);
     
-    // Vérifications de sécurité
+    // Security checks
     if (!startTime || !endTime) {
-      console.error(`❌ Impossible de créer l'événement "${title}": horaires manquants`, { startTime, endTime });
+      console.error(`❌ Cannot create event "${title}": missing times`, { startTime, endTime });
       return;
     }
     
     if (!this.svg) {
-      console.error('❌ SVG non initialisé');
+      console.error('❌ SVG not initialized');
       return;
     }
     
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
     
-    // Vérifier que les minutes sont valides
+    // Check that minutes are valid
     if (startMin === 0 && startTime !== '00:00') {
-      console.error(`❌ Heure de début invalide pour "${title}": ${startTime}`);
+      console.error(`❌ Invalid start time for "${title}": ${startTime}`);
       return;
     }
     
     if (endMin === 0 && endTime !== '00:00') {
-      console.error(`❌ Heure de fin invalide pour "${title}": ${endTime}`);
+      console.error(`❌ Invalid end time for "${title}": ${endTime}`);
       return;
     }
     
-    // Calculs précis de position
+    // Precise position calculations
     const y = (startMin / 60) * HOUR_HEIGHT;
     const height = Math.max((endMin - startMin) / 60 * HOUR_HEIGHT, 20);
     
-    console.log(`  📐 Calculs: startMin=${startMin}, endMin=${endMin}`);
+    console.log(`  📐 Calculations: startMin=${startMin}, endMin=${endMin}`);
     console.log(`  📏 Position: y=${y}px, height=${height}px`);
     
-    // Vérifier que la position est dans les limites
+    // Check that position is within limits
     if (y < 0 || y > TIMELINE_HEIGHT) {
-      console.warn(`⚠️ Position hors limites pour "${title}": y=${y}px (limite: 0-${TIMELINE_HEIGHT}px)`);
+      console.warn(`⚠️ Position out of bounds for "${title}": y=${y}px (limit: 0-${TIMELINE_HEIGHT}px)`);
     }
     
-    // Créer le rectangle SVG
+    // Create SVG rectangle
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', HOUR_LABEL_WIDTH + EVENT_MARGIN);
     rect.setAttribute('y', y);
@@ -398,40 +393,40 @@ class Timeline {
     rect.setAttribute('ry', 4);
     rect.setAttribute('class', `timeline-event ${className}`);
     
-    // Créer le texte SVG
+    // Create SVG text
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', HOUR_LABEL_WIDTH + EVENT_MARGIN + 10);
     text.setAttribute('y', y + height / 2);
     text.textContent = title;
     text.setAttribute('class', 'timeline-event-text');
     
-    // Ajouter les événements
+    // Add events
     rect.addEventListener('mouseenter', (e) => this.showTooltip(e, title, startTime, endTime));
     rect.addEventListener('mouseleave', () => this.hideTooltip());
     rect.addEventListener('click', () => this.onEventClick(type, title, startTime, endTime));
     
-    // Ajouter au SVG
+    // Add to SVG
     this.svg.appendChild(rect);
     this.svg.appendChild(text);
     
-    console.log(`  ✅ Événement SVG créé et ajouté`);
+    console.log(`  ✅ SVG event created and added`);
   }
 
   /**
-   * Calculer l'heure de fin d'une prière (35 minutes par défaut)
+   * Calculate prayer end time (35 minutes by default)
    */
   calculatePrayerEndTime(startTime) {
     const startMin = timeToMinutes(startTime);
-    const endMin = startMin + 35; // 35 minutes de durée
+    const endMin = startMin + 35; // 35 minutes duration
     return minutesToTime(endMin);
   }
 
   /**
-   * Afficher le tooltip
+   * Show tooltip
    */
   showTooltip(event, title, startTime, endTime) {
     if (this.tooltip) {
-      this.tooltip.textContent = `${title} - ${startTime} à ${endTime}`;
+      this.tooltip.textContent = `${title} - ${startTime} to ${endTime}`;
       this.tooltip.style.left = (event.clientX + 10) + 'px';
       this.tooltip.style.top = (event.clientY - 30) + 'px';
       this.tooltip.classList.add('show');
@@ -439,7 +434,7 @@ class Timeline {
   }
 
   /**
-   * Masquer le tooltip
+   * Hide tooltip
    */
   hideTooltip() {
     if (this.tooltip) {
@@ -448,10 +443,10 @@ class Timeline {
   }
 
   /**
-   * Vider tous les événements
+   * Clear all events
    */
   clearEvents() {
-    // Supprimer tous les éléments SVG sauf la grille
+    // Remove all SVG elements except the grid
     const elementsToRemove = [];
     for (let i = 0; i < this.svg.children.length; i++) {
       const child = this.svg.children[i];
@@ -464,7 +459,7 @@ class Timeline {
   }
 
   /**
-   * Afficher l'état vide
+   * Show empty state
    */
   showEmptyState() {
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -474,23 +469,23 @@ class Timeline {
     text.setAttribute('dominant-baseline', 'middle');
     text.setAttribute('fill', 'var(--text-muted)');
     text.setAttribute('font-size', '16px');
-    text.textContent = 'Aucun événement pour ce jour';
+    text.textContent = 'No events for this day';
     
     this.svg.appendChild(text);
   }
 
   /**
-   * Gérer le clic sur un événement
+   * Handle click on an event
    */
   onEventClick(type, title, startTime, endTime) {
-    console.log(`🖱️ Clic sur événement: ${type} - ${title} (${startTime}-${endTime})`);
+    console.log(`🖱️ Click on event: ${type} - ${title} (${startTime}-${endTime})`);
     
-    // Ici vous pouvez ajouter la logique pour gérer les clics
-    // Par exemple, ouvrir un modal, naviguer vers une page, etc.
+    // Here you can add logic to handle clicks
+    // For example, open a modal, navigate to a page, etc.
   }
 
   /**
-   * Navigation entre les jours
+   * Navigate between days
    */
   navigateToDay(date) {
     this.displayDayEvents(date);
@@ -509,7 +504,7 @@ class Timeline {
   }
 
   /**
-   * Synchroniser avec le calendrier
+   * Synchronize with calendar
    */
   syncWithCalendar(day, segments) {
     this.segments = segments;
@@ -517,11 +512,11 @@ class Timeline {
   }
 
   /**
-   * Charger et afficher les données ICS
+   * Load and display ICS data
    */
   async loadAndDisplayTimelineICS(masjid_id, year, month) {
     try {
-      console.log('🔄 Chargement des données ICS pour la timeline');
+      console.log('🔄 Loading ICS data for timeline');
       
       const response = await fetch(`/api/ics/${masjid_id}/${year}/${month}/json`);
       if (!response.ok) {
@@ -529,117 +524,215 @@ class Timeline {
       }
       
       const data = await response.json();
-      console.log('📊 Données ICS reçues:', data);
+      console.log('📊 ICS data received:', data);
       
       this.icsDays = data.days || [];
       
       if (this.icsDays.length > 0) {
-        // Afficher le premier jour par défaut
+        // Display first day by default
         this.displayICSForDay(0);
       } else {
-        console.log('⚠️ Aucun jour trouvé dans les données ICS');
+        console.log('⚠️ No days found in ICS data');
         this.showEmptyState();
       }
       
     } catch (error) {
-      console.error('❌ Erreur lors du chargement des données ICS:', error);
+      console.error('❌ Error loading ICS data:', error);
       this.showEmptyState();
     }
   }
 
   /**
-   * Afficher un jour ICS dans la timeline
+   * Display an ICS day in the timeline
    */
   displayICSForDay(dayIndex) {
     console.log('=== 🕐 TIMELINE SVG DEBUG START ===');
-    console.log('displayICSForDay appelé pour index', dayIndex);
+    console.log('displayICSForDay called for index', dayIndex);
     
     if (!this.icsDays || this.icsDays.length === 0) {
-      console.log('❌ Aucune donnée ICS disponible');
+      console.log('❌ No ICS data available');
       return;
     }
     
     const dayData = this.icsDays[dayIndex];
     if (!dayData) {
-      console.log('❌ Aucune donnée pour le jour', dayIndex);
+      console.log('❌ No data for day', dayIndex);
       return;
     }
     
     this.clearEvents();
 
-    console.log('📅 Date affichée :', dayData.date);
-    console.log('📊 Données reçues :', {
+    console.log('📅 Date displayed:', dayData.date);
+    console.log('📊 Data received:', {
       prayers: dayData.prayers?.length || 0,
       slots: dayData.slots?.length || 0,
       empty: dayData.empty?.length || 0
     });
 
-    // Afficher chaque prière
+    // Display each prayer
     if (dayData.prayers && dayData.prayers.length > 0) {
-      console.log('🕌 Traitement des prières :');
+      console.log('🕌 Processing prayers:');
       dayData.prayers.forEach((prayer, index) => {
         console.log(`  [${index + 1}] ${prayer.summary}: ${prayer.start} - ${prayer.end}`);
         
-        // Extraire l'heure exacte de la prière depuis le summary
+        // Extract exact prayer time from summary
         const prayerTimeMatch = prayer.summary.match(/\((\d{2}:\d{2})\)/);
         let displayStart = prayer.start;
         let displayEnd = prayer.end;
         
         if (prayerTimeMatch) {
           const prayerTime = prayerTimeMatch[1];
-          console.log(`    🎯 Heure exacte de la prière: ${prayerTime}`);
+          console.log(`    🎯 Exact prayer time: ${prayerTime}`);
           
-          // Utiliser l'heure exacte de la prière pour le positionnement
+          // Use exact prayer time for positioning
           displayStart = prayerTime;
-          // Calculer la fin basée sur une durée standard de 35 minutes
+          // Calculate end based on standard 35 minute duration
           const prayerStartMin = timeToMinutes(prayerTime);
-          const prayerEndMin = prayerStartMin + 35; // 35 minutes de durée
+          const prayerEndMin = prayerStartMin + 35; // 35 minutes duration
           displayEnd = minutesToTime(prayerEndMin);
           
-          console.log(`    📏 Ajustement: heure_prière=${prayerTime}, durée=35min, fin=${displayEnd}`);
+          console.log(`    📏 Adjustment: prayer_time=${prayerTime}, duration=35min, end=${displayEnd}`);
         }
         
         this.createSVGEvent(prayer.summary, displayStart, displayEnd, 'prayer', 'prayer');
-        console.log(`    🎯 Élément SVG créé et ajouté`);
+        console.log(`    🎯 SVG element created and added`);
       });
     } else {
-      console.log('⚠️ Aucune prière à afficher');
+      console.log('⚠️ No prayers to display');
     }
 
-    // Afficher chaque slot
+    // Display each slot
     if (dayData.slots && dayData.slots.length > 0) {
-      console.log('🕐 Traitement des slots :');
+      console.log('🕐 Processing slots:');
       dayData.slots.forEach((slot, index) => {
         console.log(`  [${index + 1}] ${slot.summary}: ${slot.start} - ${slot.end}`);
         this.createSVGEvent(slot.summary, slot.start, slot.end, 'slot', 'slot');
       });
     } else {
-      console.log('⚠️ Aucun slot à afficher');
+      console.log('⚠️ No slots to display');
     }
 
-    // Afficher chaque empty
+    // Display each empty
     if (dayData.empty && dayData.empty.length > 0) {
-      console.log('🕳️ Traitement des créneaux vides :');
+      console.log('🕳️ Processing empty slots:');
       dayData.empty.forEach((empty, index) => {
         console.log(`  [${index + 1}] ${empty.summary}: ${empty.start} - ${empty.end}`);
         this.createSVGEvent(empty.summary, empty.start, empty.end, 'empty', 'empty');
       });
     } else {
-      console.log('⚠️ Aucun créneau vide à afficher');
+      console.log('⚠️ No empty slots to display');
     }
 
-    // Mettre à jour la date affichée
+    // Update displayed date
     this.currentDate = new Date(dayData.date);
     this.updateTimelineDate();
     
     console.log('=== 🕐 TIMELINE SVG DEBUG END ===');
   }
+
+  /**
+   * Show timeline view
+   */
+  showTimelineView() {
+    const timelineContent = document.querySelector('.timeline-content');
+    const slotsList = document.getElementById('availableSlotsList');
+    
+    if (timelineContent && slotsList) {
+      timelineContent.style.display = 'flex';
+      slotsList.style.display = 'none';
+      this.currentView = 'timeline';
+      console.log('✅ Timeline view activated');
+    }
+  }
+
+  /**
+   * Show traditional slots view
+   */
+  showSlotsView() {
+    const timelineContent = document.querySelector('.timeline-content');
+    const slotsList = document.getElementById('availableSlotsList');
+    
+    if (timelineContent && slotsList) {
+      timelineContent.style.display = 'none';
+      slotsList.style.display = 'block';
+      this.currentView = 'slots';
+      console.log('✅ Traditional slots view activated');
+    }
+  }
+
+  /**
+   * Get current view
+   */
+  getCurrentView() {
+    return this.currentView;
+  }
+
+  /**
+   * Check if timeline is initialized
+   */
+  isInitialized() {
+    return this.container !== null && this.svg !== null;
+  }
+
+  /**
+   * Setup view toggle button
+   */
+  setupViewToggle() {
+    const toggleBtn = document.getElementById('toggleViewBtn');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        this.toggleView();
+      });
+      console.log('✅ Toggle button configured');
+    }
+    
+    // Setup navigation buttons
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        this.previousDay();
+      });
+      console.log('✅ Previous button configured');
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        this.nextDay();
+      });
+      console.log('✅ Next button configured');
+    }
+  }
+
+  /**
+   * Toggle between timeline view and slots view
+   */
+  toggleView() {
+    const toggleBtn = document.getElementById('toggleViewBtn');
+    
+    if (this.currentView === 'timeline') {
+      // Switch to slots view
+      this.showSlotsView();
+      if (toggleBtn) {
+        toggleBtn.innerHTML = '<i class="fa-solid fa-clock"></i>';
+        toggleBtn.title = 'Switch to timeline view';
+      }
+    } else {
+      // Switch to timeline view
+      this.showTimelineView();
+      if (toggleBtn) {
+        toggleBtn.innerHTML = '<i class="fa-solid fa-list"></i>';
+        toggleBtn.title = 'Switch to list view';
+      }
+    }
+  }
 }
 
-// Fonctions utilitaires
+// Utility functions
 function timeToMinutes(timeStr) {
   if (!timeStr || typeof timeStr !== 'string') {
-    console.warn(`⚠️ timeToMinutes reçu une valeur invalide:`, timeStr);
+    console.warn(`⚠️ timeToMinutes received invalid value:`, timeStr);
     return 0;
   }
   const [h, m] = timeStr.split(':').map(Number);
@@ -652,7 +745,7 @@ function minutesToTime(minutes) {
   return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
 }
 
-// Initialiser la timeline quand le DOM est prêt
+// Initialize timeline when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   window.timeline = new Timeline();
   window.timeline.init();
