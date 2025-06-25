@@ -280,10 +280,9 @@
 .timeline-content {
   flex: 1;
   overflow-y: auto;
-  position: relative;
-  border-radius: 8px;
+  border-radius: 0 0 8px 8px;
   background: var(--surface-bg);
-  border: 1px solid var(--border-light);
+  position: relative;
 }
 
 /* ==================
@@ -294,6 +293,7 @@
   grid-template-columns: 60px 1fr;
   min-height: 1440px; /* 24 heures * 60px */
   position: relative;
+  overflow: hidden;
 }
 
 .timeline-hours {
@@ -307,13 +307,14 @@
 .timeline-hour {
   height: 60px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   font-size: 0.8em;
   color: var(--text-muted);
   font-weight: 500;
   border-bottom: 1px solid var(--border-light);
   position: relative;
+  padding-top: 8px;
 }
 
 .timeline-hour:last-child {

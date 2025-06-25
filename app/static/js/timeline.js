@@ -6,13 +6,21 @@
 console.log('timeline.js chargé');
 console.log('Timeline instanciée');
 
+// Constante pour la graduation : 60px par heure
+const HOUR_HEIGHT = 60;
+const TIMELINE_HEIGHT = 24 * HOUR_HEIGHT; // 1440px pour 24 heures
+const HOUR_LABEL_WIDTH = 50;
+const EVENT_MARGIN = 4;
+
 class Timeline {
   constructor() {
     this.container = null;
+    this.svg = null;
     this.currentDate = new Date();
     this.segments = [];
     this.scope = 'today';
     this.icsDays = [];
+    this.tooltip = null;
     this.init();
   }
 
@@ -21,6 +29,7 @@ class Timeline {
    */
   init() {
     this.createTimelineContainer();
+    this.createTooltip();
   }
 
   /**
@@ -50,60 +59,24 @@ class Timeline {
       timelineHeader.appendChild(timelineTitle);
       timelineHeader.appendChild(timelineDate);
       
-      // Créer le contenu de la timeline
+      // Créer le contenu SVG de la timeline
       const timelineContent = document.createElement('div');
       timelineContent.className = 'timeline-content';
       
-      const timelineGrid = document.createElement('div');
-      timelineGrid.className = 'timeline-grid';
+      const svgContainer = document.createElement('div');
+      svgContainer.className = 'timeline-svg-container';
       
-      // Créer la colonne des heures
-      const timelineHours = document.createElement('div');
-      timelineHours.className = 'timeline-hours';
+      // Créer l'élément SVG principal
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'timeline-svg');
+      svg.setAttribute('viewBox', `0 0 1000 ${TIMELINE_HEIGHT}`);
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       
-      // Générer les heures (00:00 à 23:00)
-      for (let hour = 0; hour < 24; hour++) {
-        const hourElement = document.createElement('div');
-        hourElement.className = 'timeline-hour';
-        hourElement.textContent = `${hour.toString().padStart(2, '0')}:00`;
-        timelineHours.appendChild(hourElement);
-      }
+      // Créer la grille horaire SVG
+      this.createSVGGrid(svg);
       
-      // Créer la zone des événements
-      const timelineEvents = document.createElement('div');
-      timelineEvents.className = 'timeline-events';
-      
-      // Créer les lignes d'événements (24 heures)
-      for (let hour = 0; hour < 24; hour++) {
-        const eventRow = document.createElement('div');
-        eventRow.className = 'timeline-event-row';
-        timelineEvents.appendChild(eventRow);
-      }
-      
-      // Créer les conteneurs de couches d'événements
-      const eventsContainer = document.createElement('div');
-      eventsContainer.className = 'timeline-events-container';
-      
-      const prayersLayer = document.createElement('div');
-      prayersLayer.className = 'timeline-event-layer prayers';
-      
-      const slotsLayer = document.createElement('div');
-      slotsLayer.className = 'timeline-event-layer slots';
-      
-      const emptyLayer = document.createElement('div');
-      emptyLayer.className = 'timeline-event-layer empty';
-      
-      eventsContainer.appendChild(prayersLayer);
-      eventsContainer.appendChild(slotsLayer);
-      eventsContainer.appendChild(emptyLayer);
-      
-      timelineEvents.appendChild(eventsContainer);
-      
-      // Assembler la grille
-      timelineGrid.appendChild(timelineHours);
-      timelineGrid.appendChild(timelineEvents);
-      
-      timelineContent.appendChild(timelineGrid);
+      svgContainer.appendChild(svg);
+      timelineContent.appendChild(svgContainer);
       timelineContainer.appendChild(timelineHeader);
       timelineContainer.appendChild(timelineContent);
       
@@ -111,7 +84,67 @@ class Timeline {
       defaultSlotsView.parentNode.replaceChild(timelineContainer, defaultSlotsView);
       
       this.container = timelineContainer;
+      this.svg = svg;
     }
+  }
+
+  createSVGGrid(svg) {
+    console.log('🔧 Création de la grille SVG');
+    console.log(`📏 Dimensions: HOUR_HEIGHT=${HOUR_HEIGHT}px, TIMELINE_HEIGHT=${TIMELINE_HEIGHT}px`);
+    
+    // Créer le groupe pour la grille
+    const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gridGroup.setAttribute('class', 'timeline-grid');
+    
+    // Créer les lignes horizontales pour chaque heure
+    for (let hour = 0; hour <= 24; hour++) {
+      const y = hour * HOUR_HEIGHT;
+      
+      // Ligne horizontale
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', HOUR_LABEL_WIDTH);
+      line.setAttribute('y1', y);
+      line.setAttribute('x2', '100%');
+      line.setAttribute('y2', y);
+      line.setAttribute('class', 'timeline-hour-line');
+      
+      // Texte de l'heure (seulement pour les heures 0-23)
+      if (hour < 24) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', HOUR_LABEL_WIDTH - 10);
+        text.setAttribute('y', y + HOUR_HEIGHT / 2);
+        text.textContent = `${hour.toString().padStart(2, '0')}:00`;
+        text.setAttribute('class', 'timeline-hour-text');
+        
+        gridGroup.appendChild(text);
+      }
+      
+      gridGroup.appendChild(line);
+      
+      console.log(`🕐 Heure ${hour.toString().padStart(2, '0')}:00 → y=${y}px`);
+    }
+    
+    // Ligne verticale pour séparer les labels des événements
+    const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    verticalLine.setAttribute('x1', HOUR_LABEL_WIDTH);
+    verticalLine.setAttribute('y1', 0);
+    verticalLine.setAttribute('x2', HOUR_LABEL_WIDTH);
+    verticalLine.setAttribute('y2', TIMELINE_HEIGHT);
+    verticalLine.setAttribute('class', 'timeline-hour-line');
+    
+    gridGroup.appendChild(verticalLine);
+    svg.appendChild(gridGroup);
+    
+    console.log('✅ Grille SVG créée avec succès');
+  }
+
+  createTooltip() {
+    this.tooltip = document.createElement('div');
+    this.tooltip.className = 'timeline-tooltip';
+    this.tooltip.style.position = 'absolute';
+    this.tooltip.style.zIndex = '1000';
+    this.tooltip.style.pointerEvents = 'none';
+    document.body.appendChild(this.tooltip);
   }
 
   /**
@@ -151,8 +184,8 @@ class Timeline {
     this.currentDate = date;
     this.updateTimelineDate();
     
-    // Vider les couches d'événements
-    this.clearEventLayers();
+    // Vider les événements existants
+    this.clearEvents();
     
     // Trouver les données du jour
     const dayData = this.getDayData(date);
@@ -219,9 +252,6 @@ class Timeline {
   displayPrayers(prayerTimes) {
     if (!prayerTimes) return;
     
-    const prayersLayer = this.container.querySelector('.timeline-event-layer.prayers');
-    if (!prayersLayer) return;
-    
     const prayerNames = {
       'fajr': 'Fajr',
       'sunset': 'Sunset',
@@ -231,207 +261,247 @@ class Timeline {
       'icha': 'Icha'
     };
     
-    Object.entries(prayerTimes).forEach(([prayerName, timeStr]) => {
-      if (!timeStr) return;
-      
-      const event = this.createTimelineEvent(
-        prayerNames[prayerName] || prayerName,
-        timeStr,
-        timeStr, // Même heure de début et fin pour les prières
-        'prayer',
-        prayersLayer
-      );
-      
-      if (event) {
-        event.setAttribute('data-tooltip', `${prayerNames[prayerName] || prayerName} - ${timeStr}`);
+    Object.entries(prayerTimes).forEach(([prayer, time]) => {
+      if (time && prayerNames[prayer]) {
+        const startTime = time;
+        const endTime = this.calculatePrayerEndTime(time);
+        
+        this.createSVGEvent(
+          prayerNames[prayer],
+          startTime,
+          endTime,
+          'prayer',
+          'prayer'
+        );
       }
     });
   }
 
   /**
-   * Afficher les slots disponibles
+   * Afficher les slots
    */
   displaySlots(slots) {
-    if (!slots || slots.length === 0) return;
+    if (!slots || !Array.isArray(slots)) {
+      console.log('⚠️ Aucun slot à afficher ou format invalide');
+      return;
+    }
     
-    const slotsLayer = this.container.querySelector('.timeline-event-layer.slots');
-    if (!slotsLayer) return;
+    console.log('🕐 Traitement des slots:', slots);
+    console.log('📊 Structure du premier slot:', JSON.stringify(slots[0], null, 2));
     
     slots.forEach((slot, index) => {
-      const event = this.createTimelineEvent(
-        `Disponible ${index + 1}`,
-        slot.start,
-        slot.end,
-        'slot',
-        slotsLayer
-      );
+      console.log(`  [${index + 1}] Slot:`, slot);
       
-      if (event) {
-        const duration = this.calculateDuration(slot.start, slot.end);
-        event.setAttribute('data-tooltip', `Créneau disponible - ${slot.start} à ${slot.end} (${duration})`);
+      // Vérifier les propriétés disponibles
+      const startTime = slot.start_time || slot.start || slot.startTime;
+      const endTime = slot.end_time || slot.end || slot.endTime;
+      const title = slot.title || slot.summary || `Slot ${index + 1}`;
+      
+      if (startTime && endTime) {
+        console.log(`    ✅ Création événement: ${title} (${startTime}-${endTime})`);
+        this.createSVGEvent(title, startTime, endTime, 'slot', 'slot');
+      } else {
+        console.warn(`    ⚠️ Slot ${index + 1} sans horaires valides:`, { startTime, endTime });
       }
     });
   }
 
   /**
-   * Afficher les empty slots (créneaux vides)
+   * Afficher les empty slots
    */
   displayEmptySlots(slots) {
-    if (!slots || slots.length === 0) return;
+    if (!slots || !Array.isArray(slots)) {
+      console.log('⚠️ Aucun créneau vide à afficher ou format invalide');
+      return;
+    }
     
-    const emptyLayer = this.container.querySelector('.timeline-event-layer.empty');
-    if (!emptyLayer) return;
+    console.log('🕳️ Traitement des créneaux vides:', slots);
     
-    // Utiliser les empty_slots fournis par le backend
-    const dayData = this.getDayData(this.currentDate);
-    if (!dayData || !dayData.empty_slots) return;
-    
-    dayData.empty_slots.forEach((emptySlot, index) => {
-      const event = this.createTimelineEvent(
-        `Vide ${index + 1}`,
-        emptySlot.start,
-        emptySlot.end,
-        'empty',
-        emptyLayer
-      );
+    slots.forEach((slot, index) => {
+      console.log(`  [${index + 1}] Empty slot:`, slot);
       
-      if (event) {
-        const duration = this.calculateDuration(emptySlot.start, emptySlot.end);
-        event.setAttribute('data-tooltip', `Créneau vide - ${emptySlot.start} à ${emptySlot.end} (${duration})`);
+      // Vérifier si c'est un créneau vide (différentes propriétés possibles)
+      const isEmpty = slot.is_empty || slot.isEmpty || slot.empty || slot.available === false || slot.status === 'empty';
+      
+      // Si aucune propriété spécifique, on peut aussi vérifier s'il y a des événements dans ce créneau
+      const hasEvents = slot.events && slot.events.length > 0;
+      const isActuallyEmpty = isEmpty || (!hasEvents && slot.available !== true);
+      
+      if (isActuallyEmpty) {
+        // Vérifier les propriétés disponibles
+        const startTime = slot.start_time || slot.start || slot.startTime;
+        const endTime = slot.end_time || slot.end || slot.endTime;
+        const title = slot.title || slot.summary || 'Créneau libre';
+        
+        if (startTime && endTime) {
+          console.log(`    ✅ Création événement vide: ${title} (${startTime}-${endTime})`);
+          this.createSVGEvent(title, startTime, endTime, 'empty', 'empty');
+        } else {
+          console.warn(`    ⚠️ Empty slot ${index + 1} sans horaires valides:`, { startTime, endTime });
+        }
+      } else {
+        console.log(`    ℹ️ Slot ${index + 1} n'est pas vide (${isEmpty}, hasEvents: ${hasEvents})`);
       }
     });
   }
 
   /**
-   * Créer un événement dans la timeline
+   * Créer un événement SVG avec calculs précis
    */
-  createTimelineEvent(title, startTime, endTime, type, layer) {
-    if (!startTime || !endTime) return null;
+  createSVGEvent(title, startTime, endTime, type, className) {
+    console.log(`🔧 Création événement SVG: ${title} (${startTime}-${endTime})`);
     
-    const startMinutes = this.timeToMinutes(startTime);
-    const endMinutes = this.timeToMinutes(endTime);
+    // Vérifications de sécurité
+    if (!startTime || !endTime) {
+      console.error(`❌ Impossible de créer l'événement "${title}": horaires manquants`, { startTime, endTime });
+      return;
+    }
     
-    if (startMinutes === null || endMinutes === null) return null;
+    if (!this.svg) {
+      console.error('❌ SVG non initialisé');
+      return;
+    }
     
-    const event = document.createElement('div');
-    event.className = `timeline-event ${type}`;
-    event.textContent = title;
+    const startMin = timeToMinutes(startTime);
+    const endMin = timeToMinutes(endTime);
     
-    // Positionner l'événement
-    const top = (startMinutes / 60) * 60; // 60px par heure
-    const height = ((endMinutes - startMinutes) / 60) * 60;
+    // Vérifier que les minutes sont valides
+    if (startMin === 0 && startTime !== '00:00') {
+      console.error(`❌ Heure de début invalide pour "${title}": ${startTime}`);
+      return;
+    }
     
-    event.style.top = `${top}px`;
-    event.style.height = `${Math.max(height, 20)}px`; // Hauteur minimum de 20px
+    if (endMin === 0 && endTime !== '00:00') {
+      console.error(`❌ Heure de fin invalide pour "${title}": ${endTime}`);
+      return;
+    }
     
-    // Ajouter des événements de clic
-    event.addEventListener('click', () => {
-      this.onEventClick(type, title, startTime, endTime);
-    });
+    // Calculs précis de position
+    const y = (startMin / 60) * HOUR_HEIGHT;
+    const height = Math.max((endMin - startMin) / 60 * HOUR_HEIGHT, 20);
     
-    layer.appendChild(event);
-    return event;
+    console.log(`  📐 Calculs: startMin=${startMin}, endMin=${endMin}`);
+    console.log(`  📏 Position: y=${y}px, height=${height}px`);
+    
+    // Vérifier que la position est dans les limites
+    if (y < 0 || y > TIMELINE_HEIGHT) {
+      console.warn(`⚠️ Position hors limites pour "${title}": y=${y}px (limite: 0-${TIMELINE_HEIGHT}px)`);
+    }
+    
+    // Créer le rectangle SVG
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', HOUR_LABEL_WIDTH + EVENT_MARGIN);
+    rect.setAttribute('y', y);
+    rect.setAttribute('width', 1000 - HOUR_LABEL_WIDTH - (EVENT_MARGIN * 2));
+    rect.setAttribute('height', height);
+    rect.setAttribute('rx', 4);
+    rect.setAttribute('ry', 4);
+    rect.setAttribute('class', `timeline-event ${className}`);
+    
+    // Créer le texte SVG
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', HOUR_LABEL_WIDTH + EVENT_MARGIN + 10);
+    text.setAttribute('y', y + height / 2);
+    text.textContent = title;
+    text.setAttribute('class', 'timeline-event-text');
+    
+    // Ajouter les événements
+    rect.addEventListener('mouseenter', (e) => this.showTooltip(e, title, startTime, endTime));
+    rect.addEventListener('mouseleave', () => this.hideTooltip());
+    rect.addEventListener('click', () => this.onEventClick(type, title, startTime, endTime));
+    
+    // Ajouter au SVG
+    this.svg.appendChild(rect);
+    this.svg.appendChild(text);
+    
+    console.log(`  ✅ Événement SVG créé et ajouté`);
   }
 
   /**
-   * Convertir une heure en minutes depuis minuit
+   * Calculer l'heure de fin d'une prière (35 minutes par défaut)
    */
-  timeToMinutes(timeStr) {
-    try {
-      const [hours, minutes] = timeStr.split(':').map(Number);
-      return hours * 60 + minutes;
-    } catch (error) {
-      console.error('Erreur de conversion d\'heure:', timeStr);
-      return null;
+  calculatePrayerEndTime(startTime) {
+    const startMin = timeToMinutes(startTime);
+    const endMin = startMin + 35; // 35 minutes de durée
+    return minutesToTime(endMin);
+  }
+
+  /**
+   * Afficher le tooltip
+   */
+  showTooltip(event, title, startTime, endTime) {
+    if (this.tooltip) {
+      this.tooltip.textContent = `${title} - ${startTime} à ${endTime}`;
+      this.tooltip.style.left = (event.clientX + 10) + 'px';
+      this.tooltip.style.top = (event.clientY - 30) + 'px';
+      this.tooltip.classList.add('show');
     }
   }
 
   /**
-   * Calculer la durée entre deux heures
+   * Masquer le tooltip
    */
-  calculateDuration(startTime, endTime) {
-    const startMinutes = this.timeToMinutes(startTime);
-    const endMinutes = this.timeToMinutes(endTime);
-    
-    if (startMinutes === null || endMinutes === null) return '';
-    
-    const durationMinutes = endMinutes - startMinutes;
-    const hours = Math.floor(durationMinutes / 60);
-    const minutes = durationMinutes % 60;
-    
-    if (hours > 0) {
-      return `${hours}h${minutes > 0 ? minutes + 'min' : ''}`;
-    } else {
-      return `${minutes}min`;
+  hideTooltip() {
+    if (this.tooltip) {
+      this.tooltip.classList.remove('show');
     }
   }
 
   /**
-   * Vider les couches d'événements
+   * Vider tous les événements
    */
-  clearEventLayers() {
-    const layers = this.container.querySelectorAll('.timeline-event-layer');
-    layers.forEach(layer => {
-      layer.innerHTML = '';
-    });
+  clearEvents() {
+    // Supprimer tous les éléments SVG sauf la grille
+    const elementsToRemove = [];
+    for (let i = 0; i < this.svg.children.length; i++) {
+      const child = this.svg.children[i];
+      if (child.getAttribute('class') !== 'timeline-grid') {
+        elementsToRemove.push(child);
+      }
+    }
+    
+    elementsToRemove.forEach(element => element.remove());
   }
 
   /**
    * Afficher l'état vide
    */
   showEmptyState() {
-    const timelineContent = this.container.querySelector('.timeline-content');
-    if (!timelineContent) return;
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '50%');
+    text.setAttribute('y', '50%');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('fill', 'var(--text-muted)');
+    text.setAttribute('font-size', '16px');
+    text.textContent = 'Aucun événement pour ce jour';
     
-    timelineContent.innerHTML = `
-      <div class="timeline-empty">
-        <div class="timeline-empty-icon">📅</div>
-        <div class="timeline-empty-text">
-          Aucun créneau disponible pour cette date
-        </div>
-      </div>
-    `;
+    this.svg.appendChild(text);
   }
 
   /**
    * Gérer le clic sur un événement
    */
   onEventClick(type, title, startTime, endTime) {
-    console.log('Événement cliqué:', { type, title, startTime, endTime });
+    console.log(`🖱️ Clic sur événement: ${type} - ${title} (${startTime}-${endTime})`);
     
-    // Ici on peut ajouter des actions spécifiques selon le type d'événement
-    switch (type) {
-      case 'prayer':
-        // Action pour les prières
-        break;
-      case 'slot':
-        // Action pour les slots disponibles
-        break;
-      case 'empty':
-        // Action pour les créneaux vides
-        break;
-    }
+    // Ici vous pouvez ajouter la logique pour gérer les clics
+    // Par exemple, ouvrir un modal, naviguer vers une page, etc.
   }
 
   /**
-   * Naviguer vers un jour spécifique
+   * Navigation entre les jours
    */
   navigateToDay(date) {
     this.displayDayEvents(date);
   }
 
-  /**
-   * Naviguer vers le jour précédent
-   */
   previousDay() {
-    const previousDate = new Date(this.currentDate);
-    previousDate.setDate(previousDate.getDate() - 1);
-    this.navigateToDay(previousDate);
+    const prevDate = new Date(this.currentDate);
+    prevDate.setDate(prevDate.getDate() - 1);
+    this.navigateToDay(prevDate);
   }
 
-  /**
-   * Naviguer vers le jour suivant
-   */
   nextDay() {
     const nextDate = new Date(this.currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
@@ -439,127 +509,151 @@ class Timeline {
   }
 
   /**
-   * Synchroniser avec la sélection du calendrier
+   * Synchroniser avec le calendrier
    */
   syncWithCalendar(day, segments) {
     this.segments = segments;
-    const selectedDate = new Date();
-    selectedDate.setDate(day);
-    this.displayDayEvents(selectedDate);
+    this.displayDayEvents(day);
   }
 
   /**
-   * Charger et afficher la timeline à partir de l'API ICS
+   * Charger et afficher les données ICS
    */
   async loadAndDisplayTimelineICS(masjid_id, year, month) {
-    console.log('Appel à loadAndDisplayTimelineICS', masjid_id, year, month);
-    const url = `/api/timeline_ics?masjid_id=${masjid_id}&year=${year}&month=${month}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log('Réponse API ICS :', data);
-    if (!data.timeline) {
-      console.error('Aucune donnée ICS reçue');
-      return;
-    }
-    // On suppose que la timeline existe déjà (window.timeline)
-    // On affiche le premier jour par défaut
-    if (data.timeline.length > 0 && window.timeline) {
-      window.timeline.icsDays = data.timeline; // On garde tout le mois en mémoire
-      window.timeline.displayICSForDay(0); // Affiche le premier jour du mois
+    try {
+      console.log('🔄 Chargement des données ICS pour la timeline');
+      
+      const response = await fetch(`/api/ics/${masjid_id}/${year}/${month}/json`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('📊 Données ICS reçues:', data);
+      
+      this.icsDays = data.days || [];
+      
+      if (this.icsDays.length > 0) {
+        // Afficher le premier jour par défaut
+        this.displayICSForDay(0);
+      } else {
+        console.log('⚠️ Aucun jour trouvé dans les données ICS');
+        this.showEmptyState();
+      }
+      
+    } catch (error) {
+      console.error('❌ Erreur lors du chargement des données ICS:', error);
+      this.showEmptyState();
     }
   }
 
   /**
-   * Afficher un jour ICS dans la timeline (logique actuelle adaptée)
+   * Afficher un jour ICS dans la timeline
    */
   displayICSForDay(dayIndex) {
+    console.log('=== 🕐 TIMELINE SVG DEBUG START ===');
     console.log('displayICSForDay appelé pour index', dayIndex);
-    if (!this.icsDays || this.icsDays.length === 0) return;
+    
+    if (!this.icsDays || this.icsDays.length === 0) {
+      console.log('❌ Aucune donnée ICS disponible');
+      return;
+    }
+    
     const dayData = this.icsDays[dayIndex];
-    if (!dayData) return;
-    this.clearEventLayers();
+    if (!dayData) {
+      console.log('❌ Aucune donnée pour le jour', dayIndex);
+      return;
+    }
+    
+    this.clearEvents();
 
-    console.log('--- DEBUG TIMELINE ---');
-    console.log('Date affichée :', dayData.date);
-    console.log('Prayers ICS :', dayData.prayers);
-    console.log('Slots ICS :', dayData.slots);
-    console.log('Empty ICS :', dayData.empty);
-
-    // Préparer les layers
-    const prayersLayer = this.container.querySelector('.timeline-event-layer.prayers');
-    const slotsLayer = this.container.querySelector('.timeline-event-layer.slots');
-    const emptyLayer = this.container.querySelector('.timeline-event-layer.empty');
-
-    // Afficher chaque prière (prayer_times) sur toute la largeur
-    dayData.prayers.forEach(prayer => {
-      const startMin = timeToMinutes(prayer.start);
-      const endMin = timeToMinutes(prayer.end);
-      console.log(`[PRAYER] ${prayer.summary} : ${prayer.start} - ${prayer.end} | top=${startMin * GRADUATION_PX}px, height=${(endMin - startMin) * GRADUATION_PX}px`);
-      const prayerElem = document.createElement('div');
-      prayerElem.className = 'timeline-event prayer highlight';
-      prayerElem.textContent = `${prayer.summary}`;
-      this.setEventPosition(prayerElem, prayer.start, prayer.end);
-      prayerElem.style.left = '0%';
-      prayerElem.style.width = '100%';
-      prayerElem.setAttribute('data-tooltip', `${prayer.summary} - ${prayer.start} à ${prayer.end}`);
-      prayersLayer.appendChild(prayerElem);
+    console.log('📅 Date affichée :', dayData.date);
+    console.log('📊 Données reçues :', {
+      prayers: dayData.prayers?.length || 0,
+      slots: dayData.slots?.length || 0,
+      empty: dayData.empty?.length || 0
     });
 
-    // Afficher chaque slot (Availability) du ICS 'slots' à gauche
-    dayData.slots.forEach(slot => {
-      const startMin = timeToMinutes(slot.start);
-      const endMin = timeToMinutes(slot.end);
-      console.log(`[SLOT] ${slot.summary} : ${slot.start} - ${slot.end} | top=${startMin * GRADUATION_PX}px, height=${(endMin - startMin) * GRADUATION_PX}px`);
-      const slotElem = document.createElement('div');
-      slotElem.className = 'timeline-event slot';
-      slotElem.textContent = slot.summary;
-      this.setEventPosition(slotElem, slot.start, slot.end);
-      slotElem.style.left = '0%';
-      slotElem.style.width = '49%';
-      slotElem.setAttribute('data-tooltip', `${slot.summary} - ${slot.start} à ${slot.end}`);
-      slotsLayer.appendChild(slotElem);
-    });
+    // Afficher chaque prière
+    if (dayData.prayers && dayData.prayers.length > 0) {
+      console.log('🕌 Traitement des prières :');
+      dayData.prayers.forEach((prayer, index) => {
+        console.log(`  [${index + 1}] ${prayer.summary}: ${prayer.start} - ${prayer.end}`);
+        
+        // Extraire l'heure exacte de la prière depuis le summary
+        const prayerTimeMatch = prayer.summary.match(/\((\d{2}:\d{2})\)/);
+        let displayStart = prayer.start;
+        let displayEnd = prayer.end;
+        
+        if (prayerTimeMatch) {
+          const prayerTime = prayerTimeMatch[1];
+          console.log(`    🎯 Heure exacte de la prière: ${prayerTime}`);
+          
+          // Utiliser l'heure exacte de la prière pour le positionnement
+          displayStart = prayerTime;
+          // Calculer la fin basée sur une durée standard de 35 minutes
+          const prayerStartMin = timeToMinutes(prayerTime);
+          const prayerEndMin = prayerStartMin + 35; // 35 minutes de durée
+          displayEnd = minutesToTime(prayerEndMin);
+          
+          console.log(`    📏 Ajustement: heure_prière=${prayerTime}, durée=35min, fin=${displayEnd}`);
+        }
+        
+        this.createSVGEvent(prayer.summary, displayStart, displayEnd, 'prayer', 'prayer');
+        console.log(`    🎯 Élément SVG créé et ajouté`);
+      });
+    } else {
+      console.log('⚠️ Aucune prière à afficher');
+    }
 
-    // Afficher chaque empty (Slot) du ICS 'empty_slots' à droite
-    dayData.empty.forEach(empty => {
-      const startMin = timeToMinutes(empty.start);
-      const endMin = timeToMinutes(empty.end);
-      console.log(`[EMPTY] ${empty.summary} : ${empty.start} - ${empty.end} | top=${startMin * GRADUATION_PX}px, height=${(endMin - startMin) * GRADUATION_PX}px`);
-      const emptyElem = document.createElement('div');
-      emptyElem.className = 'timeline-event empty';
-      emptyElem.textContent = empty.summary;
-      this.setEventPosition(emptyElem, empty.start, empty.end);
-      emptyElem.style.left = '51%';
-      emptyElem.style.width = '49%';
-      emptyElem.setAttribute('data-tooltip', `${empty.summary} - ${empty.start} à ${empty.end}`);
-      emptyLayer.appendChild(emptyElem);
-    });
+    // Afficher chaque slot
+    if (dayData.slots && dayData.slots.length > 0) {
+      console.log('🕐 Traitement des slots :');
+      dayData.slots.forEach((slot, index) => {
+        console.log(`  [${index + 1}] ${slot.summary}: ${slot.start} - ${slot.end}`);
+        this.createSVGEvent(slot.summary, slot.start, slot.end, 'slot', 'slot');
+      });
+    } else {
+      console.log('⚠️ Aucun slot à afficher');
+    }
+
+    // Afficher chaque empty
+    if (dayData.empty && dayData.empty.length > 0) {
+      console.log('🕳️ Traitement des créneaux vides :');
+      dayData.empty.forEach((empty, index) => {
+        console.log(`  [${index + 1}] ${empty.summary}: ${empty.start} - ${empty.end}`);
+        this.createSVGEvent(empty.summary, empty.start, empty.end, 'empty', 'empty');
+      });
+    } else {
+      console.log('⚠️ Aucun créneau vide à afficher');
+    }
 
     // Mettre à jour la date affichée
     this.currentDate = new Date(dayData.date);
     this.updateTimelineDate();
+    
+    console.log('=== 🕐 TIMELINE SVG DEBUG END ===');
   }
 }
 
-// Graduation : 1 minute = 1px (modifiable)
-const GRADUATION_PX = 1;
-
+// Fonctions utilitaires
 function timeToMinutes(timeStr) {
+  if (!timeStr || typeof timeStr !== 'string') {
+    console.warn(`⚠️ timeToMinutes reçu une valeur invalide:`, timeStr);
+    return 0;
+  }
   const [h, m] = timeStr.split(':').map(Number);
   return h * 60 + m;
 }
 
-Timeline.prototype.setEventPosition = function(eventElem, start, end) {
-  const startMin = timeToMinutes(start);
-  const endMin = timeToMinutes(end);
-  eventElem.style.top = (startMin * GRADUATION_PX) + 'px';
-  eventElem.style.height = Math.max((endMin - startMin) * GRADUATION_PX, 20) + 'px';
-};
+function minutesToTime(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+}
 
 // Initialiser la timeline quand le DOM est prêt
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM chargé');
-  console.log('Test manuel : création timeline et chargement ICS');
+document.addEventListener('DOMContentLoaded', function() {
   window.timeline = new Timeline();
-  window.timeline.loadAndDisplayTimelineICS('1-byt-llh-paris-75000-france', 2025, 6);
+  window.timeline.init();
 }); 
