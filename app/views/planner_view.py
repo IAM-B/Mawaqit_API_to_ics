@@ -5,7 +5,7 @@ This module processes prayer time data and generates various ICS calendar files.
 
 import json
 from pathlib import Path
-from flask import render_template, abort, request
+from flask import render_template, abort, request, jsonify, Blueprint
 from app.modules.mawaqit_fetcher import fetch_mosques_data, fetch_mawaqit_data
 from app.modules.prayer_generator import generate_prayer_ics_file
 from app.modules.empty_generator import generate_empty_by_scope
@@ -14,7 +14,9 @@ from app.modules.time_segmenter import segment_available_time, generate_empty_sl
 from app.modules.slot_utils import adjust_slots_rounding
 from datetime import datetime, timedelta
 import re
+from app.modules.ics_parser import parse_year_ics
 
+planner_api = Blueprint('planner_api', __name__)
 
 def normalize_month_data(prayer_times: dict, include_sunset: bool = True) -> list:
     """
@@ -778,3 +780,26 @@ def handle_generate_ics():
     except Exception as e:
         print(f"❌ Error in handle_generate_ics: {e}")
         return {"error": str(e)}, 500
+
+@planner_api.route('/api/timeline_ics', methods=['GET'])
+def api_timeline_ics():
+    """
+    API qui retourne la structure JSON de la timeline à partir des ICS annuels.
+    Reçoit en paramètre masjid_id, year, month (optionnel pour filtrer).
+    """
+    import os
+    masjid_id = request.args.get('masjid_id')
+    year = request.args.get('year')
+    month = request.args.get('month')  # optionnel
+    if not masjid_id or not year:
+        return jsonify({'error': 'masjid_id and year are required'}), 400
+    ics_dir = os.path.join('app', 'static', 'ics')
+    prayers_ics = os.path.join(ics_dir, f'prayer_times_{masjid_id}_{year}.ics')
+    slots_ics = os.path.join(ics_dir, f'slots_{masjid_id}_{year}.ics')
+    empty_ics = os.path.join(ics_dir, f'empty_slots_{masjid_id}_{year}.ics')
+    data = parse_year_ics(prayers_ics, slots_ics, empty_ics)
+    if month:
+        # Filtrer sur le mois demandé (format MM ou M)
+        month = int(month)
+        data = [d for d in data if int(d['date'][5:7]) == month]
+    return jsonify({'timeline': data})

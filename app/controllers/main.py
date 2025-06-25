@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime
 from flask import Flask, request, abort, jsonify, render_template, Blueprint, send_file
 from app.controllers.error_handlers import init_error_handlers
-from app.views.planner_view import handle_planner_post, handle_planner_ajax, handle_generate_ics
+from app.views.planner_view import handle_planner_post, handle_planner_ajax, handle_generate_ics, planner_api
 from app.modules.mawaqit_fetcher import fetch_mawaqit_data, fetch_mosques_data, get_prayer_times_of_the_day, get_month, get_calendar
 from app.modules.time_segmenter import segment_available_time
 from app.modules.prayer_generator import generate_prayer_ics_file
@@ -33,6 +33,7 @@ def init_routes(app):
         app (Flask): The Flask application instance
     """
     app.register_blueprint(main_bp)
+    app.register_blueprint(planner_api)
 
     @app.route("/")
     def index():

@@ -188,6 +188,21 @@ class PlannerPage {
         this.initializeClock(data);
       }, 100);
     }
+
+    // Initialiser la timeline avec le mois/année sélectionnés dans le clockCalendar
+    let year, month;
+    if (window.clockCalendar && window.clockCalendar.selectedYear && window.clockCalendar.selectedMonth) {
+        year = window.clockCalendar.selectedYear;
+        month = window.clockCalendar.selectedMonth;
+    } else {
+        // Par défaut, mois/année courants
+        const now = new Date();
+        year = now.getFullYear();
+        month = now.getMonth() + 1; // JS: 0=janvier
+    }
+    if (window.timeline && data.masjid_id) {
+        window.timeline.loadAndDisplayTimelineICS(data.masjid_id, year, month);
+    }
   }
 
   /**

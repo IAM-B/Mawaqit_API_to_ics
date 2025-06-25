@@ -10,7 +10,7 @@
   align-items: flex-start;
   gap: 30px;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin: 20px 0;
 }
 
@@ -36,6 +36,7 @@
   border: 1px solid var(--border-color);
   min-width: 300px;
   max-width: 350px;
+  height: 355px;
 }
 
 .clock-calendar .calendar-header {
@@ -248,7 +249,7 @@
   border: 1px solid var(--border-color);
   min-width: 400px;
   max-width: 600px;
-  height: 600px;
+  height: 355px;
   overflow: hidden;
   display: flex;
   flex-direction: column;

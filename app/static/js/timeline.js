@@ -3,12 +3,16 @@
  * Inspiré de Google/Apple Calendar avec une grille horaire verticale
  */
 
+console.log('timeline.js chargé');
+console.log('Timeline instanciée');
+
 class Timeline {
   constructor() {
     this.container = null;
     this.currentDate = new Date();
     this.segments = [];
     this.scope = 'today';
+    this.icsDays = [];
     this.init();
   }
 
@@ -443,9 +447,119 @@ class Timeline {
     selectedDate.setDate(day);
     this.displayDayEvents(selectedDate);
   }
+
+  /**
+   * Charger et afficher la timeline à partir de l'API ICS
+   */
+  async loadAndDisplayTimelineICS(masjid_id, year, month) {
+    console.log('Appel à loadAndDisplayTimelineICS', masjid_id, year, month);
+    const url = `/api/timeline_ics?masjid_id=${masjid_id}&year=${year}&month=${month}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log('Réponse API ICS :', data);
+    if (!data.timeline) {
+      console.error('Aucune donnée ICS reçue');
+      return;
+    }
+    // On suppose que la timeline existe déjà (window.timeline)
+    // On affiche le premier jour par défaut
+    if (data.timeline.length > 0 && window.timeline) {
+      window.timeline.icsDays = data.timeline; // On garde tout le mois en mémoire
+      window.timeline.displayICSForDay(0); // Affiche le premier jour du mois
+    }
+  }
+
+  /**
+   * Afficher un jour ICS dans la timeline (logique actuelle adaptée)
+   */
+  displayICSForDay(dayIndex) {
+    console.log('displayICSForDay appelé pour index', dayIndex);
+    if (!this.icsDays || this.icsDays.length === 0) return;
+    const dayData = this.icsDays[dayIndex];
+    if (!dayData) return;
+    this.clearEventLayers();
+
+    console.log('--- DEBUG TIMELINE ---');
+    console.log('Date affichée :', dayData.date);
+    console.log('Prayers ICS :', dayData.prayers);
+    console.log('Slots ICS :', dayData.slots);
+    console.log('Empty ICS :', dayData.empty);
+
+    // Préparer les layers
+    const prayersLayer = this.container.querySelector('.timeline-event-layer.prayers');
+    const slotsLayer = this.container.querySelector('.timeline-event-layer.slots');
+    const emptyLayer = this.container.querySelector('.timeline-event-layer.empty');
+
+    // Afficher chaque prière (prayer_times) sur toute la largeur
+    dayData.prayers.forEach(prayer => {
+      const startMin = timeToMinutes(prayer.start);
+      const endMin = timeToMinutes(prayer.end);
+      console.log(`[PRAYER] ${prayer.summary} : ${prayer.start} - ${prayer.end} | top=${startMin * GRADUATION_PX}px, height=${(endMin - startMin) * GRADUATION_PX}px`);
+      const prayerElem = document.createElement('div');
+      prayerElem.className = 'timeline-event prayer highlight';
+      prayerElem.textContent = `${prayer.summary}`;
+      this.setEventPosition(prayerElem, prayer.start, prayer.end);
+      prayerElem.style.left = '0%';
+      prayerElem.style.width = '100%';
+      prayerElem.setAttribute('data-tooltip', `${prayer.summary} - ${prayer.start} à ${prayer.end}`);
+      prayersLayer.appendChild(prayerElem);
+    });
+
+    // Afficher chaque slot (Availability) du ICS 'slots' à gauche
+    dayData.slots.forEach(slot => {
+      const startMin = timeToMinutes(slot.start);
+      const endMin = timeToMinutes(slot.end);
+      console.log(`[SLOT] ${slot.summary} : ${slot.start} - ${slot.end} | top=${startMin * GRADUATION_PX}px, height=${(endMin - startMin) * GRADUATION_PX}px`);
+      const slotElem = document.createElement('div');
+      slotElem.className = 'timeline-event slot';
+      slotElem.textContent = slot.summary;
+      this.setEventPosition(slotElem, slot.start, slot.end);
+      slotElem.style.left = '0%';
+      slotElem.style.width = '49%';
+      slotElem.setAttribute('data-tooltip', `${slot.summary} - ${slot.start} à ${slot.end}`);
+      slotsLayer.appendChild(slotElem);
+    });
+
+    // Afficher chaque empty (Slot) du ICS 'empty_slots' à droite
+    dayData.empty.forEach(empty => {
+      const startMin = timeToMinutes(empty.start);
+      const endMin = timeToMinutes(empty.end);
+      console.log(`[EMPTY] ${empty.summary} : ${empty.start} - ${empty.end} | top=${startMin * GRADUATION_PX}px, height=${(endMin - startMin) * GRADUATION_PX}px`);
+      const emptyElem = document.createElement('div');
+      emptyElem.className = 'timeline-event empty';
+      emptyElem.textContent = empty.summary;
+      this.setEventPosition(emptyElem, empty.start, empty.end);
+      emptyElem.style.left = '51%';
+      emptyElem.style.width = '49%';
+      emptyElem.setAttribute('data-tooltip', `${empty.summary} - ${empty.start} à ${empty.end}`);
+      emptyLayer.appendChild(emptyElem);
+    });
+
+    // Mettre à jour la date affichée
+    this.currentDate = new Date(dayData.date);
+    this.updateTimelineDate();
+  }
 }
+
+// Graduation : 1 minute = 1px (modifiable)
+const GRADUATION_PX = 1;
+
+function timeToMinutes(timeStr) {
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+}
+
+Timeline.prototype.setEventPosition = function(eventElem, start, end) {
+  const startMin = timeToMinutes(start);
+  const endMin = timeToMinutes(end);
+  eventElem.style.top = (startMin * GRADUATION_PX) + 'px';
+  eventElem.style.height = Math.max((endMin - startMin) * GRADUATION_PX, 20) + 'px';
+};
 
 // Initialiser la timeline quand le DOM est prêt
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM chargé');
+  console.log('Test manuel : création timeline et chargement ICS');
   window.timeline = new Timeline();
+  window.timeline.loadAndDisplayTimelineICS('1-byt-llh-paris-75000-france', 2025, 6);
 }); 
