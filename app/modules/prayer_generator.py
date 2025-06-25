@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
 from flask import current_app
+from .cache_manager import cache_manager
 
 # Order of prayers in the day
 PRAYERS_ORDER = ["fajr"]
@@ -57,6 +58,7 @@ def generate_prayer_ics_file(
 ) -> str:
     """
     Generate an ICS file containing prayer times with customizable padding.
+    Uses cache to avoid regeneration if the file already exists.
     
     Args:
         masjid_id (str): Mosque identifier
@@ -73,6 +75,30 @@ def generate_prayer_ics_file(
     Raises:
         ValueError: If scope is invalid
     """
+    print(f"🔄 Generating prayer ICS file for {masjid_id} ({scope})")
+    
+    # Check cache first
+    cached_path = cache_manager.get_cached_file_path(
+        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times"
+    )
+    
+    if cached_path:
+        print(f"✅ Using cached prayer times file: {cached_path}")
+        # Copy cached file to destination
+        output_path = Path(current_app.static_folder) / "ics" / f"prayer_times_{masjid_id}_{datetime.now().year}.ics"
+        if scope == "today":
+            output_path = Path(current_app.static_folder) / "ics" / f"prayer_times_{masjid_id}_{datetime.now().date()}.ics"
+        elif scope == "month":
+            output_path = Path(current_app.static_folder) / "ics" / f"prayer_times_{masjid_id}_{datetime.now().year}_{datetime.now().month:02d}.ics"
+        
+        cache_manager.copy_cached_to_destination(
+            masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", str(output_path)
+        )
+        return str(output_path)
+    
+    print(f"🔄 Cache miss, generating new prayer times file...")
+    
+    # Generate the file (existing logic)
     YEAR = datetime.now().year
     tz = ZoneInfo(timezone_str)
     cal = Calendar()
@@ -168,6 +194,19 @@ def generate_prayer_ics_file(
 
     output_path = Path(current_app.static_folder) / "ics" / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Generate the file content
+    file_content = cal.to_ical()
+    
+    # Save to destination
     with open(output_path, "wb") as f:
-        f.write(cal.to_ical())
+        f.write(file_content)
+    
+    # Save to cache for future use
+    cache_manager.save_to_cache(
+        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", 
+        file_content, str(output_path)
+    )
+    
+    print(f"✅ Generated and cached prayer times file: {output_path}")
     return str(output_path)

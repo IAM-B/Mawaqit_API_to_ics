@@ -15,6 +15,7 @@ from app.modules.slot_utils import adjust_slots_rounding
 from datetime import datetime, timedelta
 import re
 from app.modules.ics_parser import parse_year_ics
+from app.modules.cache_manager import cache_manager
 
 planner_api = Blueprint('planner_api', __name__)
 
@@ -803,3 +804,82 @@ def api_timeline_ics():
         month = int(month)
         data = [d for d in data if int(d['date'][5:7]) == month]
     return jsonify({'timeline': data})
+
+@planner_api.route('/api/cache/stats', methods=['GET'])
+def api_cache_stats():
+    """
+    API for getting cache statistics.
+    """
+    try:
+        stats = cache_manager.get_cache_stats()
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@planner_api.route('/api/cache/clear', methods=['POST'])
+def api_cache_clear():
+    """
+    API for clearing the cache.
+    Accepts an optional max_age_hours parameter.
+    """
+    try:
+        data = request.get_json() or {}
+        max_age_hours = data.get('max_age_hours')
+        
+        if max_age_hours is not None:
+            max_age_hours = int(max_age_hours)
+        
+        cache_manager.clear_cache(max_age_hours)
+        
+        return jsonify({
+            'success': True,
+            'message': f'Cache cleared successfully (max_age_hours: {max_age_hours})'
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@planner_api.route('/api/cache/check', methods=['GET'])
+def api_cache_check():
+    """
+    API for checking if a file is in cache.
+    Parameters: masjid_id, scope, padding_before, padding_after, include_sunset, file_type
+    """
+    try:
+        masjid_id = request.args.get('masjid_id')
+        scope = request.args.get('scope')
+        padding_before = int(request.args.get('padding_before', 10))
+        padding_after = int(request.args.get('padding_after', 35))
+        include_sunset = request.args.get('include_sunset', 'false').lower() == 'true'
+        file_type = request.args.get('file_type')
+        
+        if not all([masjid_id, scope, file_type]):
+            return jsonify({'error': 'Missing required parameters'}), 400
+        
+        is_valid = cache_manager.is_cache_valid(
+            masjid_id, scope, padding_before, padding_after, include_sunset, file_type
+        )
+        
+        cached_path = None
+        if is_valid:
+            cached_path = cache_manager.get_cached_file_path(
+                masjid_id, scope, padding_before, padding_after, include_sunset, file_type
+            )
+        
+        return jsonify({
+            'success': True,
+            'is_valid': is_valid,
+            'cached_path': cached_path,
+            'parameters': {
+                'masjid_id': masjid_id,
+                'scope': scope,
+                'padding_before': padding_before,
+                'padding_after': padding_after,
+                'include_sunset': include_sunset,
+                'file_type': file_type
+            }
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

@@ -46,3 +46,8 @@ ics/
 htmlcov/
 .pytest_cache/
 pytest.ini
+
+# Cache
+cache/
+*.cache
+cache_metadata.json

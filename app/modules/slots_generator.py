@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
 from flask import current_app
+from .cache_manager import cache_manager
 
 # Order of prayers in the day
 PRAYERS_ORDER = ["fajr", "dohr", "asr", "maghreb", "icha"]
@@ -28,23 +29,24 @@ def to_datetime(time_str: str, base_date: datetime, tz: ZoneInfo) -> datetime:
     t = datetime.strptime(time_str, "%H:%M").time()
     return datetime.combine(base_date.date(), t).replace(tzinfo=tz)
 
-def format_duration(delta: timedelta) -> str:
+def format_duration(duration: timedelta) -> str:
     """
-    Format a timedelta into a human-readable duration string.
+    Format a timedelta duration into a human-readable string.
     
     Args:
-        delta (timedelta): Time duration to format
+        duration (timedelta): Duration to format
         
     Returns:
-        str: Formatted duration string (e.g., "2h30")
-        Returns "0h00" if the duration is negative or zero.
+        str: Formatted duration string
     """
-    total_minutes = int(delta.total_seconds() // 60)
-    if total_minutes <= 0:
-        return "0h00"
+    total_minutes = int(duration.total_seconds() / 60)
     hours = total_minutes // 60
     minutes = total_minutes % 60
-    return f"{hours}h{minutes:02d}"
+    
+    if hours > 0:
+        return f"{hours}h{minutes:02d}m" if minutes > 0 else f"{hours}h"
+    else:
+        return f"{minutes}m"
 
 def generate_slot_ics_file(
     prayer_times: dict,
@@ -122,6 +124,7 @@ def generate_slots_by_scope(
 ) -> str:
     """
     Generate available slot events for a specific time scope (today/month/year).
+    Uses cache to avoid regeneration if the file already exists.
     
     Args:
         masjid_id (str): Mosque identifier
@@ -138,6 +141,30 @@ def generate_slots_by_scope(
     Raises:
         ValueError: If scope is invalid
     """
+    print(f"🔄 Generating slots ICS file for {masjid_id} ({scope})")
+    
+    # Check cache first
+    cached_path = cache_manager.get_cached_file_path(
+        masjid_id, scope, padding_before, padding_after, include_sunset, "slots"
+    )
+    
+    if cached_path:
+        print(f"✅ Using cached slots file: {cached_path}")
+        # Copy cached file to destination
+        output_path = Path(current_app.static_folder) / "ics" / f"slots_{masjid_id}_{datetime.now().year}.ics"
+        if scope == "today":
+            output_path = Path(current_app.static_folder) / "ics" / f"slots_{masjid_id}_{datetime.now().date()}.ics"
+        elif scope == "month":
+            output_path = Path(current_app.static_folder) / "ics" / f"slots_{masjid_id}_{datetime.now().year}_{datetime.now().month:02d}.ics"
+        
+        cache_manager.copy_cached_to_destination(
+            masjid_id, scope, padding_before, padding_after, include_sunset, "slots", str(output_path)
+        )
+        return str(output_path)
+    
+    print(f"🔄 Cache miss, generating new slots file...")
+    
+    # Generate the file (existing logic)
     YEAR = datetime.now().year
     now = datetime.now()
     cal = Calendar()
@@ -204,8 +231,22 @@ def generate_slots_by_scope(
     else:
         raise ValueError("Scope must be 'today', 'month' or 'year'")
 
+    # Use the relative path to the static folder of the application
     output_path = Path(current_app.static_folder) / "ics" / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Generate the file content
+    file_content = cal.to_ical()
+    
+    # Save to destination
     with open(output_path, "wb") as f:
-        f.write(cal.to_ical())
+        f.write(file_content)
+    
+    # Save to cache for future use
+    cache_manager.save_to_cache(
+        masjid_id, scope, padding_before, padding_after, include_sunset, "slots", 
+        file_content, str(output_path)
+    )
+    
+    print(f"✅ Generated and cached slots file: {output_path}")
     return str(output_path)
