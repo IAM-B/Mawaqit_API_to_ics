@@ -148,26 +148,17 @@
           <div class="clock-layout">
             <!-- Left half: defaultSlotsView -->
             <div class="slots-half">
-              <div id="defaultSlotsView" class="slots-view">
-                <!-- Timeline Header -->
-                <div class="timeline-header">
-                  <button id="prevBtn" class="calendar-nav-btn">←</button>
-                  <h3 id="currentDate" class="calendar-title"></h3>
-                  <button id="nextBtn" class="calendar-nav-btn">→</button>
-                </div>
-                
-                <!-- Timeline Content -->
-                <div class="timeline-content">
-                  <div class="timeline-svg-container">
-                    <svg class="timeline-svg" viewBox="0 0 1000 1440" preserveAspectRatio="xMidYMid meet">
-                      <!-- La grille SVG sera générée dynamiquement par JavaScript -->
-                    </svg>
-                  </div>
-                </div>
-                
-                <!-- Fallback slots list (caché par défaut) -->
-                <div id="availableSlotsList" class="slots-list" style="display: none;">
-                  <!-- Slots will be displayed here dynamically -->
+              <div class="slots-header">
+                <button id="prevDayBtn" class="calendar-nav-btn" aria-label="Jour précédent">←</button>
+                <h3 id="slotsCurrentDate" class="calendar-title">jeu. 26 juin</h3>
+                <button id="nextDayBtn" class="calendar-nav-btn" aria-label="Jour suivant">→</button>
+              </div>
+              <div class="slots-timeline-container">
+                <svg class="slots-timeline-svg" viewBox="0 0 400 1440" preserveAspectRatio="none">
+                  <!-- Grille, labels et événements seront générés par JS -->
+                </svg>
+                <div id="slotsListFallback" class="slots-list-fallback" style="display: none;">
+                  <!-- Liste textuelle des créneaux si SVG indisponible -->
                 </div>
               </div>
             </div>

@@ -14,9 +14,10 @@ console.log('Timeline instantiated');
 
 // Constant for graduation: 60px per hour
 const HOUR_HEIGHT = 60;
-const TIMELINE_HEIGHT = 24 * HOUR_HEIGHT; // 1440px for 24 hours
-const HOUR_LABEL_WIDTH = 50;
-const EVENT_MARGIN = 4;
+const TIMELINE_HEIGHT = 24 * HOUR_HEIGHT; // 1440px
+const TIMELINE_WIDTH = 400;
+const LABEL_WIDTH = 60;
+const EVENT_MARGIN = 6;
 
 /**
  * Utility function to format date consistently
@@ -67,13 +68,12 @@ class Timeline {
    * Create the timeline container
    */
   createTimelineContainer() {
-    // Use the existing HTML structure in the template
-    this.container = document.getElementById('defaultSlotsView');
-    this.svg = document.querySelector('.timeline-svg');
+    // Utiliser la nouvelle structure HTML
+    this.container = document.querySelector('.slots-half');
+    this.svg = document.querySelector('.slots-timeline-svg');
     
     if (this.container && this.svg) {
       console.log('✅ Timeline structure found in template');
-      
       // Create the SVG time grid
       this.createSVGGrid(this.svg);
     } else {
@@ -81,54 +81,51 @@ class Timeline {
     }
   }
 
+  /**
+   * Create the SVG time grid, labels et groupes d'événements
+   */
   createSVGGrid(svg) {
-    console.log('🔧 Creating SVG grid');
-    console.log(`📏 Dimensions: HOUR_HEIGHT=${HOUR_HEIGHT}px, TIMELINE_HEIGHT=${TIMELINE_HEIGHT}px`);
-    
-    // Create the grid group
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
     const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     gridGroup.setAttribute('class', 'timeline-grid');
-    
-    // Create horizontal lines for each hour
+    const labelsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    labelsGroup.setAttribute('class', 'timeline-labels');
+    const eventsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    eventsGroup.setAttribute('class', 'timeline-events');
+    const nowGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    nowGroup.setAttribute('class', 'timeline-now');
+    svg.appendChild(gridGroup);
+    svg.appendChild(labelsGroup);
+    svg.appendChild(eventsGroup);
+    svg.appendChild(nowGroup);
+    this.eventsGroup = eventsGroup;
+    this.nowGroup = nowGroup;
     for (let hour = 0; hour <= 24; hour++) {
       const y = hour * HOUR_HEIGHT;
-      
-      // Horizontal line
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('x1', HOUR_LABEL_WIDTH);
+      line.setAttribute('x1', LABEL_WIDTH);
       line.setAttribute('y1', y);
-      line.setAttribute('x2', '100%');
+      line.setAttribute('x2', TIMELINE_WIDTH);
       line.setAttribute('y2', y);
       line.setAttribute('class', 'timeline-hour-line');
-      
-      // Hour text (only for hours 0-23)
+      gridGroup.appendChild(line);
       if (hour < 24) {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', HOUR_LABEL_WIDTH - 10);
-        text.setAttribute('y', y + HOUR_HEIGHT / 2);
+        text.setAttribute('x', LABEL_WIDTH - 8);
+        text.setAttribute('y', y + 18);
         text.textContent = `${hour.toString().padStart(2, '0')}:00`;
         text.setAttribute('class', 'timeline-hour-text');
-        
-        gridGroup.appendChild(text);
+        text.setAttribute('text-anchor', 'end');
+        labelsGroup.appendChild(text);
       }
-      
-      gridGroup.appendChild(line);
-      
-      console.log(`🕐 Hour ${hour.toString().padStart(2, '0')}:00 → y=${y}px`);
     }
-    
-    // Vertical line to separate labels from events
     const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    verticalLine.setAttribute('x1', HOUR_LABEL_WIDTH);
+    verticalLine.setAttribute('x1', LABEL_WIDTH);
     verticalLine.setAttribute('y1', 0);
-    verticalLine.setAttribute('x2', HOUR_LABEL_WIDTH);
+    verticalLine.setAttribute('x2', LABEL_WIDTH);
     verticalLine.setAttribute('y2', TIMELINE_HEIGHT);
     verticalLine.setAttribute('class', 'timeline-hour-line');
-    
     gridGroup.appendChild(verticalLine);
-    svg.appendChild(gridGroup);
-    
-    console.log('✅ SVG grid created successfully');
   }
 
   createTooltip() {
@@ -136,12 +133,12 @@ class Timeline {
     this.tooltip = document.querySelector('.timeline-tooltip');
     
     if (!this.tooltip) {
-      this.tooltip = document.createElement('div');
-      this.tooltip.className = 'timeline-tooltip';
-      this.tooltip.style.position = 'absolute';
-      this.tooltip.style.zIndex = '1000';
-      this.tooltip.style.pointerEvents = 'none';
-      document.body.appendChild(this.tooltip);
+    this.tooltip = document.createElement('div');
+    this.tooltip.className = 'timeline-tooltip';
+    this.tooltip.style.position = 'absolute';
+    this.tooltip.style.zIndex = '1000';
+    this.tooltip.style.pointerEvents = 'none';
+    document.body.appendChild(this.tooltip);
       console.log('✅ Timeline tooltip created');
     } else {
       console.log('✅ Existing timeline tooltip found');
@@ -166,7 +163,7 @@ class Timeline {
    * Update the date displayed in the header
    */
   updateTimelineDate() {
-    const currentDateElement = document.getElementById('currentDate');
+    const currentDateElement = document.getElementById('slotsCurrentDate');
     if (currentDateElement) {
       currentDateElement.textContent = formatDateForDisplay(this.currentDate);
     }
@@ -344,72 +341,26 @@ class Timeline {
    * Create an SVG event with precise calculations
    */
   createSVGEvent(title, startTime, endTime, type, className) {
-    console.log(`🔧 Creating SVG event: ${title} (${startTime}-${endTime})`);
-    
-    // Security checks
-    if (!startTime || !endTime) {
-      console.error(`❌ Cannot create event "${title}": missing times`, { startTime, endTime });
-      return;
-    }
-    
-    if (!this.svg) {
-      console.error('❌ SVG not initialized');
-      return;
-    }
-    
+    if (!this.svg || !this.eventsGroup) return;
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
-    
-    // Check that minutes are valid
-    if (startMin === 0 && startTime !== '00:00') {
-      console.error(`❌ Invalid start time for "${title}": ${startTime}`);
-      return;
-    }
-    
-    if (endMin === 0 && endTime !== '00:00') {
-      console.error(`❌ Invalid end time for "${title}": ${endTime}`);
-      return;
-    }
-    
-    // Precise position calculations
-    const y = (startMin / 60) * HOUR_HEIGHT;
-    const height = Math.max((endMin - startMin) / 60 * HOUR_HEIGHT, 20);
-    
-    console.log(`  📐 Calculations: startMin=${startMin}, endMin=${endMin}`);
-    console.log(`  📏 Position: y=${y}px, height=${height}px`);
-    
-    // Check that position is within limits
-    if (y < 0 || y > TIMELINE_HEIGHT) {
-      console.warn(`⚠️ Position out of bounds for "${title}": y=${y}px (limit: 0-${TIMELINE_HEIGHT}px)`);
-    }
-    
-    // Create SVG rectangle
+    const y = startMin;
+    const height = Math.max(endMin - startMin, 18);
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rect.setAttribute('x', HOUR_LABEL_WIDTH + EVENT_MARGIN);
+    rect.setAttribute('x', LABEL_WIDTH + EVENT_MARGIN);
     rect.setAttribute('y', y);
-    rect.setAttribute('width', 1000 - HOUR_LABEL_WIDTH - (EVENT_MARGIN * 2));
+    rect.setAttribute('width', TIMELINE_WIDTH - LABEL_WIDTH - EVENT_MARGIN * 2);
     rect.setAttribute('height', height);
-    rect.setAttribute('rx', 4);
-    rect.setAttribute('ry', 4);
+    rect.setAttribute('rx', 5);
+    rect.setAttribute('ry', 5);
     rect.setAttribute('class', `timeline-event ${className}`);
-    
-    // Create SVG text
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', HOUR_LABEL_WIDTH + EVENT_MARGIN + 10);
-    text.setAttribute('y', y + height / 2);
+    text.setAttribute('x', LABEL_WIDTH + EVENT_MARGIN + 10);
+    text.setAttribute('y', y + height / 2 + 6);
     text.textContent = title;
     text.setAttribute('class', 'timeline-event-text');
-    
-    // Add events
-    rect.addEventListener('mouseenter', (e) => this.showTooltip(e, title, startTime, endTime));
-    rect.addEventListener('mouseleave', () => this.hideTooltip());
-    rect.addEventListener('click', () => this.onEventClick(type, title, startTime, endTime));
-    
-    // Add to SVG
-    this.svg.appendChild(rect);
-    this.svg.appendChild(text);
-    
-    console.log(`  ✅ SVG event created and added`);
+    this.eventsGroup.appendChild(rect);
+    this.eventsGroup.appendChild(text);
   }
 
   /**
@@ -446,16 +397,9 @@ class Timeline {
    * Clear all events
    */
   clearEvents() {
-    // Remove all SVG elements except the grid
-    const elementsToRemove = [];
-    for (let i = 0; i < this.svg.children.length; i++) {
-      const child = this.svg.children[i];
-      if (child.getAttribute('class') !== 'timeline-grid') {
-        elementsToRemove.push(child);
+    if (this.eventsGroup) {
+      while (this.eventsGroup.firstChild) this.eventsGroup.removeChild(this.eventsGroup.firstChild);
       }
-    }
-    
-    elementsToRemove.forEach(element => element.remove());
   }
 
   /**
@@ -643,7 +587,7 @@ class Timeline {
       this.currentView = 'timeline';
       console.log('✅ Timeline view activated');
     }
-  }
+}
 
   /**
    * Show traditional slots view
@@ -685,23 +629,24 @@ class Timeline {
       });
       console.log('✅ Toggle button configured');
     }
-    
-    // Setup navigation buttons
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    
+    // Navigation boutons adaptés à la nouvelle structure
+    const prevBtn = document.getElementById('prevDayBtn');
+    const nextBtn = document.getElementById('nextDayBtn');
     if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        this.previousDay();
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const d = new Date(window.selectedDate);
+        d.setDate(d.getDate() - 1);
+        window.setSelectedDate(d);
       });
-      console.log('✅ Previous button configured');
     }
-    
     if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        this.nextDay();
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const d = new Date(window.selectedDate);
+        d.setDate(d.getDate() + 1);
+        window.setSelectedDate(d);
       });
-      console.log('✅ Next button configured');
     }
   }
 
@@ -726,6 +671,26 @@ class Timeline {
         toggleBtn.title = 'Switch to list view';
       }
     }
+  }
+
+  drawNowLine() {
+    if (!this.nowGroup) return;
+    while (this.nowGroup.firstChild) this.nowGroup.removeChild(this.nowGroup.firstChild);
+    const now = new Date();
+    const y = now.getHours() * HOUR_HEIGHT + now.getMinutes();
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', LABEL_WIDTH);
+    line.setAttribute('y1', y);
+    line.setAttribute('x2', TIMELINE_WIDTH);
+    line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#e84118');
+    line.setAttribute('stroke-width', '2');
+    this.nowGroup.appendChild(line);
+  }
+
+  setDate(date) {
+    this.currentDate = new Date(date);
+    this.displayDayEvents(this.currentDate);
   }
 }
 

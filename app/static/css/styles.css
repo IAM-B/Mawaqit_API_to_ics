@@ -371,58 +371,58 @@ a:hover {
 /* ==================
    🗺️ POPUP MOSQUÉE (Leaflet)
    ================== */
-.leaflet-popup-content {
-  color: var(--text-color, #e2e8f0);
-  padding: 0 !important;
-  background: var(--form-bg, #1a1a1a) !important;
-  box-shadow: none !important;
-}
+   .leaflet-popup-content {
+    color: var(--text-color, #e2e8f0);
+    padding: 0 !important;
+    background: var(--form-bg, #1a1a1a) !important;
+    box-shadow: none !important;
+  }
+  
+  .popup-content {
+    background: var(--form-bg, #1a1a1a);
+    color: var(--text-color, #e2e8f0);
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    padding: 1em 1.2em;
+    min-width: 220px;
+    max-width: 320px;
+    font-size: 1em;
+    line-height: 1.5;
+    text-align: left;
+  }
 
-.popup-content {
-  background: var(--form-bg, #1a1a1a);
-  color: var(--text-color, #e2e8f0);
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-  padding: 1em 1.2em;
-  min-width: 220px;
-  max-width: 320px;
-  font-size: 1em;
-  line-height: 1.5;
-  text-align: left;
-}
+  .popup-content strong {
+    color: var(--primary, #d4af37);
+    font-size: 1.1em;
+  }
 
-.popup-content strong {
-  color: var(--primary, #d4af37);
-  font-size: 1.1em;
-}
+  .popup-content img {
+    width: 100%;
+    max-height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin: 0.5em 0;
+    display: block;
+  }
 
-.popup-content img {
-  width: 100%;
-  max-height: 120px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin: 0.5em 0;
-  display: block;
-}
+  .popup-content .btn-sync-mosque {
+    display: block;
+    width: 100%;
+    margin-top: 0.7em;
+    padding: 0.5em 0;
+    background: var(--primary, #d4af37);
+    color: #222;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1em;
+  }
 
-.popup-content .btn-sync-mosque {
-  display: block;
-  width: 100%;
-  margin-top: 0.7em;
-  padding: 0.5em 0;
-  background: var(--primary, #d4af37);
-  color: #222;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 1em;
-}
-
-.popup-content .btn-sync-mosque:hover {
-  background: var(--primary-hover, #b8941f);
-  color: #fff;
+  .popup-content .btn-sync-mosque:hover {
+    background: var(--primary-hover, #b8941f);
+    color: #fff;
 }
 
 /* === HEADER & BREADCRUMB === */

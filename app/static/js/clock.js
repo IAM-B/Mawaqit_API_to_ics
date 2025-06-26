@@ -147,7 +147,7 @@ class Clock {
     const startAngle = this.minutesToAngle(startMinutes);
     const endAngle = this.minutesToAngle(endMinutes);
     
-    const radius = type === 'prayer' ? 120 : 100;
+    const radius = type === 'prayer' ? 150 : 130;
     const centerX = 150;
     const centerY = 150;
     
@@ -174,7 +174,7 @@ class Clock {
     
     // Add label
     const midAngle = (startAngle + endAngle) / 2;
-    const labelRadius = type === 'prayer' ? radius + 20 : radius - 20;
+    const labelRadius = type === 'prayer' ? radius + 25 : radius - 25;
     const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
     const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
     
@@ -249,7 +249,7 @@ class Clock {
     const startAngle = this.minutesToAngle(delayedStartMinutes);
     const endAngle = this.minutesToAngle(endMinutes);
     
-    const radius = 100; // Smaller radius than prayers
+    const radius = 130; // Adjusted radius for better visibility
     const centerX = 150;
     const centerY = 150;
     
@@ -278,7 +278,7 @@ class Clock {
     
     // Add label for duration
     const midAngle = (startAngle + endAngle) / 2;
-    const labelRadius = radius - 20;
+    const labelRadius = radius - 25;
     const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
     const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
     
@@ -376,7 +376,7 @@ class Clock {
     
     // Create SVG container with larger viewBox
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", "-50 -50 400 400"); // Adjusted for more space
+    svg.setAttribute("viewBox", "-80 -80 460 460"); // Plus grand espace
     svg.setAttribute("class", "clock-svg");
     this.container.appendChild(svg);
 
@@ -384,17 +384,17 @@ class Clock {
     const clockFace = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     clockFace.setAttribute("cx", "150");
     clockFace.setAttribute("cy", "150");
-    clockFace.setAttribute("r", "150");
+    clockFace.setAttribute("r", "180"); // Rayon augmenté
     clockFace.setAttribute("class", "clock-face");
     svg.appendChild(clockFace);
 
     // Add hour markers
     for (let hour = 0; hour < 24; hour++) {
       const angle = this.minutesToAngle(hour * 60);
-      const x1 = 150 + 140 * Math.cos((angle - 90) * Math.PI / 180);
-      const y1 = 150 + 140 * Math.sin((angle - 90) * Math.PI / 180);
-      const x2 = 150 + 150 * Math.cos((angle - 90) * Math.PI / 180);
-      const y2 = 150 + 150 * Math.sin((angle - 90) * Math.PI / 180);
+      const x1 = 150 + 170 * Math.cos((angle - 90) * Math.PI / 180);
+      const y1 = 150 + 170 * Math.sin((angle - 90) * Math.PI / 180);
+      const x2 = 150 + 180 * Math.cos((angle - 90) * Math.PI / 180);
+      const y2 = 150 + 180 * Math.sin((angle - 90) * Math.PI / 180);
       
       const marker = document.createElementNS("http://www.w3.org/2000/svg", "line");
       marker.setAttribute("x1", x1);
@@ -406,8 +406,8 @@ class Clock {
 
       // Add hour labels
       const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      const labelX = 150 + 130 * Math.cos((angle - 90) * Math.PI / 180);
-      const labelY = 150 + 130 * Math.sin((angle - 90) * Math.PI / 180);
+      const labelX = 150 + 155 * Math.cos((angle - 90) * Math.PI / 180);
+      const labelY = 150 + 155 * Math.sin((angle - 90) * Math.PI / 180);
       label.setAttribute("x", labelX);
       label.setAttribute("y", labelY);
       label.setAttribute("class", "hour-label");
@@ -417,12 +417,12 @@ class Clock {
 
     // Add minute markers
     for (let minute = 0; minute < 60; minute++) {
-      if (minute % 5 === 0) continue; // Skip minutes that are hours
+      if (minute % 5 === 0) continue;
       const angle = this.minutesToAngle(minute);
-      const x1 = 150 + 145 * Math.cos((angle - 90) * Math.PI / 180);
-      const y1 = 150 + 145 * Math.sin((angle - 90) * Math.PI / 180);
-      const x2 = 150 + 150 * Math.cos((angle - 90) * Math.PI / 180);
-      const y2 = 150 + 150 * Math.sin((angle - 90) * Math.PI / 180);
+      const x1 = 150 + 175 * Math.cos((angle - 90) * Math.PI / 180);
+      const y1 = 150 + 175 * Math.sin((angle - 90) * Math.PI / 180);
+      const x2 = 150 + 180 * Math.cos((angle - 90) * Math.PI / 180);
+      const y2 = 150 + 180 * Math.sin((angle - 90) * Math.PI / 180);
       
       const marker = document.createElementNS("http://www.w3.org/2000/svg", "line");
       marker.setAttribute("x1", x1);
@@ -500,32 +500,37 @@ class Clock {
    * @param {number} direction - Navigation direction (-1 for previous, 1 for next)
    */
   navigate(direction) {
-    if (this.scope === 'month') {
-      this.currentIndex += direction;
-      if (this.currentIndex < 0) this.currentIndex = 0;
-      if (this.currentIndex >= this.segments.length) {
-        this.currentIndex = this.segments.length - 1;
-      }
-    } else if (this.scope === 'year') {
-      // For year scope, navigate between days of the current month
-      this.currentIndex += direction;
-      if (this.currentIndex < 0) this.currentIndex = 0;
-      if (this.currentIndex >= this.segments.length) {
-        this.currentIndex = this.segments.length - 1;
-      }
-    }
-    
-    // Update timeline if available
-    if (window.timeline && this.segments.length > 0) {
-      const currentData = this.getCurrentData();
-      if (currentData && currentData.date) {
-        // Parse the date from the data
-        const [day, month, year] = currentData.date.split('/');
+    if (this.scope === 'month' || this.scope === 'year') {
+      let idx = this.currentIndex + direction;
+      if (idx < 0) idx = 0;
+      if (idx >= this.segments.length) idx = this.segments.length - 1;
+      const seg = this.segments[idx];
+      if (seg && seg.date) {
+        const [day, month, year] = seg.date.split('/');
         const selectedDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-        window.timeline.navigateToDay(selectedDate);
+        window.setSelectedDate(selectedDate);
       }
     }
-    
+  }
+
+  setDate(date) {
+    // Trouver l'index correspondant à la date
+    if (!date || !this.segments || this.segments.length === 0) return;
+    let idx = 0;
+    if (this.scope === 'month' || this.scope === 'year') {
+      for (let i = 0; i < this.segments.length; i++) {
+        const seg = this.segments[i];
+        if (seg.date) {
+          const [day, month, year] = seg.date.split('/');
+          const segDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          if (segDate.toDateString() === date.toDateString()) {
+            idx = i;
+            break;
+          }
+        }
+      }
+    }
+    this.currentIndex = idx;
     this.updateClock();
   }
 }

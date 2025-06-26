@@ -190,6 +190,12 @@ class CalendarViewsManager {
     if (dayData) {
       this.updateSlotsList(dayData);
     }
+
+    // Synchronisation centrale UNIQUEMENT
+    if (window.setSelectedDate) {
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth, day);
+      window.setSelectedDate(selectedDate);
+    }
   }
 
   /**
@@ -224,8 +230,6 @@ class CalendarViewsManager {
    */
   navigateMonth(direction) {
     this.selectedMonth += direction;
-    
-    // Handle year boundary
     if (this.selectedMonth < 0) {
       this.selectedMonth = 11;
       this.selectedYear--;
@@ -233,9 +237,11 @@ class CalendarViewsManager {
       this.selectedMonth = 0;
       this.selectedYear++;
     }
-    
-    // Re-render calendar
-    this.renderClockCalendar();
+    // Synchronisation centrale UNIQUEMENT
+    if (window.setSelectedDate) {
+      const firstDay = new Date(this.selectedYear, this.selectedMonth, 1);
+      window.setSelectedDate(firstDay);
+    }
   }
 
   /**
@@ -268,6 +274,27 @@ class CalendarViewsManager {
   timeToMinutes(time) {
     const [hours, minutes] = time.split(':').map(Number);
     return hours * 60 + minutes;
+  }
+
+  /**
+   * Select a day in the clock calendar and update clock
+   */
+  selectClockCalendarDay(day, segments) {
+    const dayIndex = day - 1;
+    // ... existing code ...
+    // Synchronisation centrale
+    if (window.setSelectedDate) {
+      const selectedDate = new Date(window.currentYear || new Date().getFullYear(), window.currentMonth || new Date().getMonth(), day);
+      window.setSelectedDate(selectedDate);
+    }
+  }
+
+  setDate(date) {
+    if (!date) return;
+    this.selectedDay = date.getDate();
+    this.selectedMonth = date.getMonth();
+    this.selectedYear = date.getFullYear();
+    this.renderClockCalendar();
   }
 }
 

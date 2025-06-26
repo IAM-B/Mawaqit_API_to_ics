@@ -914,4 +914,25 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('clockConfig')) {
     PlannerPage.initClock();
   }
-}); 
+});
+
+// Synchronisation centrale des vues planner
+window.selectedDate = new Date();
+window.setSelectedDate = function(date) {
+  if (!date) return;
+  // Empêcher les boucles infinies
+  if (window.selectedDate && window.selectedDate.toDateString && window.selectedDate.toDateString() === date.toDateString()) return;
+  window.selectedDate = new Date(date);
+  // Timeline
+  if (window.timeline && typeof window.timeline.setDate === 'function') {
+    window.timeline.setDate(window.selectedDate);
+  }
+  // Clock
+  if (window.clockInstance && typeof window.clockInstance.setDate === 'function') {
+    window.clockInstance.setDate(window.selectedDate);
+  }
+  // Calendar
+  if (window.calendarViewsManager && typeof window.calendarViewsManager.setDate === 'function') {
+    window.calendarViewsManager.setDate(window.selectedDate);
+  }
+};
