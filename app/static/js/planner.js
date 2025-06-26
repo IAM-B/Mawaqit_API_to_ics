@@ -320,7 +320,6 @@ class Timeline {
   setDate(date) {
     if (!date) return;
     
-    console.log('📅 Timeline setDate called with:', date.toDateString());
     
     this.currentDate = new Date(date);
     this.updateTimelineDate();
@@ -445,8 +444,10 @@ class CalendarViewsManager {
     titleElement.textContent = `${monthNames[this.selectedMonth]} ${this.selectedYear}`;
     container.innerHTML = '';
     const firstDay = new Date(this.selectedYear, this.selectedMonth, 1);
+    const dayOfWeek = firstDay.getDay();
+    const daysToSubtract = (dayOfWeek + 6) % 7;
     const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay() + 1);
+    startDate.setDate(firstDay.getDate() - daysToSubtract);
     for (let i = 0; i < 42; i++) {
       const currentDate = new Date(startDate);
       currentDate.setDate(startDate.getDate() + i);
@@ -696,7 +697,7 @@ class Clock {
     const endMinutes = timeToMinutes(event.end);
     const startAngle = this.minutesToAngle(startMinutes);
     const endAngle = this.minutesToAngle(endMinutes);
-    const radius = type === 'prayer' ? 150 : 130;
+    const radius = type === 'prayer' ? 135 : 105;
     const centerX = 150;
     const centerY = 150;
     const startX = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
@@ -966,14 +967,11 @@ class Clock {
 // Module for the initialization of the compact map (Leaflet)
 let currentMap = null;
 function initializeCompactMap(containerId, lat, lng, mosqueName) {
-  console.log('Initializing compact map:', { containerId, lat, lng, mosqueName });
   if (!lat || !lng) {
-    console.log('Missing coordinates, skipping map initialization');
     return;
   }
   // Destroy the existing map if needed
   if (currentMap) {
-    console.log('Destroying existing map');
     currentMap.remove();
     currentMap = null;
   }
@@ -986,7 +984,6 @@ function initializeCompactMap(containerId, lat, lng, mosqueName) {
     .addTo(currentMap)
     .bindPopup(mosqueName)
     .openPopup();
-  console.log('Map initialized successfully');
 }
 window.initializeCompactMap = initializeCompactMap;
 
@@ -1379,13 +1376,11 @@ class PlannerPage {
       setTimeout(() => {
         // Initialize calendar views
         if (window.calendarViewsManager) {
-          console.log('📆 Initializing calendar views...');
           window.calendarViewsManager.initializeViews(data.segments, data.scope);
         }
         
         // Initialize timeline
         if (window.timeline) {
-          console.log('📅 Initializing timeline...');
           window.timeline.initializeTimeline(data.segments, data.scope);
           
           // Set initial date for timeline
@@ -1638,7 +1633,6 @@ class PlannerPage {
    * Initialize clock with new data
    */
   initializeClock(data) {
-    console.log('🔄 Initializing clock with data:', data);
     
     // Check if clock container exists
     const clockContainer = document.getElementById('clockContent');
@@ -1663,16 +1657,13 @@ class PlannerPage {
     
     // Initialize clock using the correct method
     if (window.Clock) {
-      console.log('✅ Clock class found, creating instance...');
       
       // For year scope, extract current month's data for clock display
       let clockSegments = data.segments;
       if (data.scope === 'year' && data.segments && data.segments.length > 0) {
         const currentMonth = new Date().getMonth();
-        console.log('📅 Year scope detected, extracting month', currentMonth, 'data');
         if (data.segments[currentMonth] && data.segments[currentMonth].days) {
           clockSegments = data.segments[currentMonth].days;
-          console.log('📊 Extracted month segments:', clockSegments.length, 'days');
         } else {
           console.warn('⚠️ No days data found for month', currentMonth);
         }
@@ -1681,7 +1672,6 @@ class PlannerPage {
       // Create a new Clock instance with the appropriate segments
       try {
         const clock = new Clock('clockContent', clockSegments, data.scope);
-        console.log('✅ Clock instance created successfully');
         
         // Store clock instance globally for access from other functions
         window.clockInstance = clock;
@@ -1693,7 +1683,6 @@ class PlannerPage {
           // Convert to 0-based index, but ensure it's within bounds
           const todayIndex = Math.min(currentDay - 1, clockSegments.length - 1);
           
-          console.log('📅 Setting clock to day', currentDay, 'index', todayIndex);
           clock.currentIndex = todayIndex;
           clock.updateClock();
           
@@ -1773,9 +1762,10 @@ class PlannerPage {
 
     // Get first day of month and number of days
     const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const dayOfWeek = firstDay.getDay(); // 0 = dimanche, 1 = lundi, ...
+    const daysToSubtract = (dayOfWeek + 6) % 7;
     const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay() + 1); // Start from Monday
+    startDate.setDate(firstDay.getDate() - daysToSubtract);
 
     // Generate calendar days
     for (let i = 0; i < 42; i++) { // 6 weeks * 7 days
@@ -2019,9 +2009,11 @@ class PlannerPage {
     // Clear and regenerate calendar days
     container.innerHTML = '';
     
-    const firstDay = new Date(year, month, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay() + 1);
+const firstDay = new Date(year, month, 1);
+const dayOfWeek = firstDay.getDay();
+const daysToSubtract = (dayOfWeek + 6) % 7;
+const startDate = new Date(firstDay);
+startDate.setDate(firstDay.getDate() - daysToSubtract);
 
     // For year scope, segments contain monthly data
     let monthSegments = [];
@@ -2079,15 +2071,7 @@ class PlannerPage {
     const hasPlanningData = document.querySelector('.quick-actions') !== null;
     const hasClockConfig = document.getElementById('clockConfig') !== null;
     
-    console.log('Planning animation setup:', {
-      hasPlanningData,
-      hasClockConfig,
-      quickActions: document.querySelector('.quick-actions'),
-      clockConfig: document.getElementById('clockConfig')
-    });
-    
     if (hasPlanningData && hasClockConfig) {
-      console.log('Triggering planning generation animation');
       // Add a small delay to ensure DOM is fully loaded
       setTimeout(() => {
         Clock.handlePlanningGeneration();
@@ -2193,8 +2177,6 @@ window.selectedDate = new Date();
 window.setSelectedDate = function(date) {
   if (!date) return;
   
-  console.log('🔄 Central sync called with date:', date.toDateString());
-  
   // Prevent infinite loops
   if (window.selectedDate && window.selectedDate.toDateString && window.selectedDate.toDateString() === date.toDateString()) {
     console.log('⚠️ Same date, skipping sync to prevent loops');
@@ -2205,7 +2187,6 @@ window.setSelectedDate = function(date) {
   
   // Timeline
   if (window.timeline && typeof window.timeline.setDate === 'function') {
-    console.log('📅 Updating timeline...');
     window.timeline.setDate(window.selectedDate);
   } else {
     console.warn('⚠️ Timeline not available for sync');
@@ -2213,7 +2194,6 @@ window.setSelectedDate = function(date) {
   
   // Clock
   if (window.clockInstance && typeof window.clockInstance.setDate === 'function') {
-    console.log('🕒 Updating clock...');
     window.clockInstance.setDate(window.selectedDate);
   } else {
     console.warn('⚠️ Clock not available for sync');
@@ -2221,11 +2201,8 @@ window.setSelectedDate = function(date) {
   
   // Calendar
   if (window.calendarViewsManager && typeof window.calendarViewsManager.setDate === 'function') {
-    console.log('📆 Updating calendar...');
     window.calendarViewsManager.setDate(window.selectedDate);
   } else {
     console.warn('⚠️ Calendar not available for sync');
   }
-  
-  console.log('✅ Central sync completed');
 };

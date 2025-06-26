@@ -296,6 +296,8 @@
 
 .clock-half .clock-calendar {
   flex: 1;
+  width: 100%;
+  padding: 20px;
   background: var(--bg-color);
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -357,7 +359,7 @@
 }
 
 .hour-label {
-  font-size: 16px;
+  font-size: 19px;
   fill: var(--text-color);
   text-anchor: middle;
   dominant-baseline: middle;
@@ -847,10 +849,12 @@
   
   .clock-half .clock-calendar {
     min-height: 300px;
+    width: 100%;
   }
   
   .clock-half .clock-container {
     min-height: 250px;
+    width: 100%;
   }
   
   .timeline-header {
@@ -935,10 +939,12 @@
   
   .clock-half .clock-calendar {
     min-height: 250px;
+    width: 100%;
   }
   
   .clock-half .clock-container {
     min-height: 200px;
+    width: 100%;
   }
   
   .clock-calendar {
@@ -968,7 +974,7 @@
   }
   
   .hour-label {
-    font-size: 12px;
+    font-size: 15px;
   }
   
   .clock-arc.prayer {
@@ -1203,7 +1209,7 @@
   font-weight: 500;
 }
 
-.slots-timeline-container {
+.clock-calendar, .slots-timeline-container {
   height: 900px;
   max-height: 90vh;
   overflow-y: auto;
@@ -1216,23 +1222,23 @@
   scrollbar-color: var(--border-light) var(--bg-color);
 }
 
-.slots-timeline-container::-webkit-scrollbar {
+.clock-calendar, .slots-timeline-container::-webkit-scrollbar {
   width: 10px;
   background: var(--bg-color);
 }
 
-.slots-timeline-container::-webkit-scrollbar-track {
+.clock-calendar, .slots-timeline-container::-webkit-scrollbar-track {
   background: var(--bg-color);
   border-radius: 8px;
 }
 
-.slots-timeline-container::-webkit-scrollbar-thumb {
+.clock-calendar, .slots-timeline-container::-webkit-scrollbar-thumb {
   background: var(--primary-color);
   border-radius: 8px;
   border: 2px solid var(--bg-color);
 }
 
-.slots-timeline-container::-webkit-scrollbar-thumb:hover {
+.clock-calendar, .slots-timeline-container::-webkit-scrollbar-thumb:hover {
   background: var(--accent-color);
 }
 
