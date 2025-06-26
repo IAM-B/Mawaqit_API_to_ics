@@ -1,3 +1,1223 @@
+/*
+========================================
+  PLANNER.JS - Main script for planner page
+  ---------------------------------------
+  Structure for unified JS (timeline, calendar, clock, map, search...)
+========================================
+
+  TABLE OF CONTENTS:
+  1. Global utilities
+  2. Timeline (vertical agenda)
+  3. Calendar (calendar grid)
+  4. Clock (circular clock)
+  5. Compact Map (mosque map)
+  6. Mosque Search (dropdowns)
+  7. Map Loader (OpenStreetMap)
+  8. PlannerPage (form, config, download, etc.)
+  9. Central initialization & synchronization
+
+========================================
+*/
+
+// =========================
+// 1. GLOBAL UTILITIES
+// =========================
+// Date formatting for display (e.g.: "Mon 15 Jan")
+function formatDateForDisplay(date) {
+  const options = {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short'
+  };
+  return date.toLocaleDateString('fr-FR', options);
+}
+// Conversion HH:MM -> minutes since midnight
+function timeToMinutes(timeStr) {
+  if (!timeStr || typeof timeStr !== 'string') return 0;
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+}
+// Conversion minutes -> HH:MM
+function minutesToTime(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+}
+
+// =========================
+// 2. TIMELINE (vertical agenda)
+// =========================
+// Main class for the vertical timeline (SVG agenda)
+class Timeline {
+  constructor() {
+    this.container = null;
+    this.svg = null;
+    this.currentDate = new Date();
+    this.segments = [];
+    this.scope = 'today';
+    this.icsDays = [];
+    this.tooltip = null;
+    this.currentView = 'timeline'; // 'timeline' or 'slots'
+    this.init();
+  }
+  // Timeline initialization
+  init() {
+    this.createTimelineContainer();
+    this.createTooltip();
+    this.setupViewToggle();
+    if (this.container && this.svg) {
+      this.showTimelineView();
+    } else {
+      this.showSlotsView();
+    }
+  }
+  // Create the main container
+  createTimelineContainer() {
+    this.container = document.querySelector('.slots-half');
+    this.svg = document.querySelector('.slots-timeline-svg');
+    if (this.container && this.svg) {
+      this.createSVGGrid(this.svg);
+    }
+  }
+  // Create the SVG grid (hours, labels, groups)
+  createSVGGrid(svg) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gridGroup.setAttribute('class', 'timeline-grid');
+    const labelsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    labelsGroup.setAttribute('class', 'timeline-labels');
+    const eventsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    eventsGroup.setAttribute('class', 'timeline-events');
+    const nowGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    nowGroup.setAttribute('class', 'timeline-now');
+    svg.appendChild(gridGroup);
+    svg.appendChild(labelsGroup);
+    svg.appendChild(eventsGroup);
+    svg.appendChild(nowGroup);
+    this.eventsGroup = eventsGroup;
+    this.nowGroup = nowGroup;
+    for (let hour = 0; hour <= 24; hour++) {
+      const y = hour * 60; // 60px per hour
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', 60);
+      line.setAttribute('y1', y);
+      line.setAttribute('x2', 400);
+      line.setAttribute('y2', y);
+      line.setAttribute('class', 'timeline-hour-line');
+      gridGroup.appendChild(line);
+      if (hour < 24) {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', 52);
+        text.setAttribute('y', y + 18);
+        text.textContent = `${hour.toString().padStart(2, '0')}:00`;
+        text.setAttribute('class', 'timeline-hour-text');
+        text.setAttribute('text-anchor', 'end');
+        labelsGroup.appendChild(text);
+      }
+    }
+    const verticalLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    verticalLine.setAttribute('x1', 60);
+    verticalLine.setAttribute('y1', 0);
+    verticalLine.setAttribute('x2', 60);
+    verticalLine.setAttribute('y2', 1440);
+    verticalLine.setAttribute('class', 'timeline-hour-line');
+    gridGroup.appendChild(verticalLine);
+  }
+  // Tooltip for events
+  createTooltip() {
+    this.tooltip = document.querySelector('.timeline-tooltip');
+    if (!this.tooltip) {
+      this.tooltip = document.createElement('div');
+      this.tooltip.className = 'timeline-tooltip';
+      this.tooltip.style.position = 'absolute';
+      this.tooltip.style.zIndex = '1000';
+      this.tooltip.style.pointerEvents = 'none';
+      document.body.appendChild(this.tooltip);
+    }
+  }
+  // Timeline data initialization
+  initializeTimeline(segments, scope) {
+    this.segments = segments;
+    this.scope = scope;
+    this.updateTimelineDate();
+    this.displayDayEvents(new Date());
+  }
+  // Update the date displayed in the header
+  updateTimelineDate() {
+    const currentDateElement = document.getElementById('slotsCurrentDate');
+    if (currentDateElement) {
+      currentDateElement.textContent = formatDateForDisplay(this.currentDate);
+    }
+  }
+  // Display events for a given day
+  displayDayEvents(date) {
+    this.currentDate = date;
+    this.updateTimelineDate();
+    this.clearEvents();
+    const dayData = this.getDayData(date);
+    if (!dayData) {
+      this.showEmptyState();
+      return;
+    }
+    this.displayPrayers(dayData.prayer_times);
+    this.displaySlots(dayData.slots);
+    this.displayEmptySlots(dayData.slots);
+  }
+  // Get the day's data
+  getDayData(date) {
+    if (!this.segments || this.segments.length === 0) return null;
+    const day = date.getDate();
+    const month = date.getMonth();
+    if (this.scope === 'today' && this.segments.length > 0) {
+      return this.segments[0];
+    }
+    if (this.scope === 'month') {
+      const dayIndex = day - 1;
+      if (dayIndex >= 0 && dayIndex < this.segments.length) {
+        return this.segments[dayIndex];
+      }
+    }
+    if (this.scope === 'year') {
+      const monthIndex = month;
+      if (monthIndex >= 0 && monthIndex < this.segments.length) {
+        const monthData = this.segments[monthIndex];
+        if (monthData && monthData.days) {
+          const dayIndex = day - 1;
+          if (dayIndex >= 0 && dayIndex < monthData.days.length) {
+            return monthData.days[dayIndex];
+          }
+        }
+      }
+    }
+    return null;
+  }
+  // Display prayers
+  displayPrayers(prayerTimes) {
+    if (!prayerTimes) return;
+    const prayerNames = {
+      'fajr': 'Fajr',
+      'sunset': 'Sunset',
+      'dohr': 'Dohr',
+      'asr': 'Asr',
+      'maghreb': 'Maghreb',
+      'icha': 'Icha'
+    };
+    Object.entries(prayerTimes).forEach(([prayer, time]) => {
+      if (time && prayerNames[prayer]) {
+        const startTime = time;
+        const endTime = this.calculatePrayerEndTime(time);
+        this.createSVGEvent(prayerNames[prayer], startTime, endTime, 'prayer', 'prayer');
+      }
+    });
+  }
+  // Display slots
+  displaySlots(slots) {
+    if (!slots || !Array.isArray(slots)) return;
+    slots.forEach((slot, index) => {
+      const startTime = slot.start_time || slot.start || slot.startTime;
+      const endTime = slot.end_time || slot.end || slot.endTime;
+      const title = slot.title || slot.summary || `Slot ${index + 1}`;
+      if (startTime && endTime) {
+        this.createSVGEvent(title, startTime, endTime, 'slot', 'slot');
+      }
+    });
+  }
+  // Display empty slots
+  displayEmptySlots(slots) {
+    if (!slots || !Array.isArray(slots)) return;
+    slots.forEach((slot, index) => {
+      const isEmpty = slot.is_empty || slot.isEmpty || slot.empty || slot.available === false || slot.status === 'empty';
+      const hasEvents = slot.events && slot.events.length > 0;
+      const isActuallyEmpty = isEmpty || (!hasEvents && slot.available !== true);
+      if (isActuallyEmpty) {
+        const startTime = slot.start_time || slot.start || slot.startTime;
+        const endTime = slot.end_time || slot.end || slot.endTime;
+        const title = slot.title || slot.summary || 'Free slot';
+        if (startTime && endTime) {
+          this.createSVGEvent(title, startTime, endTime, 'empty', 'empty');
+        }
+      }
+    });
+  }
+  // Create an SVG event
+  createSVGEvent(title, startTime, endTime, type, className) {
+    if (!this.svg || !this.eventsGroup) return;
+    const startMin = timeToMinutes(startTime);
+    const endMin = timeToMinutes(endTime);
+    const y = startMin;
+    const height = Math.max(endMin - startMin, 18);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', 60 + 6);
+    rect.setAttribute('y', y);
+    rect.setAttribute('width', 400 - 60 - 12);
+    rect.setAttribute('height', height);
+    rect.setAttribute('rx', 5);
+    rect.setAttribute('ry', 5);
+    rect.setAttribute('class', `timeline-event ${className}`);
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', 60 + 16);
+    text.setAttribute('y', y + height / 2 + 6);
+    text.textContent = title;
+    text.setAttribute('class', 'timeline-event-text');
+    this.eventsGroup.appendChild(rect);
+    this.eventsGroup.appendChild(text);
+  }
+  // Calculate the end of a prayer (35min by default)
+  calculatePrayerEndTime(startTime) {
+    const startMin = timeToMinutes(startTime);
+    const endMin = startMin + 35;
+    return minutesToTime(endMin);
+  }
+  // Tooltip (show)
+  showTooltip(event, title, startTime, endTime) {
+    if (this.tooltip) {
+      this.tooltip.textContent = `${title} - ${startTime} to ${endTime}`;
+      this.tooltip.style.left = (event.clientX + 10) + 'px';
+      this.tooltip.style.top = (event.clientY - 30) + 'px';
+      this.tooltip.classList.add('show');
+    }
+  }
+  // Tooltip (hide)
+  hideTooltip() {
+    if (this.tooltip) {
+      this.tooltip.classList.remove('show');
+    }
+  }
+  // Remove all SVG events
+  clearEvents() {
+    if (this.eventsGroup) {
+      while (this.eventsGroup.firstChild) this.eventsGroup.removeChild(this.eventsGroup.firstChild);
+    }
+  }
+  // Show an empty state
+  showEmptyState() {
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', '50%');
+    text.setAttribute('y', '50%');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('fill', 'var(--text-muted)');
+    text.setAttribute('font-size', '16px');
+    text.textContent = 'No events for this day';
+    this.svg.appendChild(text);
+  }
+  // Day navigation
+  navigateToDay(date) {
+    this.displayDayEvents(date);
+  }
+  // Method called by central sync
+  setDate(date) {
+    this.currentDate = new Date(date);
+    this.displayDayEvents(this.currentDate);
+  }
+  // Navigation and toggle buttons
+  setupViewToggle() {
+    const toggleBtn = document.getElementById('toggleViewBtn');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        this.toggleView();
+      });
+    }
+    const prevBtn = document.getElementById('prevDayBtn');
+    const nextBtn = document.getElementById('nextDayBtn');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const d = new Date(this.currentDate);
+        d.setDate(d.getDate() - 1);
+        window.setSelectedDate(d);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const d = new Date(this.currentDate);
+        d.setDate(d.getDate() + 1);
+        window.setSelectedDate(d);
+      });
+    }
+  }
+  // Show timeline view
+  showTimelineView() {
+    const timelineContent = document.querySelector('.timeline-content');
+    const slotsList = document.getElementById('availableSlotsList');
+    if (timelineContent && slotsList) {
+      timelineContent.style.display = 'flex';
+      slotsList.style.display = 'none';
+      this.currentView = 'timeline';
+    }
+  }
+  // Show classic slots view
+  showSlotsView() {
+    const timelineContent = document.querySelector('.timeline-content');
+    const slotsList = document.getElementById('availableSlotsList');
+    if (timelineContent && slotsList) {
+      timelineContent.style.display = 'none';
+      slotsList.style.display = 'block';
+      this.currentView = 'slots';
+    }
+  }
+  // Current view
+  getCurrentView() {
+    return this.currentView;
+  }
+  // Check if the timeline is initialized
+  isInitialized() {
+    return this.container !== null && this.svg !== null;
+  }
+  // Add missing method for ICS loading
+  async loadAndDisplayTimelineICS(masjid_id, year, month) {
+    try {
+      console.log('🔄 Loading ICS data for timeline');
+      const response = await fetch(`/api/ics/${masjid_id}/${year}/${month}/json`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('📊 ICS data received:', data);
+      this.icsDays = data.days || [];
+      if (this.icsDays.length > 0) {
+        // Display first day by default
+        this.displayICSForDay(0);
+      } else {
+        console.log('⚠️ No days found in ICS data');
+        this.showEmptyState();
+      }
+    } catch (error) {
+      console.error('❌ Error loading ICS data:', error);
+      this.showEmptyState();
+    }
+  }
+  // Add displayICSForDay method (used by loadAndDisplayTimelineICS)
+  displayICSForDay(dayIndex) {
+    if (!this.icsDays || this.icsDays.length === 0) return;
+    const dayData = this.icsDays[dayIndex];
+    if (!dayData) return;
+    this.clearEvents();
+    // Display prayers
+    if (dayData.prayers && dayData.prayers.length > 0) {
+      dayData.prayers.forEach((prayer) => {
+        // Extract exact time if present in summary
+        const prayerTimeMatch = prayer.summary.match(/\((\d{2}:\d{2})\)/);
+        let displayStart = prayer.start;
+        let displayEnd = prayer.end;
+        if (prayerTimeMatch) {
+          const prayerTime = prayerTimeMatch[1];
+          displayStart = prayerTime;
+          const prayerStartMin = timeToMinutes(prayerTime);
+          const prayerEndMin = prayerStartMin + 35;
+          displayEnd = minutesToTime(prayerEndMin);
+        }
+        this.createSVGEvent(prayer.summary, displayStart, displayEnd, 'prayer', 'prayer');
+      });
+    }
+    // Display slots
+    if (dayData.slots && dayData.slots.length > 0) {
+      dayData.slots.forEach((slot) => {
+        this.createSVGEvent(slot.summary, slot.start, slot.end, 'slot', 'slot');
+      });
+    }
+    // Display empty slots
+    if (dayData.empty && dayData.empty.length > 0) {
+      dayData.empty.forEach((empty) => {
+        this.createSVGEvent(empty.summary, empty.start, empty.end, 'empty', 'empty');
+      });
+    }
+    // Update displayed date
+    this.currentDate = new Date(dayData.date);
+    this.updateTimelineDate();
+  }
+}
+// (End of Timeline class)
+
+
+// =========================
+// 3. CALENDAR (calendar grid)
+// =========================
+// Main class for the calendar (day grid)
+class CalendarViewsManager {
+  constructor() {
+    this.currentMonth = new Date().getMonth();
+    this.currentYear = new Date().getFullYear();
+    this.selectedMonth = this.currentMonth;
+    this.selectedYear = this.currentYear;
+    this.selectedDay = new Date().getDate();
+    this.segments = [];
+    this.scope = '';
+    this.clockInstance = null;
+    this.init();
+  }
+  // Calendar initialization
+  init() {
+    this.bindEvents();
+  }
+  // Bind month navigation events
+  bindEvents() {
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'prevMonthBtn') {
+        this.navigateMonth(-1);
+      } else if (e.target.id === 'nextMonthBtn') {
+        this.navigateMonth(1);
+      }
+    });
+  }
+  // To synchronize with the clock
+  setClockInstance(clockInstance) {
+    this.clockInstance = clockInstance;
+  }
+  // Initialize views according to the scope
+  initializeViews(segments, scope) {
+    this.segments = segments;
+    this.scope = scope;
+    this.showClockCalendar();
+    this.renderClockCalendar();
+  }
+  // Show the calendar
+  showClockCalendar() {
+    const calendar = document.getElementById('clockCalendar');
+    const slotsView = document.getElementById('defaultSlotsView');
+    if (calendar) calendar.style.display = 'block';
+    if (slotsView) slotsView.style.display = 'block';
+  }
+  // Render the calendar grid
+  renderClockCalendar() {
+    const container = document.getElementById('clockCalendarDays');
+    const titleElement = document.getElementById('currentMonthTitle');
+    if (!container || !titleElement) return;
+    const monthNames = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    titleElement.textContent = `${monthNames[this.selectedMonth]} ${this.selectedYear}`;
+    container.innerHTML = '';
+    const firstDay = new Date(this.selectedYear, this.selectedMonth, 1);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay() + 1);
+    for (let i = 0; i < 42; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      const dayElement = this.createDayElement(currentDate);
+      container.appendChild(dayElement);
+    }
+  }
+  // Create a day of the calendar
+  createDayElement(date) {
+    const dayElement = document.createElement('div');
+    dayElement.className = 'calendar-day';
+    const dayNumber = document.createElement('div');
+    dayNumber.className = 'day-number';
+    dayNumber.textContent = date.getDate();
+    dayElement.appendChild(dayNumber);
+    if (date.getMonth() !== this.selectedMonth) {
+      dayElement.classList.add('other-month');
+    }
+    const today = new Date();
+    if (date.toDateString() === today.toDateString()) {
+      dayElement.classList.add('today');
+    }
+    if (date.getDate() === this.selectedDay && date.getMonth() === this.selectedMonth) {
+      dayElement.classList.add('selected');
+    }
+    if (this.segments.length > 0) {
+      const dayIndex = date.getDate() - 1;
+      if (dayIndex >= 0 && dayIndex < this.segments.length) {
+        const dayData = this.segments[dayIndex];
+        if (dayData && dayData.slots && dayData.slots.length > 0) {
+          dayElement.classList.add('has-slots');
+          const slotsIndicator = document.createElement('div');
+          slotsIndicator.className = 'day-slots-indicator';
+          const slotsCount = document.createElement('div');
+          slotsCount.className = 'day-slots-count';
+          slotsCount.textContent = `${dayData.slots.length} créneau${dayData.slots.length > 1 ? 'x' : ''}`;
+          slotsIndicator.appendChild(slotsCount);
+          dayElement.appendChild(slotsIndicator);
+          dayElement.addEventListener('click', () => {
+            this.selectDay(date.getDate(), dayData);
+          });
+        }
+      }
+    }
+    dayElement.addEventListener('click', () => {
+      if (date.getMonth() === this.selectedMonth) {
+        this.selectDay(date.getDate());
+      }
+    });
+    return dayElement;
+  }
+  // Select a day
+  selectDay(day, dayData = null) {
+    const previousSelected = document.querySelector('.calendar-day.selected');
+    if (previousSelected) previousSelected.classList.remove('selected');
+    const dayElements = document.querySelectorAll('.calendar-day:not(.other-month)');
+    const dayIndex = day - 1;
+    if (dayElements[dayIndex]) dayElements[dayIndex].classList.add('selected');
+    this.selectedDay = day;
+    if (this.clockInstance && this.segments.length > 0) {
+      if (dayIndex >= 0 && dayIndex < this.segments.length) {
+        this.clockInstance.currentIndex = dayIndex;
+        this.clockInstance.updateClock();
+      }
+    }
+    if (window.timeline && this.segments.length > 0) {
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth, day);
+      window.timeline.navigateToDay(selectedDate);
+    }
+    if (dayData) {
+      this.updateSlotsList(dayData);
+    }
+    if (window.setSelectedDate) {
+      const selectedDate = new Date(this.selectedYear, this.selectedMonth, day);
+      window.setSelectedDate(selectedDate);
+    }
+  }
+  // Update the list of slots for the selected day
+  updateSlotsList(dayData) {
+    const slotsList = document.getElementById('availableSlotsList');
+    if (!slotsList || !dayData.slots) return;
+    slotsList.innerHTML = '';
+    dayData.slots.forEach(slot => {
+      const slotItem = document.createElement('div');
+      slotItem.className = 'slot-item';
+      const slotTime = document.createElement('span');
+      slotTime.className = 'slot-time';
+      slotTime.textContent = `${slot.start} - ${slot.end}`;
+      const slotDuration = document.createElement('span');
+      slotDuration.className = 'slot-duration';
+      slotDuration.textContent = `(${this.calculateDuration(slot.start, slot.end)})`;
+      slotItem.appendChild(slotTime);
+      slotItem.appendChild(slotDuration);
+      slotsList.appendChild(slotItem);
+      slotItem.addEventListener('mouseover', () => {
+        const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
+        if (arc) arc.classList.add('active');
+      });
+      slotItem.addEventListener('mouseout', () => {
+        const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
+        if (arc) arc.classList.remove('active');
+      });
+    });
+  }
+  // Previous/next month navigation
+  navigateMonth(direction) {
+    this.selectedMonth += direction;
+    if (this.selectedMonth < 0) {
+      this.selectedMonth = 11;
+      this.selectedYear--;
+    } else if (this.selectedMonth > 11) {
+      this.selectedMonth = 0;
+      this.selectedYear++;
+    }
+    if (window.setSelectedDate) {
+      const firstDay = new Date(this.selectedYear, this.selectedMonth, 1);
+      window.setSelectedDate(firstDay);
+    }
+  }
+  // Calculate the duration between two times
+  calculateDuration(start, end) {
+    const startMinutes = this.timeToMinutes(start);
+    const endMinutes = this.timeToMinutes(end);
+    let duration = endMinutes - startMinutes;
+    if (duration < 0) duration += 24 * 60;
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    if (hours === 0) return `${minutes}min`;
+    else if (minutes === 0) return `${hours}h`;
+    else return `${hours}h${minutes.toString().padStart(2, '0')}min`;
+  }
+  // Convert a time string to minutes
+  timeToMinutes(time) {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+  // Select a day in the clock calendar
+  selectClockCalendarDay(day, segments) {
+    const dayIndex = day - 1;
+    if (window.setSelectedDate) {
+      const selectedDate = new Date(window.currentYear || new Date().getFullYear(), window.currentMonth || new Date().getMonth(), day);
+      window.setSelectedDate(selectedDate);
+    }
+  }
+  // Method called by central sync
+  setDate(date) {
+    if (!date) return;
+    this.selectedDay = date.getDate();
+    this.selectedMonth = date.getMonth();
+    this.selectedYear = date.getFullYear();
+    this.renderClockCalendar();
+  }
+}
+// (End of CalendarViewsManager class)
+
+
+// =========================
+// 4. CLOCK (circular clock)
+// =========================
+// Main class for the circular clock (slots and prayers)
+class Clock {
+  constructor(containerId, segments, scope) {
+    this.container = document.getElementById(containerId);
+    if (!this.container) {
+      console.error('Container not found:', containerId);
+      return;
+    }
+    this.segments = segments;
+    this.scope = scope;
+    this.currentIndex = 0;
+    this.currentDayIndex = 0;
+    this.slotsContainer = document.getElementById('availableSlotsList');
+    this.init();
+  }
+  // Animation of planning appearance
+  static handlePlanningGeneration() {
+    const planningContent = document.querySelector('.quick-actions');
+    if (planningContent) planningContent.classList.add('planning-generated');
+    const clockSection = document.querySelector('.clock-section');
+    if (clockSection) {
+      clockSection.classList.add('visible');
+      setTimeout(() => {
+        try { clockSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (error) { clockSection.scrollIntoView(); }
+      }, 500);
+    }
+    const sections = document.querySelectorAll('.available-slots, .summary-section');
+    sections.forEach((section, index) => {
+      setTimeout(() => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        section.style.transition = 'all 0.6s ease';
+        setTimeout(() => {
+          section.style.opacity = '1';
+          section.style.transform = 'translateY(0)';
+        }, 100);
+      }, (index + 1) * 300);
+    });
+  }
+  // Conversion minutes -> angle
+  minutesToAngle(minutes) {
+    return (minutes * 360) / (24 * 60);
+  }
+  // Calculate the duration between two times
+  calculateDuration(start, end) {
+    const startMinutes = timeToMinutes(start);
+    const endMinutes = timeToMinutes(end);
+    let duration = endMinutes - startMinutes;
+    if (duration < 0) duration += 24 * 60;
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+    if (hours === 0) return `(${minutes}min)`;
+    else if (minutes === 0) return `(${hours}h)`;
+    else return `(${hours}h${minutes.toString().padStart(2, '0')}min)`;
+  }
+  // Create an SVG arc for an event (prayer or slot)
+  createEventElement(event, type) {
+    const startMinutes = timeToMinutes(event.start);
+    const endMinutes = timeToMinutes(event.end);
+    const startAngle = this.minutesToAngle(startMinutes);
+    const endAngle = this.minutesToAngle(endMinutes);
+    const radius = type === 'prayer' ? 150 : 130;
+    const centerX = 150;
+    const centerY = 150;
+    const startX = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
+    const startY = centerY + radius * Math.sin((startAngle - 90) * Math.PI / 180);
+    const endX = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
+    const endY = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    let angleDiff = endMinutes - startMinutes;
+    if (angleDiff < 0) angleDiff += 24 * 60;
+    const largeArcFlag = angleDiff > 12 * 60 ? 1 : 0;
+    const d = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+    path.setAttribute("d", d);
+    path.setAttribute("class", `clock-arc ${type}`);
+    const midAngle = (startAngle + endAngle) / 2;
+    const labelRadius = type === 'prayer' ? radius + 25 : radius - 25;
+    const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
+    const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", labelX);
+    label.setAttribute("y", labelY);
+    label.setAttribute("class", "clock-label");
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("dominant-baseline", "middle");
+    if (type === 'prayer') label.textContent = `${event.content} (${event.start})`;
+    else label.textContent = `${event.start} - ${event.end}`;
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.appendChild(path);
+    group.appendChild(label);
+    // Tooltip for prayers
+    if (type === 'prayer') {
+      const tooltipGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      tooltipGroup.setAttribute("class", "tooltip-group");
+      tooltipGroup.style.display = "none";
+      const tooltipRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      tooltipRect.setAttribute("class", "tooltip-rect");
+      tooltipRect.setAttribute("rx", "5");
+      tooltipRect.setAttribute("ry", "5");
+      const tooltipText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      tooltipText.setAttribute("class", "tooltip-text");
+      tooltipText.textContent = `${event.content}\nTime: ${event.start}`;
+      tooltipGroup.appendChild(tooltipRect);
+      tooltipGroup.appendChild(tooltipText);
+      const tooltipX = labelX;
+      const tooltipY = labelY - 40;
+      tooltipGroup.setAttribute("transform", `translate(${tooltipX}, ${tooltipY})`);
+      path.addEventListener("mouseover", () => { tooltipGroup.style.display = "block"; });
+      path.addEventListener("mouseout", () => { tooltipGroup.style.display = "none"; });
+      group.appendChild(tooltipGroup);
+    }
+    return group;
+  }
+  // Create an SVG arc for a slot
+  createSlotElement(slot) {
+    const startMinutes = timeToMinutes(slot.start);
+    const endMinutes = timeToMinutes(slot.end);
+    const delayedStartMinutes = startMinutes + 25;
+    const startAngle = this.minutesToAngle(delayedStartMinutes);
+    const endAngle = this.minutesToAngle(endMinutes);
+    const radius = 130;
+    const centerX = 150;
+    const centerY = 150;
+    const startX = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
+    const startY = centerY + radius * Math.sin((startAngle - 90) * Math.PI / 180);
+    const endX = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
+    const endY = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    let angleDiff = endMinutes - delayedStartMinutes;
+    if (angleDiff < 0) angleDiff += 24 * 60;
+    const largeArcFlag = angleDiff > 12 * 60 ? 1 : 0;
+    const d = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+    path.setAttribute("d", d);
+    path.setAttribute("class", "clock-arc slot");
+    path.dataset.start = slot.start;
+    path.dataset.end = slot.end;
+    const midAngle = (startAngle + endAngle) / 2;
+    const labelRadius = radius - 25;
+    const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
+    const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", labelX);
+    label.setAttribute("y", labelY);
+    label.setAttribute("class", "clock-label");
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("dominant-baseline", "middle");
+    label.textContent = this.calculateDuration(slot.start, slot.end);
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.appendChild(path);
+    group.appendChild(label);
+    path.addEventListener("mouseover", () => {
+      path.classList.add("active");
+      const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (listItem) listItem.classList.add("active");
+    });
+    path.addEventListener("mouseout", () => {
+      path.classList.remove("active");
+      const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (listItem) listItem.classList.remove("active");
+    });
+    return group;
+  }
+  // Update the list of available slots
+  updateAvailableSlots(data) {
+    if (!this.slotsContainer) return;
+    this.slotsContainer.innerHTML = '';
+    if (!data || !data.slots || data.slots.length === 0) {
+      this.slotsContainer.innerHTML = '<p>No slots available for this period.</p>';
+      return;
+    }
+    const slotsList = document.createElement('ul');
+    slotsList.className = 'slots-list';
+    data.slots.forEach(slot => {
+      const slotItem = document.createElement('li');
+      slotItem.className = 'slot-item';
+      slotItem.dataset.start = slot.start;
+      slotItem.dataset.end = slot.end;
+      const slotTime = document.createElement('span');
+      slotTime.className = 'slot-time';
+      slotTime.textContent = `${slot.start} - ${slot.end}`;
+      const slotDuration = document.createElement('span');
+      slotDuration.className = 'slot-duration';
+      slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
+      slotItem.appendChild(slotTime);
+      slotItem.appendChild(slotDuration);
+      slotsList.appendChild(slotItem);
+      slotItem.addEventListener('mouseover', () => {
+        const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
+        if (arc) arc.classList.add('active');
+      });
+      slotItem.addEventListener('mouseout', () => {
+        const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
+        if (arc) arc.classList.remove('active');
+      });
+    });
+    this.slotsContainer.appendChild(slotsList);
+  }
+  // Update the clock display
+  updateClock() {
+    this.container.innerHTML = '';
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "-80 -80 460 460");
+    svg.setAttribute("class", "clock-svg");
+    this.container.appendChild(svg);
+    const clockFace = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    clockFace.setAttribute("cx", "150");
+    clockFace.setAttribute("cy", "150");
+    clockFace.setAttribute("r", "180");
+    clockFace.setAttribute("class", "clock-face");
+    svg.appendChild(clockFace);
+    for (let hour = 0; hour < 24; hour++) {
+      const angle = this.minutesToAngle(hour * 60);
+      const x1 = 150 + 170 * Math.cos((angle - 90) * Math.PI / 180);
+      const y1 = 150 + 170 * Math.sin((angle - 90) * Math.PI / 180);
+      const x2 = 150 + 180 * Math.cos((angle - 90) * Math.PI / 180);
+      const y2 = 150 + 180 * Math.sin((angle - 90) * Math.PI / 180);
+      const marker = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      marker.setAttribute("x1", x1);
+      marker.setAttribute("y1", y1);
+      marker.setAttribute("x2", x2);
+      marker.setAttribute("y2", y2);
+      marker.setAttribute("class", "hour-marker");
+      svg.appendChild(marker);
+      const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      const labelX = 150 + 155 * Math.cos((angle - 90) * Math.PI / 180);
+      const labelY = 150 + 155 * Math.sin((angle - 90) * Math.PI / 180);
+      label.setAttribute("x", labelX);
+      label.setAttribute("y", labelY);
+      label.setAttribute("class", "hour-label");
+      label.textContent = hour;
+      svg.appendChild(label);
+    }
+    for (let minute = 0; minute < 60; minute++) {
+      if (minute % 5 === 0) continue;
+      const angle = this.minutesToAngle(minute);
+      const x1 = 150 + 175 * Math.cos((angle - 90) * Math.PI / 180);
+      const y1 = 150 + 175 * Math.sin((angle - 90) * Math.PI / 180);
+      const x2 = 150 + 180 * Math.cos((angle - 90) * Math.PI / 180);
+      const y2 = 150 + 180 * Math.sin((angle - 90) * Math.PI / 180);
+      const marker = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      marker.setAttribute("x1", x1);
+      marker.setAttribute("y1", y1);
+      marker.setAttribute("x2", x2);
+      marker.setAttribute("y2", y2);
+      marker.setAttribute("class", "minute-marker");
+      svg.appendChild(marker);
+    }
+    const currentData = this.getCurrentData();
+    if (currentData && currentData.prayer_times) {
+      Object.entries(currentData.prayer_times).forEach(([prayer, time]) => {
+        const eventElement = this.createEventElement({
+          content: prayer,
+          start: time,
+          end: time
+        }, 'prayer');
+        svg.appendChild(eventElement);
+      });
+    }
+    if (currentData && currentData.slots) {
+      currentData.slots.forEach(slot => {
+        const slotElement = this.createSlotElement(slot);
+        svg.appendChild(slotElement);
+      });
+    }
+    const dateElement = document.getElementById('currentDate');
+    if (dateElement && currentData && currentData.date) {
+      const [day, month, year] = currentData.date.split('/');
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      dateElement.textContent = formatDateForDisplay(date);
+    }
+    const timezoneElement = document.getElementById('timezone');
+    if (timezoneElement) {
+      timezoneElement.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+    this.updateAvailableSlots(currentData);
+  }
+  // Get the current day's data
+  getCurrentData() {
+    if (this.scope === 'today') return this.segments[0];
+    else if (this.scope === 'month') return this.segments[this.currentIndex];
+    else if (this.scope === 'year') return this.segments[this.currentIndex];
+    return null;
+  }
+  // Clock initialization
+  init() {
+    this.updateClock();
+  }
+  // Day/month navigation
+  navigate(direction) {
+    if (this.scope === 'month' || this.scope === 'year') {
+      let idx = this.currentIndex + direction;
+      if (idx < 0) idx = 0;
+      if (idx >= this.segments.length) idx = this.segments.length - 1;
+      const seg = this.segments[idx];
+      if (seg && seg.date) {
+        const [day, month, year] = seg.date.split('/');
+        const selectedDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        window.setSelectedDate(selectedDate);
+      }
+    }
+  }
+  // Method called by central sync
+  setDate(date) {
+    if (!date || !this.segments || this.segments.length === 0) return;
+    let idx = 0;
+    if (this.scope === 'month' || this.scope === 'year') {
+      for (let i = 0; i < this.segments.length; i++) {
+        const seg = this.segments[i];
+        if (seg.date) {
+          const [day, month, year] = seg.date.split('/');
+          const segDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          if (segDate.toDateString() === date.toDateString()) {
+            idx = i;
+            break;
+          }
+        }
+      }
+    }
+    this.currentIndex = idx;
+    this.updateClock();
+  }
+}
+// (End of Clock class)
+
+
+// =========================
+// 5. COMPACT MAP (mosque map)
+// =========================
+// Module for the initialization of the compact map (Leaflet)
+let currentMap = null;
+function initializeCompactMap(containerId, lat, lng, mosqueName) {
+  console.log('Initializing compact map:', { containerId, lat, lng, mosqueName });
+  if (!lat || !lng) {
+    console.log('Missing coordinates, skipping map initialization');
+    return;
+  }
+  // Destroy the existing map if needed
+  if (currentMap) {
+    console.log('Destroying existing map');
+    currentMap.remove();
+    currentMap = null;
+  }
+  // Create a new map
+  currentMap = L.map(containerId).setView([lat, lng], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(currentMap);
+  L.marker([lat, lng])
+    .addTo(currentMap)
+    .bindPopup(mosqueName)
+    .openPopup();
+  console.log('Map initialized successfully');
+}
+window.initializeCompactMap = initializeCompactMap;
+
+
+// =========================
+// 6. MOSQUE SEARCH (dropdowns)
+// =========================
+// Initialization of TomSelect dropdowns for mosque and country search
+function initMosqueSearchDropdowns() {
+  const countrySelectEl = document.getElementById("country-select");
+  const mosqueSelectEl = document.getElementById("mosque-select");
+  if (!countrySelectEl || !mosqueSelectEl) return;
+  // Dropdown mosquée
+  const mosqueSelect = new TomSelect(mosqueSelectEl, {
+    placeholder: "Choisir une mosquée...",
+    valueField: "value",
+    labelField: "text",
+    searchField: ["name", "slug", "city", "address", "zipcode"],
+    options: [],
+    shouldLoad: () => false,
+    render: {
+      no_results: () => '<div class="no-results">Aucune mosquée trouvée</div>'
+    },
+    onChange: (value) => {
+      if (!value) return;
+      const selectedOption = mosqueSelect.options[value];
+      if (selectedOption) {
+        document.getElementById('mosque_lat').value = selectedOption.lat || '';
+        document.getElementById('mosque_lng').value = selectedOption.lng || '';
+        document.getElementById('mosque_name').value = selectedOption.name || '';
+        document.getElementById('mosque_address').value = selectedOption.address || '';
+      }
+    }
+  });
+  // Dropdown pays
+  const countrySelect = new TomSelect(countrySelectEl, {
+    placeholder: "Choisir un pays...",
+    onChange: (value) => {
+      if (!value) return;
+      mosqueSelect.clear(true);
+      mosqueSelect.clearOptions();
+      mosqueSelect.disable();
+      fetch(`/get_mosques?country=${value}`)
+        .then(res => res.json())
+        .then(mosques => {
+          mosqueSelect.enable();
+          mosqueSelect.addOptions(
+            mosques.map(m => ({
+              value: m.slug || m.id || m.name,
+              text: m.text || m.name,
+              name: m.name,
+              slug: m.slug,
+              city: m.city,
+              address: m.address,
+              zipcode: m.zipcode,
+              lat: m.lat,
+              lng: m.lng
+            }))
+          );
+        });
+    }
+  });
+  // Initial loading of countries
+  fetch("/get_countries")
+    .then(res => res.json())
+    .then(countries => {
+      countrySelect.addOptions(
+        countries.map(c => ({ value: c.code, text: c.name }))
+      );
+    });
+  // Expose globally
+  window.countrySelectInstance = countrySelect;
+  window.mosqueSelectInstance = mosqueSelect;
+}
+
+
+// =========================
+// 7. MAP LOADER (OpenStreetMap)
+// =========================
+// Initialization of the main mosque map with clusters and interactions
+function initMosqueMapLoader() {
+  const mosqueSelectEl = document.getElementById("mosque-select");
+  const countrySelectEl = document.getElementById("country-select");
+  if (!mosqueSelectEl || !countrySelectEl) return;
+  // OSM map
+  const map = L.map("mosque-map").setView([20, 0], 2);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors",
+  }).addTo(map);
+  // Clusters
+  const markerCluster = L.markerClusterGroup();
+  map.addLayer(markerCluster);
+  // Markers by slug
+  const markers = {};
+  // Select a mosque after loading
+  function selectMosqueAfterLoad(mosqueSelect, mosqueSlug) {
+    let attempts = 0;
+    const maxAttempts = 20;
+    const wait = setInterval(() => {
+      const options = Object.keys(mosqueSelect.options || {});
+      if (options.includes(mosqueSlug)) {
+        mosqueSelect.setValue(mosqueSlug, true);
+        clearInterval(wait);
+        const marker = markers[mosqueSlug];
+        if (marker) {
+          map.setView(marker.getLatLng(), 250);
+          marker.openPopup();
+        }
+      } else if (++attempts > maxAttempts) {
+        console.warn(`⚠️ Impossible de sélectionner la mosquée : ${mosqueSlug}`);
+        clearInterval(wait);
+      }
+    }, 300);
+  }
+  // Load all mosques and create markers
+  async function loadAllMosques() {
+    const countries = await (await fetch("/get_countries")).json();
+    for (const country of countries) {
+      const mosques = await (await fetch(`/get_mosques?country=${country.code}`)).json();
+      mosques.forEach((mosque) => {
+        if (!mosque.lat || !mosque.lng) return;
+        const popupContent = `
+          <div class="popup-content" style="min-width:220px;max-width:320px;padding:1em 1.2em;background:var(--form-bg,#1a1a1a);color:var(--text-color,#e2e8f0);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.25);">
+            <div style="display:flex;align-items:center;gap:0.5em;margin-bottom:0.5em;">
+              <i class="fa-solid fa-mosque" style="font-size:1.3em;color:var(--primary,#d4af37);"></i>
+              <strong style="font-size:1.1em;">${mosque.name}</strong>
+            </div>
+            <div style="color:var(--text-muted,#a0aec0);font-size:0.95em;margin-bottom:0.3em;">
+              ${mosque.city ? `<span><i class='fa-solid fa-location-dot'></i> ${mosque.city}</span><br>` : ''}
+              ${mosque.address ? `<span><i class='fa-solid fa-map-pin'></i> ${mosque.address}</span><br>` : ''}
+            </div>
+            ${mosque.image1 ? `<img id="popup-img-${mosque.slug}" src="${mosque.image1}" alt="mosquée" class="popup-image" style="width:100%;max-height:120px;object-fit:cover;border-radius:6px;margin:0.5em 0;" />` : ''}
+            <hr style="border:0;border-top:1px solid var(--border-color,#333);margin:0.5em 0;">
+            <button class="btn-sync-mosque" data-country="${country.code}" data-slug="${mosque.slug}" style="display:block;width:100%;margin-top:0.7em;padding:0.5em 0;background:var(--primary,#d4af37);color:#222;border:none;border-radius:6px;font-weight:600;cursor:pointer;transition:background 0.2s;font-size:1em;">
+              <i class="fa-solid fa-check"></i> Sélectionner cette mosquée
+            </button>
+          </div>
+        `;
+        const marker = L.marker([mosque.lat, mosque.lng]).bindPopup(popupContent);
+        markerCluster.addLayer(marker);
+        markers[mosque.slug] = marker;
+      });
+    }
+  }
+  // Event delegation for selection from the map
+  map.on("popupopen", (e) => {
+    const btn = e.popup.getElement().querySelector(".btn-sync-mosque");
+    if (!btn) return;
+    btn.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const countryCode = btn.dataset.country;
+      const mosqueSlug = btn.dataset.slug;
+      const countrySelect = countrySelectEl.tomselect;
+      const mosqueSelect = mosqueSelectEl.tomselect;
+      countrySelect.setValue(countryCode, true);
+      fetch(`/get_mosques?country=${countryCode}`)
+        .then((res) => res.json())
+        .then((mosques) => {
+          mosqueSelect.clearOptions();
+          mosqueSelect.enable();
+          mosqueSelect.addOptions(
+            mosques.map((m) => ({
+              value: m.slug || m.id || m.name,
+              text: m.text || m.name,
+              name: m.name,
+              slug: m.slug,
+              city: m.city,
+              address: m.address,
+              zipcode: m.zipcode,
+            }))
+          );
+          selectMosqueAfterLoad(mosqueSelect, mosqueSlug);
+        });
+    });
+    // Correction of the popup position after image loading
+    const img = e.popup.getElement().querySelector('img[id^="popup-img-"]');
+    if (img) {
+      if (!img.complete) {
+        img.addEventListener('load', () => {
+          e.popup.update();
+        });
+      } else {
+        setTimeout(() => e.popup.update(), 50);
+      }
+    }
+  });
+  // Update the map view when manually selecting
+  mosqueSelectEl.addEventListener("change", () => {
+    const mosqueSlug = mosqueSelectEl.value;
+    const marker = markers[mosqueSlug];
+    if (marker) {
+      map.setView(marker.getLatLng(), 250);
+      marker.openPopup();
+    }
+  });
+  // Auto-focus on the selected country
+  countrySelectEl.addEventListener("change", () => {
+    const code = countrySelectEl.value;
+    fetch(`/get_mosques?country=${code}`)
+      .then((res) => res.json())
+      .then((mosques) => {
+        const first = mosques.find((m) => m.lat && m.lng);
+        if (first) map.setView([first.lat, first.lng], 6);
+      });
+  });
+  // Initial loading of all mosques
+  loadAllMosques();
+}
+
+
+// =========================
+// 8. PLANNERPAGE (form, config, download, etc.)
+// =========================
 /**
  * Planner page functionality
  * Handles form submission, animations, and clock initialization
@@ -195,7 +1415,7 @@ class PlannerPage {
         year = window.clockCalendar.selectedYear;
         month = window.clockCalendar.selectedMonth;
     } else {
-        // Par défaut, mois/année courants
+        // By default, current month/year
         const now = new Date();
         year = now.getFullYear();
         month = now.getMonth() + 1; // JS: 0=janvier
@@ -245,7 +1465,7 @@ class PlannerPage {
     if (mosqueNameEl) mosqueNameEl.textContent = data.mosque_name;
     if (mosqueAddressEl) mosqueAddressEl.textContent = data.mosque_address;
     
-    // Met à jour les attributs data du conteneur de la carte
+    // Update the data attributes of the map container
     if (mapContainer && data.mosque_lat && data.mosque_lng) {
       mapContainer.dataset.lat = data.mosque_lat;
       mapContainer.dataset.lng = data.mosque_lng;
@@ -262,7 +1482,7 @@ class PlannerPage {
       }
     }
     
-    // Met à jour les liens de la carte
+    // Update the map links
     if (mapLinksEl) {
       mapLinksEl.innerHTML = '';
       if (data.google_maps_url) {
@@ -324,7 +1544,7 @@ class PlannerPage {
     const downloadGrid = document.querySelector('.download-grid');
     if (downloadGrid) {
       downloadGrid.innerHTML = '';
-      // Ajoute les liens de téléchargement si disponibles
+      // Add download links if available
       if (data.ics_path) {
         const a = document.createElement('a');
         a.href = `/static/ics/${data.ics_path}`;
@@ -349,13 +1569,13 @@ class PlannerPage {
         a.innerHTML = `<span class="download-icon">📋</span><span class="download-title">Créneaux disponibles (${data.scope})</span><span class="download-format">.ics</span>`;
         downloadGrid.appendChild(a);
       }
-      // Lien pour édition manuelle
+      // Manual edit link
       const editA = document.createElement('a');
       editA.href = '/edit_slot';
       editA.className = 'download-card edit';
       editA.innerHTML = `<span class="download-icon">✏️</span><span class="download-title">Modifier manuellement</span><span class="download-format">Créneaux</span>`;
       downloadGrid.appendChild(editA);
-      // Ajoute les boutons de téléchargement par période
+      // Add period download buttons
       const scopeDownloads = document.createElement('div');
       scopeDownloads.className = 'scope-downloads';
       scopeDownloads.innerHTML = `<h3>📥 Téléchargements par période</h3><div class="scope-buttons"></div>`;
@@ -368,7 +1588,7 @@ class PlannerPage {
         scopeButtons.appendChild(btn);
       });
       downloadGrid.appendChild(scopeDownloads);
-      // Active les boutons
+      // Activate the buttons
       this.setupScopeDownloadButtons(data);
     }
   }
@@ -387,7 +1607,7 @@ class PlannerPage {
         const mosqueId = data.masjid_id;
         const paddingBefore = data.padding_before || 10;
         const paddingAfter = data.padding_after || 35;
-        // Recup checkbox include_sunset
+        // Get checkbox include_sunset
         const includeSunsetCheckbox = document.getElementById('include_sunset');
         const includeSunset = includeSunsetCheckbox ? includeSunsetCheckbox.checked : false;
         
@@ -801,7 +2021,7 @@ class PlannerPage {
    * Show planning sections
    */
   showPlanningSections() {
-    // Affiche les sections existantes sans les créer dynamiquement
+    // Show existing sections without creating them dynamically
     const selectors = [
       '.quick-actions',
       '.clock-section',
@@ -816,7 +2036,7 @@ class PlannerPage {
         setTimeout(() => section.classList.add('visible'), 100);
       }
     });
-    // Masque la section no-data si elle existe
+    // Hide the no-data section if it exists
     const noDataSection = document.querySelector('.no-data');
     if (noDataSection) {
       noDataSection.classList.add('hidden');
@@ -906,21 +2126,44 @@ class PlannerPage {
   }
 }
 
-// Initialize planner page when DOM is loaded
+// =========================
+// 9. INITIALISATION & SYNCHRONISATION CENTRALE
+// =========================
+// Central initialization of all merged JS modules
+
 document.addEventListener('DOMContentLoaded', () => {
+  // 1. Dropdowns TomSelect (pays & mosquée)
+  initMosqueSearchDropdowns();
+
+  // 2. Main map (OpenStreetMap with clusters)
+  initMosqueMapLoader();
+
+  // 3. Vertical timeline (SVG agenda)
+  window.timeline = new Timeline();
+
+  // 4. Calendar (calendar grid)
+  window.calendarViewsManager = new CalendarViewsManager();
+
+  // 5. Circular clock (clock)
+  // The instance will be created dynamically by PlannerPage according to the received data
+  // window.clockInstance = new Clock(...)
+
+  // 6. Compact map (Leaflet) : initialized on demand via window.initializeCompactMap
+
+  // 7. PlannerPage (formulaires, config, etc.)
   new PlannerPage();
-  
-  // Initialize clock if segments are available
+
+  // 8. Clock initialization if segments are already present (ex: after planning generation)
   if (document.getElementById('clockConfig')) {
     PlannerPage.initClock();
   }
 });
 
-// Synchronisation centrale des vues planner
+// Central synchronization of planner views
 window.selectedDate = new Date();
 window.setSelectedDate = function(date) {
   if (!date) return;
-  // Empêcher les boucles infinies
+  // Prevent infinite loops
   if (window.selectedDate && window.selectedDate.toDateString && window.selectedDate.toDateString() === date.toDateString()) return;
   window.selectedDate = new Date(date);
   // Timeline
