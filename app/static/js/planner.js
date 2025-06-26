@@ -55,7 +55,6 @@ class Timeline {
     this.currentDate = new Date();
     this.segments = [];
     this.scope = 'today';
-    this.icsDays = [];
     this.tooltip = null;
     this.currentView = 'timeline'; // 'timeline' or 'slots'
     this.init();
@@ -381,70 +380,6 @@ class Timeline {
   // Check if the timeline is initialized
   isInitialized() {
     return this.container !== null && this.svg !== null;
-  }
-  // Add missing method for ICS loading
-  async loadAndDisplayTimelineICS(masjid_id, year, month) {
-    try {
-      console.log('🔄 Loading ICS data for timeline');
-      // Use the correct endpoint /api/timeline_ics with query parameters
-      const response = await fetch(`/api/timeline_ics?masjid_id=${masjid_id}&year=${year}&month=${month}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log('📊 ICS data received:', data);
-      // Use data.timeline instead of data.days (based on the backend response structure)
-      this.icsDays = data.timeline || [];
-      if (this.icsDays.length > 0) {
-        // Display first day by default
-        this.displayICSForDay(0);
-      } else {
-        console.log('⚠️ No days found in ICS data');
-        this.showEmptyState();
-      }
-    } catch (error) {
-      console.error('❌ Error loading ICS data:', error);
-      this.showEmptyState();
-    }
-  }
-  // Add displayICSForDay method (used by loadAndDisplayTimelineICS)
-  displayICSForDay(dayIndex) {
-    if (!this.icsDays || this.icsDays.length === 0) return;
-    const dayData = this.icsDays[dayIndex];
-    if (!dayData) return;
-    this.clearEvents();
-    // Display prayers
-    if (dayData.prayers && dayData.prayers.length > 0) {
-      dayData.prayers.forEach((prayer) => {
-        // Extract exact time if present in summary
-        const prayerTimeMatch = prayer.summary.match(/\((\d{2}:\d{2})\)/);
-        let displayStart = prayer.start;
-        let displayEnd = prayer.end;
-        if (prayerTimeMatch) {
-          const prayerTime = prayerTimeMatch[1];
-          displayStart = prayerTime;
-          const prayerStartMin = timeToMinutes(prayerTime);
-          const prayerEndMin = prayerStartMin + 35;
-          displayEnd = minutesToTime(prayerEndMin);
-        }
-        this.createSVGEvent(prayer.summary, displayStart, displayEnd, 'prayer', 'prayer');
-      });
-    }
-    // Display slots
-    if (dayData.slots && dayData.slots.length > 0) {
-      dayData.slots.forEach((slot) => {
-        this.createSVGEvent(slot.summary, slot.start, slot.end, 'slot', 'slot');
-      });
-    }
-    // Display empty slots
-    if (dayData.empty && dayData.empty.length > 0) {
-      dayData.empty.forEach((empty) => {
-        this.createSVGEvent(empty.summary, empty.start, empty.end, 'empty', 'empty');
-      });
-    }
-    // Update displayed date
-    this.currentDate = new Date(dayData.date);
-    this.updateTimelineDate();
   }
 }
 // (End of Timeline class)
@@ -1473,9 +1408,6 @@ class PlannerPage {
         const now = new Date();
         year = now.getFullYear();
         month = now.getMonth() + 1; // JS: 0=janvier
-    }
-    if (window.timeline && data.masjid_id) {
-        window.timeline.loadAndDisplayTimelineICS(data.masjid_id, year, month);
     }
   }
 
