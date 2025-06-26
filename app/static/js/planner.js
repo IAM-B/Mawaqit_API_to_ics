@@ -65,6 +65,12 @@ class Timeline {
     this.createTimelineContainer();
     this.createTooltip();
     this.setupViewToggle();
+    
+    // Set initial date to today and update display
+    const today = new Date();
+    this.currentDate = today;
+    this.updateTimelineDate();
+    
     if (this.container && this.svg) {
       this.showTimelineView();
     } else {
@@ -139,8 +145,14 @@ class Timeline {
   initializeTimeline(segments, scope) {
     this.segments = segments;
     this.scope = scope;
+    
+    // Set current date to today and update display
+    const today = new Date();
+    this.currentDate = today;
     this.updateTimelineDate();
-    this.displayDayEvents(new Date());
+    
+    // Display events for today by default
+    this.displayDayEvents(today);
   }
   // Update the date displayed in the header
   updateTimelineDate() {
@@ -307,7 +319,12 @@ class Timeline {
   }
   // Method called by central sync
   setDate(date) {
+    if (!date) return;
+    
+    console.log('📅 Timeline setDate called with:', date.toDateString());
+    
     this.currentDate = new Date(date);
+    this.updateTimelineDate();
     this.displayDayEvents(this.currentDate);
   }
   // Navigation and toggle buttons
@@ -369,13 +386,15 @@ class Timeline {
   async loadAndDisplayTimelineICS(masjid_id, year, month) {
     try {
       console.log('🔄 Loading ICS data for timeline');
-      const response = await fetch(`/api/ics/${masjid_id}/${year}/${month}/json`);
+      // Use the correct endpoint /api/timeline_ics with query parameters
+      const response = await fetch(`/api/timeline_ics?masjid_id=${masjid_id}&year=${year}&month=${month}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
       console.log('📊 ICS data received:', data);
-      this.icsDays = data.days || [];
+      // Use data.timeline instead of data.days (based on the backend response structure)
+      this.icsDays = data.timeline || [];
       if (this.icsDays.length > 0) {
         // Display first day by default
         this.displayICSForDay(0);
@@ -632,9 +651,38 @@ class CalendarViewsManager {
   // Select a day in the clock calendar
   selectClockCalendarDay(day, segments) {
     const dayIndex = day - 1;
+    
+    // Update calendar selection
+    this.updateCalendarSelection(dayIndex);
+
+    // Create the selected date for synchronization
+    const currentMonth = window.currentMonth || new Date().getMonth();
+    const currentYear = window.currentYear || new Date().getFullYear();
+    const selectedDate = new Date(currentYear, currentMonth, day);
+    
+    // Call central synchronization to update all components
     if (window.setSelectedDate) {
-      const selectedDate = new Date(window.currentYear || new Date().getFullYear(), window.currentMonth || new Date().getMonth(), day);
       window.setSelectedDate(selectedDate);
+    }
+
+    // Update clock if available (local update as backup)
+    if (window.Clock && window.clockInstance) {
+      // For year scope, extract current month's data
+      let monthSegments = [];
+      if (segments && segments.length > 0) {
+        const currentMonth = window.currentMonth || new Date().getMonth();
+        if (segments[currentMonth] && segments[currentMonth].days) {
+          monthSegments = segments[currentMonth].days;
+        } else {
+          // If segments is already daily data (month scope)
+          monthSegments = segments;
+        }
+      }
+      
+      if (dayIndex >= 0 && dayIndex < monthSegments.length) {
+        window.clockInstance.currentIndex = dayIndex;
+        window.clockInstance.updateClock();
+      }
     }
   }
   // Method called by central sync
@@ -1396,12 +1444,18 @@ class PlannerPage {
       setTimeout(() => {
         // Initialize calendar views
         if (window.calendarViewsManager) {
+          console.log('📆 Initializing calendar views...');
           window.calendarViewsManager.initializeViews(data.segments, data.scope);
         }
         
         // Initialize timeline
         if (window.timeline) {
+          console.log('📅 Initializing timeline...');
           window.timeline.initializeTimeline(data.segments, data.scope);
+          
+          // Set initial date for timeline
+          const today = new Date();
+          window.timeline.setDate(today);
         }
         
         // Initialize clock
@@ -1652,6 +1706,21 @@ class PlannerPage {
    * Initialize clock with new data
    */
   initializeClock(data) {
+    console.log('🔄 Initializing clock with data:', data);
+    
+    // Check if clock container exists
+    const clockContainer = document.getElementById('clockContent');
+    if (!clockContainer) {
+      console.error('❌ Clock container #clockContent not found in DOM');
+      return;
+    }
+    
+    // Check if we have segments data
+    if (!data.segments || data.segments.length === 0) {
+      console.warn('⚠️ No segments data available for clock initialization');
+      return;
+    }
+    
     // Create clock config element
     const clockConfig = document.createElement('div');
     clockConfig.id = 'clockConfig';
@@ -1662,64 +1731,81 @@ class PlannerPage {
     
     // Initialize clock using the correct method
     if (window.Clock) {
+      console.log('✅ Clock class found, creating instance...');
+      
       // For year scope, extract current month's data for clock display
       let clockSegments = data.segments;
       if (data.scope === 'year' && data.segments && data.segments.length > 0) {
         const currentMonth = new Date().getMonth();
+        console.log('📅 Year scope detected, extracting month', currentMonth, 'data');
         if (data.segments[currentMonth] && data.segments[currentMonth].days) {
           clockSegments = data.segments[currentMonth].days;
+          console.log('📊 Extracted month segments:', clockSegments.length, 'days');
+        } else {
+          console.warn('⚠️ No days data found for month', currentMonth);
         }
       }
       
       // Create a new Clock instance with the appropriate segments
-      const clock = new Clock('clockContent', clockSegments, 'month'); // Use 'month' scope for display
-      
-      // Store clock instance globally for access from other functions
-      window.clockInstance = clock;
-      
-      // Set the clock to show today's view by default
-      if (clockSegments && clockSegments.length > 0) {
-        // Get current day of month (1-based)
-        const currentDay = new Date().getDate();
-        // Convert to 0-based index, but ensure it's within bounds
-        const todayIndex = Math.min(currentDay - 1, clockSegments.length - 1);
+      try {
+        const clock = new Clock('clockContent', clockSegments, data.scope);
+        console.log('✅ Clock instance created successfully');
         
-        clock.currentIndex = todayIndex;
-        clock.updateClock();
+        // Store clock instance globally for access from other functions
+        window.clockInstance = clock;
         
-        // Update calendar selection to match today
-        this.updateCalendarSelection(todayIndex);
+        // Set the clock to show today's view by default
+        if (clockSegments && clockSegments.length > 0) {
+          // Get current day of month (1-based)
+          const currentDay = new Date().getDate();
+          // Convert to 0-based index, but ensure it's within bounds
+          const todayIndex = Math.min(currentDay - 1, clockSegments.length - 1);
+          
+          console.log('📅 Setting clock to day', currentDay, 'index', todayIndex);
+          clock.currentIndex = todayIndex;
+          clock.updateClock();
+          
+          // Update calendar selection to match today
+          this.updateCalendarSelection(todayIndex);
+        } else {
+          console.warn('⚠️ No clock segments available for display');
+        }
+        
+        // Pass clock instance to calendar views manager for synchronization
+        if (window.calendarViewsManager) {
+          window.calendarViewsManager.setClockInstance(clock);
+        }
+        
+        // Initialize the clock calendar for month navigation
+        this.initializeClockCalendar(data.segments, data.scope);
+        
+        // Setup navigation
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            clock.navigate(-1);
+            this.updateCalendarSelection(clock.currentIndex);
+          });
+        }
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            clock.navigate(1);
+            this.updateCalendarSelection(clock.currentIndex);
+          });
+        }
+        
+        // Trigger planning generation animation after a short delay
+        setTimeout(() => {
+          Clock.handlePlanningGeneration();
+        }, 200);
+        
+      } catch (error) {
+        console.error('❌ Error creating clock instance:', error);
       }
-      
-      // Pass clock instance to calendar views manager for synchronization
-      if (window.calendarViewsManager) {
-        window.calendarViewsManager.setClockInstance(clock);
-      }
-      
-      // Initialize the clock calendar for month navigation
-      this.initializeClockCalendar(data.segments, 'year');
-      
-      // Setup navigation
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-          clock.navigate(-1);
-          this.updateCalendarSelection(clock.currentIndex);
-        });
-      }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          clock.navigate(1);
-          this.updateCalendarSelection(clock.currentIndex);
-        });
-      }
-      
-      // Trigger planning generation animation after a short delay
-      setTimeout(() => {
-        Clock.handlePlanningGeneration();
-      }, 200);
+    } else {
+      console.error('❌ Clock class not found in window.Clock');
     }
   }
 
@@ -1841,7 +1927,17 @@ class PlannerPage {
     // Update calendar selection
     this.updateCalendarSelection(dayIndex);
 
-    // Update clock if available
+    // Create the selected date for synchronization
+    const currentMonth = window.currentMonth || new Date().getMonth();
+    const currentYear = window.currentYear || new Date().getFullYear();
+    const selectedDate = new Date(currentYear, currentMonth, day);
+    
+    // Call central synchronization to update all components
+    if (window.setSelectedDate) {
+      window.setSelectedDate(selectedDate);
+    }
+
+    // Update clock if available (local update as backup)
     if (window.Clock && window.clockInstance) {
       // For year scope, extract current month's data
       let monthSegments = [];
@@ -2144,7 +2240,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Calendar (calendar grid)
   window.calendarViewsManager = new CalendarViewsManager();
 
-  // 5. Circular clock (clock)
+  // 5. Circular clock (clock) - Expose Clock class globally
+  window.Clock = Clock;
   // The instance will be created dynamically by PlannerPage according to the received data
   // window.clockInstance = new Clock(...)
 
@@ -2163,19 +2260,40 @@ document.addEventListener('DOMContentLoaded', () => {
 window.selectedDate = new Date();
 window.setSelectedDate = function(date) {
   if (!date) return;
+  
+  console.log('🔄 Central sync called with date:', date.toDateString());
+  
   // Prevent infinite loops
-  if (window.selectedDate && window.selectedDate.toDateString && window.selectedDate.toDateString() === date.toDateString()) return;
+  if (window.selectedDate && window.selectedDate.toDateString && window.selectedDate.toDateString() === date.toDateString()) {
+    console.log('⚠️ Same date, skipping sync to prevent loops');
+    return;
+  }
+  
   window.selectedDate = new Date(date);
+  
   // Timeline
   if (window.timeline && typeof window.timeline.setDate === 'function') {
+    console.log('📅 Updating timeline...');
     window.timeline.setDate(window.selectedDate);
+  } else {
+    console.warn('⚠️ Timeline not available for sync');
   }
+  
   // Clock
   if (window.clockInstance && typeof window.clockInstance.setDate === 'function') {
+    console.log('🕒 Updating clock...');
     window.clockInstance.setDate(window.selectedDate);
+  } else {
+    console.warn('⚠️ Clock not available for sync');
   }
+  
   // Calendar
   if (window.calendarViewsManager && typeof window.calendarViewsManager.setDate === 'function') {
+    console.log('📆 Updating calendar...');
     window.calendarViewsManager.setDate(window.selectedDate);
+  } else {
+    console.warn('⚠️ Calendar not available for sync');
   }
+  
+  console.log('✅ Central sync completed');
 };
