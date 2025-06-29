@@ -40,13 +40,11 @@ def format_duration(duration: timedelta) -> str:
         str: Formatted duration string
     """
     total_minutes = int(duration.total_seconds() / 60)
+    if total_minutes <= 0:
+        return "0h00"
     hours = total_minutes // 60
     minutes = total_minutes % 60
-    
-    if hours > 0:
-        return f"{hours}h{minutes:02d}m" if minutes > 0 else f"{hours}h"
-    else:
-        return f"{minutes}m"
+    return f"{hours}h{minutes:02d}"
 
 def generate_slot_ics_file(
     prayer_times: dict,

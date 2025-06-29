@@ -15,6 +15,8 @@ It also generates an `.ics` calendar file that you can import into your favorite
 * 📅 Calculate free time slots between prayers
 * 📤 Export schedule as `.ics` file
 * 📁 Local web interface via Flask
+* 🎨 Modern interface with timeline and circular clock
+* ⚙️ Padding configuration (delays before/after prayers)
 * 🔄 Generate three types of ICS files:
   * Prayer times
   * Empty slots
@@ -59,106 +61,166 @@ Then open your browser at: [http://localhost:5000](http://localhost:5000)
 
 ```
 Mawaqit_API_to_ics/
-├── app
-│   ├── controllers
-│   ├── __init__.py
-│   ├── models
-│   ├── modules
-│   ├── static
-│   ├── templates
-│   ├── utils
-│   └── views
-├── config
-│   ├── development.py
-│   ├── __init__.py
-│   ├── production.py
-│   └── testing.py
-├── data
-│   ├── log_20250602.log
-│   ├── metadata.json
-│   └── mosques_by_country
-├── docs
-│   ├── api.md
-│   ├── setup.md
-│   └── testing.md
-├── logs
-│    └── .gitkeep
-├── tests
-│    ├── conftest.py
-│    ├── integration
-│    └── unit
-├── .gitignore
-├── app.py
-├── Makefile
-├── pyproject.toml
-├── README.md
-├── requirements.txt
-└── setup.py
-
+├── app/
+│   ├── api/                 # API endpoints
+│   ├── cache/               # Cache management
+│   ├── controllers/         # Flask controllers
+│   ├── modules/             # Business modules
+│   │   ├── mawaqit_fetcher.py
+│   │   ├── prayer_generator.py
+│   │   ├── slots_generator.py
+│   │   └── ...
+│   ├── static/              # Static assets
+│   │   ├── css/            # Styles (landing, planner, styles)
+│   │   ├── js/             # JavaScript (landing, planner)
+│   │   └── ics/            # Generated ICS files
+│   ├── templates/           # HTML templates
+│   ├── utils/               # Utilities
+│   └── views/               # Flask views
+├── config/                  # Multi-environment configuration
+├── data/                    # Data (metadata, mosques)
+├── docs/                    # Documentation
+├── tests/                   # Complete tests
+│   ├── js/                 # JavaScript unit tests
+│   ├── e2e/                # End-to-end Playwright tests
+│   ├── integration/        # Python integration tests
+│   └── unit/               # Python unit tests
+├── app.py                   # Flask entry point
+├── package.json             # Node.js dependencies
+├── requirements.txt         # Python dependencies
+└── Makefile                 # Automated commands
 ```
 
 ---
 
 ## 🛠️ Available Commands
 
+### 🚀 Launch
 ```bash
-# Installation
 make install        # Create environment and install dependencies
+make run-dev        # Launch in development mode
+make run-prod       # Launch in production mode
+make run-test       # Launch in test mode
+```
 
-# Running
-make run-dev        # Run in development mode
-make run-prod       # Run in production mode
+### 🧪 Tests
+```bash
+make test           # All tests (JS + E2E + Python)
+make test-js        # JavaScript unit tests (Jest)
+make test-e2e       # End-to-end tests (Playwright)
+make test-py        # Python tests (pytest)
+make coverage       # Complete coverage (JS + Python)
+```
 
-# Testing
-make test-unit      # Run unit tests
-make test-integration # Run integration tests
-make test-all       # Run all tests
-
-# Maintenance
-make cleanup        # Clean environment and remove test files
+### 🧼 Maintenance
+```bash
+make cleanup        # Clean environment and test files
 make reset          # Reset project
+```
+
+### 📚 Documentation
+```bash
+make docs-serve     # Start documentation server
 ```
 
 ---
 
-## 🧪 Testing Structure
+## 🧪 Test Structure
 
-tests/
-├── unit/ # Unit tests
-│ ├── modules/ # Module-specific unit tests
-│ └── utils/ # Utility function tests
-└── integration/ # Integration tests
-├── api/ # API endpoint tests
-├── ics/ # ICS generation tests
-└── modules/ # Module integration tests
+### Python Tests
+- **Unit tests**: Individual functions and components
+- **Integration tests**: Component interactions
+- **Coverage**: 65% (140 tests, 1 xfailed)
+
+### JavaScript Tests
+- **Unit tests (Jest)**: 36 tests for landing.js and planner.js
+- **E2E tests (Playwright)**: User interface tests
+- **JS coverage**: 94% for landing.js, 1.73% for planner.js
+
+### Test Commands
+```bash
+# Python tests
+pytest --cov=app --cov-report=html
+
+# JavaScript tests
+npm run test:js:coverage
+
+# E2E tests
+npm run test:e2e
+
+# All tests
+npm run test:full
+```
 
 ---
 
-### Test Coverage
+## 🎨 User Interface
 
-Current test coverage: 87%
+### Interactive Timeline
+- Prayer time display
+- Automatically calculated free slots
+- Padding management (before/after delays)
+- Responsive interface
 
-- Unit tests focus on individual components and functions
-- Integration tests verify the interaction between components
-- All tests can be run with coverage report using `make test-all`
+### Circular Clock
+- Circular visualization of schedules
+- Colored arcs for each prayer
+- Automatic adaptation based on paddings
+- Touch interaction
+
+### Padding Configuration
+- Customizable delays before each prayer
+- Customizable delays after each prayer
+- Minimum values for display
+- Calculation/display separation
 
 ---
 
 ## 📝 Documentation
 
+- [Installation Guide](docs/setup.md)
 - [API Documentation](docs/api.md)
-- [Setup Guide](docs/setup.md)
 - [Testing Guide](docs/testing.md)
+- [Timeline and Interface](docs/timeline.md)
 
 ---
 
 ## 🗺️ Roadmap
 
-* [ ] Add unit and integration tests
-* [ ] Calendar simulator with slot editor
+* [x] Python unit and integration tests
+* [x] JavaScript unit tests (Jest)
+* [x] End-to-end tests (Playwright)
+* [x] Timeline interface with circular clock
+* [x] Padding management
+* [ ] Individual padding configuration per prayer
 * [ ] Add recurring tasks to free slots
-* [ ] Create mobile interface
+* [ ] Mobile interface
 * [ ] Complete documentation
+
+---
+
+## 🛠️ Technologies Used
+
+### Backend
+- **Python 3.13**: Main language
+- **Flask**: Web framework
+- **pytest**: Python testing
+- **requests**: Mawaqit API
+
+### Frontend
+- **JavaScript ES6+**: User interface
+- **CSS3**: Styles and animations
+- **HTML5**: Structure
+
+### Testing
+- **Jest**: JavaScript unit testing
+- **Playwright**: End-to-end testing
+- **jsdom**: DOM environment for Jest
+
+### Tools
+- **Make**: Task automation
+- **npm**: Node.js dependency management
+- **pip**: Python dependency management
 
 ---
 

@@ -1,0 +1,45 @@
+{
+  "name": "mawaqit_api_to_ics",
+  "version": "1.0.0",
+  "description": "**Mawaqit to ICS** is a local tool that generates a personalized schedule synchronized with prayer times from your local mosque.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:js": "jest",
+    "test:js:watch": "jest --watch",
+    "test:js:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report",
+    "test:all": "npm run test:js && python -m pytest",
+    "test:all:coverage": "npm run test:js:coverage && python -m pytest --cov=app --cov-report=html",
+    "test:full": "npm run test:js && npm run test:e2e && python -m pytest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IAM-B/Mawaqit_API_to_ics.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/IAM-B/Mawaqit_API_to_ics/issues"
+  },
+  "homepage": "https://github.com/IAM-B/Mawaqit_API_to_ics#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@testing-library/jest-dom": "^6.4.2",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.0.2",
+    "jsdom": "^24.0.0"
+  }
+}

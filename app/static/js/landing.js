@@ -4,8 +4,8 @@
  */
 
 // Handle smooth redirects
-function handleSmoothRedirect(url) {
-  const button = event.target.closest('.cta-button');
+function handleSmoothRedirect(url, event) {
+  const button = event && event.target ? event.target.closest('.cta-button') : null;
   if (button) {
     button.classList.add('redirecting');
     
@@ -23,7 +23,7 @@ function initSmoothRedirects() {
     button.addEventListener('click', (e) => {
       e.preventDefault();
       const url = button.getAttribute('href');
-      handleSmoothRedirect(url);
+      handleSmoothRedirect(url, e);
     });
   });
 }
@@ -38,3 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
     element.style.animationDelay = `${index * 0.2}s`;
   });
 });
+
+// Functions to be exported for Jest
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    handleSmoothRedirect,
+    initSmoothRedirects
+  };
+}

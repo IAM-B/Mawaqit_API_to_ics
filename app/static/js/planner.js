@@ -2501,3 +2501,16 @@ window.setSelectedDate = function(date) {
     console.warn('⚠️ Calendar not available for sync');
   }
 };
+
+// Functions to be exported for Jest
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    formatDateForDisplay,
+    timeToMinutes,
+    minutesToTime,
+    getPaddingBefore,
+    getPaddingAfter,
+    getRealPaddingBefore,
+    getRealPaddingAfter
+  };
+}

@@ -9,7 +9,7 @@ init-direnv:
 	@echo "👉 Creating .envrc file for direnv..."
 	@echo 'source env-planner/bin/activate' > .envrc
 	@direnv allow .
-	@echo "✅ direnv configured. It will automatically activate the environment when entering the directory."
+	@echo "✅ direnv configured. Environment will activate automatically."
 
 install: $(VENV)/bin/activate
 
@@ -21,9 +21,8 @@ $(VENV)/bin/activate: requirements.txt
 	@$(MAKE) init-direnv
 	@echo "✅ Installation complete."
 	@echo "🧠 Tip: direnv will automatically activate your environment in the future."
-	@echo "✅ Environment ready."
 
-# 🚀 Launch Application
+# 🚀 Application Launch
 run-dev: install
 	@echo "🚀 Starting Flask application in development mode..."
 	FLASK_ENV=development $(PYTHON) $(APP)
@@ -37,34 +36,39 @@ run-test: install
 	FLASK_ENV=testing $(PYTHON) $(APP)
 
 # 🧪 Tests
-test-unit:
-	@echo "🧪 Running unit tests..."
+test-js:
+	@echo "🧪 Running JavaScript unit tests (Jest)..."
+	npm run test:js
+
+test-e2e:
+	@echo "🧪 Running end-to-end tests (Playwright)..."
+	npm run test:e2e
+
+test-py:
+	@echo "🧪 Running Python tests (pytest)..."
 	@mkdir -p logs
-	FLASK_ENV=testing $(PYTHON) -m pytest tests/unit -v | tee logs/unit_tests.log
+	FLASK_ENV=testing $(PYTHON) -m pytest --maxfail=2 --disable-warnings -v | tee logs/python_tests.log logs/result_tests.txt
 	@$(MAKE) clean-ics
 
-test-integration:
-	@echo "🧪 Running integration tests..."
-	@mkdir -p logs
-	FLASK_ENV=testing $(PYTHON) -m pytest tests/integration -v | tee logs/integration_tests.log
-	@$(MAKE) clean-ics
-
-test-all:
-	@mkdir -p logs
-	@echo "🧪 Running unit tests..."
-	@$(MAKE) test-unit
-	@echo "🧪 Running integration tests..."
-	@$(MAKE) test-integration
-	@cat logs/unit_tests.log logs/integration_tests.log > logs/all_tests.log
+test: test-js test-e2e test-py
+	@echo "✅ All tests completed."
 
 # 📊 Coverage
-coverage:
+coverage-js:
+	@echo "📊 Generating JavaScript coverage..."
+	npm run test:js:coverage
+
+coverage-py:
+	@echo "📊 Generating Python coverage..."
 	@mkdir -p logs
-	PYTHONPATH=. $(PYTHON) -m pytest --cov=app --cov-report=term-missing --disable-warnings -q | tee logs/coverage_report.log
+	PYTHONPATH=. $(PYTHON) -m pytest --cov=app --cov-report=html --cov-report=term-missing --disable-warnings -q | tee logs/coverage_report.log
+
+coverage: coverage-js coverage-py
+	@echo "✅ Complete coverage generated."
 
 # 🧼 Cleanup
 clean-ics:
-	@echo "🗑️ Cleaning test generated files..."
+	@echo "🗑️ Cleaning generated test files..."
 	rm -f *.ics
 	rm -f tests/*.ics
 	rm -f tests/unit/*.ics
@@ -80,32 +84,43 @@ cleanup:
 	@echo "🗑️ Removing virtual environment..."
 	rm -rf $(VENV)
 	@echo "🗑️ Removing compiled Python files..."
-	find . -type d -name "__pycache__" -exec rm -r {} +
-	find . -type f -name "*.pyc" -delete
+	find . -type d -name "__pycache__" -exec rm -r {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
 	@echo "🗑️ Removing log files..."
-	rm -rf logs/*.log
+	rm -rf logs/*.log logs/*.txt 2>/dev/null || true
+	@echo "🗑️ Removing coverage files..."
+	rm -rf htmlcov/ coverage/ .nyc_output/ 2>/dev/null || true
+	@echo "🗑️ Removing test reports..."
+	rm -rf test-results/ playwright-report/ 2>/dev/null || true
+	@echo "🗑️ Removing Node.js modules..."
+	rm -rf node_modules/ 2>/dev/null || true
 	@$(MAKE) clean-ics
 	@echo "✅ Cleanup complete."
 
 # 🔄 Reset
-reset: clean install
+reset: cleanup install
 	@echo "♻️ Project reset complete."
 
 # 📝 Git
 gcommit:
+	@echo "📝 Adding and committing changes..."
 	git add .
 	git commit
 
 gpush:
+	@echo "📤 Pushing to origin/master..."
 	git push origin master
 
 gpull:
+	@echo "📥 Pulling from origin/master..."
 	git pull origin master
 
 greset:
+	@echo "↩️ Resetting last commit (soft)..."
 	git reset HEAD~
 
 gstatus:
+	@echo "📊 Git status..."
 	git status
 
 # 📚 Documentation
@@ -130,26 +145,38 @@ config-test:
 help:
 	@echo ""
 	@echo "Available commands:"
+	@echo ""
+	@echo "🚀 Launch:"
 	@echo "  make install        → Create environment and install dependencies"
-	@echo "  make run-dev        → Launch application in development mode"
-	@echo "  make run-prod       → Launch application in production mode"
-	@echo "  make run-test       → Launch application in test mode"
-	@echo "  make test-unit      → Run unit tests"
-	@echo "  make test-integration → Run integration tests"
-	@echo "  make test-all       → Run all tests"
-	@echo "  make clean          → Remove virtual environment and compiled files"
+	@echo "  make run-dev        → Launch in development mode"
+	@echo "  make run-prod       → Launch in production mode"
+	@echo "  make run-test       → Launch in test mode"
+	@echo ""
+	@echo "🧪 Tests:"
+	@echo "  make test           → All tests (JS + E2E + Python)"
+	@echo "  make test-js        → JavaScript unit tests (Jest)"
+	@echo "  make test-e2e       → End-to-end tests (Playwright)"
+	@echo "  make test-py        → Python tests (pytest)"
+	@echo "  make coverage       → Complete coverage (JS + Python)"
+	@echo ""
+	@echo "🧼 Maintenance:"
+	@echo "  make cleanup        → Clean environment and temporary files"
 	@echo "  make reset          → Clean and reinstall"
+	@echo ""
+	@echo "📚 Documentation:"
 	@echo "  make docs-serve     → Start documentation server"
 	@echo ""
-	@echo "Configuration commands:"
+	@echo "🔧 Configuration:"
 	@echo "  make config-dev     → Configure development environment"
 	@echo "  make config-prod    → Configure production environment"
 	@echo "  make config-test    → Configure test environment"
 	@echo ""
-	@echo "Git commands:"
-	@echo "  make gcommit m=\"message\"  → Add, commit with message"
-	@echo "  make gpush         → Push to origin/master"
-	@echo "  make gpull         → Pull from origin/master"
-	@echo "  make greset        → Reset last commit (soft)"
-	@echo "  make gstatus       → Show git status"
+	@echo "📝 Git:"
+	@echo "  make gcommit        → Add and commit changes"
+	@echo "  make gpush          → Push to origin/master"
+	@echo "  make gpull          → Pull from origin/master"
+	@echo "  make greset         → Reset last commit (soft)"
+	@echo "  make gstatus        → Show Git status"
 	@echo ""
+
+.PHONY: help test test-js test-e2e test-py coverage coverage-js coverage-py cleanup reset clean-ics

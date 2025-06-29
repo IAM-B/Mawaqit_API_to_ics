@@ -21,33 +21,150 @@ wheels/
 *.egg
 MANIFEST
 
-# Environment
+# Virtual environments
 env-planner/
 venv/
 ENV/
-.vscode/
+env/
+.venv/
+
+# Environment variables
 .envrc
 .env
+.env.local
+.env.development
+.env.test
+.env.production
 
-# IDE
+# IDE and editors
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# OS
+*~
 .DS_Store
 Thumbs.db
 
-# Project specific
+# Operating system
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific files
 ics/
 *.log
+logs/
+cache/
+*.cache
+cache_metadata.json
+
+# Coverage and tests
 .coverage
 htmlcov/
 .pytest_cache/
 pytest.ini
+.tox/
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
 
-# Cache
-cache/
-*.cache
-cache_metadata.json
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# JavaScript coverage
+.nyc_output/
+coverage/
+*.lcov
+
+# Test results
+junit.xml
+test-results/
+test-results.xml
+
+# Playwright
+playwright-report/
+playwright/.cache/
+test-results/
+
+# Jest
+coverage/
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Test data files
+tests/data/ics/
+tests/integration/ics/
+tests/unit/*.ics
+tests/integration/*.ics
+
+# Application generated files
+app/static/ics/*.ics
+*.ics
+
+# Specific logs
+logs/*.log
+*.log
+
+# Python cache
+.pytest_cache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Generated documentation
+docs/_build/
+docs/build/
+
+# Local configuration files
+config/local.py
+config/local_*.py
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Lock files (except package-lock.json which should be versioned)
+yarn.lock
+pnpm-lock.yaml
+*.lock
+.lock
+!package-lock.json
+
+# System metadata files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

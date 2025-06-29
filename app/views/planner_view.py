@@ -14,7 +14,6 @@ from app.modules.time_segmenter import segment_available_time, generate_empty_sl
 from app.modules.slot_utils import adjust_slots_rounding
 from datetime import datetime, timedelta
 import re
-from app.modules.ics_parser import parse_year_ics
 from app.modules.cache_manager import cache_manager
 
 planner_api = Blueprint('planner_api', __name__)
@@ -781,29 +780,6 @@ def handle_generate_ics():
     except Exception as e:
         print(f"❌ Error in handle_generate_ics: {e}")
         return {"error": str(e)}, 500
-
-@planner_api.route('/api/timeline_ics', methods=['GET'])
-def api_timeline_ics():
-    """
-    API qui retourne la structure JSON de la timeline à partir des ICS annuels.
-    Reçoit en paramètre masjid_id, year, month (optionnel pour filtrer).
-    """
-    import os
-    masjid_id = request.args.get('masjid_id')
-    year = request.args.get('year')
-    month = request.args.get('month')  # optionnel
-    if not masjid_id or not year:
-        return jsonify({'error': 'masjid_id and year are required'}), 400
-    ics_dir = os.path.join('app', 'static', 'ics')
-    prayers_ics = os.path.join(ics_dir, f'prayer_times_{masjid_id}_{year}.ics')
-    slots_ics = os.path.join(ics_dir, f'slots_{masjid_id}_{year}.ics')
-    empty_ics = os.path.join(ics_dir, f'empty_slots_{masjid_id}_{year}.ics')
-    data = parse_year_ics(prayers_ics, slots_ics, empty_ics)
-    if month:
-        # Filtrer sur le mois demandé (format MM ou M)
-        month = int(month)
-        data = [d for d in data if int(d['date'][5:7]) == month]
-    return jsonify({'timeline': data})
 
 @planner_api.route('/api/cache/stats', methods=['GET'])
 def api_cache_stats():
