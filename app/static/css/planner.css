@@ -403,7 +403,7 @@
 }
 
 .clock-label {
-  font-size: 14px;
+  font-size: 25px;
   fill: var(--accent);
   text-anchor: middle;
   dominant-baseline: middle;
@@ -424,7 +424,7 @@
   opacity: 0;
 }
 
-.clock-arc.slot:hover + .clock-label {
+.clock-arc.slot.active + .clock-label {
   opacity: 1;
   transform: scale(1.1);
 }
@@ -433,9 +433,14 @@
   opacity: 0;
 }
 
-.clock-arc.prayer:hover + .clock-label {
+.clock-arc.prayer.active + .clock-label {
   opacity: 1;
   transform: scale(1.1);
+}
+
+.clock-arc.prayer.active {
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  stroke-width: 28;
 }
 
 .tooltip-group {
@@ -595,6 +600,24 @@
 .timeline-event:hover {
   filter: drop-shadow(0 4px 8px var(--shadow-color));
   transform: translateY(-1px);
+}
+
+/* Synchronisation hover avec clock-arc */
+.timeline-event.prayer.active {
+  fill: var(--success);
+  stroke: var(--success-hover);
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  stroke-width: 1;
+  opacity: 0.8;
+}
+
+/* Synchronisation hover pour les créneaux - même style que hover */
+.timeline-event.slot.active {
+  fill: var(--primary);
+  stroke: var(--primary-hover);
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  stroke-width: 1;
+  opacity: 0.8;
 }
 
 .timeline-event-text {

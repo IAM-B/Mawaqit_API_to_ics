@@ -226,7 +226,9 @@ class Timeline {
         
         // Display exact prayer time with displayed time between parentheses
         const prayerTitle = `${prayerNames[prayer]} (${time})`;
-        this.createSVGEvent(prayerTitle, exactStartTime, exactEndTime, 'prayer', 'prayer');
+        
+        // For synchronization, use exact time (without padding)
+        this.createSVGEvent(prayerTitle, exactStartTime, exactEndTime, 'prayer', 'prayer', time);
       }
     });
   }
@@ -243,7 +245,7 @@ class Timeline {
     const prayerTimes = dayData ? dayData.prayer_times : null;
     
     if (prayerTimes) {
-      // Calculate real slots based on prayers
+      // Calculate real slots based on prayers (positionnement correct)
       const prayerEntries = Object.entries(prayerTimes).sort((a, b) => {
         return timeToMinutes(a[1]) - timeToMinutes(b[1]);
       });
@@ -276,24 +278,34 @@ class Timeline {
         const adjustedSlotEnd = this.subtractPadding(slotEnd, 3);
         
         if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
-          this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot');
+          // For synchronization, use exact times (without padding)
+          this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot', slotStart + '-' + slotEnd);
         }
       }
-    } else {
-      // Fallback: use original slots
+    } else if (slots && slots.length > 0) {
+      // Fallback: use original slots if no prayer times available
       slots.forEach((slot, index) => {
         const startTime = slot.start_time || slot.start || slot.startTime;
         const endTime = slot.end_time || slot.end || slot.endTime;
         const title = slot.title || slot.summary || `Slot ${index + 1}`;
         
-        // For slots:
-        // - Start: end of previous prayer (displayed time + padding_after)
-        // - End: exact time of the next prayer (displayed time - padding_before)
-        const adjustedStartTime = this.addPadding(startTime, paddingAfter);
-        const adjustedEndTime = this.subtractPadding(endTime, paddingBefore);
+        // Calculate slot duration
+        const startMinutes = timeToMinutes(startTime);
+        const endMinutes = timeToMinutes(endTime);
+        const durationMinutes = endMinutes - startMinutes;
+        const hours = Math.floor(durationMinutes / 60);
+        const minutes = durationMinutes % 60;
+        const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
         
-        if (adjustedStartTime && adjustedEndTime) {
-          this.createSVGEvent(title, adjustedStartTime, adjustedEndTime, 'slot', 'slot');
+        const slotTitle = `Disponibilité (${durationText})`;
+        
+        // Add 3 minutes of margin at the beginning and end to improve UI
+        const adjustedStartTime = this.addPadding(startTime, 3);
+        const adjustedEndTime = this.subtractPadding(endTime, 3);
+        
+        if (adjustedStartTime && adjustedEndTime && timeToMinutes(adjustedEndTime) > timeToMinutes(adjustedStartTime)) {
+          // For synchronization, use exact times (without padding)
+          this.createSVGEvent(slotTitle, adjustedStartTime, adjustedEndTime, 'slot', 'slot', startTime + '-' + endTime);
         }
       });
     }
@@ -315,7 +327,7 @@ class Timeline {
     return minutesToTime(adjustedMinutes);
   }
   // Create an SVG event
-  createSVGEvent(title, startTime, endTime, type, className) {
+  createSVGEvent(title, startTime, endTime, type, className, syncTime = null) {
     if (!this.svg || !this.eventsGroup) return;
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
@@ -329,11 +341,52 @@ class Timeline {
     rect.setAttribute('rx', 5);
     rect.setAttribute('ry', 5);
     rect.setAttribute('class', `timeline-event ${className}`);
+    
+    // Add data-attributes for synchronization with clock-arc
+    // For prayers, use syncTime (exact time), otherwise startTime
+    // For slots, syncTime contains "start-end"
+    let syncStartTime, syncEndTime;
+    if (syncTime && syncTime.includes('-')) {
+      // It's a slot: syncTime = "start-end"
+      [syncStartTime, syncEndTime] = syncTime.split('-');
+    } else {
+      // It's a prayer: syncTime = exact time
+      syncStartTime = syncTime || startTime;
+      syncEndTime = syncTime || endTime;
+    }
+    rect.setAttribute('data-start', syncStartTime);
+    rect.setAttribute('data-end', syncEndTime);
+    rect.setAttribute('data-type', type);
+    
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', 60 + 16);
     text.setAttribute('y', y + height / 2 + 6);
     text.textContent = title;
     text.setAttribute('class', 'timeline-event-text');
+    
+    // Add hover events for synchronization
+    rect.addEventListener('mouseover', () => {
+      // Activate the corresponding clock-arc
+      const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
+      if (clockArc) {
+        clockArc.classList.add('active');
+      }
+      
+      // Add active class to the timeline-event itself
+      rect.classList.add('active');
+    });
+    
+    rect.addEventListener('mouseout', () => {
+      // Deactivate the corresponding clock-arc
+      const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
+      if (clockArc) {
+        clockArc.classList.remove('active');
+      }
+      
+      // Remove active class from the timeline-event itself
+      rect.classList.remove('active');
+    });
+    
     this.eventsGroup.appendChild(rect);
     this.eventsGroup.appendChild(text);
   }
@@ -755,13 +808,30 @@ class Clock {
     else if (minutes === 0) return `(${hours}h)`;
     else return `(${hours}h${minutes.toString().padStart(2, '0')}min)`;
   }
+  
+  // Helper: Subtract padding from a time
+  subtractPadding(timeStr, paddingMinutes) {
+    if (!timeStr || !paddingMinutes) return timeStr;
+    const totalMinutes = timeToMinutes(timeStr);
+    const adjustedMinutes = totalMinutes - paddingMinutes;
+    return minutesToTime(adjustedMinutes);
+  }
+  
+  // Helper: Add padding to a time
+  addPadding(timeStr, paddingMinutes) {
+    if (!timeStr || !paddingMinutes) return timeStr;
+    const totalMinutes = timeToMinutes(timeStr);
+    const adjustedMinutes = totalMinutes + paddingMinutes;
+    return minutesToTime(adjustedMinutes);
+  }
   // Create an SVG arc for an event (prayer or slot)
   createEventElement(event, type) {
     const startMinutes = timeToMinutes(event.start);
     const endMinutes = timeToMinutes(event.end);
     const startAngle = this.minutesToAngle(startMinutes);
     const endAngle = this.minutesToAngle(endMinutes);
-    const radius = type === 'prayer' ? 135 : 105;
+    const radius = type === 'prayer' ? 135 : 120; // Uniformize the radius of the slots
+    
     const centerX = 150;
     const centerY = 150;
     const startX = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
@@ -773,20 +843,51 @@ class Clock {
     if (angleDiff < 0) angleDiff += 24 * 60;
     const largeArcFlag = angleDiff > 12 * 60 ? 1 : 0;
     const d = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+    
     path.setAttribute("d", d);
     path.setAttribute("class", `clock-arc ${type}`);
+    
+    // Add data-attributes for synchronization with timeline-event
+    path.setAttribute('data-start', event.start);
+    path.setAttribute('data-end', event.end);
+    path.setAttribute('data-type', type);
+    
     const midAngle = (startAngle + endAngle) / 2;
     const labelRadius = type === 'prayer' ? radius + 25 : radius - 25;
     const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
     const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", labelX);
-    label.setAttribute("y", labelY);
+    label.setAttribute("x", "150");
+    label.setAttribute("y", "150");
     label.setAttribute("class", "clock-label");
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("dominant-baseline", "middle");
     if (type === 'prayer') label.textContent = `${event.content} (${event.start})`;
     else label.textContent = `${event.start} - ${event.end}`;
+    
+    // Add hover events for synchronization with timeline
+    path.addEventListener("mouseover", () => {
+      // Activate the corresponding timeline-event
+      const timelineEvent = document.querySelector(`.timeline-event[data-start="${event.start}"][data-end="${event.end}"]`);
+      if (timelineEvent) {
+        timelineEvent.classList.add('active');
+      }
+      
+      // Add active class to the clock-arc itself
+      path.classList.add('active');
+    });
+    
+    path.addEventListener("mouseout", () => {
+      // Deactivate the corresponding timeline-event
+      const timelineEvent = document.querySelector(`.timeline-event[data-start="${event.start}"][data-end="${event.end}"]`);
+      if (timelineEvent) {
+        timelineEvent.classList.remove('active');
+      }
+      
+      // Remove active class from the clock-arc itself
+      path.classList.remove('active');
+    });
+    
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
     group.appendChild(path);
     group.appendChild(label);
@@ -817,10 +918,18 @@ class Clock {
   createSlotElement(slot) {
     const startMinutes = timeToMinutes(slot.start);
     const endMinutes = timeToMinutes(slot.end);
-    const delayedStartMinutes = startMinutes + 25;
-    const startAngle = this.minutesToAngle(delayedStartMinutes);
-    const endAngle = this.minutesToAngle(endMinutes);
-    const radius = 130;
+    
+    // Parameter to manually adjust the size of the slots
+    const slotSizeAdjustment = -25; // Reduce the end of the slot by 25 minutes
+    
+    // Adjust the end of the slot
+    const adjustedEndMinutes = endMinutes + slotSizeAdjustment;
+    const adjustedEndTime = minutesToTime(adjustedEndMinutes);
+    
+    const startAngle = this.minutesToAngle(startMinutes);
+    const endAngle = this.minutesToAngle(adjustedEndMinutes);
+    
+    const radius = 120; // Même rayon que dans createEventElement pour les créneaux
     const centerX = 150;
     const centerY = 150;
     const startX = centerX + radius * Math.cos((startAngle - 90) * Math.PI / 180);
@@ -828,51 +937,113 @@ class Clock {
     const endX = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
     const endY = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    let angleDiff = endMinutes - delayedStartMinutes;
+    let angleDiff = adjustedEndMinutes - startMinutes;
     if (angleDiff < 0) angleDiff += 24 * 60;
     const largeArcFlag = angleDiff > 12 * 60 ? 1 : 0;
     const d = `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+    
     path.setAttribute("d", d);
     path.setAttribute("class", "clock-arc slot");
     path.dataset.start = slot.start;
     path.dataset.end = slot.end;
+    path.setAttribute('data-type', 'slot');
+    
     const midAngle = (startAngle + endAngle) / 2;
     const labelRadius = radius - 25;
     const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
     const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
     const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", labelX);
-    label.setAttribute("y", labelY);
+    label.setAttribute("x", "150");
+    label.setAttribute("y", "150");
     label.setAttribute("class", "clock-label");
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("dominant-baseline", "middle");
     label.textContent = this.calculateDuration(slot.start, slot.end);
-    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    group.appendChild(path);
-    group.appendChild(label);
+    
+    // Add hover events for synchronization with timeline
     path.addEventListener("mouseover", () => {
-      path.classList.add("active");
+      // Activate the corresponding timeline-event
+      const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (timelineEvent) {
+        timelineEvent.classList.add('active');
+      }
+      
+      // Add active class to the clock-arc itself
+      path.classList.add('active');
+      
+      // Keep the old behavior for the list
       const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
       if (listItem) listItem.classList.add("active");
     });
+    
     path.addEventListener("mouseout", () => {
-      path.classList.remove("active");
+      // Deactivate the corresponding timeline-event
+      const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (timelineEvent) {
+        timelineEvent.classList.remove('active');
+      }
+      
+      // Remove active class from the clock-arc itself
+      path.classList.remove('active');
+      
+      // Keep the old behavior for the list
       const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
       if (listItem) listItem.classList.remove("active");
     });
+    
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.appendChild(path);
+    group.appendChild(label);
     return group;
   }
   // Update the list of available slots
   updateAvailableSlots(data) {
     if (!this.slotsContainer) return;
     this.slotsContainer.innerHTML = '';
-    if (!data || !data.slots || data.slots.length === 0) {
+    
+    if (!data || !data.prayer_times) {
+      this.slotsContainer.innerHTML = '<p>No slots available for this period.</p>';
+      return;
+    }
+    
+    // Calculate slots based on prayers (same logic as timeline and clock)
+    const paddingBefore = window.currentPaddingBefore || 0;
+    const paddingAfter = window.currentPaddingAfter || 0;
+    
+    const prayerEntries = Object.entries(data.prayer_times).sort((a, b) => {
+      return timeToMinutes(a[1]) - timeToMinutes(b[1]);
+    });
+    
+    const calculatedSlots = [];
+    
+    // Create slots between prayers
+    for (let i = 0; i < prayerEntries.length - 1; i++) {
+      const currentPrayer = prayerEntries[i];
+      const nextPrayer = prayerEntries[i + 1];
+      
+      const currentPrayerTime = currentPrayer[1];
+      const nextPrayerTime = nextPrayer[1];
+      
+      // Slot starts at the end of the current prayer
+      const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
+      // Slot ends at the exact time of the next prayer
+      const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+      
+      if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
+        calculatedSlots.push({
+          start: slotStart,
+          end: slotEnd
+        });
+      }
+    }
+    
+    if (calculatedSlots.length === 0) {
       this.slotsContainer.innerHTML = '<p>No slots available for this period.</p>';
       return;
     }
     const slotsList = document.createElement('ul');
     slotsList.className = 'slots-list';
-    data.slots.forEach(slot => {
+    calculatedSlots.forEach(slot => {
       const slotItem = document.createElement('li');
       slotItem.className = 'slot-item';
       slotItem.dataset.start = slot.start;
@@ -958,11 +1129,38 @@ class Clock {
         svg.appendChild(eventElement);
       });
     }
-    if (currentData && currentData.slots) {
-      currentData.slots.forEach(slot => {
-        const slotElement = this.createSlotElement(slot);
-        svg.appendChild(slotElement);
+    
+    // Calculate slots based on prayers (same logic as timeline)
+    if (currentData && currentData.prayer_times) {
+      const paddingBefore = window.currentPaddingBefore || 0;
+      const paddingAfter = window.currentPaddingAfter || 0;
+      
+      const prayerEntries = Object.entries(currentData.prayer_times).sort((a, b) => {
+        return timeToMinutes(a[1]) - timeToMinutes(b[1]);
       });
+      
+      // Create slots between prayers
+      for (let i = 0; i < prayerEntries.length - 1; i++) {
+        const currentPrayer = prayerEntries[i];
+        const nextPrayer = prayerEntries[i + 1];
+        
+        const currentPrayerTime = currentPrayer[1];
+        const nextPrayerTime = nextPrayer[1];
+        
+        // Slot starts at the end of the current prayer
+        const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
+        // Slot ends at the exact time of the next prayer
+        const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+        
+        if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
+          const slot = {
+            start: slotStart,
+            end: slotEnd
+          };
+          const slotElement = this.createSlotElement(slot);
+          svg.appendChild(slotElement);
+        }
+      }
     }
     const dateElement = document.getElementById('currentDate');
     if (dateElement && currentData && currentData.date) {
