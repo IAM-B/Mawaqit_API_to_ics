@@ -44,6 +44,28 @@ function minutesToTime(minutes) {
   return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
 }
 
+// Global padding management with minimum values
+function getPaddingBefore() {
+  const paddingBefore = window.currentPaddingBefore || 0;
+  const minPaddingBefore = 0; // Minimum value for padding before
+  return Math.max(paddingBefore, minPaddingBefore);
+}
+
+function getPaddingAfter() {
+  const paddingAfter = window.currentPaddingAfter || 0;
+  const minPaddingAfter = 20; // Minimum value for padding after
+  return Math.max(paddingAfter, minPaddingAfter);
+}
+
+// Get real user-configured values (without minimum) for display purposes
+function getRealPaddingBefore() {
+  return window.currentPaddingBefore || 0;
+}
+
+function getRealPaddingAfter() {
+  return window.currentPaddingAfter || 0;
+}
+
 // =========================
 // 2. TIMELINE (vertical agenda)
 // =========================
@@ -206,9 +228,13 @@ class Timeline {
   displayPrayers(prayerTimes) {
     if (!prayerTimes) return;
     
-    // Get paddings from global variables
-    const paddingBefore = window.currentPaddingBefore || 0;
-    const paddingAfter = window.currentPaddingAfter || 0;
+    // Get paddings from global variables (with minimum for calculation)
+    const paddingBefore = getPaddingBefore();
+    const paddingAfter = getPaddingAfter();
+    
+    // Get real user values for display
+    const realPaddingBefore = getRealPaddingBefore();
+    const realPaddingAfter = getRealPaddingAfter();
     
     const prayerNames = {
       'fajr': 'Fajr',
@@ -236,9 +262,13 @@ class Timeline {
   displaySlots(slots) {
     if (!slots || !Array.isArray(slots)) return;
     
-    // Get paddings from global variables
-    const paddingBefore = window.currentPaddingBefore || 0;
-    const paddingAfter = window.currentPaddingAfter || 0;
+    // Get paddings from global variables (with minimum for calculation)
+    const paddingBefore = getPaddingBefore();
+    const paddingAfter = getPaddingAfter();
+    
+    // Get real user values for display
+    const realPaddingBefore = getRealPaddingBefore();
+    const realPaddingAfter = getRealPaddingAfter();
     
     // Get prayer times for slot calculation
     const dayData = this.getDayData(this.currentDate);
@@ -263,9 +293,11 @@ class Timeline {
         // Slot ends at the exact time of the next prayer
         const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
         
-        // Calculate slot duration (without UI margins for accuracy)
-        const startMinutes = timeToMinutes(slotStart);
-        const endMinutes = timeToMinutes(slotEnd);
+        // Calculate slot duration using real user values for display
+        const realSlotStart = this.addPadding(currentPrayerTime, realPaddingAfter);
+        const realSlotEnd = this.subtractPadding(nextPrayerTime, realPaddingBefore);
+        const startMinutes = timeToMinutes(realSlotStart);
+        const endMinutes = timeToMinutes(realSlotEnd);
         const durationMinutes = endMinutes - startMinutes;
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
@@ -999,8 +1031,8 @@ class Clock {
     }
     
     // Calculate slots based on prayers (same logic as timeline and clock)
-    const paddingBefore = window.currentPaddingBefore || 0;
-    const paddingAfter = window.currentPaddingAfter || 0;
+    const paddingBefore = getPaddingBefore();
+    const paddingAfter = getPaddingAfter();
     
     const prayerEntries = Object.entries(data.prayer_times).sort((a, b) => {
       return timeToMinutes(a[1]) - timeToMinutes(b[1]);
@@ -1124,8 +1156,8 @@ class Clock {
     
     // Calculate slots based on prayers (same logic as timeline)
     if (currentData && currentData.prayer_times) {
-      const paddingBefore = window.currentPaddingBefore || 0;
-      const paddingAfter = window.currentPaddingAfter || 0;
+      const paddingBefore = getPaddingBefore();
+      const paddingAfter = getPaddingAfter();
       
       const prayerEntries = Object.entries(currentData.prayer_times).sort((a, b) => {
         return timeToMinutes(a[1]) - timeToMinutes(b[1]);
@@ -1843,8 +1875,8 @@ class PlannerPage {
         }
         
         const mosqueId = data.masjid_id;
-        const paddingBefore = data.padding_before || 10;
-        const paddingAfter = data.padding_after || 35;
+        const paddingBefore = getPaddingBefore();
+        const paddingAfter = getPaddingAfter();
         // Get checkbox include_sunset
         const includeSunsetCheckbox = document.getElementById('include_sunset');
         const includeSunset = includeSunsetCheckbox ? includeSunsetCheckbox.checked : false;
