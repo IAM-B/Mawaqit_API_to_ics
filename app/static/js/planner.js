@@ -1795,6 +1795,15 @@ class PlannerPage {
       scopeDownloads.className = 'scope-downloads';
       scopeDownloads.innerHTML = `<h3>📥 Téléchargements par période</h3><div class="scope-buttons"></div>`;
       const scopeButtons = scopeDownloads.querySelector('.scope-buttons');
+      
+      // Add year button first (original scope)
+      const yearBtn = document.createElement('button');
+      yearBtn.className = 'scope-download-btn year active';
+      yearBtn.dataset.scope = 'year';
+      yearBtn.innerHTML = `<span class="scope-icon">📅</span><span class="scope-title">Cette année</span>`;
+      scopeButtons.appendChild(yearBtn);
+      
+      // Add other scope buttons
       ['today', 'month'].forEach(scope => {
         const btn = document.createElement('button');
         btn.className = `scope-download-btn ${scope}`;
@@ -1814,11 +1823,25 @@ class PlannerPage {
   setupScopeDownloadButtons(data) {
     const scopeButtons = document.querySelectorAll('.scope-download-btn');
     
+    // Store original year data for later use
+    if (!window.originalYearData) {
+      window.originalYearData = data;
+    }
+    
     scopeButtons.forEach(button => {
       button.addEventListener('click', async (e) => {
         e.preventDefault();
         
         const scope = button.dataset.scope;
+        
+        // If clicking on year button, restore original data
+        if (scope === 'year' && window.originalYearData) {
+          this.generateDownloadLinks(window.originalYearData);
+          this.updateActiveScopeButton('year');
+          this.showSuccessMessage(`Fichiers ICS pour ${scope} générés !`);
+          return; // Exit early to avoid the rest of the function
+        }
+        
         const mosqueId = data.masjid_id;
         const paddingBefore = data.padding_before || 10;
         const paddingAfter = data.padding_after || 35;
@@ -1848,6 +1871,7 @@ class PlannerPage {
           if (result.success) {
             // Update download-cards with new links
             this.generateDownloadLinks(result.data);
+            this.updateActiveScopeButton(scope);
             this.showSuccessMessage(`Fichiers ICS pour ${scope} générés !`);
           } else {
             throw new Error(result.error || 'Erreur lors de la génération');
@@ -1860,6 +1884,19 @@ class PlannerPage {
           button.disabled = false;
         }
       });
+    });
+  }
+
+  /**
+   * Update active scope button
+   */
+  updateActiveScopeButton(activeScope) {
+    const scopeButtons = document.querySelectorAll('.scope-download-btn');
+    scopeButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.scope === activeScope) {
+        btn.classList.add('active');
+      }
     });
   }
 

@@ -727,7 +727,7 @@
 }
 
 .scope-download-btn:hover {
-  transform: translateY(-2px);
+  opacity: 0.8;
   box-shadow: 0 4px 12px var(--shadow-color);
   border-color: var(--primary);
 }
@@ -742,6 +742,17 @@
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   color: white;
   border-color: var(--primary);
+}
+
+.scope-download-btn.year {
+  background: linear-gradient(135deg, var(--success) 0%, var(--success-hover) 100%);
+  color: white;
+  border-color: var(--success);
+}
+
+.scope-download-btn.active {
+  opacity: 0.5;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .scope-download-btn.loading {
