@@ -571,15 +571,19 @@
 }
 
 .timeline-event.prayer {
-  fill: var(--primary);
-  stroke: var(--primary-hover);
-  stroke-width: 1;
-}
-
-.timeline-event.slot {
   fill: var(--success);
   stroke: var(--success-hover);
   stroke-width: 1;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.timeline-event.slot {
+  fill: var(--primary);
+  stroke: var(--primary-hover);
+  stroke-width: 1;
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 .timeline-event.empty {
@@ -1246,6 +1250,7 @@
   width: 100%;
   height: 1440px;
   min-height: 1440px;
+  padding-top: 18px;
   display: block;
   background: transparent;
 }
@@ -1271,7 +1276,7 @@
   stroke: #fff2;
   stroke-width: 2;
 }
-.timeline-event.prayer { fill: #0097e6; }
+.timeline-event.prayer { fill: var(--success); }
 .timeline-event.empty { fill: #353b48; opacity: 0.8; }
 .timeline-event-text {
   fill: #fff;

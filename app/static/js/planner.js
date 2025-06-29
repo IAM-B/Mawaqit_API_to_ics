@@ -113,7 +113,7 @@ class Timeline {
       if (hour < 24) {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', 52);
-        text.setAttribute('y', y + 18);
+        text.setAttribute('y', y + 6);
         text.textContent = `${hour.toString().padStart(2, '0')}:00`;
         text.setAttribute('class', 'timeline-hour-text');
         text.setAttribute('text-anchor', 'end');
@@ -172,7 +172,7 @@ class Timeline {
     }
     this.displayPrayers(dayData.prayer_times);
     this.displaySlots(dayData.slots);
-    this.displayEmptySlots(dayData.slots);
+    // this.displayEmptySlots(dayData.slots);
   }
   // Get the day's data
   getDayData(date) {
@@ -205,6 +205,11 @@ class Timeline {
   // Display prayers
   displayPrayers(prayerTimes) {
     if (!prayerTimes) return;
+    
+    // Get paddings from global variables
+    const paddingBefore = window.currentPaddingBefore || 0;
+    const paddingAfter = window.currentPaddingAfter || 0;
+    
     const prayerNames = {
       'fajr': 'Fajr',
       'sunset': 'Sunset',
@@ -215,40 +220,99 @@ class Timeline {
     };
     Object.entries(prayerTimes).forEach(([prayer, time]) => {
       if (time && prayerNames[prayer]) {
-        const startTime = time;
-        const endTime = this.calculatePrayerEndTime(time);
-        this.createSVGEvent(prayerNames[prayer], startTime, endTime, 'prayer', 'prayer');
+        // Calculate exact prayer time (without padding)
+        const exactStartTime = this.subtractPadding(time, paddingBefore);
+        const exactEndTime = this.addPadding(time, paddingAfter);
+        
+        // Display exact prayer time with displayed time between parentheses
+        const prayerTitle = `${prayerNames[prayer]} (${time})`;
+        this.createSVGEvent(prayerTitle, exactStartTime, exactEndTime, 'prayer', 'prayer');
       }
     });
   }
   // Display slots
   displaySlots(slots) {
     if (!slots || !Array.isArray(slots)) return;
-    slots.forEach((slot, index) => {
-      const startTime = slot.start_time || slot.start || slot.startTime;
-      const endTime = slot.end_time || slot.end || slot.endTime;
-      const title = slot.title || slot.summary || `Slot ${index + 1}`;
-      if (startTime && endTime) {
-        this.createSVGEvent(title, startTime, endTime, 'slot', 'slot');
-      }
-    });
-  }
-  // Display empty slots
-  displayEmptySlots(slots) {
-    if (!slots || !Array.isArray(slots)) return;
-    slots.forEach((slot, index) => {
-      const isEmpty = slot.is_empty || slot.isEmpty || slot.empty || slot.available === false || slot.status === 'empty';
-      const hasEvents = slot.events && slot.events.length > 0;
-      const isActuallyEmpty = isEmpty || (!hasEvents && slot.available !== true);
-      if (isActuallyEmpty) {
-        const startTime = slot.start_time || slot.start || slot.startTime;
-        const endTime = slot.end_time || slot.end || slot.endTime;
-        const title = slot.title || slot.summary || 'Free slot';
-        if (startTime && endTime) {
-          this.createSVGEvent(title, startTime, endTime, 'empty', 'empty');
+    
+    // Get paddings from global variables
+    const paddingBefore = window.currentPaddingBefore || 0;
+    const paddingAfter = window.currentPaddingAfter || 0;
+    
+    // Get prayer times for slot calculation
+    const dayData = this.getDayData(this.currentDate);
+    const prayerTimes = dayData ? dayData.prayer_times : null;
+    
+    if (prayerTimes) {
+      // Calculate real slots based on prayers
+      const prayerEntries = Object.entries(prayerTimes).sort((a, b) => {
+        return timeToMinutes(a[1]) - timeToMinutes(b[1]);
+      });
+      
+      // Create slots between prayers
+      for (let i = 0; i < prayerEntries.length - 1; i++) {
+        const currentPrayer = prayerEntries[i];
+        const nextPrayer = prayerEntries[i + 1];
+        
+        const currentPrayerTime = currentPrayer[1];
+        const nextPrayerTime = nextPrayer[1];
+        
+        // Slot starts at the end of the current prayer
+        const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
+        // Slot ends at the exact time of the next prayer
+        const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+        
+        // Calculate slot duration (without UI margins for accuracy)
+        const startMinutes = timeToMinutes(slotStart);
+        const endMinutes = timeToMinutes(slotEnd);
+        const durationMinutes = endMinutes - startMinutes;
+        const hours = Math.floor(durationMinutes / 60);
+        const minutes = durationMinutes % 60;
+        const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
+        
+        const slotTitle = `Disponibilité (${durationText})`;
+        
+        // Add 3 minutes of margin at the beginning and end to improve UI (without affecting displayed duration)
+        const adjustedSlotStart = this.addPadding(slotStart, 3);
+        const adjustedSlotEnd = this.subtractPadding(slotEnd, 3);
+        
+        if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
+          this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot');
         }
       }
-    });
+    } else {
+      // Fallback: use original slots
+      slots.forEach((slot, index) => {
+        const startTime = slot.start_time || slot.start || slot.startTime;
+        const endTime = slot.end_time || slot.end || slot.endTime;
+        const title = slot.title || slot.summary || `Slot ${index + 1}`;
+        
+        // For slots:
+        // - Start: end of previous prayer (displayed time + padding_after)
+        // - End: exact time of the next prayer (displayed time - padding_before)
+        const adjustedStartTime = this.addPadding(startTime, paddingAfter);
+        const adjustedEndTime = this.subtractPadding(endTime, paddingBefore);
+        
+        if (adjustedStartTime && adjustedEndTime) {
+          this.createSVGEvent(title, adjustedStartTime, adjustedEndTime, 'slot', 'slot');
+        }
+      });
+    }
+  }
+  
+  // Helper: Subtract padding from a time
+  subtractPadding(timeStr, paddingMinutes) {
+    if (!timeStr || !paddingMinutes) return timeStr;
+    const totalMinutes = timeToMinutes(timeStr);
+    const adjustedMinutes = totalMinutes - paddingMinutes;
+    return minutesToTime(adjustedMinutes);
+  }
+  
+  // Helper: Add padding to a time
+  addPadding(timeStr, paddingMinutes) {
+    if (!timeStr || !paddingMinutes) return timeStr;
+    const totalMinutes = timeToMinutes(timeStr);
+    const adjustedMinutes = totalMinutes + paddingMinutes;
+    return minutesToTime(adjustedMinutes);
   }
   // Create an SVG event
   createSVGEvent(title, startTime, endTime, type, className) {
@@ -1393,7 +1457,7 @@ class PlannerPage {
       }, 100);
     }
 
-    // Initialiser la timeline avec le mois/année sélectionnés dans le clockCalendar
+    // Initialize timeline with selected month/year in clockCalendar
     let year, month;
     if (window.clockCalendar && window.clockCalendar.selectedYear && window.clockCalendar.selectedMonth) {
         year = window.clockCalendar.selectedYear;
@@ -1452,7 +1516,7 @@ class PlannerPage {
       mapContainer.dataset.lng = data.mosque_lng;
       mapContainer.dataset.name = data.mosque_name;
       
-      // Initialise la carte compacte si la fonction existe
+      // Initialize compact map if the function exists
       if (window.initializeCompactMap) {
         window.initializeCompactMap(
           'mosque-location-map',
