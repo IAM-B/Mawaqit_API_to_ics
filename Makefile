@@ -38,7 +38,15 @@ run-test: install
 # 🧪 Tests
 test-js:
 	@echo "🧪 Running JavaScript unit tests (Jest)..."
-	npm run test:js
+	npm run test -- tests/js/unit/
+
+test-js-integration:
+	@echo "🧪 Running JavaScript integration tests (Jest)..."
+	npm run test -- tests/js/integration/
+
+test-js-all:
+	@echo "🧪 Running all JavaScript tests (Jest)..."
+	npm run test -- tests/js/
 
 test-e2e:
 	@echo "🧪 Running end-to-end tests (Playwright)..."
@@ -50,13 +58,13 @@ test-py:
 	FLASK_ENV=testing $(PYTHON) -m pytest --maxfail=2 --disable-warnings -v | tee logs/python_tests.log logs/result_tests.txt
 	@$(MAKE) clean-ics
 
-test: test-js test-e2e test-py
+test: test-js-all test-e2e test-py
 	@echo "✅ All tests completed."
 
 # 📊 Coverage
 coverage-js:
 	@echo "📊 Generating JavaScript coverage..."
-	npm run test:js:coverage
+	npm run test:coverage
 
 coverage-py:
 	@echo "📊 Generating Python coverage..."
@@ -155,6 +163,8 @@ help:
 	@echo "🧪 Tests:"
 	@echo "  make test           → All tests (JS + E2E + Python)"
 	@echo "  make test-js        → JavaScript unit tests (Jest)"
+	@echo "  make test-js-integration → JavaScript integration tests (Jest)"
+	@echo "  make test-js-all    → All JavaScript tests (Jest)"
 	@echo "  make test-e2e       → End-to-end tests (Playwright)"
 	@echo "  make test-py        → Python tests (pytest)"
 	@echo "  make coverage       → Complete coverage (JS + Python)"
@@ -179,4 +189,4 @@ help:
 	@echo "  make gstatus        → Show Git status"
 	@echo ""
 
-.PHONY: help test test-js test-e2e test-py coverage coverage-js coverage-py cleanup reset clean-ics
+.PHONY: help test test-js test-js-integration test-js-all test-e2e test-py coverage coverage-js coverage-py cleanup reset clean-ics

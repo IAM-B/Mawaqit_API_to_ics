@@ -100,6 +100,11 @@ test-results/
 coverage/
 *.lcov
 
+# JavaScript test artifacts
+tests/js/unit/__snapshots__/
+tests/js/integration/__snapshots__/
+tests/js/e2e/__snapshots__/
+
 # Temporary files
 *.tmp
 *.temp

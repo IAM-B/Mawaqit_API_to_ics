@@ -4,7 +4,7 @@
  */
 
 // Import functions to test
-const { handleSmoothRedirect, initSmoothRedirects } = require('../../app/static/js/landing.js');
+const { handleSmoothRedirect, initSmoothRedirects } = require('../../../app/static/js/landing.js');
 
 describe('Landing.js - Redirect functions', () => {
   

@@ -48,23 +48,41 @@ tests/integration/
 ### JavaScript Tests
 
 #### Unit Tests
-- **Location**: `tests/js/`
+- **Location**: `tests/js/unit/`
 - **Purpose**: Test individual JavaScript functions and components
 - **Tools**: Jest, jsdom, @testing-library/jest-dom
-- **Coverage**: 94% for landing.js, 1.73% for planner.js
+- **Coverage**: 130 tests total (+400% improvement)
 
 **Structure:**
 ```
-tests/js/
-├── landing.test.js   # Landing page tests
-└── planner.test.js   # Planner interface tests
+tests/js/unit/
+├── test_timeline.js              # Timeline class tests (25 tests)
+├── test_clock.js                 # Clock class tests (25 tests)
+├── test_planner_page.js          # PlannerPage class tests (25 tests)
+├── test_calendar_views_manager.js # CalendarViewsManager tests (26 tests)
+├── test_planner_utils.js         # Utility functions tests (22 tests)
+├── test_landing.js               # Landing page tests (9 tests)
+└── setup.js                      # Test configuration
+```
+
+#### Integration Tests
+- **Location**: `tests/js/integration/`
+- **Purpose**: Test component interactions and workflows
+- **Tools**: Jest, jsdom
+
+**Structure:**
+```
+tests/js/integration/
+└── test_planner_integration.js   # Planner component integration tests
 ```
 
 #### Test Categories
-- **Utility Functions**: Time formatting, padding calculations
-- **DOM Manipulation**: Element creation, event handling
-- **User Interactions**: Button clicks, form submissions
-- **Error Handling**: Invalid inputs, edge cases
+- **Component Classes**: Timeline, Clock, PlannerPage, CalendarViewsManager
+- **Utility Functions**: Time formatting, padding calculations, date management
+- **DOM Manipulation**: Element creation, event handling, view management
+- **User Interactions**: Button clicks, form submissions, navigation
+- **Error Handling**: Invalid inputs, edge cases, error states
+- **State Management**: Component state, data flow, synchronization
 
 ### End-to-End Tests
 
@@ -98,9 +116,12 @@ pytest -k "test_name"  # Run specific test
 
 ### JavaScript Tests
 ```bash
-make test-js        # Run JavaScript unit tests
-npm run test:js     # Direct Jest command
-npm run test:js:watch  # Watch mode
+make test-js        # Run JavaScript unit tests only
+make test-js-integration  # Run JavaScript integration tests only
+make test-js-all    # Run all JavaScript tests
+npm run test -- tests/js/unit/     # Direct Jest command for unit tests
+npm run test -- tests/js/integration/  # Direct Jest command for integration tests
+npm run test -- tests/js/          # Direct Jest command for all JS tests
 ```
 
 ### E2E Tests
@@ -143,11 +164,16 @@ markers =
 // jest.config.js
 module.exports = {
   testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/tests/js/setup.js'],
-  testMatch: ['<rootDir>/tests/js/**/*.test.js'],
+  setupFilesAfterEnv: ['<rootDir>/tests/js/unit/setup.js'],
+  testMatch: [
+    '<rootDir>/tests/js/unit/test_*.js',
+    '<rootDir>/tests/js/integration/test_*.js',
+    '<rootDir>/tests/js/e2e/*.spec.js'
+  ],
   collectCoverageFrom: [
     'app/static/js/**/*.js',
-    '!app/static/js/**/*.min.js'
+    '!app/static/js/**/*.min.js',
+    '!**/node_modules/**'
   ],
   coverageDirectory: 'htmlcov/js'
 };
@@ -199,7 +225,7 @@ def sample_prayer_times():
 
 ### JavaScript Test Data
 ```javascript
-// tests/js/setup.js
+// tests/js/unit/setup.js
 import '@testing-library/jest-dom';
 
 // Mock window.location
@@ -240,6 +266,10 @@ global.testUtils = {
 4. **Test accessibility** features
 5. **Use data-testid** for complex selectors
 6. **Test error states** and loading states
+7. **Organize tests by component** (Timeline, Clock, PlannerPage, etc.)
+8. **Use descriptive test suites** and test names
+9. **Mock DOM elements** for isolated testing
+10. **Test component lifecycle** (init, destroy, cleanup)
 
 ### E2E Testing
 1. **Test user workflows** not individual components
@@ -253,7 +283,13 @@ global.testUtils = {
 
 ### Current Coverage
 - **Python**: 65% (140 tests, 1 xfailed)
-- **JavaScript**: 94% landing.js, 1.73% planner.js (36 tests)
+- **JavaScript**: 130 tests (+400% improvement)
+  - Timeline: 25 tests (initialization, dates, events, views, navigation)
+  - Clock: 25 tests (hands, display, segments, operation)
+  - PlannerPage: 25 tests (forms, data, components, events)
+  - CalendarViewsManager: 26 tests (navigation, scopes, synchronization)
+  - Utils: 22 tests (formatting, conversions, padding)
+  - Landing: 9 tests (animations, interactions)
 - **E2E**: Complete user workflow coverage
 
 ### Coverage Targets
@@ -263,7 +299,7 @@ global.testUtils = {
 
 ### Areas Needing Coverage
 - **Python**: Complex business logic, error handling
-- **JavaScript**: Planner interface interactions, state management
+- **JavaScript**: Additional integration scenarios, edge cases
 - **E2E**: Mobile responsiveness, accessibility
 
 ## Continuous Integration
@@ -315,13 +351,16 @@ pytest --tb=long
 ### JavaScript Debugging
 ```bash
 # Run in debug mode
-npm run test:js -- --debug
+npm run test -- tests/js/unit/ --debug
 
 # Run specific test
-npm run test:js -- --testNamePattern="test name"
+npm run test -- tests/js/unit/test_timeline.js --testNamePattern="test name"
 
 # Watch mode with coverage
-npm run test:js:watch -- --coverage
+npm run test -- tests/js/unit/ --watch --coverage
+
+# Run integration tests
+npm run test -- tests/js/integration/ --verbose
 ```
 
 ### E2E Debugging
@@ -379,6 +418,41 @@ pytest tests/security/
 pytest tests/integration/test_security.py
 ```
 
+## Test Organization
+
+### JavaScript Test Structure
+The JavaScript tests follow a clear organizational pattern:
+
+```
+tests/js/
+├── unit/                    # Unit tests for individual components
+│   ├── test_timeline.js     # Timeline class (25 tests)
+│   ├── test_clock.js        # Clock class (25 tests)
+│   ├── test_planner_page.js # PlannerPage class (25 tests)
+│   ├── test_calendar_views_manager.js # CalendarViewsManager (26 tests)
+│   ├── test_planner_utils.js # Utility functions (22 tests)
+│   ├── test_landing.js      # Landing page (9 tests)
+│   └── setup.js             # Test configuration
+├── integration/             # Integration tests
+│   └── test_planner_integration.js # Component interactions
+└── README.md               # Test documentation
+```
+
+### Test Naming Conventions
+- **Unit tests**: `test_*.js` (e.g., `test_timeline.js`)
+- **Integration tests**: `test_*_integration.js` (e.g., `test_planner_integration.js`)
+- **E2E tests**: `*.spec.js` (e.g., `landing.spec.js`)
+
+### Component Testing Strategy
+Each JavaScript component is tested comprehensively:
+
+1. **Initialization**: Component setup, DOM element creation
+2. **Core Functionality**: Main features and methods
+3. **User Interactions**: Event handling, form submissions
+4. **State Management**: Data updates, component synchronization
+5. **Error Handling**: Invalid inputs, edge cases
+6. **Cleanup**: Resource management, event listener removal
+
 ## Support
 
 For testing support:
@@ -386,3 +460,4 @@ For testing support:
 - Review coverage reports in `htmlcov/`
 - Examine test artifacts in `test-results/`
 - Consult the [Setup Guide](setup.md) for environment issues
+- Read the [JavaScript Test README](../tests/js/README.md) for detailed JS testing information

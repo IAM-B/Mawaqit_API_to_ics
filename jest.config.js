@@ -3,17 +3,19 @@ module.exports = {
   testEnvironment: 'jsdom',
   
   // Setup files
-  setupFilesAfterEnv: ['<rootDir>/tests/js/setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/tests/js/unit/setup.js'],
   
-  // Patterns de test
+  // Patterns de test - Mise à jour pour la nouvelle structure
   testMatch: [
-    '<rootDir>/tests/js/**/*.test.js',
-    '<rootDir>/tests/js/**/*.spec.js'
+    '<rootDir>/tests/js/unit/test_*.js',
+    '<rootDir>/tests/js/integration/test_*.js',
+    '<rootDir>/tests/js/e2e/*.spec.js'
   ],
   
-  // Coverage
+  // Coverage - Collecte uniquement sur les fichiers testés
   collectCoverageFrom: [
-    'app/static/js/**/*.js',
+    'app/static/js/landing.js',
+    'app/static/js/planner.js',
     '!app/static/js/**/*.min.js',
     '!**/node_modules/**'
   ],

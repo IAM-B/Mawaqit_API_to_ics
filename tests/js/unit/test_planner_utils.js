@@ -12,7 +12,7 @@ const {
   getPaddingAfter,
   getRealPaddingBefore,
   getRealPaddingAfter
-} = require('../../app/static/js/planner.js');
+} = require('../../../app/static/js/planner.js');
 
 // Mock DOM elements
 document.body.innerHTML = `

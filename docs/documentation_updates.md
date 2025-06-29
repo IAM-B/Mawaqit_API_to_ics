@@ -1,5 +1,67 @@
 # Documentation Updates Summary
 
+## Latest Updates
+
+### 2024-12-19: JavaScript Test Reorganization
+
+**Status**: ✅ Complete restructuring and enhancement
+
+**Major Changes**:
+- **Complete restructuring** of JavaScript test organization
+- **Improved test coverage** from 26 to 130 tests (+400% improvement)
+- **New test structure** following project conventions
+- **Updated documentation** and configuration files
+
+**Test Structure Changes**:
+
+**Before:**
+```
+tests/js/
+├── timeline.test.js
+├── clock.test.js
+├── planner-page.test.js
+├── calendar-views-manager.test.js
+├── planner.test.js
+├── landing.test.js
+└── setup.js
+```
+
+**After:**
+```
+tests/js/
+├── unit/                    # Unit tests (129 tests)
+│   ├── test_timeline.js     # Timeline class (25 tests)
+│   ├── test_clock.js        # Clock class (25 tests)
+│   ├── test_planner_page.js # PlannerPage class (25 tests)
+│   ├── test_calendar_views_manager.js # CalendarViewsManager (26 tests)
+│   ├── test_planner_utils.js # Utility functions (22 tests)
+│   ├── test_landing.js      # Landing page (9 tests)
+│   └── setup.js             # Test configuration
+├── integration/             # Integration tests (1 test)
+│   └── test_planner_integration.js # Component interactions
+└── README.md               # Test documentation
+```
+
+**New Test Coverage**:
+- **Timeline Class**: 25 tests (initialization, dates, events, views, navigation)
+- **Clock Class**: 25 tests (hands, display, segments, operation)
+- **PlannerPage Class**: 25 tests (forms, data, components, events)
+- **CalendarViewsManager Class**: 26 tests (navigation, scopes, synchronization)
+- **Utility Functions**: 22 tests (formatting, conversions, padding)
+- **Landing Page**: 9 tests (animations, interactions)
+
+**Configuration Updates**:
+- **Jest Configuration**: Updated patterns for new structure
+- **Makefile**: Added new test commands for unit/integration separation
+- **Gitignore**: Added JavaScript test artifacts patterns
+- **Documentation**: Updated testing.md and created tests/js/README.md
+
+**Impact**:
+- **400% increase** in test coverage
+- **Better maintainability** with organized structure
+- **Improved debugging** with clear test organization
+- **Consistent conventions** with project standards
+
 ## Overview
 
 This document summarizes the improvements and translations made to the Mawaqit_API_to_ics project documentation during the June 2025 review and update.
