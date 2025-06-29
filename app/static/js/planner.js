@@ -595,14 +595,6 @@ class CalendarViewsManager {
       if (dayIndex >= 0 && dayIndex < this.segments.length) {
         const dayData = this.segments[dayIndex];
         if (dayData && dayData.slots && dayData.slots.length > 0) {
-          dayElement.classList.add('has-slots');
-          const slotsIndicator = document.createElement('div');
-          slotsIndicator.className = 'day-slots-indicator';
-          const slotsCount = document.createElement('div');
-          slotsCount.className = 'day-slots-count';
-          slotsCount.textContent = `${dayData.slots.length} créneau${dayData.slots.length > 1 ? 'x' : ''}`;
-          slotsIndicator.appendChild(slotsCount);
-          dayElement.appendChild(slotsIndicator);
           dayElement.addEventListener('click', () => {
             this.selectDay(date.getDate(), dayData);
           });
@@ -1617,10 +1609,6 @@ class PlannerPage {
     window.currentMonth = new Date().getMonth();
     window.currentYear = new Date().getFullYear();
     
-    // Hide the configuration forms and show the display version
-    this.hideConfigurationForms();
-    this.showSummaryDisplay();
-    
     // Show the planning sections first
     this.showPlanningSections();
     
@@ -1665,22 +1653,6 @@ class PlannerPage {
         const now = new Date();
         year = now.getFullYear();
         month = now.getMonth() + 1; // JS: 0=janvier
-    }
-  }
-
-  /**
-   * Hide configuration forms and show summary display
-   */
-  hideConfigurationForms() {
-    const summarySection = document.querySelector('.summary-section');
-    const summaryDisplay = document.querySelector('.summary-display');
-    if (summarySection) {
-      summarySection.classList.add('hidden');
-    }
-    if (summaryDisplay) {
-      summaryDisplay.classList.remove('hidden');
-      summaryDisplay.classList.add('fade-in-up');
-      setTimeout(() => summaryDisplay.classList.add('visible'), 100);
     }
   }
 
@@ -2081,14 +2053,6 @@ class PlannerPage {
       } else {
         // If segments is already daily data (month scope)
         monthSegments = segments;
-      }
-      
-      const dayIndex = date.getDate() - 1;
-      if (dayIndex >= 0 && dayIndex < monthSegments.length) {
-        const dayData = monthSegments[dayIndex];
-        if (dayData && dayData.slots && dayData.slots.length > 0) {
-          dayElement.classList.add('has-slots');
-        }
       }
     }
 

@@ -192,57 +192,6 @@
         </section>
       </div>
 
-      <section class="summary-display">
-        <div class="summary-grid">
-          <div class="summary-card mosque-info">
-            <h3><i class="fa-solid fa-mosque"></i> Mosquée sélectionnée</h3>
-            <div class="mosque-details">
-              <h4>{{ mosque_name }}</h4>
-              {% if mosque_address %}
-              <p class="address">{{ mosque_address }}</p>
-              {% endif %}
-              <div id="mosque-location-map" class="compact-map"
-                   {% if mosque_lat and mosque_lng %}
-                   data-lat="{{ mosque_lat }}"
-                   data-lng="{{ mosque_lng }}"
-                   data-name="{{ mosque_name }}"
-                   {% endif %}>
-              </div>
-              <div class="map-links">
-                <a href="{{ google_maps_url }}" target="_blank" class="map-link"><i class="fa-solid fa-map-location-dot"></i> Google Maps</a>
-                <a href="{{ osm_url }}" target="_blank" class="map-link"><i class="fa-brands fa-openstreetmap"></i> OpenStreetMap</a>
-                <a href="{{ mawaqit_url }}" target="_blank" class="map-link"><i class="fa-solid fa-globe"></i> Mawaqit.net</a>
-              </div>
-            </div>
-          </div>
-          <div class="summary-card config-info">
-            <h3><i class="fa-solid fa-cog"></i> Configuration</h3>
-            <div class="config-details">
-              <div class="config-item">
-                <span class="config-label">📅 Période :</span>
-                <span class="config-value">{{ start_date }} → {{ end_date }}</span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">⏰ Délai avant :</span>
-                <span class="config-value">{{ padding_before }} min</span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">⏰ Délai après :</span>
-                <span class="config-value">{{ padding_after }} min</span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">🌍 Fuseau horaire :</span>
-                <span class="config-value">{{ timezone_str }}</span>
-              </div>
-              <div class="config-item">
-                <span class="config-label">📊 Portée :</span>
-                <span class="config-value">{{ scope_display }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- Le reste en dessous -->
       <section class="quick-actions">
         <h2><i class="fa-solid fa-download"></i> Téléchargements rapides</h2>

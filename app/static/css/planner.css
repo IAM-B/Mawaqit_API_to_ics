@@ -162,89 +162,6 @@
 }
 
 /* ==================
-   📋 SUMMARY DISPLAY SECTION
-   ================== */
-.summary-display {
-  margin-bottom: 2rem;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s ease;
-}
-
-.summary-display.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.summary-display .summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-}
-
-.summary-display .summary-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px var(--shadow-light);
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-}
-
-.summary-display .summary-card:hover {
-  box-shadow: 0 6px 16px var(--shadow-color);
-  transform: translateY(-1px);
-}
-
-.summary-display .summary-card h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.3rem;
-  color: var(--text-bright);
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 0.5rem;
-}
-
-.summary-display .mosque-details h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
-  color: var(--text-bright);
-}
-
-.summary-display .address {
-  color: var(--text-muted);
-  margin: 0 0 1rem 0;
-  font-style: italic;
-}
-
-.summary-display .config-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.summary-display .config-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.summary-display .config-item:last-child {
-  border-bottom: none;
-}
-
-.summary-display .config-label {
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.summary-display .config-value {
-  font-weight: 600;
-  color: var(--text-bright);
-}
-
-/* ==================
    📋 CLOCK SECTION
    ================== */
 .clock-section {
@@ -1196,7 +1113,7 @@
   font-weight: 600;
 }
 
-.calendar-day.today.selected.has-slots {
+.calendar-day.today.selected {
   background: var(--bg-color) !important;
 }
 
@@ -1207,11 +1124,11 @@
   box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
-.clock-calendar .calendar-day.has-slots {
+.clock-calendar .calendar-day {
   color: white;
 }
 
-.clock-calendar .calendar-day.has-slots:hover {
+.clock-calendar .calendar-day:hover {
   background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
 }
 
