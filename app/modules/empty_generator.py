@@ -117,6 +117,41 @@ def generate_empty_slot_events(
             last_start, last_end = slots[-1]
             slots[-1] = (last_start, end)
 
+    # Add slot between icha and fajr (night slot)
+    icha_time = prayer_times.get("icha")
+    fajr_time = prayer_times.get("fajr")
+    
+    if icha_time and fajr_time:
+        icha_dt = to_datetime(icha_time)
+        fajr_dt = to_datetime(fajr_time)
+        
+        # If fajr is the next day, add 24 hours to fajr
+        if fajr_dt <= icha_dt:
+            fajr_dt += timedelta(days=1)
+        
+        night_start = icha_dt + timedelta(minutes=padding_after)
+        night_end = fajr_dt - timedelta(minutes=padding_before)
+        
+        if night_start < night_end:
+            # Handle night slot that crosses hour boundaries
+            next_hour = (night_start + timedelta(minutes=59)).replace(minute=0, second=0, microsecond=0)
+            if next_hour > night_end:
+                slots.append((night_start, night_end))
+            else:
+                first_slot_end = min(next_hour + timedelta(hours=1), night_end)
+                slots.append((night_start, first_slot_end))
+                current = first_slot_end
+
+                # Add full-hour slots
+                while current + full_hour <= night_end:
+                    slots.append((current, current + full_hour))
+                    current += full_hour
+
+                # Adjust last slot if needed
+                if current < night_end and slots:
+                    last_start, last_end = slots[-1]
+                    slots[-1] = (last_start, night_end)
+
     # Create calendar events for each slot
     for start, end in slots:
         duration = end - start

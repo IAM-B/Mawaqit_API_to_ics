@@ -106,6 +106,35 @@ def generate_slot_ics_file(
         event.add("description", f"Free slot between {PRAYERS_ORDER[i]} and {PRAYERS_ORDER[i + 1]} — Duration: {formatted}")
         calendar.add_component(event)
 
+    # Add slot between icha and fajr (night slot)
+    icha_time = prayer_times.get("icha")
+    fajr_time = prayer_times.get("fajr")
+    
+    if icha_time and fajr_time:
+        icha_dt = to_datetime(icha_time, base_date, tz)
+        fajr_dt = to_datetime(fajr_time, base_date, tz)
+        
+        # If fajr is the next day, add 24 hours to fajr
+        if fajr_dt <= icha_dt:
+            fajr_dt += timedelta(days=1)
+        
+        night_start = icha_dt + timedelta(minutes=padding_after)
+        night_end = fajr_dt - timedelta(minutes=padding_before)
+        
+        if night_start < night_end:
+            duration = night_end - night_start
+            formatted = format_duration(duration)
+
+            event = Event()
+            event.add("uid", str(uuid4()))
+            event.add("dtstart", night_start)
+            event.add("dtend", night_end)
+            event.add("transp", "TRANSPARENT")
+            event.add("categories", "Empty slots")
+            event.add("summary", f"Night Availability ({formatted})")
+            event.add("description", f"Free slot between icha and fajr (night) — Duration: {formatted}")
+            calendar.add_component(event)
+
     with open(filename, "wb") as f:
         f.write(calendar.to_ical())
 
