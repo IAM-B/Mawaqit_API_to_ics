@@ -1,6 +1,6 @@
 // Calendar component for day grid and navigation
 
-import { formatDateForDisplay, timeToMinutes, minutesToTime } from './utils.js';
+import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
 
 /**
  * Main class for the calendar (day grid)

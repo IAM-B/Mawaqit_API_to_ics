@@ -1,9 +1,9 @@
-import { initMosqueSearchDropdowns } from './mosque_search.js';
-import { initMosqueMapLoader } from './map.js';
-import { Timeline } from './timeline.js';
-import { CalendarViewsManager } from './calendar.js';
-import { Clock } from './clock.js';
-import { PlannerPage } from './planner_page.js';
+import { initMosqueSearchDropdowns } from './components/mosque_search.js';
+import { initMosqueMapLoader } from './components/map.js';
+import { Timeline } from './components/timeline.js';
+import { CalendarViewsManager } from './components/calendar.js';
+import { Clock } from './components/clock.js';
+import { PlannerPage } from './pages/planner_page.js';
 
 // Central initialization of all merged JS modules
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,7 +1,7 @@
 // Clock component for circular prayer/slot visualization
 
-import { formatDateForDisplay, timeToMinutes, minutesToTime } from './utils.js';
-import { getPaddingBefore, getPaddingAfter } from './padding.js';
+import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
+import { getPaddingBefore, getPaddingAfter } from '../utils/padding.js';
 
 /**
  * Main class for the circular clock (slots and prayers)

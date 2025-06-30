@@ -14,8 +14,10 @@ module.exports = {
   
   // Coverage - Collecte uniquement sur les fichiers testés
   collectCoverageFrom: [
-    'app/static/js/landing.js',
-    'app/static/js/planner.js',
+    'app/static/js/pages/landing.js',
+    'app/static/js/main.js',
+    'app/static/js/components/*.js',
+    'app/static/js/utils/*.js',
     '!app/static/js/**/*.min.js',
     '!**/node_modules/**'
   ],

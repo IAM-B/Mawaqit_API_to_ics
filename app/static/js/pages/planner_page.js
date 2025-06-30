@@ -1,9 +1,9 @@
 // Planner page logic: forms, AJAX, feedback, config, download, etc.
 
-import { initializeCompactMap } from './map.js';
-import { Clock } from './clock.js';
-import { formatDateForDisplay, timeToMinutes, minutesToTime } from './utils.js';
-import { getPaddingBefore, getPaddingAfter, getRealPaddingBefore, getRealPaddingAfter } from './padding.js';
+import { initializeCompactMap } from '../components/map.js';
+import { Clock } from '../components/clock.js';
+import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
+import { getPaddingBefore, getPaddingAfter, getRealPaddingBefore, getRealPaddingAfter } from '../utils/padding.js';
 
 export class PlannerPage {
   constructor() {

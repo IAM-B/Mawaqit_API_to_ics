@@ -1,7 +1,7 @@
 // Timeline component for vertical agenda display
 
-import { formatDateForDisplay, timeToMinutes, minutesToTime } from './utils.js';
-import { getPaddingBefore, getPaddingAfter, getRealPaddingBefore, getRealPaddingAfter } from './padding.js';
+import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
+import { getPaddingBefore, getPaddingAfter, getRealPaddingBefore, getRealPaddingAfter } from '../utils/padding.js';
 
 /**
  * Main class for the vertical timeline (SVG agenda)
