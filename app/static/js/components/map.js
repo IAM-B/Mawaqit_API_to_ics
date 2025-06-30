@@ -62,8 +62,10 @@ export function initMosqueMapLoader() {
   }
   // Load all mosques and create markers
   async function loadAllMosques() {
+    try {
     const countries = await (await fetch("/get_countries")).json();
     for (const country of countries) {
+        try {
       const mosques = await (await fetch(`/get_mosques?country=${country.code}`)).json();
       mosques.forEach((mosque) => {
         if (!mosque.lat || !mosque.lng) return;
@@ -88,6 +90,12 @@ export function initMosqueMapLoader() {
         markerCluster.addLayer(marker);
         markers[mosque.slug] = marker;
       });
+        } catch (err) {
+          console.error("Error loading mosques for country", country.code, err);
+        }
+      }
+    } catch (err) {
+      console.error("Error loading countries or mosques", err);
     }
   }
   // Event delegation for selection from the map
@@ -153,5 +161,5 @@ export function initMosqueMapLoader() {
       });
   });
   // Initial loading of all mosques
-  loadAllMosques();
+  loadAllMosques().catch(err => console.error("Error loading initial mosques", err));
 } 

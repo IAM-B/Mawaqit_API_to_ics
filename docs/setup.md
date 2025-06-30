@@ -245,7 +245,7 @@ make cleanup
 ### Performance Optimization
 
 #### For Development
-```bash
+     ```bash
 # Use development mode for faster reloads
 make run-dev
 
@@ -254,7 +254,7 @@ export FLASK_DEBUG=1
 ```
 
 #### For Production
-```bash
+     ```bash
 # Use production mode for better performance
 make run-prod
 

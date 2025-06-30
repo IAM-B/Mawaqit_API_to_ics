@@ -55,7 +55,7 @@ test-e2e:
 test-py:
 	@echo "🧪 Running Python tests (pytest)..."
 	@mkdir -p logs
-	FLASK_ENV=testing $(PYTHON) -m pytest --maxfail=2 --disable-warnings -v | tee logs/python_tests.log logs/result_tests.txt
+	FLASK_ENV=testing $(PYTHON) -m pytest tests/python/ --maxfail=2 --disable-warnings -v | tee logs/python_tests.log logs/result_tests.txt
 	@$(MAKE) clean-ics
 
 test: test-js-all test-e2e test-py
@@ -69,7 +69,7 @@ coverage-js:
 coverage-py:
 	@echo "📊 Generating Python coverage..."
 	@mkdir -p logs
-	PYTHONPATH=. $(PYTHON) -m pytest --cov=app --cov-report=html --cov-report=term-missing --disable-warnings -q | tee logs/coverage_report.log
+	PYTHONPATH=. $(PYTHON) -m pytest tests/python/ --cov=app --cov-report=html:htmlcov/python --cov-report=term-missing --disable-warnings -q | tee logs/coverage_report.log
 
 coverage: coverage-js coverage-py
 	@echo "✅ Complete coverage generated."
@@ -79,12 +79,12 @@ clean-ics:
 	@echo "🗑️ Cleaning generated test files..."
 	rm -f *.ics
 	rm -f tests/*.ics
-	rm -f tests/unit/*.ics
-	rm -f tests/integration/*.ics
-	rm -f tests/unit/modules/*.ics
-	rm -f tests/integration/modules/*.ics
-	rm -f tests/integration/api/*.ics
-	rm -f tests/integration/ics/*.ics
+	rm -f tests/python/unit/*.ics
+	rm -f tests/python/integration/*.ics
+	rm -f tests/python/unit/modules/*.ics
+	rm -f tests/python/integration/modules/*.ics
+	rm -f tests/python/integration/api/*.ics
+	rm -f tests/python/integration/ics/*.ics
 	rm -f app/static/ics/*.ics
 	@echo "✅ Test files cleaned."
 

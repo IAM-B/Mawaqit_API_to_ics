@@ -72,7 +72,11 @@ Mawaqit_API_to_ics/
 │   │   └── ...
 │   ├── static/              # Static assets
 │   │   ├── css/            # Styles (landing, planner, styles)
-│   │   ├── js/             # JavaScript (landing, planner)
+│   │   ├── js/             # JavaScript modules
+│   │   │   ├── components/ # UI components (calendar, clock, map, etc.)
+│   │   │   ├── pages/      # Page-specific logic (landing, planner)
+│   │   │   ├── utils/      # Utility functions
+│   │   │   └── main.js     # Main initialization
 │   │   └── ics/            # Generated ICS files
 │   ├── templates/           # HTML templates
 │   ├── utils/               # Utilities
@@ -81,10 +85,13 @@ Mawaqit_API_to_ics/
 ├── data/                    # Data (metadata, mosques)
 ├── docs/                    # Documentation
 ├── tests/                   # Complete tests
-│   ├── js/                 # JavaScript unit tests
-│   ├── e2e/                # End-to-end Playwright tests
-│   ├── integration/        # Python integration tests
-│   └── unit/               # Python unit tests
+│   ├── js/                 # JavaScript tests
+│   │   ├── unit/           # Unit tests
+│   │   └── integration/    # Integration tests
+│   ├── python/             # Python tests
+│   │   ├── unit/           # Unit tests
+│   │   └── integration/    # Integration tests
+│   └── e2e/                # End-to-end Playwright tests
 ├── app.py                   # Flask entry point
 ├── package.json             # Node.js dependencies
 ├── requirements.txt         # Python dependencies
@@ -107,6 +114,8 @@ make run-test       # Launch in test mode
 ```bash
 make test           # All tests (JS + E2E + Python)
 make test-js        # JavaScript unit tests (Jest)
+make test-js-integration # JavaScript integration tests (Jest)
+make test-js-all    # All JavaScript tests (Jest)
 make test-e2e       # End-to-end tests (Playwright)
 make test-py        # Python tests (pytest)
 make coverage       # Complete coverage (JS + Python)
@@ -127,23 +136,30 @@ make docs-serve     # Start documentation server
 
 ## 🧪 Test Structure
 
-### Python Tests
-- **Unit tests**: Individual functions and components
-- **Integration tests**: Component interactions
+### Python Tests (`tests/python/`)
+- **Unit tests** (`unit/`): Individual functions and components
+- **Integration tests** (`integration/`): Component interactions
 - **Coverage**: 65% (140 tests, 1 xfailed)
 
-### JavaScript Tests
-- **Unit tests (Jest)**: 36 tests for landing.js and planner.js
-- **E2E tests (Playwright)**: User interface tests
+### JavaScript Tests (`tests/js/`)
+- **Unit tests** (`unit/`): Individual components and utilities
+- **Integration tests** (`integration/`): Component interactions
+- **E2E tests** (`tests/e2e/`): User interface tests with Playwright
 - **JS coverage**: 94% for landing.js, 1.73% for planner.js
 
 ### Test Commands
 ```bash
 # Python tests
-pytest --cov=app --cov-report=html
+pytest tests/python/ --cov=app --cov-report=html:htmlcov/python
 
-# JavaScript tests
-npm run test:js:coverage
+# JavaScript unit tests
+npm run test:js:unit
+
+# JavaScript integration tests
+npm run test:js:integration
+
+# All JavaScript tests
+npm run test:js
 
 # E2E tests
 npm run test:e2e
@@ -192,6 +208,7 @@ npm run test:full
 * [x] End-to-end tests (Playwright)
 * [x] Timeline interface with circular clock
 * [x] Padding management
+* [x] Modular JavaScript architecture
 * [ ] Individual padding configuration per prayer
 * [ ] Add recurring tasks to free slots
 * [ ] Mobile interface

@@ -190,7 +190,13 @@ export class CalendarViewsManager {
   }
   // Convert a time string to minutes
   timeToMinutes(time) {
+    if (typeof time !== 'string' || !/^\d{2}:\d{2}$/.test(time)) {
+      throw new Error('Invalid time format');
+    }
     const [hours, minutes] = time.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      throw new Error('Invalid time format');
+    }
     return hours * 60 + minutes;
   }
   // Select a day in the clock calendar

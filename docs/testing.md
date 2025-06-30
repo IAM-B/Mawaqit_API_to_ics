@@ -6,17 +6,17 @@ The Mawaqit_API_to_ics project implements a comprehensive testing strategy cover
 
 ## Test Structure
 
-### Python Tests
+### Python Tests (`tests/python/`)
 
 #### Unit Tests
-- **Location**: `tests/unit/`
+- **Location**: `tests/python/unit/`
 - **Purpose**: Test individual components in isolation
 - **Tools**: pytest, pytest-cov
 - **Coverage**: 65% overall
 
 **Structure:**
 ```
-tests/unit/
+tests/python/unit/
 ├── modules/          # Business logic tests
 │   ├── test_mawaqit_fetcher.py
 │   ├── test_prayer_generator.py
@@ -27,13 +27,13 @@ tests/unit/
 ```
 
 #### Integration Tests
-- **Location**: `tests/integration/`
+- **Location**: `tests/python/integration/`
 - **Purpose**: Test component interactions and workflows
 - **Tools**: pytest, Flask test client
 
 **Structure:**
 ```
-tests/integration/
+tests/python/integration/
 ├── api/              # API endpoint tests
 │   ├── test_api_endpoints.py
 │   └── test_basic_endpoints.py
@@ -45,7 +45,7 @@ tests/integration/
     └── ...
 ```
 
-### JavaScript Tests
+### JavaScript Tests (`tests/js/`)
 
 #### Unit Tests
 - **Location**: `tests/js/unit/`
@@ -109,9 +109,9 @@ make test           # Run all tests (JS + E2E + Python)
 ### Python Tests
 ```bash
 make test-py        # Run Python tests with pytest
-pytest              # Direct pytest command
-pytest -v           # Verbose output
-pytest -k "test_name"  # Run specific test
+pytest tests/python/              # Direct pytest command
+pytest tests/python/ -v           # Verbose output
+pytest tests/python/ -k "test_name"  # Run specific test
 ```
 
 ### JavaScript Tests
@@ -119,9 +119,9 @@ pytest -k "test_name"  # Run specific test
 make test-js        # Run JavaScript unit tests only
 make test-js-integration  # Run JavaScript integration tests only
 make test-js-all    # Run all JavaScript tests
-npm run test -- tests/js/unit/     # Direct Jest command for unit tests
-npm run test -- tests/js/integration/  # Direct Jest command for integration tests
-npm run test -- tests/js/          # Direct Jest command for all JS tests
+npm run test:js:unit     # Direct Jest command for unit tests
+npm run test:js:integration  # Direct Jest command for integration tests
+npm run test:js          # Direct Jest command for all JS tests
 ```
 
 ### E2E Tests
@@ -143,20 +143,11 @@ make coverage-js    # JavaScript coverage only
 
 ### Python Configuration
 ```python
-# pytest.ini
-[tool:pytest]
-testpaths = tests
-python_files = test_*.py
-python_classes = Test*
-python_functions = test_*
-addopts = 
-    --strict-markers
-    --disable-warnings
-    --tb=short
-markers =
-    unit: Unit tests
-    integration: Integration tests
-    slow: Slow running tests
+# pyproject.toml
+[tool.pytest.ini_options]
+testpaths = ["tests/python"]
+python_files = ["test_*.py"]
+addopts = "--cov=app --cov-report=term-missing --cov-report=html:htmlcov/python"
 ```
 
 ### JavaScript Configuration
@@ -168,10 +159,13 @@ module.exports = {
   testMatch: [
     '<rootDir>/tests/js/unit/test_*.js',
     '<rootDir>/tests/js/integration/test_*.js',
-    '<rootDir>/tests/js/e2e/*.spec.js'
+    '<rootDir>/tests/e2e/*.spec.js'
   ],
   collectCoverageFrom: [
-    'app/static/js/**/*.js',
+    'app/static/js/pages/landing.js',
+    'app/static/js/main.js',
+    'app/static/js/components/*.js',
+    'app/static/js/utils/*.js',
     '!app/static/js/**/*.min.js',
     '!**/node_modules/**'
   ],
@@ -415,7 +409,7 @@ safety check
 pytest tests/security/
 
 # API security testing
-pytest tests/integration/test_security.py
+pytest tests/python/integration/test_security.py
 ```
 
 ## Test Organization

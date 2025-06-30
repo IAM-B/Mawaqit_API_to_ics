@@ -17,6 +17,6 @@ dependencies = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests/python"]
 python_files = ["test_*.py"]
-addopts = "--cov=app --cov-report=term-missing" 
+addopts = "--cov=app --cov-report=term-missing --cov-report=html:htmlcov/python" 

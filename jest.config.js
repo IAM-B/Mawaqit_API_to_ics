@@ -2,22 +2,20 @@ module.exports = {
   // Environment de test
   testEnvironment: 'jsdom',
   
-  // Setup files
-  setupFilesAfterEnv: ['<rootDir>/tests/js/unit/setup.js'],
-  
   // Patterns de test - Mise à jour pour la nouvelle structure
   testMatch: [
-    '<rootDir>/tests/js/unit/test_*.js',
-    '<rootDir>/tests/js/integration/test_*.js',
-    '<rootDir>/tests/js/e2e/*.spec.js'
+    '<rootDir>/tests/js/**/*.js',
+    '!<rootDir>/tests/e2e/**/*.js' // Exclure les tests Playwright
+  ],
+  
+  // Exclure les fichiers de setup des tests
+  testPathIgnorePatterns: [
+    '<rootDir>/tests/js/unit/jest.setup.js'
   ],
   
   // Coverage - Collecte uniquement sur les fichiers testés
   collectCoverageFrom: [
-    'app/static/js/pages/landing.js',
-    'app/static/js/main.js',
-    'app/static/js/components/*.js',
-    'app/static/js/utils/*.js',
+    'app/static/js/**/*.js',
     '!app/static/js/**/*.min.js',
     '!**/node_modules/**'
   ],
@@ -26,7 +24,7 @@ module.exports = {
   coverageReporters: ['text', 'lcov', 'html'],
   
   // Coverage directory
-  coverageDirectory: 'htmlcov/js',
+  coverageDirectory: 'coverage/js',
   
   // Module name mapping
   moduleNameMapper: {

@@ -321,7 +321,7 @@
 
 .clock-label {
   font-size: 25px;
-  fill: var(--accent);
+  fill: var(--success);
   text-anchor: middle;
   dominant-baseline: middle;
   font-weight: 600;
