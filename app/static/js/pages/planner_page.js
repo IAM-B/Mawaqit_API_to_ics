@@ -50,7 +50,23 @@ export class PlannerPage {
           }
         } catch (error) {
           console.error('Error generating planning:', error);
-          this.showErrorMessage(error.message);
+          
+          // Improve error messages for the user
+          let errorMessage = 'Erreur lors de la génération du planning';
+          
+          if (error.message.includes('HTTP error 500')) {
+            errorMessage = 'Le service Mawaqit est temporairement indisponible. Veuillez réessayer dans quelques secondes.';
+          } else if (error.message.includes('timeout') || error.message.includes('network')) {
+            errorMessage = 'Problème de connexion réseau. Veuillez vérifier votre connexion et réessayer.';
+          } else if (error.message.includes('Mosque not found')) {
+            errorMessage = 'Mosquée non trouvée. Veuillez vérifier l\'identifiant de la mosquée.';
+          } else if (error.message.includes('HTTP error')) {
+            errorMessage = 'Erreur de communication avec le service Mawaqit. Veuillez réessayer.';
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          this.showErrorMessage(errorMessage);
         } finally {
           this.hideLoadingState(submitBtn);
         }

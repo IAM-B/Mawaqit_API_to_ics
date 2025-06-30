@@ -5,6 +5,7 @@ This module handles web scraping and data extraction from the Mawaqit platform.
 
 import re
 import json
+import time
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -20,20 +21,22 @@ def clear_mawaqit_cache():
     """
     _data_cache.clear()
 
-def fetch_mawaqit_data(masjid_id: str) -> dict:
+def fetch_mawaqit_data(masjid_id: str, max_retries: int = 1, retry_delay: float = 2.0) -> dict:
     """
     Main function to fetch confData from the Mawaqit website.
     Scrapes the mosque's page and extracts the configuration data containing prayer times.
     
     Args:
         masjid_id (str): Mosque identifier from Mawaqit
+        max_retries (int): Maximum number of retry attempts (default: 1)
+        retry_delay (float): Delay in seconds between retries (default: 2.0)
         
     Returns:
         dict: Configuration data containing prayer times and mosque information
         
     Raises:
         ValueError: If mosque not found or data extraction fails
-        RuntimeError: If HTTP request fails
+        RuntimeError: If HTTP request fails after all retries
     """
     # Check if data is in cache
     if masjid_id in _data_cache:
@@ -46,30 +49,53 @@ def fetch_mawaqit_data(masjid_id: str) -> dict:
     url = f"{base_url}/{masjid_id}"
     headers = {'User-Agent': user_agent}
     
-    r = requests.get(url, headers=headers, timeout=timeout)
+    last_exception = None
+    
+    for attempt in range(max_retries + 1):
+        try:
+            print(f"🔄 Tentative {attempt + 1}/{max_retries + 1} pour {masjid_id}")
+            
+            r = requests.get(url, headers=headers, timeout=timeout)
 
-    if r.status_code == 404:
-        raise ValueError(f"Mosque not found for masjid_id: {masjid_id}")
-    elif r.status_code != 200:
-        raise RuntimeError(f"HTTP error {r.status_code} when requesting {masjid_id}")
+            if r.status_code == 404:
+                raise ValueError(f"Mosque not found for masjid_id: {masjid_id}")
+            elif r.status_code != 200:
+                raise RuntimeError(f"HTTP error {r.status_code} when requesting {masjid_id}")
 
-    soup = BeautifulSoup(r.text, 'html.parser')
-    script = soup.find('script', string=re.compile(r'var\s+confData\s*=\s*{'))
+            soup = BeautifulSoup(r.text, 'html.parser')
+            script = soup.find('script', string=re.compile(r'var\s+confData\s*=\s*{'))
 
-    if not script:
-        raise ValueError(f"No <script> tag containing confData for {masjid_id}")
+            if not script:
+                raise ValueError(f"No <script> tag containing confData for {masjid_id}")
 
-    match = re.search(r'var\s+confData\s*=\s*({.*?});\s*', script.string, re.DOTALL)
-    if not match:
-        raise ValueError(f"Unable to extract confData JSON for {masjid_id}")
+            match = re.search(r'var\s+confData\s*=\s*({.*?});\s*', script.string, re.DOTALL)
+            if not match:
+                raise ValueError(f"Unable to extract confData JSON for {masjid_id}")
 
-    try:
-        conf_data = json.loads(match.group(1))
-        # Cache the data
-        _data_cache[masjid_id] = conf_data
-        return conf_data
-    except json.JSONDecodeError as e:
-        raise ValueError(f"JSON error in confData: {e}")
+            try:
+                conf_data = json.loads(match.group(1))
+                # Cache the data
+                _data_cache[masjid_id] = conf_data
+                print(f"✅ Données récupérées avec succès pour {masjid_id}")
+                return conf_data
+            except json.JSONDecodeError as e:
+                raise ValueError(f"JSON error in confData: {e}")
+                
+        except (requests.RequestException, RuntimeError, ValueError) as e:
+            last_exception = e
+            if attempt < max_retries:
+                print(f"⚠️ Tentative {attempt + 1} échouée pour {masjid_id}: {e}")
+                print(f"⏳ Attente de {retry_delay} secondes avant la prochaine tentative...")
+                time.sleep(retry_delay)
+            else:
+                print(f"❌ Toutes les tentatives ont échoué pour {masjid_id}")
+                break
+    
+    # If we reach here, all attempts have failed
+    if last_exception:
+        raise last_exception
+    else:
+        raise RuntimeError(f"Unknown error occurred while fetching data for {masjid_id}")
 
 def fetch_mosques_data(masjid_id: str, scope: str):
     """
