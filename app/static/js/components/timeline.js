@@ -220,19 +220,85 @@ export class Timeline {
     const prayerTimes = dayData ? dayData.prayer_times : null;
     
     if (prayerTimes) {
-      // Calculate real slots based on prayers (correct positioning)
-      const prayerEntries = Object.entries(prayerTimes).sort((a, b) => {
-        return timeToMinutes(a[1]) - timeToMinutes(b[1]);
-      });
+      // Define the logical order of prayers (not chronological)
+      const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
       
-      // Create slots between prayers
-      for (let i = 0; i < prayerEntries.length - 1; i++) {
-        const currentPrayer = prayerEntries[i];
-        const nextPrayer = prayerEntries[i + 1];
+      // Create slots between prayers in logical order
+      for (let i = 0; i < prayerOrder.length - 1; i++) {
+        const currentPrayerName = prayerOrder[i];
+        const nextPrayerName = prayerOrder[i + 1];
         
-        const currentPrayerTime = currentPrayer[1];
-        const nextPrayerTime = nextPrayer[1];
+        const currentPrayerTime = prayerTimes[currentPrayerName];
+        const nextPrayerTime = prayerTimes[nextPrayerName];
         
+        // Skip if either prayer time is missing
+        if (!currentPrayerTime || !nextPrayerTime) {
+          continue;
+        }
+        
+        // Special handling for the slot between maghreb and icha when icha is after midnight
+        if (currentPrayerName === 'maghreb' && nextPrayerName === 'icha') {
+          const ichaMinutes = timeToMinutes(nextPrayerTime);
+          
+          // Check if icha is after midnight (after 00:00)
+          // ichaMinutes will be >= 0 when icha is after midnight (e.g., 01:30 = 90 minutes)
+          // ichaMinutes will be >= 0 when icha is before midnight (e.g., 23:30 = 1410 minutes)
+          // We need to check if icha is actually after midnight by comparing with maghreb
+          const maghrebMinutes = timeToMinutes(currentPrayerTime);
+          if (ichaMinutes < maghrebMinutes) {
+            // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
+            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, paddingAfter);
+            const maghrebToMidnightEnd = "23:59";
+            
+            const midnightToIchaStart = "00:00";
+            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            
+            // Calculate total duration for display
+            const realMaghrebToMidnightStart = this.addPadding(currentPrayerTime, realPaddingAfter);
+            const realMidnightToIchaEnd = this.subtractPadding(nextPrayerTime, realPaddingBefore);
+            const realStartMinutes = timeToMinutes(realMaghrebToMidnightStart);
+            const realEndMinutes = timeToMinutes(realMidnightToIchaEnd);
+            
+            // Handle case where icha is the next day
+            let totalDurationMinutes;
+            if (realEndMinutes <= realStartMinutes) {
+              // icha is the next day, so we need to add 24 hours
+              totalDurationMinutes = (realEndMinutes + 24 * 60) - realStartMinutes;
+            } else {
+              totalDurationMinutes = realEndMinutes - realStartMinutes;
+            }
+            
+            const totalHours = Math.floor(totalDurationMinutes / 60);
+            const totalMinutes = totalDurationMinutes % 60;
+            const totalDurationText = totalHours > 0 ? `${totalHours}h${totalMinutes.toString().padStart(2, '0')}` : `${totalMinutes}min`;
+            
+            const slotTitle = `Disponibilité (${totalDurationText})`;
+            
+            // First slot: maghreb to 23:59
+            if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
+              const adjustedStart = this.addPadding(maghrebToMidnightStart, 3);
+              const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 3);
+              
+              if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot', maghrebToMidnightStart + '-' + maghrebToMidnightEnd);
+              }
+            }
+            
+            // Second slot: 00:00 to icha
+            if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
+              const adjustedStart = this.addPadding(midnightToIchaStart, 3);
+              const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 3);
+              
+              if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot', midnightToIchaStart + '-' + midnightToIchaEnd);
+              }
+            }
+            
+            continue; // Skip the normal slot creation for this pair
+          }
+        }
+        
+        // Normal slot creation for other prayer pairs
         // Slot starts at the end of the current prayer
         const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
         // Slot ends at the exact time of the next prayer

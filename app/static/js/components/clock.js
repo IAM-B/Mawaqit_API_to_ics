@@ -152,9 +152,23 @@ export class Clock {
   createSlotElement(slot) {
     const startMinutes = timeToMinutes(slot.start);
     const endMinutes = timeToMinutes(slot.end);
+    
+    // Skip slots that are too short (less than 5 minutes)
+    const duration = endMinutes - startMinutes;
+    if (duration < 5) {
+      return null; // Don't create slot for very short durations
+    }
+    
+    // Apply slot size adjustment for UI purposes, but ensure minimum visibility
     const slotSizeAdjustment = -25;
     const adjustedEndMinutes = endMinutes + slotSizeAdjustment;
     const adjustedEndTime = minutesToTime(adjustedEndMinutes);
+    
+    // Ensure the adjusted end time doesn't go before the start time
+    if (adjustedEndMinutes <= startMinutes) {
+      return null; // Skip if adjustment makes slot too small
+    }
+    
     const startAngle = this.minutesToAngle(startMinutes);
     const endAngle = this.minutesToAngle(adjustedEndMinutes);
     const radius = 120;
@@ -184,7 +198,29 @@ export class Clock {
     label.setAttribute("class", "clock-label");
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("dominant-baseline", "middle");
-    label.textContent = this.calculateDuration(slot.start, slot.end);
+    
+    // Get duration from timeline if available, otherwise calculate it
+    const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
+    if (timelineEvent) {
+      const timelineText = timelineEvent.nextElementSibling;
+      if (timelineText && timelineText.classList.contains('timeline-event-text')) {
+        const timelineTitle = timelineText.textContent;
+        const durationMatch = timelineTitle.match(/Disponibilité \((.+?)\)/);
+        if (durationMatch) {
+          label.textContent = `(${durationMatch[1]})`;
+        } else {
+          label.textContent = this.calculateDuration(slot.start, slot.end);
+        }
+      } else {
+        label.textContent = this.calculateDuration(slot.start, slot.end);
+      }
+    } else {
+      label.textContent = this.calculateDuration(slot.start, slot.end);
+    }
+    
+    // Alternative: Display the adjusted duration (visual duration)
+    // label.textContent = this.calculateDuration(slot.start, adjustedEndTime);
+    
     path.addEventListener("mouseover", () => {
       const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
       if (timelineEvent) {
@@ -218,22 +254,76 @@ export class Clock {
     }
     const paddingBefore = getPaddingBefore();
     const paddingAfter = getPaddingAfter();
-    const prayerEntries = Object.entries(data.prayer_times).sort((a, b) => {
-      return timeToMinutes(a[1]) - timeToMinutes(b[1]);
-    });
+    
+    // Define the logical order of prayers (not chronological)
+    const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
+    
     const calculatedSlots = [];
-    for (let i = 0; i < prayerEntries.length - 1; i++) {
-      const currentPrayer = prayerEntries[i];
-      const nextPrayer = prayerEntries[i + 1];
-      const currentPrayerTime = currentPrayer[1];
-      const nextPrayerTime = nextPrayer[1];
+    
+    // Create slots between prayers in logical order
+    for (let i = 0; i < prayerOrder.length - 1; i++) {
+      const currentPrayerName = prayerOrder[i];
+      const nextPrayerName = prayerOrder[i + 1];
+      
+      const currentPrayerTime = data.prayer_times[currentPrayerName];
+      const nextPrayerTime = data.prayer_times[nextPrayerName];
+      
+      // Skip if either prayer time is missing
+      if (!currentPrayerTime || !nextPrayerTime) {
+        continue;
+      }
+      
+      // Special handling for the slot between maghreb and icha when icha is after midnight
+      if (currentPrayerName === 'maghreb' && nextPrayerName === 'icha') {
+        const ichaMinutes = timeToMinutes(nextPrayerTime);
+        
+        // Check if icha is after midnight by comparing with maghreb
+        const maghrebMinutes = timeToMinutes(currentPrayerTime);
+        if (ichaMinutes < maghrebMinutes) {
+          // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
+          const maghrebToMidnightStart = this.addPadding(currentPrayerTime, paddingAfter);
+          const maghrebToMidnightEnd = "23:59";
+          
+          const midnightToIchaStart = "00:00";
+          const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+          
+          // First slot: maghreb to 23:59
+          if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
+            const duration = timeToMinutes(maghrebToMidnightEnd) - timeToMinutes(maghrebToMidnightStart);
+            if (duration >= 5) { // Only add slots with duration >= 5 minutes
+              calculatedSlots.push({
+                start: maghrebToMidnightStart,
+                end: maghrebToMidnightEnd
+              });
+            }
+          }
+          
+          // Second slot: 00:00 to icha
+          if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
+            const duration = timeToMinutes(midnightToIchaEnd) - timeToMinutes(midnightToIchaStart);
+            if (duration >= 5) { // Only add slots with duration >= 5 minutes
+              calculatedSlots.push({
+                start: midnightToIchaStart,
+                end: midnightToIchaEnd
+              });
+            }
+          }
+          
+          continue; // Skip the normal slot creation for this pair
+        }
+      }
+      
       const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
       const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+      
       if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
+        const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
+        if (duration >= 5) { // Only add slots with duration >= 5 minutes
         calculatedSlots.push({
           start: slotStart,
           end: slotEnd
         });
+        }
       }
     }
     if (calculatedSlots.length === 0) {
@@ -252,7 +342,24 @@ export class Clock {
       slotTime.textContent = `${slot.start} - ${slot.end}`;
       const slotDuration = document.createElement('span');
       slotDuration.className = 'slot-duration';
-      slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
+      // Get duration from timeline if available, otherwise calculate it
+      const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (timelineEvent) {
+        const timelineText = timelineEvent.nextElementSibling;
+        if (timelineText && timelineText.classList.contains('timeline-event-text')) {
+          const timelineTitle = timelineText.textContent;
+          const durationMatch = timelineTitle.match(/Disponibilité \((.+?)\)/);
+          if (durationMatch) {
+            slotDuration.textContent = `(${durationMatch[1]})`;
+          } else {
+            slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
+          }
+        } else {
+          slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
+        }
+      } else {
+        slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
+      }
       slotItem.appendChild(slotTime);
       slotItem.appendChild(slotDuration);
       slotsList.appendChild(slotItem);
@@ -331,23 +438,85 @@ export class Clock {
     if (currentData && currentData.prayer_times) {
       const paddingBefore = getPaddingBefore();
       const paddingAfter = getPaddingAfter();
-      const prayerEntries = Object.entries(currentData.prayer_times).sort((a, b) => {
-        return timeToMinutes(a[1]) - timeToMinutes(b[1]);
-      });
-      for (let i = 0; i < prayerEntries.length - 1; i++) {
-        const currentPrayer = prayerEntries[i];
-        const nextPrayer = prayerEntries[i + 1];
-        const currentPrayerTime = currentPrayer[1];
-        const nextPrayerTime = nextPrayer[1];
+      // Define the logical order of prayers (not chronological)
+      const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
+      
+      // Create slots between prayers in logical order
+      for (let i = 0; i < prayerOrder.length - 1; i++) {
+        const currentPrayerName = prayerOrder[i];
+        const nextPrayerName = prayerOrder[i + 1];
+        
+        const currentPrayerTime = currentData.prayer_times[currentPrayerName];
+        const nextPrayerTime = currentData.prayer_times[nextPrayerName];
+        
+        // Skip if either prayer time is missing
+        if (!currentPrayerTime || !nextPrayerTime) {
+          continue;
+        }
+        
+        // Special handling for the slot between maghreb and icha when icha is after midnight
+        if (currentPrayerName === 'maghreb' && nextPrayerName === 'icha') {
+          const ichaMinutes = timeToMinutes(nextPrayerTime);
+          
+          // Check if icha is after midnight by comparing with maghreb
+          const maghrebMinutes = timeToMinutes(currentPrayerTime);
+          if (ichaMinutes < maghrebMinutes) {
+            // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
+            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, paddingAfter);
+            const maghrebToMidnightEnd = "23:59";
+            
+            const midnightToIchaStart = "00:00";
+            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            
+            // First slot: maghreb to 23:59
+            if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
+              const duration = timeToMinutes(maghrebToMidnightEnd) - timeToMinutes(maghrebToMidnightStart);
+              if (duration >= 5) { // Only add slots with duration >= 5 minutes
+                const slot = {
+                  start: maghrebToMidnightStart,
+                  end: maghrebToMidnightEnd
+                };
+                const slotElement = this.createSlotElement(slot);
+                if (slotElement) {
+                  svg.appendChild(slotElement);
+                }
+              }
+            }
+            
+            // Second slot: 00:00 to icha
+            if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
+              const duration = timeToMinutes(midnightToIchaEnd) - timeToMinutes(midnightToIchaStart);
+              if (duration >= 5) { // Only add slots with duration >= 5 minutes
+                const slot = {
+                  start: midnightToIchaStart,
+                  end: midnightToIchaEnd
+                };
+                const slotElement = this.createSlotElement(slot);
+                if (slotElement) {
+                  svg.appendChild(slotElement);
+                }
+              }
+            }
+            
+            continue; // Skip the normal slot creation for this pair
+          }
+        }
+        
         const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
         const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+        
         if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
-          const slot = {
-            start: slotStart,
-            end: slotEnd
-          };
-          const slotElement = this.createSlotElement(slot);
-          svg.appendChild(slotElement);
+          const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
+          if (duration >= 5) { // Only add slots with duration >= 5 minutes
+            const slot = {
+              start: slotStart,
+              end: slotEnd
+            };
+            const slotElement = this.createSlotElement(slot);
+            if (slotElement) {
+              svg.appendChild(slotElement);
+            }
+          }
         }
       }
     }

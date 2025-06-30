@@ -321,7 +321,7 @@
 
 .clock-label {
   font-size: 25px;
-  fill: var(--success);
+  fill: var(--text-color);
   text-anchor: middle;
   dominant-baseline: middle;
   font-weight: 600;
@@ -504,7 +504,7 @@
   fill: var(--primary);
   stroke: var(--primary-hover);
   stroke-width: 1;
-  opacity: 0.8;
+  opacity: 0.5;
   cursor: pointer;
 }
 
@@ -525,7 +525,8 @@
   stroke: var(--success-hover);
   filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
   stroke-width: 1;
-  opacity: 0.8;
+  opacity: 1;
+  transition: all 0.3s ease;
 }
 
 /* Synchronisation hover pour les créneaux - même style que hover */
@@ -535,6 +536,7 @@
   filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
   stroke-width: 1;
   opacity: 0.8;
+  transition: all 0.3s ease;
 }
 
 .timeline-event-text {
