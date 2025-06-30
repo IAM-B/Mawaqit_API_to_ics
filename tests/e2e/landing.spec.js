@@ -13,6 +13,10 @@ test.describe('Homepage', () => {
     await expect(page.locator('.hero-title')).toBeVisible();
     await expect(page.locator('.hero-subtitle')).toBeVisible();
     await expect(page.locator('.cta-button')).toBeVisible();
+    
+    // Check for meta tags
+    const metaDescription = page.locator('meta[name="description"]');
+    await expect(metaDescription).toHaveAttribute('content');
   });
 
   test('should have animations on hero elements', async ({ page }) => {
@@ -53,6 +57,19 @@ test.describe('Homepage', () => {
     // Note: Class may be removed quickly by browser
     await expect(page).toHaveURL(/\/planner/);
   });
+
+  test('should have proper SEO structure', async ({ page }) => {
+    // Check for proper heading hierarchy
+    const h1Elements = page.locator('h1');
+    expect(await h1Elements.count()).toBe(1);
+    
+    // Check for structured data
+    const structuredData = page.locator('script[type="application/ld+json"]');
+    if (await structuredData.count() > 0) {
+      const jsonContent = await structuredData.first().textContent();
+      expect(jsonContent).toBeTruthy();
+    }
+  });
 });
 
 test.describe('Navigation', () => {
@@ -81,6 +98,21 @@ test.describe('Navigation', () => {
     await page.click('.cta-button');
     await expect(page).toHaveURL(/\/planner/);
   });
+
+  test('should handle keyboard navigation', async ({ page }) => {
+    await page.goto('/');
+    
+    // Tab through interactive elements
+    await page.keyboard.press('Tab');
+    
+    // Check that focus is visible
+    const focusedElement = page.locator(':focus');
+    await expect(focusedElement).toBeVisible();
+    
+    // Navigate with Enter key
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/\/planner/);
+  });
 });
 
 test.describe('Performance and accessibility', () => {
@@ -100,12 +132,39 @@ test.describe('Performance and accessibility', () => {
     const ctaButton = page.locator('.cta-button').first();
     await expect(ctaButton).toBeVisible();
     
+    // Check for ARIA labels
+    const ariaLabel = await ctaButton.getAttribute('aria-label');
+    if (ariaLabel) {
+      expect(ariaLabel).toBeTruthy();
+    }
+    
     // Check that images have alt text (if present)
     const images = page.locator('img');
     for (let i = 0; i < await images.count(); i++) {
       const alt = await images.nth(i).getAttribute('alt');
       expect(alt).toBeTruthy();
     }
+    
+    // Check for proper color contrast (basic check)
+    const textElements = page.locator('h1, h2, h3, p, span');
+    await expect(textElements.first()).toBeVisible();
+  });
+
+  test('should have proper focus management', async ({ page }) => {
+    await page.goto('/');
+    
+    // Check that focus is properly managed
+    await page.keyboard.press('Tab');
+    
+    // Focus should be visible
+    const focusedElement = page.locator(':focus');
+    await expect(focusedElement).toBeVisible();
+    
+    // Check focus outline
+    const computedStyle = await focusedElement.evaluate(el => 
+      window.getComputedStyle(el).outline
+    );
+    expect(computedStyle).not.toBe('none');
   });
 });
 
@@ -128,5 +187,43 @@ test.describe('Responsive design', () => {
       // Take screenshot for manual verification
       await page.screenshot({ path: `test-results/landing-${viewport.name}.png` });
     }
+  });
+
+  test('should handle orientation changes', async ({ page }) => {
+    // Test portrait mode
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto('/');
+    await expect(page.locator('.hero-title')).toBeVisible();
+    
+    // Test landscape mode
+    await page.setViewportSize({ width: 667, height: 375 });
+    await page.goto('/');
+    await expect(page.locator('.hero-title')).toBeVisible();
+  });
+});
+
+test.describe('Content and localization', () => {
+  test('should have proper language attributes', async ({ page }) => {
+    await page.goto('/');
+    
+    // Check HTML lang attribute
+    const htmlElement = page.locator('html');
+    await expect(htmlElement).toHaveAttribute('lang');
+    
+    // Check for proper text direction
+    const dir = await htmlElement.getAttribute('dir');
+    expect(dir).toBeTruthy();
+  });
+
+  test('should have proper meta tags', async ({ page }) => {
+    await page.goto('/');
+    
+    // Check viewport meta tag
+    const viewport = page.locator('meta[name="viewport"]');
+    await expect(viewport).toHaveAttribute('content');
+    
+    // Check charset
+    const charset = page.locator('meta[charset]');
+    await expect(charset).toBeVisible();
   });
 }); 

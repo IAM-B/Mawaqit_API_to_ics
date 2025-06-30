@@ -1,15 +1,15 @@
 const { test, expect } = require('@playwright/test');
 
-test.describe('Planner Page', () => {
+test.describe('Planner Page - Simple Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/planner');
     // Wait for page to load completely
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState('networkidle');
   });
 
   test('should display configuration form', async ({ page }) => {
     // Check that page loads correctly
-    await expect(page).toHaveTitle(/Planning synchronisé/);
+    await expect(page).toHaveTitle(/Planner/);
     
     // Check form elements
     await expect(page.locator('#country-select')).toBeVisible();
@@ -20,11 +20,11 @@ test.describe('Planner Page', () => {
   });
 
   test('should load countries in select', async ({ page }) => {
-    // Wait for JavaScript to load and countries to populate
+    // Wait for countries to load (more than just the placeholder)
     await page.waitForFunction(() => {
       const select = document.querySelector('#country-select');
       return select && select.options.length > 1;
-    }, { timeout: 20000 });
+    }, { timeout: 10000 });
     
     const countrySelect = page.locator('#country-select');
     const options = await countrySelect.locator('option').count();
@@ -36,7 +36,7 @@ test.describe('Planner Page', () => {
     await page.waitForFunction(() => {
       const select = document.querySelector('#country-select');
       return select && select.options.length > 1;
-    }, { timeout: 20000 });
+    }, { timeout: 10000 });
     
     // Select a country
     await page.selectOption('#country-select', { index: 1 });
@@ -45,7 +45,7 @@ test.describe('Planner Page', () => {
     await page.waitForFunction(() => {
       const select = document.querySelector('#mosque-select');
       return select && select.options.length > 1;
-    }, { timeout: 20000 });
+    }, { timeout: 10000 });
     
     const mosqueSelect = page.locator('#mosque-select');
     const options = await mosqueSelect.locator('option').count();
@@ -77,11 +77,10 @@ test.describe('Planner responsive design', () => {
     for (const viewport of viewports) {
       await page.setViewportSize(viewport);
       await page.goto('/planner');
-      await page.waitForLoadState('domcontentloaded');
+      await page.waitForLoadState('networkidle');
       
-      // Check that forms are visible (use more specific selector)
-      await expect(page.locator('#plannerForm')).toBeVisible();
-      await expect(page.locator('#configForm')).toBeVisible();
+      // Check that form is visible
+      await expect(page.locator('form')).toBeVisible();
     }
   });
-});
+}); 

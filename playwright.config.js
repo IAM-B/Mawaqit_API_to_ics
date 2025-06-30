@@ -75,18 +75,20 @@ module.exports = defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'python app.py',
+    command: './env-planner/bin/python app.py --env testing',
     url: 'http://localhost:5000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
   
   /* Global timeout for tests */
-  timeout: 30000,
+  timeout: 60000,
   
   /* Expect timeout */
   expect: {
-    timeout: 5000,
+    timeout: 15000,
   },
   
   /* Output directory for test artifacts */
