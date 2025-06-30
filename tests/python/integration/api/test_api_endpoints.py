@@ -8,12 +8,15 @@ from app import create_app
 @pytest.fixture
 def app():
     """Create and configure a Flask app for testing."""
+    from app import create_app
     app = create_app()
-    app.config['TESTING'] = True
-    app.config['MAWAQIT_BASE_URL'] = 'http://example.com'
-    app.config['MAWAQIT_REQUEST_TIMEOUT'] = 5
-    app.config['MAWAQIT_USER_AGENT'] = 'pytest-agent'
-    app.config['MOSQUE_DATA_DIR'] = Path(__file__).resolve().parents[3] / "data" / "mosques_by_country"
+    app.config.update({
+        'TESTING': True,
+        'MAWAQIT_BASE_URL': 'http://example.com',
+        'MAWAQIT_REQUEST_TIMEOUT': 5,
+        'MAWAQIT_USER_AGENT': 'pytest-agent',
+        'MOSQUE_DATA_DIR': str(Path(__file__).resolve().parents[3] / "data" / "mosques_by_country")
+    })
     return app
 
 @pytest.fixture
@@ -43,61 +46,67 @@ def sample_mosque_data(tmp_path):
     
     return mosque_dir
 
-def test_get_countries(client):
+def test_get_countries(client, sample_mosque_data):
     """Test the /get_countries endpoint."""
-    response = client.get('/get_countries')
-    assert response.status_code == 200
-    data = response.get_json()
-    
-    assert isinstance(data, list)
-    assert len(data) > 0
-    # Check that each country has a code and a name
-    for country in data:
-        assert 'code' in country
-        assert 'name' in country
-        assert isinstance(country['code'], str)
-        assert isinstance(country['name'], str)
+    # Patch le dossier de données pour pointer sur les données de test
+    with patch('app.modules.mosque_search.get_mosque_dir', return_value=sample_mosque_data):
+        response = client.get('/get_countries')
+        assert response.status_code == 200
+        data = response.get_json()
+        
+        assert isinstance(data, list)
+        assert len(data) > 0
+        # Check that each country has a code and a name
+        for country in data:
+            assert 'code' in country
+            assert 'name' in country
+            assert isinstance(country['code'], str)
+            assert isinstance(country['name'], str)
 
-def test_get_mosques(client):
+def test_get_mosques(client, sample_mosque_data):
     """Test the /get_mosques endpoint."""
-    # Test with specific country parameter (Algeria)
-    response = client.get('/get_mosques?country=algerie6641')
-    assert response.status_code == 200
-    data = response.get_json()
-    assert isinstance(data, list)
-    assert len(data) > 0
-    
-    # Check the data structure
-    mosque = data[0]
-    assert 'name' in mosque
-    assert 'city' in mosque
-    assert 'text' in mosque
-    assert isinstance(mosque['name'], str)
-    assert isinstance(mosque['city'], str)
-    assert isinstance(mosque['text'], str)
-    
-    # Test with invalid country
-    response = client.get('/get_mosques?country=invalid')
-    assert response.status_code == 200
-    data = response.get_json()
-    assert isinstance(data, list)
-    assert len(data) == 0
+    # Patch le dossier de données pour pointer sur les données de test
+    with patch('app.modules.mosque_search.get_mosque_dir', return_value=sample_mosque_data):
+        # Test with specific country parameter (Algeria)
+        response = client.get('/get_mosques?country=algerie6641')
+        assert response.status_code == 200
+        data = response.get_json()
+        assert isinstance(data, list)
+        assert len(data) > 0
+        
+        # Check the data structure
+        mosque = data[0]
+        assert 'name' in mosque
+        assert 'city' in mosque
+        assert 'text' in mosque
+        assert isinstance(mosque['name'], str)
+        assert isinstance(mosque['city'], str)
+        assert isinstance(mosque['text'], str)
+        
+        # Test with invalid country
+        response = client.get('/get_mosques?country=invalid')
+        assert response.status_code == 200
+        data = response.get_json()
+        assert isinstance(data, list)
+        assert len(data) == 0
 
-def test_get_mosques_with_text(client):
+def test_get_mosques_with_text(client, sample_mosque_data):
     """Test that mosques are returned with formatted text field."""
-    response = client.get('/get_mosques?country=algerie6641')
-    assert response.status_code == 200
-    data = response.get_json()
-    
-    assert len(data) > 0
-    mosque = data[0]
-    assert 'text' in mosque
-    text = mosque['text']
-    assert mosque['name'] in text
-    if mosque.get('city'):
-        assert mosque['city'] in text
-    if mosque.get('zipcode'):
-        assert mosque['zipcode'] in text
+    # Patch le dossier de données pour pointer sur les données de test
+    with patch('app.modules.mosque_search.get_mosque_dir', return_value=sample_mosque_data):
+        response = client.get('/get_mosques?country=algerie6641')
+        assert response.status_code == 200
+        data = response.get_json()
+        
+        assert len(data) > 0
+        mosque = data[0]
+        assert 'text' in mosque
+        text = mosque['text']
+        assert mosque['name'] in text
+        if mosque.get('city'):
+            assert mosque['city'] in text
+        if mosque.get('zipcode'):
+            assert mosque['zipcode'] in text
 
 def test_planner_post_endpoint(client):
     """Test the POST /planner endpoint."""

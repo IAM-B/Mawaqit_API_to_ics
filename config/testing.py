@@ -5,5 +5,5 @@ class TestingConfig(Config):
     TESTING = True
     LOG_LEVEL = 'DEBUG'
     DATABASE_URI = 'sqlite:///:memory:'
-    MOSQUE_DATA_DIR = 'tests/data/mosques_by_country'
+    MOSQUE_DATA_DIR = 'data/mosques_by_country'
     ICS_OUTPUT_DIR = 'tests/data/ics'
