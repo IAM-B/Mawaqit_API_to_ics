@@ -22,6 +22,14 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   </head>
   <body class="page-transition">
+    <!-- Fixed Progress Indicator (initially hidden) -->
+    <div class="progress-indicator-fixed" id="progressIndicatorFixed">
+      <div class="progress-step active"><i class="fa-solid fa-mosque"></i><span>Sélection</span></div>
+      <div class="progress-step"><i class="fa-solid fa-cog"></i><span>Configuration</span></div>
+      <div class="progress-step"><i class="fa-regular fa-clock"></i><span>Horaires</span></div>
+      <div class="progress-step"><i class="fa-solid fa-download"></i><span>Téléchargement</span></div>
+    </div>
+
     <!-- Header Section -->
     <section class="hero-section">
       <div class="hero-container">
@@ -33,7 +41,7 @@
         </header>
         
         <!-- Progress Bar -->
-        <div class="progress-indicator fade-in-up">
+        <div class="progress-indicator" id="progressIndicatorHero">
           <div class="progress-step active"><i class="fa-solid fa-mosque"></i><span>Sélection</span></div>
           <div class="progress-step"><i class="fa-solid fa-cog"></i><span>Configuration</span></div>
           <div class="progress-step"><i class="fa-regular fa-clock"></i><span>Horaires</span></div>

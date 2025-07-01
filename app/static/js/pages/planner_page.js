@@ -13,12 +13,17 @@ export class PlannerPage {
   init() {
     this.setupFormHandling();
     this.setupPlanningAnimation();
+    this.setupProgressIndicatorDetachment();
   }
 
   setupFormHandling() {
     const plannerForm = document.getElementById('plannerForm');
     const configForm = document.getElementById('configForm');
     const submitBtn = document.querySelector('.btn-submit');
+    
+    // Progress system initialization
+    this.initializeProgressSystem();
+    
     if (configForm && submitBtn) {
       configForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -125,6 +130,12 @@ export class PlannerPage {
     window.currentPaddingAfter = data.padding_after;
     window.currentMonth = new Date().getMonth();
     window.currentYear = new Date().getFullYear();
+    
+    // Update progress state
+    this.progressState.planningGenerated = true;
+    this.progressState.configCompleted = true; // The configuration is necessarily complete if we get here
+    this.updateProgressIndicator(2);
+    
     this.showPlanningSections();
     this.updateMosqueInfo(data);
     this.updateConfigSummary(data);
@@ -284,6 +295,10 @@ export class PlannerPage {
       });
       downloadGrid.appendChild(scopeDownloads);
       this.setupScopeDownloadButtons(data);
+      
+      // Update progress state
+      this.progressState.downloadsAvailable = true;
+      this.updateProgressIndicator(3);
     }
   }
 
@@ -686,5 +701,476 @@ export class PlannerPage {
         break;
       }
     }
+  }
+
+  setupProgressIndicatorDetachment() {
+    // Observer pour détecter quand la progress-indicator sort du viewport
+    const progressIndicator = document.getElementById('progressIndicatorHero');
+    const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
+    
+    if (!progressIndicator || !progressIndicatorFixed) return;
+    
+    let isFixedVisible = false;
+    let lastScrollY = window.scrollY;
+    
+    // Détection de scroll plus réactive
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+      const progressRect = progressIndicator.getBoundingClientRect();
+      
+      // Détecter le scroll vers le bas dès le premier pixel
+      if (scrollDirection === 'down' && currentScrollY > 10 && !isFixedVisible) {
+        this.triggerDetachmentAnimation();
+        isFixedVisible = true;
+      }
+      // Détecter le retour vers le haut
+      else if (scrollDirection === 'up' && currentScrollY < 50 && isFixedVisible) {
+        this.hideFixedProgressIndicator();
+        isFixedVisible = false;
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+    
+    // Utiliser throttling pour optimiser les performances
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    
+    // Synchroniser les états entre les deux progress indicators
+    this.syncProgressIndicators();
+  }
+
+  triggerDetachmentAnimation() {
+    const progressIndicator = document.getElementById('progressIndicatorHero');
+    const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
+    
+    if (!progressIndicator || !progressIndicatorFixed) return;
+    
+    // Afficher immédiatement la barre fixe
+    progressIndicatorFixed.classList.add('visible');
+    this.syncProgressIndicators();
+    
+    // Masquer simplement la progress-indicator originale
+    progressIndicator.classList.add('detaching');
+  }
+
+  hideFixedProgressIndicator() {
+    const progressIndicator = document.getElementById('progressIndicatorHero');
+    const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
+    
+    if (!progressIndicator || !progressIndicatorFixed) return;
+    
+    // Hide the fixed progress indicator immediately
+    progressIndicatorFixed.classList.remove('visible');
+    
+    // Reset the original progress-indicator
+    progressIndicator.classList.remove('detaching');
+  }
+
+  syncProgressIndicators() {
+    const progressIndicator = document.getElementById('progressIndicatorHero');
+    const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
+    
+    if (!progressIndicator || !progressIndicatorFixed) return;
+    
+    // Copy the steps classes from the original bar to the fixed bar
+    const originalSteps = progressIndicator.querySelectorAll('.progress-step');
+    const fixedSteps = progressIndicatorFixed.querySelectorAll('.progress-step');
+    
+    originalSteps.forEach((step, index) => {
+      if (fixedSteps[index]) {
+        // Copier les classes d'état
+        fixedSteps[index].className = step.className;
+      }
+    });
+  }
+
+  initializeProgressSystem() {
+    // État de progression
+    this.progressState = {
+      mosqueSelected: false,
+      configCompleted: false,
+      planningGenerated: false,
+      downloadsAvailable: false
+    };
+    
+    // Observer les sections pour détecter les changements
+    this.setupSectionObservers();
+    
+    // Observer les formulaires
+    this.setupFormObservers();
+    
+    // Ajouter les événements de clic sur les progress-steps
+    this.setupProgressStepClicks();
+    
+    // Vérifier l'état initial basé sur les données existantes
+    this.checkInitialState();
+    
+    // Initialiser l'état
+    this.updateProgressIndicator(0);
+  }
+
+  checkInitialState() {
+    // Mettre à jour l'état basé sur la réalité de l'interface
+    this.updateProgressState();
+  }
+
+  updateProgressState() {
+    // Mettre à jour l'état basé sur la réalité de l'interface
+    const mosqueSelect = document.getElementById('mosque-select');
+    this.progressState.mosqueSelected = mosqueSelect && mosqueSelect.value ? true : false;
+    
+    const configForm = document.getElementById('configForm');
+    if (configForm) {
+      const paddingBefore = configForm.querySelector('input[name="padding_before"]');
+      const paddingAfter = configForm.querySelector('input[name="padding_after"]');
+      this.progressState.configCompleted = (paddingBefore && paddingAfter && paddingBefore.value && paddingAfter.value);
+    }
+    
+    this.progressState.planningGenerated = this.hasPlanningData();
+    this.progressState.downloadsAvailable = this.hasDownloadData();
+    
+    // Update the progress-indicator display
+    this.updateProgressDisplay();
+  }
+
+  updateProgressDisplay() {
+    let currentStep = 0;
+    
+    if (this.progressState.downloadsAvailable) {
+      currentStep = 3;
+    } else if (this.progressState.planningGenerated) {
+      currentStep = 2;
+    } else if (this.progressState.mosqueSelected) {
+      currentStep = 1;
+    } else {
+      currentStep = 0;
+    }
+    
+    this.updateProgressIndicator(currentStep);
+  }
+
+  setupSectionObservers() {
+    // Observer la section benefits-section (Prayer schedule)
+    const benefitsSection = document.querySelector('.benefits-section');
+    if (benefitsSection) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && this.progressState.configCompleted) {
+            this.progressState.planningGenerated = true;
+            this.updateProgressIndicator(2);
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      observer.observe(benefitsSection);
+    }
+    
+    // Observer la section how-it-works-section (Downloads)
+    const downloadsSection = document.querySelector('.how-it-works-section');
+    if (downloadsSection) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && this.progressState.planningGenerated) {
+            this.progressState.downloadsAvailable = true;
+            this.updateProgressIndicator(3);
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      observer.observe(downloadsSection);
+    }
+  }
+
+  setupFormObservers() {
+    // Observer the mosque selection
+    const mosqueSelect = document.getElementById('mosque-select');
+    if (mosqueSelect) {
+      mosqueSelect.addEventListener('change', () => {
+        if (mosqueSelect.value) {
+          this.progressState.mosqueSelected = true;
+          this.updateProgressIndicator(1);
+          this.scrollToConfig();
+        }
+      });
+    }
+    
+    // Observer the configuration
+    const configForm = document.getElementById('configForm');
+    if (configForm) {
+      const inputs = configForm.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.addEventListener('change', () => {
+          this.checkConfigCompletion();
+        });
+        input.addEventListener('input', () => {
+          this.checkConfigCompletion();
+        });
+      });
+    }
+  }
+
+  checkConfigCompletion() {
+    const configForm = document.getElementById('configForm');
+    if (!configForm) return;
+    
+    const paddingBefore = configForm.querySelector('input[name="padding_before"]');
+    const paddingAfter = configForm.querySelector('input[name="padding_after"]');
+    const includeSunset = configForm.querySelector('input[name="include_sunset"]');
+    
+    if (paddingBefore && paddingAfter && includeSunset) {
+      const isComplete = paddingBefore.value && paddingAfter.value;
+      
+      if (isComplete && !this.progressState.configCompleted) {
+        this.progressState.configCompleted = true;
+        this.updateProgressIndicator(1);
+        this.showConfigCompleteMessage();
+      }
+    }
+  }
+
+  scrollToConfig() {
+    const configCard = document.querySelector('.summary-card.config-info');
+    if (configCard) {
+      setTimeout(() => {
+        configCard.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }, 500);
+    }
+  }
+
+  showConfigCompleteMessage() {
+    const configCard = document.querySelector('.summary-card.config-info');
+    if (configCard) {
+      const message = document.createElement('div');
+      message.className = 'config-complete-message';
+      message.innerHTML = '<i class="fa-solid fa-check-circle"></i> Configuration complète !';
+      message.style.cssText = `
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 500;
+        animation: slideInRight 0.3s ease;
+        z-index: 10;
+      `;
+      
+      configCard.style.position = 'relative';
+      configCard.appendChild(message);
+      
+      setTimeout(() => {
+        message.remove();
+      }, 3000);
+    }
+  }
+
+  updateProgressIndicator(stepIndex) {
+    const progressIndicator = document.getElementById('progressIndicatorHero');
+    const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
+    
+    if (!progressIndicator || !progressIndicatorFixed) return;
+    
+    const indicators = [progressIndicator, progressIndicatorFixed];
+    
+    indicators.forEach(indicator => {
+      const steps = indicator.querySelectorAll('.progress-step');
+      
+      steps.forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        
+        if (index < stepIndex) {
+          step.classList.add('completed');
+        } else if (index === stepIndex) {
+          step.classList.add('active');
+        }
+      });
+    });
+    
+    // Add a transition animation
+    this.animateProgressTransition(stepIndex);
+  }
+
+  animateProgressTransition(stepIndex) {
+    const indicators = [
+      document.getElementById('progressIndicatorHero'),
+      document.getElementById('progressIndicatorFixed')
+    ];
+    
+    indicators.forEach(indicator => {
+      if (indicator) {
+        const activeStep = indicator.querySelector('.progress-step.active');
+        if (activeStep) {
+          activeStep.style.animation = 'none';
+          setTimeout(() => {
+            activeStep.style.animation = 'pulseActive 2s infinite';
+          }, 10);
+        }
+      }
+    });
+  }
+
+  setupProgressStepClicks() {
+    const indicators = [
+      document.getElementById('progressIndicatorHero'),
+      document.getElementById('progressIndicatorFixed')
+    ];
+    
+    indicators.forEach(indicator => {
+      if (indicator) {
+        const steps = indicator.querySelectorAll('.progress-step');
+        steps.forEach((step, index) => {
+          step.addEventListener('click', () => {
+            this.navigateToStep(index);
+          });
+        });
+      }
+    });
+  }
+
+  navigateToStep(stepIndex) {
+    const sections = {
+      0: '.summary-card.mosque-info',
+      1: '.summary-card.config-info',
+      2: '.benefits-section',
+      3: '.how-it-works-section'
+    };
+    
+    const targetSelector = sections[stepIndex];
+    if (!targetSelector) return;
+    
+    const targetElement = document.querySelector(targetSelector);
+    if (!targetElement) return;
+    
+    // Check if the step is accessible
+    if (!this.isStepAccessible(stepIndex)) {
+      this.showStepLockedMessage(stepIndex);
+      return;
+    }
+    
+    // Click animation on the progress-step
+    this.animateStepClick(stepIndex);
+    
+    // Calculate the offset for the progress-indicator-fixed
+    const fixedIndicator = document.getElementById('progressIndicatorFixed');
+    let offset = 0;
+    
+    if (fixedIndicator && fixedIndicator.classList.contains('visible')) {
+      offset = fixedIndicator.offsetHeight;
+    }
+    
+    // Scroll to the section with offset
+    setTimeout(() => {
+      const targetRect = targetElement.getBoundingClientRect();
+      const scrollTop = window.pageYOffset + targetRect.top - offset - 20; // 20px de marge
+      
+      window.scrollTo({
+        top: scrollTop,
+        behavior: 'smooth'
+      });
+    }, 200);
+  }
+
+  isStepAccessible(stepIndex) {
+    switch (stepIndex) {
+      case 0: return true; // Always accessible
+      case 1: return this.progressState.mosqueSelected;
+      case 2: return this.progressState.planningGenerated;
+      case 3: return this.progressState.downloadsAvailable;
+      default: return false;
+    }
+  }
+
+  hasPlanningData() {
+    // Check if the benefits-section exists and contains data
+    const benefitsSection = document.querySelector('.benefits-section');
+    if (!benefitsSection) return false;
+    
+    // Check if the section is not hidden
+    if (benefitsSection.classList.contains('hidden')) return false;
+    
+    // Check if there is planning data (clock, timeline, etc.)
+    const clockContent = document.getElementById('clockContent');
+    const timelineSvg = document.querySelector('.slots-timeline-svg');
+    
+    return (clockContent && clockContent.children.length > 0) || 
+           (timelineSvg && timelineSvg.children.length > 0);
+  }
+
+  hasDownloadData() {
+    // Check if the how-it-works-section exists and contains download links
+    const downloadsSection = document.querySelector('.how-it-works-section');
+    if (!downloadsSection) return false;
+    
+    // Check if there are download links
+    const downloadCards = downloadsSection.querySelectorAll('.download-card');
+    return downloadCards.length > 0;
+  }
+
+  showStepLockedMessage(stepIndex) {
+    const stepNames = ['Sélection', 'Configuration', 'Horaires', 'Téléchargement'];
+    const stepName = stepNames[stepIndex];
+    
+    const message = document.createElement('div');
+    message.className = 'step-locked-message';
+    message.innerHTML = `<i class="fa-solid fa-lock"></i> ${stepName} non disponible`;
+    message.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 500;
+      animation: slideInRight 0.3s ease;
+      z-index: 1001;
+      box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
+    `;
+    
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+      message.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => {
+        document.body.removeChild(message);
+      }, 300);
+    }, 2000);
+  }
+
+  animateStepClick(stepIndex) {
+    const indicators = [
+      document.getElementById('progressIndicatorHero'),
+      document.getElementById('progressIndicatorFixed')
+    ];
+    
+    indicators.forEach(indicator => {
+      if (indicator) {
+        const step = indicator.querySelectorAll('.progress-step')[stepIndex];
+        if (step) {
+          step.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            step.style.transform = '';
+          }, 150);
+        }
+      }
+    });
   }
 }
