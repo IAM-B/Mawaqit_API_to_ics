@@ -1155,6 +1155,27 @@
     font-size: clamp(0.8rem, 1.2vw, 0.9rem);
   }
 
+  /* Progress indicator - icons only on mobile */
+  .progress-indicator {
+    gap: 1.5rem;
+    padding: 0.75em 0;
+  }
+
+  .progress-step {
+    font-size: 0.9em;
+    padding: 0.75em;
+    margin: 0 0.5em;
+  }
+
+  .progress-step span {
+    display: none;
+  }
+
+  .progress-step i {
+    font-size: 1.2em;
+    margin-right: 0;
+  }
+
   .planner-main-grid {
     grid-template-columns: 1fr;
   }
@@ -1290,6 +1311,22 @@
 
   .footer-subtitle {
     font-size: clamp(0.7rem, 1vw, 0.8rem);
+  }
+
+  /* Progress indicator - even more compact on very small screens */
+  .progress-indicator {
+    gap: 1rem;
+    padding: 0.5em 0;
+  }
+
+  .progress-step {
+    font-size: 0.8em;
+    padding: 0.5em;
+    margin: 0 0.4em;
+  }
+
+  .progress-step i {
+    font-size: 1.1em;
   }
 
   .clock-layout {

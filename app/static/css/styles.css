@@ -534,6 +534,10 @@ a:hover {
   margin-right: 0.4em;
 }
 
+.progress-step span {
+  display: inline;
+}
+
 /* === ANIMATIONS === */
 .fade-in-up {
   opacity: 0;
