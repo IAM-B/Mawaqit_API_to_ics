@@ -3,6 +3,87 @@
    ================== */
 
 /* ==================
+   📋 COLOR VARIABLES
+   ================== */
+:root {
+  /* Modern blue colors */
+  --modern-blue: #93c5fd;
+  --modern-blue-hover: #60a5fa;
+  
+  /* Prayer colors - Emerald green */
+  --prayer-green: #10b981; /* Emerald green */
+  --prayer-green-hover: #059669; /* Darker emerald for hover */
+  --prayer-green-light: #34d399; /* Light emerald */
+  
+  /* Night colors */
+  --night-dark: #2d1b69;
+  --night-dark-hover: #3a1f8a;
+  
+  /* Primary colors (keeping for compatibility) */
+  --primary-blue: #4f8bf7;
+  --primary-blue-hover: #60a5fa;
+}
+
+/* ==================
+   📋 SVG GRADIENTS & DEFINITIONS
+   ================== */
+/* Night gradient (primary to dark) */
+#nightGradient {
+  --stop1-color: var(--modern-blue);
+  --stop2-color: var(--night-dark);
+}
+
+#nightGradient stop:first-child {
+  stop-color: var(--stop1-color);
+}
+
+#nightGradient stop:last-child {
+  stop-color: var(--stop2-color);
+}
+
+/* Night gradient hover (primary-hover to darker) */
+#nightGradientHover {
+  --stop1-color: var(--modern-blue-hover);
+  --stop2-color: var(--night-dark-hover);
+}
+
+#nightGradientHover stop:first-child {
+  stop-color: var(--stop1-color);
+}
+
+#nightGradientHover stop:last-child {
+  stop-color: var(--stop2-color);
+}
+
+/* Day gradient (dark to primary - inverse of night gradient) */
+#dayGradient {
+  --stop1-color: var(--night-dark);
+  --stop2-color: var(--modern-blue);
+}
+
+#dayGradient stop:first-child {
+  stop-color: var(--stop1-color);
+}
+
+#dayGradient stop:last-child {
+  stop-color: var(--stop2-color);
+}
+
+/* Day gradient hover (darker to primary-hover - inverse of night gradient hover) */
+#dayGradientHover {
+  --stop1-color: var(--night-dark-hover);
+  --stop2-color: var(--modern-blue-hover);
+}
+
+#dayGradientHover stop:first-child {
+  stop-color: var(--stop1-color);
+}
+
+#dayGradientHover stop:last-child {
+  stop-color: var(--stop2-color);
+}
+
+/* ==================
    📋 PLANNER LAYOUT & GRID
    ================== */
 .planner-main-grid {
@@ -293,19 +374,19 @@
 }
 
 .clock-arc.prayer {
-  stroke: var(--success);
+  stroke: var(--prayer-green);
   stroke-width: 25;
   opacity: 0.8;
   cursor: pointer;
 }
 
 .clock-arc.prayer:hover {
-  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(16, 185, 129, 0.5));
   stroke-width: 28;
 }
 
 .clock-arc.slot {
-  stroke: var(--primary);
+  stroke: var(--modern-blue);
   stroke-width: 15;
   opacity: 0.5;
   cursor: pointer;
@@ -314,9 +395,9 @@
 .clock-arc.slot:hover,
 .clock-arc.slot.active {
   opacity: 1;
-  stroke: var(--primary-hover);
+  stroke: var(--modern-blue-hover);
   stroke-width: 18;
-  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
+  filter: drop-shadow(0 0 4px rgba(79, 139, 247, 0.4));
 }
 
 /* Styles pour les créneaux de nuit dans le clock */
@@ -349,7 +430,7 @@
 }
 
 .clock-arc.slot.deep-night {
-  stroke: #2d1b69;
+  stroke: var(--night-dark);
   stroke-width: 15;
   opacity: 0.5;
 }
@@ -357,7 +438,7 @@
 .clock-arc.slot.deep-night:hover,
 .clock-arc.slot.deep-night.active {
   opacity: 1;
-  stroke: #3a1f8a;
+  stroke: var(--night-dark-hover);
   stroke-width: 18;
   filter: drop-shadow(0 0 4px rgba(45, 27, 105, 0.4));
 }
@@ -399,7 +480,7 @@
 }
 
 .clock-arc.prayer.active {
-  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(16, 185, 129, 0.5));
   stroke-width: 28;
 }
 
@@ -536,24 +617,24 @@
 }
 
 .timeline-event.prayer {
-  fill: var(--success);
-  stroke: var(--success-hover);
+  fill: var(--prayer-green);
+  stroke: var(--prayer-green-hover);
   stroke-width: 1;
   opacity: 0.8;
   cursor: pointer;
 }
 
 .timeline-event.slot {
-  fill: var(--primary);
-  stroke: var(--primary-hover);
+  fill: var(--modern-blue);
+  stroke: var(--modern-blue-hover);
   stroke-width: 1;
   opacity: 0.5;
   cursor: pointer;
 }
 
 .timeline-event.empty {
-  fill: var(--accent);
-  stroke: var(--accent-hover);
+  fill: var(--modern-blue);
+  stroke: var(--modern-blue-hover);
   stroke-width: 1;
 }
 
@@ -564,9 +645,9 @@
 
 /* Synchronisation hover avec clock-arc */
 .timeline-event.prayer.active {
-  fill: var(--success);
-  stroke: var(--success-hover);
-  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  fill: var(--prayer-green);
+  stroke: var(--prayer-green-hover);
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(16, 185, 129, 0.5));
   stroke-width: 1;
   opacity: 1;
   transition: all 0.3s ease;
@@ -574,9 +655,9 @@
 
 /* Synchronisation hover pour les créneaux - même style que hover */
 .timeline-event.slot.active {
-  fill: var(--primary);
-  stroke: var(--primary-hover);
-  filter: brightness(1.2) drop-shadow(0 0 5px rgba(144, 202, 249, 0.5));
+  fill: var(--modern-blue);
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.2) drop-shadow(0 0 5px rgba(79, 139, 247, 0.5));
   stroke-width: 1;
   opacity: 0.8;
   transition: all 0.3s ease;
@@ -585,7 +666,7 @@
 /* Styles pour les créneaux de nuit */
 .timeline-event.slot.night {
   fill: url(#nightGradient);
-  stroke: var(--primary);
+  stroke: var(--modern-blue);
   stroke-width: 1;
   opacity: 0.5;
 }
@@ -593,8 +674,8 @@
 .timeline-event.slot.night:hover,
 .timeline-event.slot.night.active {
   fill: url(#nightGradientHover);
-  stroke: var(--primary-hover);
-  filter: brightness(1.1) drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px rgba(79, 139, 247, 0.4));
   stroke-width: 1;
   opacity: 1;
   transition: all 0.3s ease;
@@ -602,7 +683,7 @@
 
 .timeline-event.slot.day {
   fill: url(#dayGradient);
-  stroke: var(--primary);
+  stroke: var(--modern-blue);
   stroke-width: 1;
   opacity: 0.5;
 }
@@ -610,24 +691,24 @@
 .timeline-event.slot.day:hover,
 .timeline-event.slot.day.active {
   fill: url(#dayGradientHover);
-  stroke: var(--primary-hover);
-  filter: brightness(1.1) drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px rgba(79, 139, 247, 0.4));
   stroke-width: 1;
   opacity: 1;
   transition: all 0.3s ease;
 }
 
 .timeline-event.slot.deep-night {
-  fill: #2d1b69;
-  stroke: var(--primary);
+  fill: var(--night-dark);
+  stroke: var(--modern-blue);
   stroke-width: 1;
   opacity: 0.5;
 }
 
 .timeline-event.slot.deep-night:hover,
 .timeline-event.slot.deep-night.active {
-  fill: #3a1f8a;
-  stroke: var(--primary-hover);
+  fill: var(--night-dark-hover);
+  stroke: var(--modern-blue-hover);
   filter: brightness(1.1) drop-shadow(0 0 5px rgba(45, 27, 105, 0.4));
   stroke-width: 1;
   opacity: 1;
@@ -1096,20 +1177,20 @@
 }
 
 .slot-item.night {
-  background: linear-gradient(135deg, var(--primary) 0%, #2d1b69 100%);
-  border-color: var(--primary);
+  background: linear-gradient(135deg, var(--modern-blue) 0%, var(--night-dark) 100%);
+  border-color: var(--modern-blue);
 }
 
 .slot-item.night:hover,
 .slot-item.night.active {
-  background: linear-gradient(135deg, var(--primary-hover) 0%, #3a1f8a 100%);
-  border-color: var(--primary-hover);
+  background: linear-gradient(135deg, var(--modern-blue-hover) 0%, var(--night-dark-hover) 100%);
+  border-color: var(--modern-blue-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 139, 247, 0.3);
 }
 
 .slot-item.night .slot-time {
-  color: var(--primary);
+  color: var(--modern-blue);
 }
 
 .slot-item.night:hover .slot-time,
@@ -1118,7 +1199,7 @@
 }
 
 .slot-item.night .slot-duration {
-  color: var(--primary-hover);
+  color: var(--modern-blue-hover);
 }
 
 .slot-item.night:hover .slot-duration,
@@ -1127,33 +1208,33 @@
 }
 
 .slot-item.day {
-  background: linear-gradient(135deg, #2d1b69 0%, var(--primary) 100%);
-  border-color: var(--primary);
+  background: linear-gradient(135deg, var(--night-dark) 0%, var(--modern-blue) 100%);
+  border-color: var(--modern-blue);
 }
 
 .slot-item.day:hover,
 .slot-item.day.active {
-  background: linear-gradient(135deg, #3a1f8a 0%, var(--primary-hover) 100%);
-  border-color: var(--primary-hover);
+  background: linear-gradient(135deg, var(--night-dark-hover) 0%, var(--modern-blue-hover) 100%);
+  border-color: var(--modern-blue-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 139, 247, 0.3);
 }
 
 .slot-item.deep-night {
-  background: #2d1b69;
-  border-color: var(--primary);
+  background: var(--night-dark);
+  border-color: var(--modern-blue);
 }
 
 .slot-item.deep-night:hover,
 .slot-item.deep-night.active {
-  background: #3a1f8a;
-  border-color: var(--primary-hover);
+  background: var(--night-dark-hover);
+  border-color: var(--modern-blue-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(45, 27, 105, 0.3);
 }
 
 .slot-item.day .slot-time {
-  color: var(--primary);
+  color: var(--modern-blue);
 }
 
 .slot-item.day:hover .slot-time,
@@ -1162,7 +1243,7 @@
 }
 
 .slot-item.day .slot-duration {
-  color: var(--primary-hover);
+  color: var(--modern-blue-hover);
 }
 
 .slot-item.day:hover .slot-duration,
@@ -1171,7 +1252,7 @@
 }
 
 .slot-item.deep-night .slot-time {
-  color: var(--primary);
+  color: var(--modern-blue);
 }
 
 .slot-item.deep-night:hover .slot-time,
@@ -1180,7 +1261,7 @@
 }
 
 .slot-item.deep-night .slot-duration {
-  color: var(--primary-hover);
+  color: var(--modern-blue-hover);
 }
 
 .slot-item.deep-night:hover .slot-duration,
@@ -1422,7 +1503,7 @@
   stroke: #fff2;
   stroke-width: 2;
 }
-.timeline-event.prayer { fill: var(--success); }
+.timeline-event.prayer { fill: var(--prayer-green); }
 .timeline-event.empty { fill: #353b48; opacity: 0.8; }
 .timeline-event-text {
   fill: #fff;

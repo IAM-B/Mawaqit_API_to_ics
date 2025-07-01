@@ -49,7 +49,7 @@ export class Timeline {
   createSVGGrid(svg) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     
-    // Add definitions for gradients
+    // Add definitions for gradients (now defined in CSS)
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     
     // Night gradient (primary to dark)
@@ -62,11 +62,9 @@ export class Timeline {
     
     const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1.setAttribute('offset', '0%');
-    stop1.setAttribute('stop-color', '#d4af37'); // var(--primary)
     
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', '#2d1b69'); // blue-violet night color
     
     nightGradient.appendChild(stop1);
     nightGradient.appendChild(stop2);
@@ -81,11 +79,9 @@ export class Timeline {
     
     const stop1Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1Hover.setAttribute('offset', '0%');
-    stop1Hover.setAttribute('stop-color', '#e6c34a'); // var(--primary-hover)
     
     const stop2Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2Hover.setAttribute('offset', '100%');
-    stop2Hover.setAttribute('stop-color', '#3a1f8a'); // blue-violet night color hover
     
     nightGradientHover.appendChild(stop1Hover);
     nightGradientHover.appendChild(stop2Hover);
@@ -100,11 +96,9 @@ export class Timeline {
     
     const dayStop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop1.setAttribute('offset', '0%');
-    dayStop1.setAttribute('stop-color', '#2d1b69'); // blue-violet night color
     
     const dayStop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop2.setAttribute('offset', '100%');
-    dayStop2.setAttribute('stop-color', '#d4af37'); // var(--primary)
     
     dayGradient.appendChild(dayStop1);
     dayGradient.appendChild(dayStop2);
@@ -119,11 +113,9 @@ export class Timeline {
     
     const dayStop1Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop1Hover.setAttribute('offset', '0%');
-    dayStop1Hover.setAttribute('stop-color', '#3a1f8a'); // blue-violet night color hover
     
     const dayStop2Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop2Hover.setAttribute('offset', '100%');
-    dayStop2Hover.setAttribute('stop-color', '#e6c34a'); // var(--primary-hover)
     
     dayGradientHover.appendChild(dayStop1Hover);
     dayGradientHover.appendChild(dayStop2Hover);
