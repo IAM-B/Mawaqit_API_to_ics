@@ -16,45 +16,78 @@
    🎨 COULEURS & THÈME
    ================== */
 :root {
-  /* Dark theme colors */
-  --bg-color: #0a0a0a;
+  /* Base colors */
+  --bg-color: #0f0f23;
   --text-color: #e2e8f0;
-  --text-muted: #a0aec0;
-  --text-bright: #f7fafc;
-  --text-dark: #1a202c;
+  --text-muted: #94a3b8;
+  --text-bright: #f8fafc;
+  --text-dark: #1e293b;
   
-  /* Primary colors - Doré */
-  --primary: #d4af37;
-  --primary-hover: #b8941f;
-  --primary-light: rgba(212, 175, 55, 0.2);
-  --primary-border: rgba(212, 175, 55, 0.4);
+  /* Primary colors - Modern Blue */
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-light: rgba(99, 102, 241, 0.15);
+  --primary-border: rgba(99, 102, 241, 0.3);
   
-  /* Accent colors */
-  --accent: #f4d03f;
-  --accent-hover: #f1c40f;
+  /* Accent colors - Purple */
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --accent-light: rgba(139, 92, 246, 0.05);
   
   /* Background colors */
-  --form-bg: #1a1a1a;
-  --input-bg: #2a2a2a;
-  --card-bg: #1a1a1a;
-  --surface-bg: #0a0a0a;
+  --form-bg: #1a1a2e;
+  --input-bg: #16213e;
+  --card-bg: #1e1e3f;
+  --surface-bg: #0f0f23;
   
   /* Border colors */
-  --border-color: #333333;
-  --border-light: #444444;
-  --border-dark: #1a1a1a;
+  --border-color: #334155;
+  --border-light: #475569;
+  --border-dark: #1e293b;
   
   /* Success colors */
-  --success: #48bb78;
-  --success-hover: #38a169;
-  --success-light: rgba(72, 187, 120, 0.2);
+  --success: #10b981;
+  --success-hover: #059669;
+  --success-light: rgba(16, 185, 129, 0.15);
+  
+  /* Warning colors */
+  --warning: #f59e0b;
+  --warning-hover: #d97706;
+  --warning-light: rgba(245, 158, 11, 0.15);
+  
+  /* Error colors */
+  --error: #ef4444;
+  --error-hover: #dc2626;
+  --error-light: rgba(239, 68, 68, 0.15);
   
   /* Shadow & overlay */
-  --shadow-color: rgba(0, 0, 0, 0.5);
+  --shadow-color: rgba(0, 0, 0, 0.4);
   --shadow-light: rgba(0, 0, 0, 0.2);
   --overlay-light: rgba(255, 255, 255, 0.05);
   --overlay-medium: rgba(255, 255, 255, 0.1);
   --overlay-dark: rgba(255, 255, 255, 0.2);
+  
+  /* Additional colors for specific use cases */
+  --white: #ffffff;
+  --white-transparent: rgba(255, 255, 255, 0.8);
+  --black: #000000;
+  --black-transparent: rgba(0, 0, 0, 0.6);
+  
+  /* Background variations */
+  --bg-dark: rgba(15, 15, 35, 0.9);
+  --bg-medium: rgba(26, 26, 46, 0.8);
+  --bg-light: rgba(30, 30, 63, 0.8);
+  --bg-card: rgba(30, 30, 63, 0.75);
+  
+  /* Shadow variations */
+  --shadow-small: 0 2px 8px var(--shadow-light);
+  --shadow-medium: 0 4px 12px var(--shadow-color);
+  --shadow-large: 0 8px 25px var(--shadow-color);
+  --shadow-xl: 0 20px 40px var(--shadow-color);
+  
+  /* Text shadow */
+  --text-shadow: 0 2px 4px var(--shadow-color);
+  --text-shadow-small: 0 1px 2px var(--shadow-color);
 }
 
 /* ==================
@@ -163,6 +196,10 @@ select:focus {
   font-size: 1rem !important;
 }
 
+div#country-select-opt-1 {
+  color: var(--text-color) !important;
+}
+
 .ts-wrapper.focus .ts-control {
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 2px var(--primary-light) !important;
@@ -184,7 +221,7 @@ select:focus {
 .ts-dropdown .option:hover,
 .ts-dropdown .active {
   background-color: var(--primary) !important;
-  color: var(--text-dark);
+  color: var(--text-color) !important;
 }
 
 .ts-dropdown-content {
@@ -223,13 +260,13 @@ select:focus {
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 2em;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  box-shadow: var(--shadow-small);
 }
 
 .btn-submit:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+  box-shadow: var(--shadow-medium);
 }
 
 .btn-submit:active {
@@ -285,13 +322,13 @@ select:focus {
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  box-shadow: var(--shadow-small);
 }
 
 .back-button:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+  box-shadow: var(--shadow-medium);
 }
 
 /* ==================
@@ -343,7 +380,7 @@ a:hover {
 }
 
 .message-error {
-  background: #f56565;
+  background: var(--error);
 }
 
 @keyframes slideInRight {
@@ -372,17 +409,17 @@ a:hover {
    🗺️ POPUP MOSQUÉE (Leaflet)
    ================== */
    .leaflet-popup-content {
-    color: var(--text-color, #e2e8f0);
+    color: var(--text-color);
     padding: 0 !important;
-    background: var(--form-bg, #1a1a1a) !important;
+    background: var(--form-bg) !important;
     box-shadow: none !important;
   }
   
   .popup-content {
-    background: var(--form-bg, #1a1a1a);
-    color: var(--text-color, #e2e8f0);
+    background: var(--form-bg);
+    color: var(--text-color);
     border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    box-shadow: var(--shadow-medium);
     padding: 1em 1.2em;
     min-width: 220px;
     max-width: 320px;
@@ -392,7 +429,7 @@ a:hover {
   }
 
   .popup-content strong {
-    color: var(--primary, #d4af37);
+    color: var(--primary);
     font-size: 1.1em;
   }
 
@@ -410,8 +447,8 @@ a:hover {
     width: 100%;
     margin-top: 0.7em;
     padding: 0.5em 0;
-    background: var(--primary, #d4af37);
-    color: #222;
+    background: var(--primary);
+    color: var(--text-dark);
     border: none;
     border-radius: 6px;
     font-weight: 600;
@@ -421,9 +458,9 @@ a:hover {
   }
 
   .popup-content .btn-sync-mosque:hover {
-    background: var(--primary-hover, #b8941f);
-    color: #fff;
-}
+    background: var(--primary-hover);
+    color: var(--text-bright);
+  }
 
 /* === HEADER & BREADCRUMB === */
 .page-header {

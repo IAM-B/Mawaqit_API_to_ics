@@ -271,7 +271,7 @@ export class Clock {
           label.textContent = this.calculateDuration(slot.start, slot.end);
         }
       } else {
-        label.textContent = this.calculateDuration(slot.start, slot.end);
+    label.textContent = this.calculateDuration(slot.start, slot.end);
       }
     }
     
@@ -524,8 +524,8 @@ export class Clock {
           if (timeToMinutes(adjustedSlotEnd) > timeToMinutes(slotStart)) {
             const duration = timeToMinutes(adjustedSlotEnd) - timeToMinutes(slotStart);
             if (duration >= 5) { // Only add slots with duration >= 5 minutes
-              calculatedSlots.push({
-                start: slotStart,
+        calculatedSlots.push({
+          start: slotStart,
                 end: adjustedSlotEnd,
                 deepNightSlotId: `deep-night-slot-${slotStart}-${slotEnd}`,
                 allNightSlotId: `icha-fajr-slots`
@@ -985,7 +985,7 @@ export class Clock {
           const deepNightSlotId = `deep-night-slot-${slotStart}-${slotEnd}`;
           const slotElement = this.createSlotElement(slot, null, false, deepNightSlotId, `icha-fajr-slots`);
           if (slotElement) {
-            svg.appendChild(slotElement);
+          svg.appendChild(slotElement);
           }
         }
       }
