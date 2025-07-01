@@ -120,7 +120,9 @@ export class Timeline {
       if (hour < 24) {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', 52);
-        text.setAttribute('y', y + 6);
+        // Adjust Y position for the first hour (00:00) to prevent clipping
+        const yOffset = hour === 0 ? 15 : 5;
+        text.setAttribute('y', y + yOffset);
         text.textContent = `${hour.toString().padStart(2, '0')}:00`;
         text.setAttribute('class', 'timeline-hour-text');
         text.setAttribute('text-anchor', 'end');
