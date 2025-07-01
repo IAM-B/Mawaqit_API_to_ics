@@ -407,6 +407,102 @@ export class Timeline {
           this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot', slotStart + '-' + slotEnd);
         }
       }
+      
+      // Special handling for the slot between icha and fajr (always night slot)
+      // This is handled separately because icha is the last prayer in the order
+      const ichaTime = prayerTimes['icha'];
+      const fajrTime = prayerTimes['fajr'];
+      
+      if (ichaTime && fajrTime) {
+        const ichaMinutes = timeToMinutes(ichaTime);
+        const fajrMinutes = timeToMinutes(fajrTime);
+        
+        // Check if fajr is after midnight by comparing with icha
+        if (fajrMinutes < ichaMinutes) {
+          // fajr is after midnight, create two slots: icha to midnight and midnight to fajr
+          const ichaToMidnightStart = this.addPadding(ichaTime, paddingAfter);
+          const ichaToMidnightEnd = "23:59";
+          
+          const midnightToFajrStart = "00:00";
+          const midnightToFajrEnd = this.subtractPadding(fajrTime, paddingBefore);
+          
+          // Calculate total duration for display
+          const realIchaToMidnightStart = this.addPadding(ichaTime, realPaddingAfter);
+          const realMidnightToFajrEnd = this.subtractPadding(fajrTime, realPaddingBefore);
+          const realStartMinutes = timeToMinutes(realIchaToMidnightStart);
+          const realEndMinutes = timeToMinutes(realMidnightToFajrEnd);
+          
+          // Handle case where fajr is the next day
+          let totalDurationMinutes;
+          if (realEndMinutes <= realStartMinutes) {
+            // fajr is the next day, so we need to add 24 hours
+            totalDurationMinutes = (realEndMinutes + 24 * 60) - realStartMinutes;
+          } else {
+            totalDurationMinutes = realEndMinutes - realStartMinutes;
+          }
+          
+          const totalHours = Math.floor(totalDurationMinutes / 60);
+          const totalMinutes = totalDurationMinutes % 60;
+          const totalDurationText = totalHours > 0 ? `${totalHours}h${totalMinutes.toString().padStart(2, '0')}` : `${totalMinutes}min`;
+          
+          const slotTitle = `Disponibilité (${totalDurationText})`;
+          
+          // Calculate which slot is larger to determine where to show the text
+          const ichaToMidnightDuration = timeToMinutes(ichaToMidnightEnd) - timeToMinutes(ichaToMidnightStart);
+          const midnightToFajrDuration = timeToMinutes(midnightToFajrEnd) - timeToMinutes(midnightToFajrStart);
+          const showTextOnFirstSlot = ichaToMidnightDuration >= midnightToFajrDuration;
+          
+          // Create a unique identifier for the night slot pair
+          const nightSlotId = `night-slot-${ichaToMidnightStart}-${midnightToFajrEnd}`;
+          
+          // First slot: icha to 23:59
+          if (ichaToMidnightStart && ichaToMidnightEnd && timeToMinutes(ichaToMidnightEnd) > timeToMinutes(ichaToMidnightStart)) {
+            const adjustedStart = this.addPadding(ichaToMidnightStart, 1);
+            const adjustedEnd = this.subtractPadding(ichaToMidnightEnd, 1);
+            
+            if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', ichaToMidnightStart + '-' + ichaToMidnightEnd, showTextOnFirstSlot, nightSlotId);
+            }
+          }
+          
+          // Second slot: 00:00 to fajr
+          if (midnightToFajrStart && midnightToFajrEnd && timeToMinutes(midnightToFajrEnd) > timeToMinutes(midnightToFajrStart)) {
+            const adjustedStart = this.addPadding(midnightToFajrStart, 1);
+            const adjustedEnd = this.subtractPadding(midnightToFajrEnd, 1);
+            
+            if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToFajrStart + '-' + midnightToFajrEnd, !showTextOnFirstSlot, nightSlotId);
+            }
+          }
+        } else {
+          // fajr is before midnight, create a single night slot
+          const slotStart = this.addPadding(ichaTime, paddingAfter);
+          const slotEnd = this.subtractPadding(fajrTime, paddingBefore);
+          
+          // Calculate slot duration using real user values for display
+          const realSlotStart = this.addPadding(ichaTime, realPaddingAfter);
+          const realSlotEnd = this.subtractPadding(fajrTime, realPaddingBefore);
+          const startMinutes = timeToMinutes(realSlotStart);
+          const endMinutes = timeToMinutes(realSlotEnd);
+          const durationMinutes = endMinutes - startMinutes;
+          const hours = Math.floor(durationMinutes / 60);
+          const minutes = durationMinutes % 60;
+          const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
+          
+          const slotTitle = `Disponibilité (${durationText})`;
+          
+          // Add 1 minute of margin at the beginning and end to improve UI (without affecting displayed duration)
+          const adjustedSlotStart = this.addPadding(slotStart, 1);
+          const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
+          
+          if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
+            // Create a unique identifier for the night slot
+            const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
+            // For synchronization, use exact times (without padding)
+            this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId);
+          }
+        }
+      }
     } else if (slots && slots.length > 0) {
       // Fallback: use original slots if no prayer times available
       slots.forEach((slot, index) => {

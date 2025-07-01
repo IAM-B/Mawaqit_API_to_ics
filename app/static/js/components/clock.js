@@ -155,8 +155,8 @@ export class Clock {
     
     // Skip slots that are too short (less than 2 minutes)
     const duration = endMinutes - startMinutes;
-    if (duration < 2) {
-      return null; // Don't create slot for very short durations
+    if (duration < 2 && !slot.isNightSlot) {
+      return null; // Don't create slot for very short durations (except night slots)
     }
     
     // Apply slot size adjustment for UI purposes, but ensure minimum visibility
@@ -164,13 +164,24 @@ export class Clock {
     const adjustedEndMinutes = endMinutes + slotSizeAdjustment;
     const adjustedEndTime = minutesToTime(adjustedEndMinutes);
     
-    // Ensure the adjusted end time doesn't go before the start time
-    if (adjustedEndMinutes <= startMinutes) {
-      return null; // Skip if adjustment makes slot too small
+    // For night slots that cross midnight, we need special handling
+    let startAngle, endAngle;
+    if (slot.isNightSlot && endMinutes < startMinutes) {
+      // This is a night slot crossing midnight
+      // We'll create an arc that goes from start to 23:59, then from 00:00 to end
+      startAngle = this.minutesToAngle(startMinutes);
+      endAngle = this.minutesToAngle(adjustedEndMinutes);
+    } else {
+      // Normal slot or night slot not crossing midnight
+      startAngle = this.minutesToAngle(startMinutes);
+      endAngle = this.minutesToAngle(adjustedEndMinutes);
+      
+      // Ensure the adjusted end time doesn't go before the start time
+      if (adjustedEndMinutes <= startMinutes) {
+        return null; // Skip if adjustment makes slot too small
+      }
     }
     
-    const startAngle = this.minutesToAngle(startMinutes);
-    const endAngle = this.minutesToAngle(adjustedEndMinutes);
     const radius = 120;
     const centerX = 150;
     const centerY = 150;
@@ -179,6 +190,7 @@ export class Clock {
     const endX = centerX + radius * Math.cos((endAngle - 90) * Math.PI / 180);
     const endY = centerY + radius * Math.sin((endAngle - 90) * Math.PI / 180);
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    
     let angleDiff = adjustedEndMinutes - startMinutes;
     if (angleDiff < 0) angleDiff += 24 * 60;
     const largeArcFlag = angleDiff > 12 * 60 ? 1 : 0;
@@ -222,7 +234,30 @@ export class Clock {
         label.textContent = this.calculateDuration(slot.start, slot.end);
       }
     } else {
-      label.textContent = this.calculateDuration(slot.start, slot.end);
+      // For night slots, try to find any timeline event with the same night-slot-id
+      if (nightSlotId) {
+        const timelineEvents = document.querySelectorAll(`.timeline-event[data-night-slot-id="${nightSlotId}"]`);
+        if (timelineEvents.length > 0) {
+          // Get the text from the first timeline event with this night-slot-id
+          const firstTimelineEvent = timelineEvents[0];
+          const timelineText = firstTimelineEvent.nextElementSibling;
+          if (timelineText && timelineText.classList.contains('timeline-event-text')) {
+            const timelineTitle = timelineText.textContent;
+            const durationMatch = timelineTitle.match(/Disponibilité \((.+?)\)/);
+            if (durationMatch) {
+              label.textContent = `(${durationMatch[1]})`;
+            } else {
+              label.textContent = this.calculateDuration(slot.start, slot.end);
+            }
+          } else {
+            label.textContent = this.calculateDuration(slot.start, slot.end);
+          }
+        } else {
+          label.textContent = this.calculateDuration(slot.start, slot.end);
+        }
+      } else {
+        label.textContent = this.calculateDuration(slot.start, slot.end);
+      }
     }
     
     // Alternative: Display the adjusted duration (visual duration)
@@ -241,13 +276,13 @@ export class Clock {
         relatedListItems.forEach(item => item.classList.add('active'));
       } else {
         // Normal synchronization for regular slots
-        const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
-        if (timelineEvent) {
-          timelineEvent.classList.add('active');
-        }
-        path.classList.add('active');
-        const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
-        if (listItem) listItem.classList.add("active");
+      const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (timelineEvent) {
+        timelineEvent.classList.add('active');
+      }
+      path.classList.add('active');
+      const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (listItem) listItem.classList.add("active");
       }
     });
     path.addEventListener("mouseout", () => {
@@ -263,13 +298,13 @@ export class Clock {
         relatedListItems.forEach(item => item.classList.remove('active'));
       } else {
         // Normal synchronization for regular slots
-        const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
-        if (timelineEvent) {
-          timelineEvent.classList.remove('active');
-        }
-        path.classList.remove('active');
-        const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
-        if (listItem) listItem.classList.remove("active");
+      const timelineEvent = document.querySelector(`.timeline-event[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (timelineEvent) {
+        timelineEvent.classList.remove('active');
+      }
+      path.classList.remove('active');
+      const listItem = document.querySelector(`.slot-item[data-start="${slot.start}"][data-end="${slot.end}"]`);
+      if (listItem) listItem.classList.remove("active");
       }
     });
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -381,6 +416,56 @@ export class Clock {
         });
         }
       }
+      
+      // Special handling for the slot between icha and fajr (always night slot)
+      // This is handled separately because icha is the last prayer in the order
+      const ichaTime = data.prayer_times['icha'];
+      const fajrTime = data.prayer_times['fajr'];
+      
+      if (ichaTime && fajrTime) {
+        // For circular clock display, we don't need to split the slot
+        // The circular display naturally handles the midnight crossing
+        const slotStart = this.addPadding(ichaTime, paddingAfter);
+        const slotEnd = this.subtractPadding(fajrTime, paddingBefore);
+        
+        if (slotStart && slotEnd) {
+          // For circular display, we need to handle the case where fajr is after midnight
+          let adjustedSlotEnd = slotEnd;
+          if (timeToMinutes(slotEnd) < timeToMinutes(slotStart)) {
+            // fajr is after midnight, so the slot goes from icha to 23:59, then from 00:00 to fajr
+            // In circular display, this creates a continuous arc
+            adjustedSlotEnd = "23:59";
+          }
+          
+          if (timeToMinutes(adjustedSlotEnd) > timeToMinutes(slotStart)) {
+            const duration = timeToMinutes(adjustedSlotEnd) - timeToMinutes(slotStart);
+            if (duration >= 5) { // Only add slots with duration >= 5 minutes
+              calculatedSlots.push({
+                start: slotStart,
+                end: adjustedSlotEnd,
+                nightSlotId: `night-slot-${slotStart}-${slotEnd}`
+              });
+            }
+          }
+          
+          // If fajr is after midnight, also create the second part of the arc (00:00 to fajr)
+          if (timeToMinutes(slotEnd) < timeToMinutes(slotStart)) {
+            const midnightToFajrStart = "00:00";
+            const midnightToFajrEnd = slotEnd;
+            
+            if (timeToMinutes(midnightToFajrEnd) > timeToMinutes(midnightToFajrStart)) {
+              const duration = timeToMinutes(midnightToFajrEnd) - timeToMinutes(midnightToFajrStart);
+              if (duration >= 5) { // Only add slots with duration >= 5 minutes
+                calculatedSlots.push({
+                  start: midnightToFajrStart,
+                  end: midnightToFajrEnd,
+                  nightSlotId: `night-slot-${slotStart}-${slotEnd}`
+                });
+              }
+            }
+          }
+        }
+      }
     }
     if (calculatedSlots.length === 0) {
       this.slotsContainer.innerHTML = '<p>No slots available for this period.</p>';
@@ -421,7 +506,7 @@ export class Clock {
           slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
         }
       } else {
-        slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
+      slotDuration.textContent = this.calculateDuration(slot.start, slot.end);
       }
       slotItem.appendChild(slotTime);
       slotItem.appendChild(slotDuration);
@@ -440,8 +525,8 @@ export class Clock {
           relatedListItems.forEach(item => item.classList.add('active'));
         } else {
           // Normal synchronization for regular slots
-          const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
-          if (arc) arc.classList.add('active');
+        const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
+        if (arc) arc.classList.add('active');
         }
       });
       
@@ -458,8 +543,8 @@ export class Clock {
           relatedListItems.forEach(item => item.classList.remove('active'));
         } else {
           // Normal synchronization for regular slots
-          const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
-          if (arc) arc.classList.remove('active');
+        const arc = document.querySelector(`.clock-arc[data-start="${slot.start}"][data-end="${slot.end}"]`);
+        if (arc) arc.classList.remove('active');
         }
       });
     });
@@ -662,20 +747,48 @@ export class Clock {
           }
         }
         
+
+        
         const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
         const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
         
         if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
           const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
           if (duration >= 5) { // Only add slots with duration >= 5 minutes
-            const slot = {
-              start: slotStart,
-              end: slotEnd
-            };
-            const slotElement = this.createSlotElement(slot);
+          const slot = {
+            start: slotStart,
+            end: slotEnd
+          };
+          const slotElement = this.createSlotElement(slot);
             if (slotElement) {
-              svg.appendChild(slotElement);
+          svg.appendChild(slotElement);
             }
+          }
+        }
+      }
+      
+      // Special handling for the slot between icha and fajr (always night slot)
+      // This is handled separately because icha is the last prayer in the order
+      const ichaTime = currentData.prayer_times['icha'];
+      const fajrTime = currentData.prayer_times['fajr'];
+      
+      if (ichaTime && fajrTime) {
+        const slotStart = this.addPadding(ichaTime, paddingAfter);
+        const slotEnd = this.subtractPadding(fajrTime, paddingBefore);
+        
+        if (slotStart && slotEnd) {
+          // Create a single continuous arc from icha to fajr
+          // For circular display, we can create one arc that goes from icha to fajr
+          // even if it crosses midnight
+          const slot = {
+            start: slotStart,
+            end: slotEnd,
+            isNightSlot: true
+          };
+          const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
+          const slotElement = this.createSlotElement(slot, nightSlotId);
+          if (slotElement) {
+            svg.appendChild(slotElement);
           }
         }
       }
