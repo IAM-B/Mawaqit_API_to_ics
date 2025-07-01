@@ -153,9 +153,9 @@ export class Clock {
     const startMinutes = timeToMinutes(slot.start);
     const endMinutes = timeToMinutes(slot.end);
     
-    // Skip slots that are too short (less than 5 minutes)
+    // Skip slots that are too short (less than 2 minutes)
     const duration = endMinutes - startMinutes;
-    if (duration < 5) {
+    if (duration < 2) {
       return null; // Don't create slot for very short durations
     }
     

@@ -276,8 +276,8 @@ export class Timeline {
             
             // First slot: maghreb to 23:59
             if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
-              const adjustedStart = this.addPadding(maghrebToMidnightStart, 3);
-              const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 3);
+              const adjustedStart = this.addPadding(maghrebToMidnightStart, 1);
+              const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 1);
               
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
                 this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot', maghrebToMidnightStart + '-' + maghrebToMidnightEnd);
@@ -286,8 +286,8 @@ export class Timeline {
             
             // Second slot: 00:00 to icha
             if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
-              const adjustedStart = this.addPadding(midnightToIchaStart, 3);
-              const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 3);
+              const adjustedStart = this.addPadding(midnightToIchaStart, 1);
+              const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 1);
               
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
                 this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot', midnightToIchaStart + '-' + midnightToIchaEnd);
@@ -316,9 +316,9 @@ export class Timeline {
         
         const slotTitle = `Disponibilité (${durationText})`;
         
-        // Add 3 minutes of margin at the beginning and end to improve UI (without affecting displayed duration)
-        const adjustedSlotStart = this.addPadding(slotStart, 3);
-        const adjustedSlotEnd = this.subtractPadding(slotEnd, 3);
+        // Add 1 minute of margin at the beginning and end to improve UI (without affecting displayed duration)
+        const adjustedSlotStart = this.addPadding(slotStart, 1);
+        const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
         
         if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
           // For synchronization, use exact times (without padding)
@@ -342,9 +342,9 @@ export class Timeline {
         
         const slotTitle = `Disponibilité (${durationText})`;
         
-        // Add 3 minutes of margin at the beginning and end to improve UI
-        const adjustedStartTime = this.addPadding(startTime, 3);
-        const adjustedEndTime = this.subtractPadding(endTime, 3);
+        // Add 1 minute of margin at the beginning and end to improve UI
+        const adjustedStartTime = this.addPadding(startTime, 1);
+        const adjustedEndTime = this.subtractPadding(endTime, 1);
         
         if (adjustedStartTime && adjustedEndTime && timeToMinutes(adjustedEndTime) > timeToMinutes(adjustedStartTime)) {
           // For synchronization, use exact times (without padding)
@@ -376,7 +376,7 @@ export class Timeline {
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
     const y = startMin;
-    const height = Math.max(endMin - startMin, 18);
+    const height = Math.max(endMin - startMin, 8);
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', 60 + 6);
     rect.setAttribute('y', y);

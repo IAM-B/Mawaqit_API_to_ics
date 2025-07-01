@@ -21,7 +21,7 @@ def clear_mawaqit_cache():
     """
     _data_cache.clear()
 
-def fetch_mawaqit_data(masjid_id: str, max_retries: int = 1, retry_delay: float = 2.0) -> dict:
+def fetch_mawaqit_data(masjid_id: str, max_retries: int = 2, retry_delay: float = 2.0) -> dict:
     """
     Main function to fetch confData from the Mawaqit website.
     Scrapes the mosque's page and extracts the configuration data containing prayer times.
