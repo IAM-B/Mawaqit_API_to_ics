@@ -334,6 +334,34 @@
   filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
 }
 
+.clock-arc.slot.day {
+  stroke: url(#dayGradient);
+  stroke-width: 15;
+  opacity: 0.5;
+}
+
+.clock-arc.slot.day:hover,
+.clock-arc.slot.day.active {
+  opacity: 1;
+  stroke: url(#dayGradientHover);
+  stroke-width: 18;
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.4));
+}
+
+.clock-arc.slot.deep-night {
+  stroke: #2d1b69;
+  stroke-width: 15;
+  opacity: 0.5;
+}
+
+.clock-arc.slot.deep-night:hover,
+.clock-arc.slot.deep-night.active {
+  opacity: 1;
+  stroke: #3a1f8a;
+  stroke-width: 18;
+  filter: drop-shadow(0 0 4px rgba(45, 27, 105, 0.4));
+}
+
 .clock-label {
   font-size: 25px;
   fill: var(--text-color);
@@ -567,6 +595,40 @@
   fill: url(#nightGradientHover);
   stroke: var(--primary-hover);
   filter: brightness(1.1) drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+  stroke-width: 1;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.timeline-event.slot.day {
+  fill: url(#dayGradient);
+  stroke: var(--primary);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.timeline-event.slot.day:hover,
+.timeline-event.slot.day.active {
+  fill: url(#dayGradientHover);
+  stroke: var(--primary-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+  stroke-width: 1;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.timeline-event.slot.deep-night {
+  fill: #2d1b69;
+  stroke: var(--primary);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.timeline-event.slot.deep-night:hover,
+.timeline-event.slot.deep-night.active {
+  fill: #3a1f8a;
+  stroke: var(--primary-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px rgba(45, 27, 105, 0.4));
   stroke-width: 1;
   opacity: 1;
   transition: all 0.3s ease;
@@ -1033,15 +1095,14 @@
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
 }
 
-/* Styles pour les créneaux de nuit dans la liste */
 .slot-item.night {
-  background: linear-gradient(135deg, var(--primary) 0%, #1a1a2e 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #2d1b69 100%);
   border-color: var(--primary);
 }
 
 .slot-item.night:hover,
 .slot-item.night.active {
-  background: linear-gradient(135deg, var(--primary-hover) 0%, #16213e 100%);
+  background: linear-gradient(135deg, var(--primary-hover) 0%, #3a1f8a 100%);
   border-color: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
@@ -1062,6 +1123,68 @@
 
 .slot-item.night:hover .slot-duration,
 .slot-item.night.active .slot-duration {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.slot-item.day {
+  background: linear-gradient(135deg, #2d1b69 0%, var(--primary) 100%);
+  border-color: var(--primary);
+}
+
+.slot-item.day:hover,
+.slot-item.day.active {
+  background: linear-gradient(135deg, #3a1f8a 0%, var(--primary-hover) 100%);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.slot-item.deep-night {
+  background: #2d1b69;
+  border-color: var(--primary);
+}
+
+.slot-item.deep-night:hover,
+.slot-item.deep-night.active {
+  background: #3a1f8a;
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45, 27, 105, 0.3);
+}
+
+.slot-item.day .slot-time {
+  color: var(--primary);
+}
+
+.slot-item.day:hover .slot-time,
+.slot-item.day.active .slot-time {
+  color: white;
+}
+
+.slot-item.day .slot-duration {
+  color: var(--primary-hover);
+}
+
+.slot-item.day:hover .slot-duration,
+.slot-item.day.active .slot-duration {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.slot-item.deep-night .slot-time {
+  color: var(--primary);
+}
+
+.slot-item.deep-night:hover .slot-time,
+.slot-item.deep-night.active .slot-time {
+  color: white;
+}
+
+.slot-item.deep-night .slot-duration {
+  color: var(--primary-hover);
+}
+
+.slot-item.deep-night:hover .slot-duration,
+.slot-item.deep-night.active .slot-duration {
   color: rgba(255, 255, 255, 0.8);
 }
 

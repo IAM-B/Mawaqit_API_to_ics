@@ -66,7 +66,7 @@ export class Timeline {
     
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', '#1a1a2e'); // dark color
+    stop2.setAttribute('stop-color', '#2d1b69'); // blue-violet night color
     
     nightGradient.appendChild(stop1);
     nightGradient.appendChild(stop2);
@@ -85,13 +85,53 @@ export class Timeline {
     
     const stop2Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2Hover.setAttribute('offset', '100%');
-    stop2Hover.setAttribute('stop-color', '#16213e'); // darker color
+    stop2Hover.setAttribute('stop-color', '#3a1f8a'); // blue-violet night color hover
     
     nightGradientHover.appendChild(stop1Hover);
     nightGradientHover.appendChild(stop2Hover);
     
+    // Day gradient (dark to primary - inverse of night gradient)
+    const dayGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    dayGradient.setAttribute('id', 'dayGradient');
+    dayGradient.setAttribute('x1', '0%');
+    dayGradient.setAttribute('y1', '0%');
+    dayGradient.setAttribute('x2', '100%');
+    dayGradient.setAttribute('y2', '100%');
+    
+    const dayStop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    dayStop1.setAttribute('offset', '0%');
+    dayStop1.setAttribute('stop-color', '#2d1b69'); // blue-violet night color
+    
+    const dayStop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    dayStop2.setAttribute('offset', '100%');
+    dayStop2.setAttribute('stop-color', '#d4af37'); // var(--primary)
+    
+    dayGradient.appendChild(dayStop1);
+    dayGradient.appendChild(dayStop2);
+    
+    // Day gradient hover (darker to primary-hover - inverse of night gradient hover)
+    const dayGradientHover = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    dayGradientHover.setAttribute('id', 'dayGradientHover');
+    dayGradientHover.setAttribute('x1', '0%');
+    dayGradientHover.setAttribute('y1', '0%');
+    dayGradientHover.setAttribute('x2', '100%');
+    dayGradientHover.setAttribute('y2', '100%');
+    
+    const dayStop1Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    dayStop1Hover.setAttribute('offset', '0%');
+    dayStop1Hover.setAttribute('stop-color', '#3a1f8a'); // blue-violet night color hover
+    
+    const dayStop2Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    dayStop2Hover.setAttribute('offset', '100%');
+    dayStop2Hover.setAttribute('stop-color', '#e6c34a'); // var(--primary-hover)
+    
+    dayGradientHover.appendChild(dayStop1Hover);
+    dayGradientHover.appendChild(dayStop2Hover);
+    
     defs.appendChild(nightGradient);
     defs.appendChild(nightGradientHover);
+    defs.appendChild(dayGradient);
+    defs.appendChild(dayGradientHover);
     svg.appendChild(defs);
     
     const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -324,8 +364,10 @@ export class Timeline {
             const midnightToIchaDuration = timeToMinutes(midnightToIchaEnd) - timeToMinutes(midnightToIchaStart);
             const showTextOnFirstSlot = maghrebToMidnightDuration >= midnightToIchaDuration;
             
-            // Create a unique identifier for the night slot pair
+            // Create a unique identifier for the night slot
             const nightSlotId = `night-slot-${maghrebToMidnightStart}-${midnightToIchaEnd}`;
+            // Create a common identifier for maghreb-icha slots only
+            const allNightSlotId = `maghreb-icha-slots`;
             
             // First slot: maghreb to 23:59
             if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
@@ -333,7 +375,7 @@ export class Timeline {
               const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 1);
               
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', maghrebToMidnightStart + '-' + maghrebToMidnightEnd, showTextOnFirstSlot, nightSlotId);
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', maghrebToMidnightStart + '-' + maghrebToMidnightEnd, showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
               }
             }
             
@@ -343,7 +385,7 @@ export class Timeline {
               const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 1);
               
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToIchaStart + '-' + midnightToIchaEnd, !showTextOnFirstSlot, nightSlotId);
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToIchaStart + '-' + midnightToIchaEnd, !showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
               }
             }
             
@@ -372,8 +414,10 @@ export class Timeline {
             if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
               // Create a unique identifier for the night slot
               const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
+              // Create a common identifier for maghreb-icha slots only
+              const allNightSlotId = `maghreb-icha-slots`;
               // For synchronization, use exact times (without padding)
-              this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId);
+              this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId, null, allNightSlotId);
             }
             
             continue; // Skip the normal slot creation for this pair
@@ -398,17 +442,41 @@ export class Timeline {
         
         const slotTitle = `Disponibilité (${durationText})`;
         
+        // Determine if this is a day slot (between fajr and sunset)
+        const fajrTime = prayerTimes['fajr'];
+        const sunsetTime = prayerTimes['sunset'];
+        let isDaySlot = false;
+        
+        if (fajrTime && sunsetTime) {
+          const fajrMinutes = timeToMinutes(fajrTime);
+          const sunsetMinutes = timeToMinutes(sunsetTime);
+          const currentPrayerMinutes = timeToMinutes(currentPrayerTime);
+          const nextPrayerMinutes = timeToMinutes(nextPrayerTime);
+          
+          // Check if the slot is between fajr and sunset
+          if (fajrMinutes < sunsetMinutes) {
+            // Normal case: fajr before sunset
+            isDaySlot = currentPrayerMinutes >= fajrMinutes && nextPrayerMinutes <= sunsetMinutes;
+          } else {
+            // Special case: fajr after sunset (polar day/night)
+            isDaySlot = currentPrayerMinutes >= fajrMinutes || nextPrayerMinutes <= sunsetMinutes;
+          }
+        }
+        
         // Add 1 minute of margin at the beginning and end to improve UI (without affecting displayed duration)
         const adjustedSlotStart = this.addPadding(slotStart, 1);
         const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
         
         if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
+          // Determine the CSS class based on slot type
+          const slotClass = isDaySlot ? 'slot day' : 'slot';
+          
           // For synchronization, use exact times (without padding)
-          this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot', slotStart + '-' + slotEnd);
+          this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', slotClass, slotStart + '-' + slotEnd);
         }
       }
       
-      // Special handling for the slot between icha and fajr (always night slot)
+      // Special handling for the slot between icha and fajr (always deep night slot)
       // This is handled separately because icha is the last prayer in the order
       const ichaTime = prayerTimes['icha'];
       const fajrTime = prayerTimes['fajr'];
@@ -452,8 +520,10 @@ export class Timeline {
           const midnightToFajrDuration = timeToMinutes(midnightToFajrEnd) - timeToMinutes(midnightToFajrStart);
           const showTextOnFirstSlot = ichaToMidnightDuration >= midnightToFajrDuration;
           
-          // Create a unique identifier for the night slot pair
-          const nightSlotId = `night-slot-${ichaToMidnightStart}-${midnightToFajrEnd}`;
+          // Create a unique identifier for the deep night slot
+          const deepNightSlotId = `deep-night-slot-${ichaToMidnightStart}-${midnightToFajrEnd}`;
+          // Create a common identifier for icha-fajr slots only
+          const allNightSlotId = `icha-fajr-slots`;
           
           // First slot: icha to 23:59
           if (ichaToMidnightStart && ichaToMidnightEnd && timeToMinutes(ichaToMidnightEnd) > timeToMinutes(ichaToMidnightStart)) {
@@ -461,7 +531,7 @@ export class Timeline {
             const adjustedEnd = this.subtractPadding(ichaToMidnightEnd, 1);
             
             if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', ichaToMidnightStart + '-' + ichaToMidnightEnd, showTextOnFirstSlot, nightSlotId);
+              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', ichaToMidnightStart + '-' + ichaToMidnightEnd, showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
             }
           }
           
@@ -471,11 +541,11 @@ export class Timeline {
             const adjustedEnd = this.subtractPadding(midnightToFajrEnd, 1);
             
             if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToFajrStart + '-' + midnightToFajrEnd, !showTextOnFirstSlot, nightSlotId);
+              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', midnightToFajrStart + '-' + midnightToFajrEnd, !showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
             }
           }
         } else {
-          // fajr is before midnight, create a single night slot
+          // fajr is before midnight, create a single deep night slot
           const slotStart = this.addPadding(ichaTime, paddingAfter);
           const slotEnd = this.subtractPadding(fajrTime, paddingBefore);
           
@@ -496,10 +566,12 @@ export class Timeline {
           const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
           
           if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
-            // Create a unique identifier for the night slot
-            const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
+            // Create a unique identifier for the deep night slot
+            const deepNightSlotId = `deep-night-slot-${slotStart}-${slotEnd}`;
+            // Create a common identifier for icha-fajr slots only
+            const allNightSlotId = `icha-fajr-slots`;
             // For synchronization, use exact times (without padding)
-            this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId);
+            this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot deep-night', slotStart + '-' + slotEnd, true, null, deepNightSlotId, allNightSlotId);
           }
         }
       }
@@ -549,7 +621,7 @@ export class Timeline {
   }
 
   // Create an SVG event
-  createSVGEvent(title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null) {
+  createSVGEvent(title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null) {
     if (!this.svg || !this.eventsGroup) return;
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
@@ -580,14 +652,46 @@ export class Timeline {
     rect.setAttribute('data-end', syncEndTime);
     rect.setAttribute('data-type', type);
     
+    // Add deep night slot ID if provided
+    if (deepNightSlotId) {
+      rect.setAttribute('data-deep-night-slot-id', deepNightSlotId);
+    }
     // Add night slot ID if provided
     if (nightSlotId) {
       rect.setAttribute('data-night-slot-id', nightSlotId);
     }
+    // Add all night slot ID if provided
+    if (allNightSlotId) {
+      rect.setAttribute('data-all-night-slot-id', allNightSlotId);
+    }
     
     // Add hover events for synchronization
     rect.addEventListener('mouseover', () => {
-      if (nightSlotId) {
+      if (allNightSlotId) {
+        // For all night slots, activate all related elements (maghreb-icha and icha-fajr)
+        const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-all-night-slot-id="${allNightSlotId}"]`);
+        relatedTimelineEvents.forEach(event => event.classList.add('active'));
+        
+        // Activate related clock arcs
+        const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-all-night-slot-id="${allNightSlotId}"]`);
+        relatedClockArcs.forEach(arc => arc.classList.add('active'));
+        
+        // Also activate related list items
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-all-night-slot-id="${allNightSlotId}"]`);
+        relatedListItems.forEach(item => item.classList.add('active'));
+      } else if (deepNightSlotId) {
+        // For deep night slots, activate all related elements
+        const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        relatedTimelineEvents.forEach(event => event.classList.add('active'));
+        
+        // Activate related clock arcs
+        const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        relatedClockArcs.forEach(arc => arc.classList.add('active'));
+        
+        // Also activate related list items
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        relatedListItems.forEach(item => item.classList.add('active'));
+      } else if (nightSlotId) {
         // For night slots, activate all related elements
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-night-slot-id="${nightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.add('active'));
@@ -595,6 +699,10 @@ export class Timeline {
         // Activate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-night-slot-id="${nightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.add('active'));
+        
+        // Also activate related list items
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${nightSlotId}"]`);
+        relatedListItems.forEach(item => item.classList.add('active'));
       } else {
         // Normal synchronization for regular slots
       const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
@@ -606,7 +714,31 @@ export class Timeline {
     });
     
     rect.addEventListener('mouseout', () => {
-      if (nightSlotId) {
+      if (allNightSlotId) {
+        // For all night slots, deactivate all related elements (maghreb-icha and icha-fajr)
+        const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-all-night-slot-id="${allNightSlotId}"]`);
+        relatedTimelineEvents.forEach(event => event.classList.remove('active'));
+        
+        // Deactivate related clock arcs
+        const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-all-night-slot-id="${allNightSlotId}"]`);
+        relatedClockArcs.forEach(arc => arc.classList.remove('active'));
+        
+        // Also deactivate related list items
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-all-night-slot-id="${allNightSlotId}"]`);
+        relatedListItems.forEach(item => item.classList.remove('active'));
+      } else if (deepNightSlotId) {
+        // For deep night slots, deactivate all related elements
+        const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        relatedTimelineEvents.forEach(event => event.classList.remove('active'));
+        
+        // Deactivate related clock arcs
+        const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        relatedClockArcs.forEach(arc => arc.classList.remove('active'));
+        
+        // Also deactivate related list items
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        relatedListItems.forEach(item => item.classList.remove('active'));
+      } else if (nightSlotId) {
         // For night slots, deactivate all related elements
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-night-slot-id="${nightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.remove('active'));
@@ -614,6 +746,10 @@ export class Timeline {
         // Deactivate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-night-slot-id="${nightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.remove('active'));
+        
+        // Also deactivate related list items
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${nightSlotId}"]`);
+        relatedListItems.forEach(item => item.classList.remove('active'));
       } else {
         // Normal synchronization for regular slots
       const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
