@@ -16,18 +16,28 @@
   <body class="page-transition">
     <!-- Hero Section -->
     <section class="hero-section">
-      <h1 class="hero-title">Plannificateur de Calandrier Musulman</h1>
+      <h1 class="hero-title">Muslim Planner</h1>
       <p class="hero-subtitle">
-        Générez facilement vos <strong>plannings de prières</strong> avec l'API Mawaqit. 
+        Générez facilement vos <strong>Agenda en fonction de vos horaires de prières</strong> avec l'API Mawaqit. 
         Interface moderne et intuitive pour organiser vos temps de prière.
       </p>
       <div class="cta-buttons">
-        <a href="{{ url_for('planner_page') }}" class="cta-button cta-large">
-          Commencer Maintenant
-        </a>
-        <a href="#how-it-works" class="cta-button cta-secondary">
-          Comment ça marche ?
-        </a>
+        <button type="button" class="cta-button cta-primary" data-action="start-planning">
+          <span class="button-content">
+            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Commencer Maintenant
+          </span>
+        </button>
+        <button type="button" class="cta-button cta-secondary" data-action="scroll-to-how-it-works">
+          <span class="button-content">
+            <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+            Comment ça marche ?
+          </span>
+        </button>
       </div>
     </section>
 
@@ -204,9 +214,14 @@
       <p class="section-subtitle">
         Commencez dès maintenant et découvrez la simplicité de notre planificateur
       </p>
-      <a href="{{ url_for('planner_page') }}" class="cta-button cta-large">
-        Créer mon Planning
-      </a>
+      <button type="button" class="cta-button cta-primary cta-large" data-action="start-planning">
+        <span class="button-content">
+          <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+          Créer mon Planning
+        </span>
+      </button>
       <p class="cta-note">Gratuit et sans inscription requise</p>
     </section>
 
