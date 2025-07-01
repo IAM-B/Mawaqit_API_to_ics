@@ -48,6 +48,52 @@ export class Timeline {
   // Create the SVG grid (hours, labels, groups)
   createSVGGrid(svg) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
+    
+    // Add definitions for gradients
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    
+    // Night gradient (primary to dark)
+    const nightGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    nightGradient.setAttribute('id', 'nightGradient');
+    nightGradient.setAttribute('x1', '0%');
+    nightGradient.setAttribute('y1', '0%');
+    nightGradient.setAttribute('x2', '100%');
+    nightGradient.setAttribute('y2', '100%');
+    
+    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%');
+    stop1.setAttribute('stop-color', '#d4af37'); // var(--primary)
+    
+    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', '100%');
+    stop2.setAttribute('stop-color', '#1a1a2e'); // dark color
+    
+    nightGradient.appendChild(stop1);
+    nightGradient.appendChild(stop2);
+    
+    // Night gradient hover (primary-hover to darker)
+    const nightGradientHover = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    nightGradientHover.setAttribute('id', 'nightGradientHover');
+    nightGradientHover.setAttribute('x1', '0%');
+    nightGradientHover.setAttribute('y1', '0%');
+    nightGradientHover.setAttribute('x2', '100%');
+    nightGradientHover.setAttribute('y2', '100%');
+    
+    const stop1Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1Hover.setAttribute('offset', '0%');
+    stop1Hover.setAttribute('stop-color', '#e6c34a'); // var(--primary-hover)
+    
+    const stop2Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2Hover.setAttribute('offset', '100%');
+    stop2Hover.setAttribute('stop-color', '#16213e'); // darker color
+    
+    nightGradientHover.appendChild(stop1Hover);
+    nightGradientHover.appendChild(stop2Hover);
+    
+    defs.appendChild(nightGradient);
+    defs.appendChild(nightGradientHover);
+    svg.appendChild(defs);
+    
     const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     gridGroup.setAttribute('class', 'timeline-grid');
     const labelsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -236,15 +282,12 @@ export class Timeline {
           continue;
         }
         
-        // Special handling for the slot between maghreb and icha when icha is after midnight
+        // Special handling for the slot between maghreb and icha (always night slot)
         if (currentPrayerName === 'maghreb' && nextPrayerName === 'icha') {
           const ichaMinutes = timeToMinutes(nextPrayerTime);
-          
-          // Check if icha is after midnight (after 00:00)
-          // ichaMinutes will be >= 0 when icha is after midnight (e.g., 01:30 = 90 minutes)
-          // ichaMinutes will be >= 0 when icha is before midnight (e.g., 23:30 = 1410 minutes)
-          // We need to check if icha is actually after midnight by comparing with maghreb
           const maghrebMinutes = timeToMinutes(currentPrayerTime);
+          
+          // Check if icha is after midnight by comparing with maghreb
           if (ichaMinutes < maghrebMinutes) {
             // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
             const maghrebToMidnightStart = this.addPadding(currentPrayerTime, paddingAfter);
@@ -274,13 +317,21 @@ export class Timeline {
             
             const slotTitle = `Disponibilité (${totalDurationText})`;
             
+            // Calculate which slot is larger to determine where to show the text
+            const maghrebToMidnightDuration = timeToMinutes(maghrebToMidnightEnd) - timeToMinutes(maghrebToMidnightStart);
+            const midnightToIchaDuration = timeToMinutes(midnightToIchaEnd) - timeToMinutes(midnightToIchaStart);
+            const showTextOnFirstSlot = maghrebToMidnightDuration >= midnightToIchaDuration;
+            
+            // Create a unique identifier for the night slot pair
+            const nightSlotId = `night-slot-${maghrebToMidnightStart}-${midnightToIchaEnd}`;
+            
             // First slot: maghreb to 23:59
             if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
               const adjustedStart = this.addPadding(maghrebToMidnightStart, 1);
               const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 1);
               
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot', maghrebToMidnightStart + '-' + maghrebToMidnightEnd);
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', maghrebToMidnightStart + '-' + maghrebToMidnightEnd, showTextOnFirstSlot, nightSlotId);
               }
             }
             
@@ -290,8 +341,37 @@ export class Timeline {
               const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 1);
               
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot', midnightToIchaStart + '-' + midnightToIchaEnd);
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToIchaStart + '-' + midnightToIchaEnd, !showTextOnFirstSlot, nightSlotId);
               }
+            }
+            
+            continue; // Skip the normal slot creation for this pair
+          } else {
+            // icha is before midnight, create a single night slot
+            const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
+            const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            
+            // Calculate slot duration using real user values for display
+            const realSlotStart = this.addPadding(currentPrayerTime, realPaddingAfter);
+            const realSlotEnd = this.subtractPadding(nextPrayerTime, realPaddingBefore);
+            const startMinutes = timeToMinutes(realSlotStart);
+            const endMinutes = timeToMinutes(realSlotEnd);
+            const durationMinutes = endMinutes - startMinutes;
+            const hours = Math.floor(durationMinutes / 60);
+            const minutes = durationMinutes % 60;
+            const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
+            
+            const slotTitle = `Disponibilité (${durationText})`;
+            
+            // Add 1 minute of margin at the beginning and end to improve UI (without affecting displayed duration)
+            const adjustedSlotStart = this.addPadding(slotStart, 1);
+            const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
+            
+            if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
+              // Create a unique identifier for the night slot
+              const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
+              // For synchronization, use exact times (without padding)
+              this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId);
             }
             
             continue; // Skip the normal slot creation for this pair
@@ -371,7 +451,7 @@ export class Timeline {
   }
 
   // Create an SVG event
-  createSVGEvent(title, startTime, endTime, type, className, syncTime = null) {
+  createSVGEvent(title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null) {
     if (!this.svg || !this.eventsGroup) return;
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
@@ -402,37 +482,62 @@ export class Timeline {
     rect.setAttribute('data-end', syncEndTime);
     rect.setAttribute('data-type', type);
     
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', 60 + 16);
-    text.setAttribute('y', y + height / 2 + 6);
-    text.textContent = title;
-    text.setAttribute('class', 'timeline-event-text');
+    // Add night slot ID if provided
+    if (nightSlotId) {
+      rect.setAttribute('data-night-slot-id', nightSlotId);
+    }
     
     // Add hover events for synchronization
     rect.addEventListener('mouseover', () => {
-      // Activate the corresponding clock-arc
+      if (nightSlotId) {
+        // For night slots, activate all related elements
+        const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-night-slot-id="${nightSlotId}"]`);
+        relatedTimelineEvents.forEach(event => event.classList.add('active'));
+        
+        // Activate related clock arcs
+        const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-night-slot-id="${nightSlotId}"]`);
+        relatedClockArcs.forEach(arc => arc.classList.add('active'));
+      } else {
+        // Normal synchronization for regular slots
       const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
       if (clockArc) {
         clockArc.classList.add('active');
       }
-      
-      // Add active class to the timeline-event itself
       rect.classList.add('active');
+      }
     });
     
     rect.addEventListener('mouseout', () => {
-      // Deactivate the corresponding clock-arc
+      if (nightSlotId) {
+        // For night slots, deactivate all related elements
+        const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-night-slot-id="${nightSlotId}"]`);
+        relatedTimelineEvents.forEach(event => event.classList.remove('active'));
+        
+        // Deactivate related clock arcs
+        const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-night-slot-id="${nightSlotId}"]`);
+        relatedClockArcs.forEach(arc => arc.classList.remove('active'));
+      } else {
+        // Normal synchronization for regular slots
       const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
       if (clockArc) {
         clockArc.classList.remove('active');
       }
-      
-      // Remove active class from the timeline-event itself
       rect.classList.remove('active');
+      }
     });
     
+    // Add rect first, then text to ensure proper layering
     this.eventsGroup.appendChild(rect);
+    
+    // Only create text element if showText is true
+    if (showText) {
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', 60 + 16);
+      text.setAttribute('y', y + height / 2 + 6);
+      text.textContent = title;
+      text.setAttribute('class', 'timeline-event-text');
     this.eventsGroup.appendChild(text);
+    }
   }
 
   // Calculate the end of a prayer (35min by default)
