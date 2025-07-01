@@ -13,7 +13,7 @@
 }
 
 /* ==================
-   🎨 COULEURS & THÈME
+   🎨 COLORS & THEME
    ================== */
 :root {
   /* Base colors */
@@ -122,12 +122,12 @@ body {
 }
 
 /* ==================
-   📝 FORMULAIRES
+   📝 FORM
    ================== */
 .form {
   background-color: var(--form-bg);
   padding: 2em;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 4px 12px var(--shadow-color);
   border: 1px solid var(--border-color);
 }
@@ -175,7 +175,7 @@ select:focus {
 }
 
 /* ==================
-   🔍 TOM SELECT - OPTIMISÉ
+   🔍 TOM SELECT - OPTIMIZED
    ================== */
 .ts-wrapper {
   width: 100%;
@@ -226,8 +226,8 @@ div#country-select-opt-1 {
 
 .ts-dropdown-content {
   background-color: var(--input-bg);
-  max-height: 250px;
-  overflow-y: auto;
+  max-height: 250px !important;
+  overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: var(--primary) var(--input-bg);
 }
@@ -246,7 +246,7 @@ div#country-select-opt-1 {
 }
 
 /* ==================
-   ✅ BOUTONS
+   ✅ BUTTONS
    ================== */
 .btn-submit {
   width: 100%;
@@ -254,7 +254,7 @@ div#country-select-opt-1 {
   background: var(--primary);
   color: var(--text-dark);
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1.1em;
   font-weight: 600;
   cursor: pointer;
@@ -319,7 +319,7 @@ div#country-select-opt-1 {
   background: var(--primary);
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-weight: 500;
   transition: all 0.3s ease;
   box-shadow: var(--shadow-small);
@@ -368,7 +368,7 @@ a:hover {
   top: 20px;
   right: 20px;
   padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   color: white;
   font-weight: 500;
   z-index: 1000;
@@ -406,7 +406,7 @@ a:hover {
 }
 
 /* ==================
-   🗺️ POPUP MOSQUÉE (Leaflet)
+   🗺️ POPUP MOSQUE (Leaflet)
    ================== */
    .leaflet-popup-content {
     color: var(--text-color);
@@ -506,7 +506,7 @@ a:hover {
   margin-top: 1em;
   padding: 0.5em 0;
   background: var(--form-bg);
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 2px 8px var(--shadow-light);
 }
 

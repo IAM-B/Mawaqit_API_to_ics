@@ -106,6 +106,136 @@
 }
 
 /* ==================
+   📋 HERO SECTION STYLES
+   ================== */
+.hero-section {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-bright);
+  margin: 2rem;
+  border-radius: 24px;
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px var(--primary-border);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg-medium) 0%, var(--bg-dark) 100%);
+  backdrop-filter: blur(10px);
+}
+
+/* ==================
+   📋 SECTION STYLES - FULL WIDTH
+   ================== */
+.value-section {
+  text-align: center;
+  padding: 6rem 2rem;
+  margin: 2rem;
+  border-radius: 24px;
+  background: var(--bg-medium);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-border);
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px var(--primary-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.benefits-section {
+  padding: 6rem 2rem;
+  margin: 2rem;
+  border-radius: 24px;
+  background: var(--bg-medium);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-border);
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px var(--primary-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.how-it-works-section {
+  padding: 6rem 2rem;
+  margin: 2rem;
+  border-radius: 24px;
+  background: var(--bg-medium);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-border);
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px var(--primary-light);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ==================
+   📋 CONTAINER OVERRIDE FOR SECTIONS
+   ================== */
+.value-section .container,
+.benefits-section .container,
+.how-it-works-section .container {
+  background: transparent;
+  padding: 0;
+}
+
+/* ==================
+   📋 SECTION TITLES & SUBTITLES
+   ================== */
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: var(--text-bright);
+  text-shadow: var(--text-shadow);
+  position: relative;
+  z-index: 1;
+}
+
+.section-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 0 auto 3rem;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-light) 100%);
+  z-index: -1;
+}
+
+.hero-section .hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  text-shadow: var(--text-shadow);
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section .breadcrumb {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2rem;
+}
+
+.hero-section .progress-indicator {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================
    📋 SUMMARY SECTION
    ================== */
 .summary-section {
@@ -119,17 +249,13 @@
 }
 
 .summary-card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px var(--shadow-light);
+  background: var(--bg-color);
   border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
   transition: all 0.3s ease;
-}
-
-.summary-card:hover {
-  box-shadow: 0 6px 16px var(--shadow-color);
-  transform: translateY(-1px);
+  position: relative;
 }
 
 .summary-card h3 {
@@ -190,7 +316,7 @@
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: var(--text-dark);
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -287,7 +413,7 @@
   max-width: 100%;
   padding: 20px;
   background: var(--bg-color);
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;      /* IE 10+ */
@@ -309,7 +435,7 @@
   width: 100%;
   padding: 20px;
   background: var(--bg-color);
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   overflow: auto;
   display: flex;
@@ -320,7 +446,7 @@
 .clock-half .clock-container {
   flex: 1;
   background: var(--bg-color);
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   overflow: hidden;
   display: flex;
@@ -342,7 +468,7 @@
   align-items: center;
   justify-content: center;
   background: var(--bg-color);
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   width: 100%;
   max-width: 100%;
@@ -412,7 +538,7 @@
   filter: drop-shadow(0 0 4px var(--drop-shadow-primary));
 }
 
-/* Styles pour les créneaux de nuit dans le clock */
+/* Styles for night slots in the clock */
 .clock-arc.slot.night {
   stroke: url(#nightGradient);
   stroke-width: 15;
@@ -599,7 +725,7 @@
   display: block;
 }
 
-/* Grille horaire SVG */
+/* Hourly grid SVG */
 .timeline-grid {
   stroke: var(--border-light);
   stroke-width: 1;
@@ -620,7 +746,7 @@
   letter-spacing: 0.5px;
 }
 
-/* Événements SVG */
+/* Events SVG */
 .timeline-event {
   cursor: pointer;
   transition: all 0.2s ease;
@@ -654,7 +780,7 @@
   transform: translateY(-1px);
 }
 
-/* Synchronisation hover avec clock-arc */
+/* Synchronization hover with clock-arc */
 .timeline-event.prayer.active {
   fill: var(--prayer-green);
   stroke: var(--prayer-green-hover);
@@ -760,7 +886,7 @@
 .compact-map {
   height: 200px;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 12px;
   margin: 10px 0;
   border: 1px solid var(--border-color);
 }
@@ -817,23 +943,27 @@
 }
 
 .download-card {
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  text-decoration: none;
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem;
-  background: var(--overlay-light);
-  border-radius: 8px;
-  text-decoration: none;
-  color: white;
-  transition: all 0.3s ease;
-  border: 2px solid var(--overlay-light);
+  box-shadow: var(--shadow-medium);
 }
 
 .download-card:hover {
-  background: var(--overlay-medium);
-  transform: translateY(-2px);
-  border-color: var(--overlay-dark);
-  box-shadow: 0 4px 12px var(--shadow-light);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+  border-color: var(--primary);
 }
 
 .download-card.primary {
@@ -959,9 +1089,72 @@
 }
 
 /* ==================
+   📋 FOOTER STYLES
+   ================== */
+.footer {
+  text-align: center;
+  padding: 4rem 2rem;
+  margin: 2rem;
+  border-radius: 24px;
+  background: var(--bg-medium);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-border);
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px var(--primary-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-bright);
+  text-shadow: var(--text-shadow);
+}
+
+.footer-subtitle {
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ==================
    📋 RESPONSIVE DESIGN
    ================== */
 @media (max-width: 768px) {
+  .hero-section,
+  .value-section,
+  .benefits-section,
+  .how-it-works-section,
+  .footer {
+    margin: 1rem;
+    padding: 3rem 1rem;
+  }
+
+  .hero-section .hero-title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+  }
+
+  .section-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .section-subtitle {
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+  }
+
+  .footer h3 {
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  }
+
+  .footer-subtitle {
+    font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+  }
+
   .planner-main-grid {
     grid-template-columns: 1fr;
   }
@@ -1070,6 +1263,35 @@
 }
 
 @media (max-width: 480px) {
+  .hero-section,
+  .value-section,
+  .benefits-section,
+  .how-it-works-section,
+  .footer {
+    margin: 0.5rem;
+    padding: 2rem 0.5rem;
+  }
+
+  .hero-section .hero-title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .section-title {
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  }
+
+  .section-subtitle {
+    font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+  }
+
+  .footer h3 {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .footer-subtitle {
+    font-size: clamp(0.7rem, 1vw, 0.8rem);
+  }
+
   .clock-layout {
     gap: 0.75rem;
   }
@@ -1162,7 +1384,7 @@
   margin: 0 auto;
   padding: 12px 16px;
   background: var(--input-bg);
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
   display: flex;
@@ -1463,12 +1685,12 @@
 
 .clock-calendar, .slots-timeline-container::-webkit-scrollbar-track {
   background: var(--bg-color);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .clock-calendar, .slots-timeline-container::-webkit-scrollbar-thumb {
   background: var(--primary-color);
-  border-radius: 8px;
+  border-radius: 12px;
   border: 2px solid var(--bg-color);
 }
 

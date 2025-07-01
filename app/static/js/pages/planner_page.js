@@ -234,7 +234,7 @@ export class PlannerPage {
   }
 
   generateDownloadLinks(data) {
-    const downloadGrid = document.querySelector('.download-grid');
+    const downloadGrid = document.querySelector('.how-it-works-section .download-grid');
     if (downloadGrid) {
       downloadGrid.innerHTML = '';
       if (data.ics_path) {
@@ -610,10 +610,8 @@ export class PlannerPage {
 
   showPlanningSections() {
     const selectors = [
-      '.quick-actions',
-      '.clock-section',
-      '.available-slots',
-      '.summary-display'
+      '.how-it-works-section',
+      '.benefits-section'
     ];
     selectors.forEach(selector => {
       const section = document.querySelector(selector);
@@ -623,6 +621,18 @@ export class PlannerPage {
         setTimeout(() => section.classList.add('visible'), 100);
       }
     });
+    
+    // Scroll to the benefits section (Agenda des prières)
+    const benefitsSection = document.querySelector('.benefits-section');
+    if (benefitsSection) {
+      setTimeout(() => {
+        benefitsSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }, 500);
+    }
+    
     const noDataSection = document.querySelector('.no-data');
     if (noDataSection) {
       noDataSection.classList.add('hidden');
@@ -630,7 +640,7 @@ export class PlannerPage {
   }
 
   setupPlanningAnimation() {
-    const hasPlanningData = document.querySelector('.quick-actions') !== null;
+    const hasPlanningData = document.querySelector('.how-it-works-section') !== null;
     const hasClockConfig = document.getElementById('clockConfig') !== null;
     if (hasPlanningData && hasClockConfig) {
       setTimeout(() => {
