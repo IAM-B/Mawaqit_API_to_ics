@@ -118,7 +118,6 @@ export class PlannerPage {
           const result = await response.json();
           if (result.success) {
             this.updatePageWithPlanningData(result.data);
-            this.showSuccessMessage('Planning généré avec succès !');
           } else {
             throw new Error(result.error || 'Erreur lors de la génération');
           }
@@ -140,7 +139,6 @@ export class PlannerPage {
             errorMessage = error.message;
           }
           
-          this.showErrorMessage(errorMessage);
         } finally {
           this.hideLoadingState(submitBtn);
         }
@@ -158,39 +156,6 @@ export class PlannerPage {
     submitBtn.classList.remove('loading');
     submitBtn.textContent = '📥 Générer planning';
     submitBtn.disabled = false;
-  }
-
-  showSuccessMessage(message) {
-    this.showMessage(message, 'success');
-  }
-
-  showErrorMessage(message) {
-    this.showMessage(message, 'error');
-  }
-
-  showMessage(message, type) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message message-${type}`;
-    messageDiv.textContent = message;
-    messageDiv.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      border-radius: 8px;
-      color: white;
-      font-weight: 500;
-      z-index: 1000;
-      background: ${type === 'success' ? '#48bb78' : '#f56565'};
-      animation: slideInRight 0.3s ease;
-    `;
-    document.body.appendChild(messageDiv);
-    setTimeout(() => {
-      messageDiv.style.animation = 'slideOutRight 0.3s ease';
-      setTimeout(() => {
-        document.body.removeChild(messageDiv);
-      }, 300);
-    }, 3000);
   }
 
   updatePageWithPlanningData(data) {
@@ -446,7 +411,6 @@ export class PlannerPage {
         if (scope === 'year' && window.originalYearData) {
           this.generateDownloadLinks(window.originalYearData);
           this.updateActiveScopeButton('year');
-          this.showSuccessMessage(`Fichiers ICS pour ${scope} générés !`);
           return;
         }
         const mosqueId = data.masjid_id;
@@ -506,13 +470,11 @@ export class PlannerPage {
           if (result.success) {
             this.generateDownloadLinks(result.data);
             this.updateActiveScopeButton(scope);
-            this.showSuccessMessage(`Fichiers ICS pour ${scope} générés !`);
           } else {
             throw new Error(result.error || 'Erreur lors de la génération');
           }
         } catch (error) {
           console.error('Error generating ICS:', error);
-          this.showErrorMessage(error.message);
         } finally {
           button.classList.remove('loading');
           button.disabled = false;
@@ -730,7 +692,6 @@ export class PlannerPage {
     }
     window.currentMonth = newMonth;
     window.currentYear = newYear;
-    this.showSuccessMessage(`Navigation vers ${this.getMonthName(newMonth)} ${newYear}`);
   }
 
   getMosqueIdFromPage() {
@@ -1099,19 +1060,20 @@ export class PlannerPage {
       });
     }
     
-    // Observe configuration (excluding Islamic options)
+    // Observe configuration (excluding Islamic options and config mode switch)
     const configForm = document.getElementById('configForm');
     if (configForm) {
       const inputs = configForm.querySelectorAll('input, select');
       inputs.forEach(input => {
-        // Skip Islamic options to avoid triggering progress completion
-        const islamicOptions = [
+        // Skip Islamic options and config mode switch to avoid triggering progress completion
+        const excludedOptions = [
           'include_voluntary_fasts',
           'show_hijri_date',
-          'include_adhkar'
+          'include_adhkar',
+          'configModeSwitch'
         ];
         
-        if (!islamicOptions.includes(input.id)) {
+        if (!excludedOptions.includes(input.id)) {
           input.addEventListener('change', () => {
             this.checkConfigCompletion();
           });
@@ -1128,8 +1090,8 @@ export class PlannerPage {
     if (!configForm) return;
     
     // Only check essential configuration elements (paddings and include_sunset)
-    const paddingBefore = configForm.querySelector('input[name="padding_before"]');
-    const paddingAfter = configForm.querySelector('input[name="padding_after"]');
+    const paddingBefore = configForm.querySelector('input[name="global_padding_before"]');
+    const paddingAfter = configForm.querySelector('input[name="global_padding_after"]');
     const includeSunset = configForm.querySelector('input[name="include_sunset"]');
     
     // Also check individual padding mode if it exists
@@ -1159,7 +1121,6 @@ export class PlannerPage {
       if (isComplete && !this.progressState.configCompleted) {
         this.progressState.configCompleted = true;
         this.updateProgressState();
-        this.showConfigCompleteMessage();
       } else if (!isComplete && this.progressState.configCompleted) {
         this.progressState.configCompleted = false;
         this.updateProgressState();
@@ -1178,7 +1139,6 @@ export class PlannerPage {
         if (isComplete && !this.progressState.configCompleted) {
           this.progressState.configCompleted = true;
           this.updateProgressState();
-          this.showConfigCompleteMessage();
         } else if (!isComplete && this.progressState.configCompleted) {
           this.progressState.configCompleted = false;
           this.updateProgressState();
@@ -1202,35 +1162,6 @@ export class PlannerPage {
           block: 'center' 
         });
       }, 500);
-    }
-  }
-
-  showConfigCompleteMessage() {
-    const configCard = document.querySelector('.summary-card.config-info');
-    if (configCard) {
-      const message = document.createElement('div');
-      message.className = 'config-complete-message';
-      message.innerHTML = '<i class="fa-solid fa-check-circle"></i> Configuration complète !';
-      message.style.cssText = `
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-        color: white;
-        padding: 8px 12px;
-        border-radius: 20px;
-        font-size: 0.8em;
-        font-weight: 500;
-        animation: slideInRight 0.3s ease;
-        z-index: 10;
-      `;
-      
-      configCard.style.position = 'relative';
-      configCard.appendChild(message);
-      
-      setTimeout(() => {
-        message.remove();
-      }, 3000);
     }
   }
 
@@ -1310,12 +1241,6 @@ export class PlannerPage {
     
     const targetElement = document.querySelector(targetSelector);
     if (!targetElement) return;
-    
-    // Check if the step is accessible
-    if (!this.isStepAccessible(stepIndex)) {
-      this.showStepLockedMessage(stepIndex);
-      return;
-    }
     
     // Click animation on the progress-step
     this.animateStepClick(stepIndex);
@@ -1399,38 +1324,6 @@ export class PlannerPage {
     return hasValidDownloads;
   }
 
-  showStepLockedMessage(stepIndex) {
-    const stepNames = ['Sélection', 'Configuration', 'Horaires', 'Téléchargement'];
-    const stepName = stepNames[stepIndex];
-    
-    const message = document.createElement('div');
-    message.className = 'step-locked-message';
-    message.innerHTML = `<i class="fa-solid fa-lock"></i> ${stepName} non disponible`;
-    message.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-      color: white;
-      padding: 12px 20px;
-      border-radius: 25px;
-      font-size: 0.9em;
-      font-weight: 500;
-      animation: slideInRight 0.3s ease;
-      z-index: 1001;
-      box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
-    `;
-    
-    document.body.appendChild(message);
-    
-    setTimeout(() => {
-      message.style.animation = 'slideOutRight 0.3s ease';
-      setTimeout(() => {
-        document.body.removeChild(message);
-      }, 300);
-    }, 2000);
-  }
-
   animateStepClick(stepIndex) {
     const indicators = [
       document.getElementById('progressIndicatorHero'),
@@ -1509,6 +1402,9 @@ export class PlannerPage {
             switchLabel.classList.remove('active');
           }
         }
+        
+        // Don't trigger configuration completion check on switch change
+        // The user needs to actually fill in the configuration values
       });
     }
     

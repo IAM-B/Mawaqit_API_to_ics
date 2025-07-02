@@ -2196,23 +2196,6 @@
   }
 }
 
-/* Step Locked Message */
-.step-locked-message {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-  color: white;
-  padding: 12px 20px;
-  border-radius: 25px;
-  font-size: 0.9em;
-  font-weight: 500;
-  animation: slideInRight 0.3s ease;
-  z-index: 1001;
-  box-shadow: 0 4px 15px rgba(245, 101, 101, 0.4);
-  backdrop-filter: blur(10px);
-}
-
 /* Progress steps in fixed bar */
 .progress-indicator-fixed .progress-step {
   background: rgba(255, 255, 255, 0.1);
