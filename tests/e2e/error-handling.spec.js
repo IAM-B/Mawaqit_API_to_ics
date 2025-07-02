@@ -109,8 +109,8 @@ test.describe('Form Validation Edge Cases', () => {
 
   test('should handle extremely large padding values', async ({ page }) => {
     // Fill very large padding values
-    await page.fill('input[name="padding_before"]', '999999');
-    await page.fill('input[name="padding_after"]', '999999');
+    await page.fill('input[name="global_padding_before"]', '999999');
+    await page.fill('input[name="global_padding_after"]', '999999');
     
     // Submit form
     await page.click('button[type="submit"]');
@@ -136,8 +136,8 @@ test.describe('Form Validation Edge Cases', () => {
     await page.selectOption('#mosque-select', { index: 1 });
     
     // Test special characters in padding
-    await page.fill('input[name="padding_before"]', '10<script>alert("xss")</script>');
-    await page.fill('input[name="padding_after"]', '15\'"<>');
+    await page.fill('input[name="global_padding_before"]', '10<script>alert("xss")</script>');
+    await page.fill('input[name="global_padding_after"]', '15\'"<>');
     
     // Submit form
     await page.click('button[type="submit"]');
@@ -161,8 +161,8 @@ test.describe('Form Validation Edge Cases', () => {
     }, { timeout: 15000 });
     
     await page.selectOption('#mosque-select', { index: 1 });
-    await page.fill('input[name="padding_before"]', '10');
-    await page.fill('input[name="padding_after"]', '15');
+    await page.fill('input[name="global_padding_before"]', '10');
+    await page.fill('input[name="global_padding_after"]', '15');
     
     // Rapidly click submit multiple times
     const submitButton = page.locator('button[type="submit"]');

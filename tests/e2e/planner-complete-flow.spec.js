@@ -26,8 +26,8 @@ test.describe('Complete Planning Flow', () => {
     await page.selectOption('#mosque-select', { index: 1 });
     
     // 5. Configure padding
-    await page.fill('input[name="padding_before"]', '10');
-    await page.fill('input[name="padding_after"]', '15');
+    await page.fill('input[name="global_padding_before"]', '10');
+    await page.fill('input[name="global_padding_after"]', '15');
     
     // 6. Submit the form
     await page.click('button[type="submit"]');
@@ -55,8 +55,8 @@ test.describe('Complete Planning Flow', () => {
 
   test('should handle invalid padding values', async ({ page }) => {
     // Fill negative padding values
-    await page.fill('input[name="padding_before"]', '-5');
-    await page.fill('input[name="padding_after"]', '-10');
+    await page.fill('input[name="global_padding_before"]', '-5');
+    await page.fill('input[name="global_padding_after"]', '-10');
     
     // Submit form
     await page.click('button[type="submit"]');
@@ -93,8 +93,8 @@ test.describe('ICS Generation Flow', () => {
     }, { timeout: 15000 });
     
     await page.selectOption('#mosque-select', { index: 1 });
-    await page.fill('input[name="padding_before"]', '10');
-    await page.fill('input[name="padding_after"]', '15');
+    await page.fill('input[name="global_padding_before"]', '10');
+    await page.fill('input[name="global_padding_after"]', '15');
     
     // Submit and wait for planning
     await page.click('button[type="submit"]');

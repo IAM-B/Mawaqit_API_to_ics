@@ -55,9 +55,14 @@ def test_planner_page(client):
     assert b'id="mosque-map"' in response.data
     assert b'id="country-select"' in response.data
     assert b'id="mosque-select"' in response.data
-    assert b'name="padding_before"' in response.data
-    assert b'name="padding_after"' in response.data
+    # Nouvelle structure avec configuration globale et individuelle
+    assert b'name="global_padding_before"' in response.data
+    assert b'name="global_padding_after"' in response.data
     assert b'name="scope"' in response.data
+    # Vérifier la présence des options features
+    assert b'name="include_voluntary_fasts"' in response.data
+    assert b'name="show_hijri_date"' in response.data
+    assert b'name="include_adhkar"' in response.data
 
 def test_favicon(client):
     response = client.get('/favicon.ico')

@@ -17,5 +17,3 @@ export function getPaddingAfter() {
   const minPaddingAfter = 20;
   return Math.max(paddingAfter, minPaddingAfter);
 }
-
- 

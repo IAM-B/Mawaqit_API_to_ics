@@ -204,5 +204,11 @@ def test_handle_planner_post_invalid_padding(app):
         },
         method='POST'
     ):
-        with pytest.raises(ValueError, match="Invalid padding values"):
-            handle_planner_post("123", "today", "invalid", "invalid") 
+        # La fonction retourne un tuple (error_dict, status_code) au lieu de lever une exception
+        result = handle_planner_post("123", "today", "invalid", "invalid")
+        assert isinstance(result, tuple)
+        assert len(result) == 2
+        error_dict, status_code = result
+        assert "error" in error_dict
+        assert "Invalid padding values" in error_dict["error"]
+        assert status_code == 400 

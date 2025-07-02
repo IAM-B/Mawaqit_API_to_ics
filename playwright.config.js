@@ -84,11 +84,11 @@ module.exports = defineConfig({
   },
   
   /* Global timeout for tests */
-  timeout: 60000,
+  timeout: 30000, // Reduced from 60000
   
   /* Expect timeout */
   expect: {
-    timeout: 15000,
+    timeout: 10000, // Reduced from 15000
   },
   
   /* Output directory for test artifacts */

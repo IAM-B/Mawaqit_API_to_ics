@@ -91,13 +91,37 @@ tests/js/integration/
 - **Purpose**: Test complete user workflows
 - **Tools**: Playwright
 - **Coverage**: User interface and workflows
+- **Status**: Basic tests implemented, ready for expansion
 
 **Structure:**
 ```
 tests/e2e/
-├── landing.spec.js   # Landing page workflows
-└── planner.spec.js   # Planner interface workflows
+├── landing.spec.js           # Landing page workflows
+├── planner.spec.js           # Planner interface workflows (legacy)
+├── planner-simple.spec.js    # Simplified planner tests (legacy)
+├── planner-basic.spec.js     # Basic planner tests (current)
+├── helpers.js                # Reusable test helper functions
+└── error-handling.spec.js    # Error handling workflows
 ```
+
+**Helper Functions (`helpers.js`):**
+- `waitForCountriesToLoad()` - Wait for country dropdown to populate
+- `waitForMosquesToLoad()` - Wait for mosque dropdown to populate  
+- `fillGlobalPadding()` - Configure padding values
+- `selectCountry()` / `selectMosque()` - Select options by index
+- `waitForElementStable()` - Wait for elements to be visible and stable
+- `navigateToPlanner()` / `navigateToLanding()` - Page navigation with proper waits
+
+**Current Coverage:**
+- ✅ Page loading and form element visibility
+- ✅ Padding configuration (input/output validation)
+- ✅ Form submission button presence and state
+- ✅ Responsive design (desktop/mobile viewports)
+- ✅ Basic navigation between pages
+
+**Browser Support:**
+- ✅ **Chromium** - Fully working
+- ❌ **Firefox/Webkit** - Missing system dependencies
 
 ## Running Tests
 
@@ -130,6 +154,10 @@ make test-e2e       # Run end-to-end tests
 npm run test:e2e    # Direct Playwright command
 npm run test:e2e:ui # UI mode for debugging
 npm run test:e2e:headed  # Headed browser mode
+
+# Run specific E2E tests
+npx playwright test tests/e2e/planner-basic.spec.js --project=chromium
+npx playwright test tests/e2e/ --project=chromium  # All E2E tests (Chromium only)
 ```
 
 ### Coverage Reports
@@ -268,10 +296,14 @@ global.testUtils = {
 ### E2E Testing
 1. **Test user workflows** not individual components
 2. **Use realistic test data**
-3. **Test across different browsers**
-4. **Handle async operations** properly
-5. **Use page object pattern** for complex pages
+3. **Test across different browsers** (currently Chromium only)
+4. **Handle async operations** properly with helper functions
+5. **Use helper functions** from `tests/e2e/helpers.js` for consistency
 6. **Test responsive design** on different screen sizes
+7. **Use specific selectors** (IDs over generic tags)
+8. **Keep tests focused and atomic**
+9. **Handle network timing** with proper waits
+10. **Test form validation and error states**
 
 ## Coverage Goals
 
@@ -284,7 +316,11 @@ global.testUtils = {
   - CalendarViewsManager: 26 tests (navigation, scopes, synchronization)
   - Utils: 22 tests (formatting, conversions, padding)
   - Landing: 9 tests (animations, interactions)
-- **E2E**: Complete user workflow coverage
+- **E2E**: Basic workflow coverage (4 tests passing on Chromium)
+  - Page loading and form visibility
+  - Padding configuration
+  - Form submission readiness
+  - Responsive design validation
 
 ### Coverage Targets
 - **Python**: 80% minimum, 90% target
@@ -294,7 +330,12 @@ global.testUtils = {
 ### Areas Needing Coverage
 - **Python**: Complex business logic, error handling
 - **JavaScript**: Additional integration scenarios, edge cases
-- **E2E**: Mobile responsiveness, accessibility
+- **E2E**: 
+  - Complete user flows (country → mosque → submission)
+  - Error handling scenarios
+  - Multi-browser support (Firefox/Webkit)
+  - Mobile responsiveness, accessibility
+  - ICS file generation verification
 
 ## Continuous Integration
 
@@ -367,6 +408,12 @@ npm run test:e2e:headed
 
 # Debug specific test
 npm run test:e2e -- --grep "test name"
+
+# Run basic E2E tests (most reliable)
+npx playwright test tests/e2e/planner-basic.spec.js --project=chromium
+
+# View test reports
+npx playwright show-report
 ```
 
 ## Performance Testing
@@ -455,3 +502,4 @@ For testing support:
 - Examine test artifacts in `test-results/`
 - Consult the [Setup Guide](setup.md) for environment issues
 - Read the [JavaScript Test README](../tests/js/README.md) for detailed JS testing information
+- Check [E2E Testing Status](e2e-testing-status.md) for current E2E test progress and known issues

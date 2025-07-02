@@ -1,30 +1,34 @@
 const { test, expect } = require('@playwright/test');
+const { 
+  navigateToPlanner, 
+  waitForCountriesToLoad, 
+  waitForMosquesToLoad, 
+  fillGlobalPadding,
+  selectCountry,
+  selectMosque,
+  waitForElementStable
+} = require('./helpers');
 
 test.describe('Planner Page', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/planner');
-    // Wait for page to load completely
-    await page.waitForLoadState('domcontentloaded');
+    await navigateToPlanner(page);
   });
 
   test('should display configuration form', async ({ page }) => {
     // Check that page loads correctly
     await expect(page).toHaveTitle(/Planning synchronisé/);
     
-    // Check form elements
-    await expect(page.locator('#country-select')).toBeVisible();
-    await expect(page.locator('#mosque-select')).toBeVisible();
-    await expect(page.locator('input[name="padding_before"]')).toBeVisible();
-    await expect(page.locator('input[name="padding_after"]')).toBeVisible();
-    await expect(page.locator('button[type="submit"]')).toBeVisible();
+    // Check form elements with stable waiting
+    await waitForElementStable(page, '#country-select');
+    await waitForElementStable(page, '#mosque-select');
+    await waitForElementStable(page, 'input[name="global_padding_before"]');
+    await waitForElementStable(page, 'input[name="global_padding_after"]');
+    await waitForElementStable(page, 'button[type="submit"]');
   });
 
   test('should load countries in select', async ({ page }) => {
-    // Wait for JavaScript to load and countries to populate
-    await page.waitForFunction(() => {
-      const select = document.querySelector('#country-select');
-      return select && select.options.length > 1;
-    }, { timeout: 20000 });
+    // Wait for countries to load using helper
+    await waitForCountriesToLoad(page);
     
     const countrySelect = page.locator('#country-select');
     const options = await countrySelect.locator('option').count();
@@ -33,19 +37,13 @@ test.describe('Planner Page', () => {
 
   test('should load mosques after country selection', async ({ page }) => {
     // Wait for countries to load
-    await page.waitForFunction(() => {
-      const select = document.querySelector('#country-select');
-      return select && select.options.length > 1;
-    }, { timeout: 20000 });
+    await waitForCountriesToLoad(page);
     
     // Select a country
-    await page.selectOption('#country-select', { index: 1 });
+    await selectCountry(page, 1);
     
     // Wait for mosques to load
-    await page.waitForFunction(() => {
-      const select = document.querySelector('#mosque-select');
-      return select && select.options.length > 1;
-    }, { timeout: 20000 });
+    await waitForMosquesToLoad(page);
     
     const mosqueSelect = page.locator('#mosque-select');
     const options = await mosqueSelect.locator('option').count();
@@ -53,14 +51,12 @@ test.describe('Planner Page', () => {
   });
 
   test('should allow padding configuration', async ({ page }) => {
-    const paddingBefore = page.locator('input[name="padding_before"]');
-    const paddingAfter = page.locator('input[name="padding_after"]');
-    
-    // Configure paddings
-    await paddingBefore.fill('15');
-    await paddingAfter.fill('30');
+    // Configure paddings using helper
+    await fillGlobalPadding(page, 15, 30);
     
     // Check values
+    const paddingBefore = page.locator('input[name="global_padding_before"]');
+    const paddingAfter = page.locator('input[name="global_padding_after"]');
     expect(await paddingBefore.inputValue()).toBe('15');
     expect(await paddingAfter.inputValue()).toBe('30');
   });
@@ -76,12 +72,11 @@ test.describe('Planner responsive design', () => {
     
     for (const viewport of viewports) {
       await page.setViewportSize(viewport);
-      await page.goto('/planner');
-      await page.waitForLoadState('domcontentloaded');
+      await navigateToPlanner(page);
       
-      // Check that forms are visible (use more specific selector)
-      await expect(page.locator('#plannerForm')).toBeVisible();
-      await expect(page.locator('#configForm')).toBeVisible();
+      // Check that forms are visible
+      await waitForElementStable(page, '#plannerForm');
+      await waitForElementStable(page, '#configForm');
     }
   });
 });

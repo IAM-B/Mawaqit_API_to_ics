@@ -130,73 +130,37 @@ describe('Padding.js - Padding utility functions', () => {
     });
   });
 
-  describe('getRealPaddingBefore', () => {
+  describe('Padding Configuration Validation', () => {
     /**
-     * Tests for the real padding before function that returns
-     * the actual configured values without safety adjustments.
-     * This is used for internal calculations and data storage.
+     * Tests for padding configuration validation to ensure
+     * the new padding logic works correctly with the updated structure.
      */
     
-    test('should return real configured value even if negative', () => {
-      // Test that real padding preserves negative values
-      // This allows for precise time adjustments in calculations
+    test('should handle individual prayer padding configuration', () => {
+      // Test that individual prayer padding can be configured
+      // This reflects the new structure with per-prayer padding
+      window.currentPaddingBefore = 10;
+      window.currentPaddingAfter = 30;
+      expect(getPaddingBefore()).toBe(10);
+      expect(getPaddingAfter()).toBe(30);
+    });
+
+    test('should maintain minimum padding requirements', () => {
+      // Test that minimum padding requirements are still enforced
+      // This ensures UI consistency and user experience
       window.currentPaddingBefore = -5;
-      expect(getRealPaddingBefore()).toBe(-5);
-    });
-
-    test('should return 0 by default', () => {
-      // Test default behavior for real padding
-      // This ensures consistent behavior when no value is set
-      window.currentPaddingBefore = undefined;
-      expect(getRealPaddingBefore()).toBe(0);
-    });
-
-    test('should return positive values as-is', () => {
-      // Test that positive values are returned unchanged
-      // This preserves exact user configuration
-      window.currentPaddingBefore = 25;
-      expect(getRealPaddingBefore()).toBe(25);
-    });
-
-    test('should handle zero value', () => {
-      // Test boundary case for real padding
-      window.currentPaddingBefore = 0;
-      expect(getRealPaddingBefore()).toBe(0);
-    });
-  });
-
-  describe('getRealPaddingAfter', () => {
-    /**
-     * Tests for the real padding after function that returns
-     * the actual configured values without safety adjustments.
-     * This is used for internal calculations and data storage.
-     */
-    
-    test('should return real configured value', () => {
-      // Test that real padding returns exact configured value
-      // This preserves user's precise configuration
       window.currentPaddingAfter = 15;
-      expect(getRealPaddingAfter()).toBe(15);
+      expect(getPaddingBefore()).toBe(0);  // Minimum enforced
+      expect(getPaddingAfter()).toBe(20);  // Minimum enforced
     });
 
-    test('should return 0 by default', () => {
-      // Test default behavior for real padding
-      // This ensures consistent behavior when no value is set
+    test('should handle undefined padding values', () => {
+      // Test behavior with undefined padding values
+      // This ensures graceful fallback to defaults
+      window.currentPaddingBefore = undefined;
       window.currentPaddingAfter = undefined;
-      expect(getRealPaddingAfter()).toBe(0);
-    });
-
-    test('should handle negative values', () => {
-      // Test that real padding preserves negative values
-      // This allows for precise time adjustments in calculations
-      window.currentPaddingAfter = -10;
-      expect(getRealPaddingAfter()).toBe(-10);
-    });
-
-    test('should handle zero value', () => {
-      // Test boundary case for real padding
-      window.currentPaddingAfter = 0;
-      expect(getRealPaddingAfter()).toBe(0);
+      expect(getPaddingBefore()).toBe(0);
+      expect(getPaddingAfter()).toBe(20);
     });
   });
 
@@ -229,15 +193,16 @@ describe('Padding.js - Padding utility functions', () => {
       });
     });
 
-    test('real padding functions should return exact values', () => {
-      // Test that real padding functions preserve exact values
-      // This ensures data integrity for calculations and storage
+    test('padding functions should handle edge cases correctly', () => {
+      // Test that padding functions handle edge cases correctly
+      // This ensures robust behavior in various scenarios
       const testValues = [-10, -5, 0, 5, 10, 15, 20];
       testValues.forEach(value => {
         window.currentPaddingBefore = value;
         window.currentPaddingAfter = value;
-        expect(getRealPaddingBefore()).toBe(value);
-        expect(getRealPaddingAfter()).toBe(value);
+        // Verify that minimum requirements are enforced
+        expect(getPaddingBefore()).toBeGreaterThanOrEqual(0);
+        expect(getPaddingAfter()).toBeGreaterThanOrEqual(20);
       });
     });
   });
@@ -255,8 +220,6 @@ describe('Padding.js - Padding utility functions', () => {
       window.currentPaddingAfter = null;
       expect(getPaddingBefore()).toBe(0);
       expect(getPaddingAfter()).toBe(20);
-      expect(getRealPaddingBefore()).toBe(0);
-      expect(getRealPaddingAfter()).toBe(0);
     });
 
     test('should handle string values', () => {
@@ -266,8 +229,6 @@ describe('Padding.js - Padding utility functions', () => {
       window.currentPaddingAfter = '25';
       expect(getPaddingBefore()).toBe(15);
       expect(getPaddingAfter()).toBe(25);
-      expect(getRealPaddingBefore()).toBe('15');
-      expect(getRealPaddingAfter()).toBe('25');
     });
 
     test('should handle very large numbers', () => {

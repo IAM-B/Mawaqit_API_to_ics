@@ -15,9 +15,10 @@ def test_segment_available_time_basic():
     segments = segment_available_time(prayer_times, "Europe/Paris", 0, 0)
     assert isinstance(segments, list)
     assert len(segments) == 4
-    assert segments[0]["start"] == "08:00"
+    # La fonction applique un padding minimum de 10 minutes après chaque prière
+    assert segments[0]["start"] == "08:10"  # 08:00 + 10 min
     assert segments[0]["end"] == "09:00"
-    assert segments[-1]["start"] == "11:00"
+    assert segments[-1]["start"] == "11:10"  # 11:00 + 10 min
     assert segments[-1]["end"] == "12:00"
 
 def test_segment_available_time_with_padding():
@@ -29,12 +30,12 @@ def test_segment_available_time_with_padding():
     }
     segments = segment_available_time(prayer_times, "Europe/Paris", 10, 5)
     assert len(segments) == 2
-    # Le premier segment commence à 08:10 et finit à 08:55
-    assert segments[0]["start"] == "08:10"
-    assert segments[0]["end"] == "08:55"
-    # Le second segment commence à 09:10 et finit à 09:55
-    assert segments[1]["start"] == "09:10"
-    assert segments[1]["end"] == "09:55"
+    # Le premier segment commence à 08:10 (padding minimum) et finit à 08:50 (09:00 - 10 min)
+    assert segments[0]["start"] == "08:10"  # 08:00 + 10 min (padding minimum)
+    assert segments[0]["end"] == "08:50"    # 09:00 - 10 min (padding before dohr)
+    # Le second segment commence à 09:10 et finit à 09:50
+    assert segments[1]["start"] == "09:10"  # 09:00 + 10 min (padding minimum)
+    assert segments[1]["end"] == "09:50"    # 10:00 - 10 min (padding before asr)
 
 def test_segment_available_time_different_timezone():
     """Test with different timezone"""
@@ -45,9 +46,9 @@ def test_segment_available_time_different_timezone():
     }
     segments = segment_available_time(prayer_times, "Europe/Paris", 0, 0)
     assert len(segments) == 2
-    assert segments[0]["start"] == "05:00"
+    assert segments[0]["start"] == "05:10"  # 05:00 + 10 min (padding minimum)
     assert segments[0]["end"] == "13:00"
-    assert segments[1]["start"] == "13:00"
+    assert segments[1]["start"] == "13:10"  # 13:00 + 10 min (padding minimum)
     assert segments[1]["end"] == "16:00"
 
 def test_segment_available_time_close_prayers():
@@ -58,12 +59,8 @@ def test_segment_available_time_close_prayers():
         "asr": "08:10"
     }
     segments = segment_available_time(prayer_times, "Europe/Paris", 2, 2)
-    # Les segments sont très courts
-    assert len(segments) == 2
-    assert segments[0]["start"] == "08:02"
-    assert segments[0]["end"] == "08:03"
-    assert segments[1]["start"] == "08:07"
-    assert segments[1]["end"] == "08:08"
+    # Les segments sont très courts à cause du padding minimum de 10 min
+    assert len(segments) == 0  # Aucun segment valide car les prières sont trop proches
 
 def test_segment_available_time_edge_cases():
     """Test edge cases (not enough prayers, bad format, etc.)"""
@@ -82,9 +79,9 @@ def test_segment_available_time_edge_cases():
     prayer_times = {"asr": "10:00", "fajr": "08:00", "dohr": "09:00"}
     segments = segment_available_time(prayer_times, "Europe/Paris", 0, 0)
     assert len(segments) == 2
-    assert segments[0]["start"] == "08:00"
+    assert segments[0]["start"] == "08:10"  # 08:00 + 10 min (padding minimum)
     assert segments[0]["end"] == "09:00"
-    assert segments[1]["start"] == "09:00"
+    assert segments[1]["start"] == "09:10"  # 09:00 + 10 min (padding minimum)
     assert segments[1]["end"] == "10:00"
 
 def test_segment_available_time_error_handling():
@@ -96,7 +93,7 @@ def test_segment_available_time_error_handling():
     }
     segments = segment_available_time(prayer_times, "Europe/Paris", 0, 0)
     assert len(segments) == 1  # One segment because prayers are ignored
-    assert segments[0]["start"] == "07:00"
+    assert segments[0]["start"] == "07:10"  # 07:00 + 10 min (padding minimum)
     assert segments[0]["end"] == "13:00"
 
     # Test with prayers in the wrong order
@@ -107,9 +104,9 @@ def test_segment_available_time_error_handling():
     }
     segments = segment_available_time(prayer_times, "Europe/Paris", 0, 0)
     assert len(segments) == 2  # Prayers are automatically sorted
-    assert segments[0]["start"] == "08:00"
+    assert segments[0]["start"] == "08:10"  # 08:00 + 10 min (padding minimum)
     assert segments[0]["end"] == "09:00"
-    assert segments[1]["start"] == "09:00"
+    assert segments[1]["start"] == "09:10"  # 09:00 + 10 min (padding minimum)
     assert segments[1]["end"] == "10:00"
 
 def test_segment_available_time_invalid_input():

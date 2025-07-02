@@ -392,10 +392,10 @@ export class Clock {
     // Build dynamic prayer order based on available prayers
     const prayerOrder = ['fajr'];
     
-          // Add sunset only if it exists in the data
-      if (currentData.prayer_times['sunset']) {
-        prayerOrder.push('sunset');
-      }
+    // Add sunset only if it exists in the data
+    if (data.prayer_times['sunset']) {
+      prayerOrder.push('sunset');
+    }
     
     prayerOrder.push('dohr', 'asr', 'maghreb', 'icha');
     

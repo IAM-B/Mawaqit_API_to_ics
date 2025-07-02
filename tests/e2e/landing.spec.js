@@ -1,8 +1,9 @@
 const { test, expect } = require('@playwright/test');
+const { navigateToLanding, waitForElementStable } = require('./helpers');
 
 test.describe('Homepage', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await navigateToLanding(page);
   });
 
   test('should display homepage with all elements', async ({ page }) => {

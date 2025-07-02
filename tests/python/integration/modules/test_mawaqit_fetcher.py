@@ -99,22 +99,29 @@ def test_fetch_mosques_data_today(app):
 
 def test_fetch_mosques_data_month(app):
     """Test fetch_mosques_data with scope 'month'"""
+    # Créer des données pour 12 mois (année complète)
+    calendar_data = []
+    for month in range(12):
+        month_data = []
+        for day in range(31):  # 31 jours par mois
+            month_data.append([
+                f"05:{day:02d}", f"13:{day:02d}", f"16:{day:02d}", 
+                f"19:{day:02d}", f"21:{day:02d}"
+            ])
+        calendar_data.append(month_data)
+    
     mock_data = {
-        "calendar": [
-            ["05:00", "13:00", "16:00", "19:00", "21:00"],
-            ["05:01", "13:01", "16:01", "19:01", "21:01"],
-            ["05:02", "13:02", "16:02", "19:02", "21:02"],
-            ["05:03", "13:03", "16:03", "19:03", "21:03"],
-            ["05:04", "13:04", "16:04", "19:04", "21:04"],
-            ["05:05", "13:05", "16:05", "19:05", "21:05"]
-        ],
+        "calendar": calendar_data,
         "timezone": "Europe/Paris"
     }
 
     with app.app_context():
         with patch('app.modules.mawaqit_fetcher.fetch_mawaqit_data', return_value=mock_data):
             data, tz = fetch_mosques_data("123", "month")
-            assert data == ["05:05", "13:05", "16:05", "19:05", "21:05"]  # 6e jour
+            # Vérifier que nous avons bien les données du mois actuel (31 jours)
+            assert len(data) == 31
+            assert data[0] == ["05:00", "13:00", "16:00", "19:00", "21:00"]  # Premier jour
+            assert data[30] == ["05:30", "13:30", "16:30", "19:30", "21:30"]  # Dernier jour
             assert tz == "Europe/Paris"
 
 def test_fetch_mosques_data_year(app):
