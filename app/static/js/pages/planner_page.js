@@ -7,6 +7,7 @@ import { getPaddingBefore, getPaddingAfter, getRealPaddingBefore, getRealPadding
 
 export class PlannerPage {
   constructor() {
+    this.MIN_PADDING_AFTER = 10; // Minimum 10 minutes padding after each prayer
     this.init();
   }
 
@@ -14,6 +15,7 @@ export class PlannerPage {
     this.setupFormHandling();
     this.setupPlanningAnimation();
     this.setupProgressIndicatorDetachment();
+    this.setupPrayerPaddingConfig();
   }
 
   setupFormHandling() {
@@ -35,13 +37,79 @@ export class PlannerPage {
           for (let [key, value] of plannerFormData.entries()) {
             combinedFormData.append(key, value);
           }
-          for (let [key, value] of configFormData.entries()) {
-            combinedFormData.append(key, value);
+          // Determine active configuration mode
+          const configModeSwitch = document.getElementById('configModeSwitch');
+          const isIndividualMode = configModeSwitch && configModeSwitch.checked;
+          
+          if (isIndividualMode) {
+            // Individual mode: use individual paddings
+            const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+            prayers.forEach(prayer => {
+              const beforeInput = document.getElementById(`${prayer}_padding_before`);
+              const afterInput = document.getElementById(`${prayer}_padding_after`);
+              
+              if (beforeInput) {
+                const defaultValue = prayer === 'sunset' ? '5' : '10';
+                const beforeValue = beforeInput.value || defaultValue;
+                combinedFormData.set(`${prayer}_padding_before`, beforeValue);
+              }
+              if (afterInput) {
+                const defaultValue = prayer === 'sunset' ? '15' : '35';
+                let afterValue = afterInput.value || defaultValue;
+                
+                // Apply minimum 10 minutes padding after each prayer
+                if (parseInt(afterValue) < this.MIN_PADDING_AFTER) {
+                  afterValue = this.MIN_PADDING_AFTER.toString();
+                }
+                
+                combinedFormData.set(`${prayer}_padding_after`, afterValue);
+              }
+            });
+            
+            // Add other configuration data (excluding global paddings)
+            for (let [key, value] of configFormData.entries()) {
+              if (!key.includes('padding')) { // Don't include global paddings
+                combinedFormData.append(key, value);
+              }
+            }
+          } else {
+            // Global mode: use global paddings
+            
+            // Get and validate global "before" padding
+            const globalPaddingBeforeInput = document.getElementById('global_padding_before');
+            if (globalPaddingBeforeInput) {
+              const globalPaddingBefore = globalPaddingBeforeInput.value || '10';
+              combinedFormData.set('padding_before', globalPaddingBefore);
+            }
+            
+            // Get and validate global "after" padding
+            const globalPaddingAfterInput = document.getElementById('global_padding_after');
+            if (globalPaddingAfterInput) {
+              let globalPaddingAfter = globalPaddingAfterInput.value || '35';
+              
+              // Apply minimum padding to global padding
+              if (parseInt(globalPaddingAfter) < this.MIN_PADDING_AFTER) {
+                globalPaddingAfter = this.MIN_PADDING_AFTER.toString();
+              }
+              
+              combinedFormData.set('padding_after', globalPaddingAfter);
+            }
+            
+            // Add other configuration data (excluding individual paddings)
+            for (let [key, value] of configFormData.entries()) {
+              if (!key.includes('padding') || key === 'scope') { // Always include scope
+                combinedFormData.append(key, value);
+              }
+            }
           }
+          
           const includeSunsetCheckbox = document.getElementById('include_sunset');
           if (includeSunsetCheckbox) {
             combinedFormData.set('include_sunset', includeSunsetCheckbox.checked ? 'on' : '');
           }
+
+
+          
           const response = await fetch('/api/generate_planning', {
             method: 'POST',
             body: combinedFormData
@@ -57,16 +125,16 @@ export class PlannerPage {
           console.error('Error generating planning:', error);
           
           // Improve error messages for the user
-          let errorMessage = 'Erreur lors de la génération du planning';
+          let errorMessage = 'Error generating planning';
           
           if (error.message.includes('HTTP error 500')) {
-            errorMessage = 'Le service Mawaqit est temporairement indisponible. Veuillez réessayer dans quelques secondes.';
+            errorMessage = 'Mawaqit service temporarily unavailable. Please try again in a few seconds.';
           } else if (error.message.includes('timeout') || error.message.includes('network')) {
-            errorMessage = 'Problème de connexion réseau. Veuillez vérifier votre connexion et réessayer.';
+            errorMessage = 'Network connection issue. Please check your connection and try again.';
           } else if (error.message.includes('Mosque not found')) {
-            errorMessage = 'Mosquée non trouvée. Veuillez vérifier l\'identifiant de la mosquée.';
+            errorMessage = 'Mosque not found. Please check the mosque identifier.';
           } else if (error.message.includes('HTTP error')) {
-            errorMessage = 'Erreur de communication avec le service Mawaqit. Veuillez réessayer.';
+            errorMessage = 'Communication error with Mawaqit service. Please try again.';
           } else if (error.message) {
             errorMessage = error.message;
           }
@@ -133,7 +201,7 @@ export class PlannerPage {
     
     // Update progress state
     this.progressState.planningGenerated = true;
-    this.progressState.configCompleted = true; // The configuration is necessarily complete if we get here
+    this.progressState.configCompleted = true; // Configuration is necessarily complete if we get here
     this.updateProgressIndicator(2);
     
     this.showPlanningSections();
@@ -242,6 +310,36 @@ export class PlannerPage {
         }
       }
     });
+    
+    // Display individual paddings if available
+    if (data.prayer_paddings) {
+      const individualPaddingsContainer = document.querySelector('.individual-paddings-summary');
+      if (individualPaddingsContainer) {
+        individualPaddingsContainer.innerHTML = '';
+        const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+        const prayerNames = {
+          'fajr': 'Fajr',
+          'sunset': 'Sunset',
+          'dhuhr': 'Dhuhr',
+          'asr': 'Asr',
+          'maghrib': 'Maghrib',
+          'isha': 'Isha'
+        };
+        
+        prayers.forEach(prayer => {
+          if (data.prayer_paddings[prayer]) {
+            const padding = data.prayer_paddings[prayer];
+            const paddingItem = document.createElement('div');
+            paddingItem.className = 'individual-padding-item';
+            paddingItem.innerHTML = `
+              <span class="prayer-name">${prayerNames[prayer]}</span>
+              <span class="padding-values">${padding.before}min / ${padding.after}min</span>
+            `;
+            individualPaddingsContainer.appendChild(paddingItem);
+          }
+        });
+      }
+    }
   }
 
   generateDownloadLinks(data) {
@@ -334,6 +432,25 @@ export class PlannerPage {
               formData.append('padding_before', paddingBefore);
               formData.append('padding_after', paddingAfter);
               formData.append('include_sunset', includeSunset ? 'on' : '');
+              
+              // Add individual paddings
+              const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+              prayers.forEach(prayer => {
+                const beforeInput = document.getElementById(`${prayer}_padding_before`);
+                const afterInput = document.getElementById(`${prayer}_padding_after`);
+                
+                if (beforeInput) {
+                  const defaultValue = prayer === 'sunset' ? '5' : '10';
+                  const beforeValue = beforeInput.value || defaultValue;
+                  formData.set(`${prayer}_padding_before`, beforeValue);
+                }
+                if (afterInput) {
+                  const defaultValue = prayer === 'sunset' ? '15' : '35';
+                  const afterValue = afterInput.value || defaultValue;
+                  formData.set(`${prayer}_padding_after`, afterValue);
+                }
+              });
+              
               return formData;
             })()
           });
@@ -704,7 +821,7 @@ export class PlannerPage {
   }
 
   setupProgressIndicatorDetachment() {
-    // Observer pour détecter quand la progress-indicator sort du viewport
+    // Observer to detect when progress-indicator leaves viewport
     const progressIndicator = document.getElementById('progressIndicatorHero');
     const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
     
@@ -713,18 +830,18 @@ export class PlannerPage {
     let isFixedVisible = false;
     let lastScrollY = window.scrollY;
     
-    // Détection de scroll plus réactive
+    // More reactive scroll detection
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
       const progressRect = progressIndicator.getBoundingClientRect();
       
-      // Détecter le scroll vers le bas dès le premier pixel
+      // Detect downward scroll from first pixel
       if (scrollDirection === 'down' && currentScrollY > 10 && !isFixedVisible) {
         this.triggerDetachmentAnimation();
         isFixedVisible = true;
       }
-      // Détecter le retour vers le haut
+      // Detect upward return
       else if (scrollDirection === 'up' && currentScrollY < 50 && isFixedVisible) {
         this.hideFixedProgressIndicator();
         isFixedVisible = false;
@@ -733,7 +850,7 @@ export class PlannerPage {
       lastScrollY = currentScrollY;
     };
     
-    // Utiliser throttling pour optimiser les performances
+    // Use throttling to optimize performance
     let ticking = false;
     const throttledScroll = () => {
       if (!ticking) {
@@ -747,7 +864,7 @@ export class PlannerPage {
     
     window.addEventListener('scroll', throttledScroll, { passive: true });
     
-    // Synchroniser les états entre les deux progress indicators
+    // Synchronize states between the two progress indicators
     this.syncProgressIndicators();
   }
 
@@ -757,11 +874,11 @@ export class PlannerPage {
     
     if (!progressIndicator || !progressIndicatorFixed) return;
     
-    // Afficher immédiatement la barre fixe
+    // Show fixed bar immediately
     progressIndicatorFixed.classList.add('visible');
     this.syncProgressIndicators();
     
-    // Masquer simplement la progress-indicator originale
+    // Simply hide the original progress-indicator
     progressIndicator.classList.add('detaching');
   }
 
@@ -790,14 +907,14 @@ export class PlannerPage {
     
     originalSteps.forEach((step, index) => {
       if (fixedSteps[index]) {
-        // Copier les classes d'état
+        // Copy state classes
         fixedSteps[index].className = step.className;
       }
     });
   }
 
   initializeProgressSystem() {
-    // État de progression
+    // Progress state
     this.progressState = {
       mosqueSelected: false,
       configCompleted: false,
@@ -805,29 +922,29 @@ export class PlannerPage {
       downloadsAvailable: false
     };
     
-    // Observer les sections pour détecter les changements
+    // Observe sections to detect changes
     this.setupSectionObservers();
     
-    // Observer les formulaires
+    // Observe forms
     this.setupFormObservers();
     
-    // Ajouter les événements de clic sur les progress-steps
+    // Add click events on progress-steps
     this.setupProgressStepClicks();
     
-    // Vérifier l'état initial basé sur les données existantes
+    // Check initial state based on existing data
     this.checkInitialState();
     
-    // Initialiser l'état
+    // Initialize state
     this.updateProgressIndicator(0);
   }
 
   checkInitialState() {
-    // Mettre à jour l'état basé sur la réalité de l'interface
+    // Update state based on interface reality
     this.updateProgressState();
   }
 
   updateProgressState() {
-    // Mettre à jour l'état basé sur la réalité de l'interface
+    // Update state based on interface reality
     const mosqueSelect = document.getElementById('mosque-select');
     this.progressState.mosqueSelected = mosqueSelect && mosqueSelect.value ? true : false;
     
@@ -862,7 +979,7 @@ export class PlannerPage {
   }
 
   setupSectionObservers() {
-    // Observer la section benefits-section (Prayer schedule)
+    // Observe benefits-section (Prayer schedule)
     const benefitsSection = document.querySelector('.benefits-section');
     if (benefitsSection) {
       const observer = new IntersectionObserver((entries) => {
@@ -877,7 +994,7 @@ export class PlannerPage {
       observer.observe(benefitsSection);
     }
     
-    // Observer la section how-it-works-section (Downloads)
+    // Observe how-it-works-section (Downloads)
     const downloadsSection = document.querySelector('.how-it-works-section');
     if (downloadsSection) {
       const observer = new IntersectionObserver((entries) => {
@@ -894,7 +1011,7 @@ export class PlannerPage {
   }
 
   setupFormObservers() {
-    // Observer the mosque selection
+    // Observe mosque selection
     const mosqueSelect = document.getElementById('mosque-select');
     if (mosqueSelect) {
       mosqueSelect.addEventListener('change', () => {
@@ -906,7 +1023,7 @@ export class PlannerPage {
       });
     }
     
-    // Observer the configuration
+    // Observe configuration
     const configForm = document.getElementById('configForm');
     if (configForm) {
       const inputs = configForm.querySelectorAll('input, select');
@@ -1098,11 +1215,11 @@ export class PlannerPage {
   }
 
   hasPlanningData() {
-    // Check if the benefits-section exists and contains data
+    // Check if benefits-section exists and contains data
     const benefitsSection = document.querySelector('.benefits-section');
     if (!benefitsSection) return false;
     
-    // Check if the section is not hidden
+    // Check if section is not hidden
     if (benefitsSection.classList.contains('hidden')) return false;
     
     // Check if there is planning data (clock, timeline, etc.)
@@ -1114,7 +1231,7 @@ export class PlannerPage {
   }
 
   hasDownloadData() {
-    // Check if the how-it-works-section exists and contains download links
+    // Check if how-it-works-section exists and contains download links
     const downloadsSection = document.querySelector('.how-it-works-section');
     if (!downloadsSection) return false;
     
@@ -1173,4 +1290,229 @@ export class PlannerPage {
       }
     });
   }
+
+  toggleConfigMode(isIndividualMode, globalConfigSection, individualConfigSection) {
+    // Disable/enable global configuration inputs
+    const globalInputs = globalConfigSection.querySelectorAll('input');
+    globalInputs.forEach(input => {
+      input.disabled = isIndividualMode;
+      if (isIndividualMode) {
+        input.style.opacity = '0.5';
+      } else {
+        input.style.opacity = '1';
+      }
+    });
+    
+    // Show/hide individual section
+    if (isIndividualMode) {
+      individualConfigSection.style.display = 'block';
+    } else {
+      individualConfigSection.style.display = 'none';
+    }
+  }
+
+  setupPrayerPaddingConfig() {
+    
+    // Switch to toggle between global and individual configuration
+    const configModeSwitch = document.getElementById('configModeSwitch');
+    const globalConfigSection = document.getElementById('globalConfigSection');
+    const individualConfigSection = document.getElementById('individualConfigSection');
+    const backToGlobalBtn = document.getElementById('backToGlobalBtn');
+    
+    if (configModeSwitch && globalConfigSection && individualConfigSection) {
+      // Initialize initial state
+      const isIndividualMode = configModeSwitch.checked;
+      this.toggleConfigMode(isIndividualMode, globalConfigSection, individualConfigSection);
+      
+      // Update switch label for initial state
+      const switchLabel = document.querySelector('.switch-label');
+      if (switchLabel) {
+        switchLabel.textContent = 'Individual Configuration';
+        if (isIndividualMode) {
+          switchLabel.classList.add('active');
+        } else {
+          switchLabel.classList.remove('active');
+        }
+      }
+      
+      configModeSwitch.addEventListener('change', () => {
+        const isIndividualMode = configModeSwitch.checked;
+        
+        this.toggleConfigMode(isIndividualMode, globalConfigSection, individualConfigSection);
+        
+        // Update switch label to indicate current mode
+        const switchLabel = document.querySelector('.switch-label');
+        if (switchLabel) {
+          switchLabel.textContent = 'Individual Configuration';
+          if (isIndividualMode) {
+            switchLabel.classList.add('active');
+          } else {
+            switchLabel.classList.remove('active');
+          }
+        }
+      });
+    }
+    
+    // Button to return to global configuration
+    if (backToGlobalBtn && configModeSwitch) {
+      backToGlobalBtn.addEventListener('click', () => {
+        configModeSwitch.checked = false;
+        configModeSwitch.dispatchEvent(new Event('change'));
+      });
+    }
+
+    // Individual padding configuration for each prayer
+    const applyGlobalBtn = document.getElementById('applyGlobalBtn');
+    const resetToDefaultBtn = document.getElementById('resetToDefaultBtn');
+    const globalPaddingBefore = document.getElementById('global_padding_before');
+    const globalPaddingAfter = document.getElementById('global_padding_after');
+
+    // Real-time validation of minimum padding for individual paddings
+    const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+    
+    // Initial value validation
+    prayers.forEach(prayer => {
+      const beforeInput = document.getElementById(`${prayer}_padding_before`);
+      const afterInput = document.getElementById(`${prayer}_padding_after`);
+      
+      // Check and correct default values if necessary
+      if (beforeInput && !beforeInput.value) {
+        beforeInput.value = prayer === 'sunset' ? 5 : 10;
+      }
+      if (afterInput && !afterInput.value) {
+        afterInput.value = prayer === 'sunset' ? 15 : 35;
+      }
+    });
+    
+    prayers.forEach(prayer => {
+      const afterInput = document.getElementById(`${prayer}_padding_after`);
+      
+      if (afterInput) {
+        afterInput.addEventListener('input', () => {
+          const value = parseInt(afterInput.value) || 0;
+          
+          if (value < this.MIN_PADDING_AFTER) {
+            afterInput.style.borderColor = '#f56565';
+            afterInput.title = `Minimum ${this.MIN_PADDING_AFTER} minutes required for uniform display`;
+            
+            // Show padding information
+            this.showPaddingInfo(prayer, value, this.MIN_PADDING_AFTER);
+          } else {
+            afterInput.style.borderColor = '';
+            afterInput.title = '';
+            // Hide padding-info when value is correct
+            this.hidePaddingInfo();
+          }
+        });
+      }
+    });
+
+    // Real-time validation of minimum padding for global padding
+    if (globalPaddingAfter) {
+      globalPaddingAfter.addEventListener('input', () => {
+        const value = parseInt(globalPaddingAfter.value) || 0;
+        
+        if (value < this.MIN_PADDING_AFTER) {
+          globalPaddingAfter.style.borderColor = '#f56565';
+          globalPaddingAfter.title = `Minimum ${this.MIN_PADDING_AFTER} minutes required for uniform display`;
+          
+          // Show padding information
+          this.showPaddingInfo('global', value, this.MIN_PADDING_AFTER);
+        } else {
+          globalPaddingAfter.style.borderColor = '';
+          globalPaddingAfter.title = '';
+          // Hide padding-info when value is correct
+          this.hidePaddingInfo();
+        }
+      });
+    }
+
+    // Reset button
+    if (resetToDefaultBtn) {
+      resetToDefaultBtn.addEventListener('click', () => {
+        // Reset global values
+        if (globalPaddingBefore) globalPaddingBefore.value = 10;
+        if (globalPaddingAfter) globalPaddingAfter.value = 35;
+        
+        // Reset all individual paddings
+        prayers.forEach(prayer => {
+          const beforeInput = document.getElementById(`${prayer}_padding_before`);
+          const afterInput = document.getElementById(`${prayer}_padding_after`);
+          if (beforeInput) beforeInput.value = prayer === 'sunset' ? 5 : 10;
+          if (afterInput) afterInput.value = prayer === 'sunset' ? 15 : 35;
+        });
+        
+        // Hide padding-info after reset
+        this.hidePaddingInfo();
+
+        this.showMessage('Configuration reset to default values', 'success');
+      });
+    }
+  }
+
+  showPaddingInfo(prayer, currentValue, minValue) {
+    // Hide all existing padding-info
+    const existingInfos = document.querySelectorAll('.padding-info');
+    existingInfos.forEach(info => {
+      info.style.display = 'none';
+    });
+    
+    // Find padding-info - search throughout the page
+    let targetInfo = document.querySelector('.padding-info');
+    
+    if (targetInfo) {
+      // Update content with specific information
+      const infoContent = targetInfo.querySelector('.info-content');
+      if (infoContent) {
+        const prayerNames = {
+          'fajr': 'Fajr',
+          'sunset': 'Sunset',
+          'dhuhr': 'Dhuhr',
+          'asr': 'Asr',
+          'maghrib': 'Maghrib',
+          'isha': 'Isha',
+          'global': 'Global Configuration'
+        };
+        
+        infoContent.innerHTML = `
+          <strong>${prayerNames[prayer]}</strong> : The after padding (${currentValue} min) will be automatically increased to ${minValue} min for uniform display in calendars.
+        `;
+      }
+      
+      // Show with animation
+      targetInfo.style.display = 'block';
+      targetInfo.style.animation = 'slideDown 0.3s ease';
+    }
+  }
+
+  hidePaddingInfo() {
+    // Check if no input has a value below minimum
+    const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+    const globalPaddingAfter = document.getElementById('global_padding_after');
+    
+    let shouldHide = true;
+    
+    // Check individual paddings
+    prayers.forEach(prayer => {
+      const afterInput = document.getElementById(`${prayer}_padding_after`);
+      if (afterInput && parseInt(afterInput.value) < this.MIN_PADDING_AFTER) {
+        shouldHide = false;
+      }
+    });
+    
+    // Check global padding
+    if (globalPaddingAfter && parseInt(globalPaddingAfter.value) < this.MIN_PADDING_AFTER) {
+      shouldHide = false;
+    }
+    
+    // Hide padding-info only if all paddings are correct
+    if (shouldHide) {
+      const paddingInfos = document.querySelectorAll('.padding-info');
+      paddingInfos.forEach(info => {
+        info.style.display = 'none';
+      });
+    }
+  }
+
+
 }

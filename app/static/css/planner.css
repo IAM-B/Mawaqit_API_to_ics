@@ -416,7 +416,7 @@
   border-radius: 12px;
   border: 1px solid var(--border-color);
   display: flex;
-  flex-direction: column;      /* IE 10+ */
+  flex-direction: column;
 }
 
 /* Right half: calendar and clock */
@@ -2177,7 +2177,7 @@
   backdrop-filter: blur(10px);
 }
 
-/* Progress steps dans la barre fixe */
+/* Progress steps in fixed bar */
 .progress-indicator-fixed .progress-step {
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.2);
@@ -2200,4 +2200,554 @@
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
   border-color: #48bb78;
   color: white;
+}
+
+/* ==================
+   📋 TOGGLE BUTTON
+   ================== */
+.btn-toggle {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg-medium);
+  color: var(--text-bright);
+  border: 1px solid var(--primary-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.btn-toggle:hover {
+  background: var(--bg-dark);
+  border-color: var(--modern-blue);
+  color: var(--modern-blue);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-toggle.active {
+  background: var(--modern-blue);
+  color: white;
+  border-color: var(--modern-blue);
+}
+
+.btn-toggle.active:hover {
+  background: var(--modern-blue-hover);
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.btn-toggle.active .toggle-icon {
+  transform: rotate(180deg);
+}
+
+/* ==================
+   📋 SWITCH DE CONFIGURATION
+   ================== */
+.config-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1rem 0;
+  padding: 0.75rem 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--text-muted);
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+span.slider.round {
+  background: var(--text-muted);
+}
+input:checked + .slider {
+  background: var(--bg-medium);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.switch-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.switch-label.active {
+  color: var(--prayer-green);
+  font-weight: 600;
+}
+
+/* ==================
+   📋 CONFIGURATION INDIVIDUELLE
+   ================== */
+.config-individual {
+  margin-top: 1.5rem;
+  animation: slideDown 0.3s ease;
+  background: var(--bg-medium);
+  border: 1px solid var(--primary-border);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.config-individual h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.config-individual h4 i {
+  color: var(--prayer-green);
+  font-size: 1.1rem;
+}
+
+/* Grid to organize fields by prayer */
+.prayer-config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.prayer-config-item {
+  background: var(--bg-light);
+  border: 1px solid var(--primary-border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.prayer-config-item h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.prayer-config-item h5 i {
+  color: var(--prayer-green);
+  font-size: 1rem;
+}
+
+.prayer-config-item .input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.prayer-config-item label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.prayer-config-item input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--primary-border);
+  border-radius: 8px;
+  background: var(--bg-medium);
+  color: var(--text-bright);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: border-color 0.2s ease;
+  text-align: center;
+}
+
+/* Actions at bottom */
+.config-individual .actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--primary-border);
+}
+
+.config-individual .btn-secondary {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-light);
+  color: var(--text-bright);
+  border: 1px solid var(--primary-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.config-individual .btn-secondary:hover {
+  background: var(--bg-medium);
+  border-color: var(--prayer-green);
+  color: var(--prayer-green);
+}
+
+.config-individual .btn-secondary i {
+  font-size: 0.85rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .config-individual {
+    padding: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .config-individual h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .prayer-config-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .prayer-config-item {
+    padding: 1.25rem;
+  }
+  
+  .prayer-config-item .input-group {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .config-individual .actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .config-individual .btn-secondary {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .config-individual {
+    padding: 1rem;
+  }
+  
+  .prayer-config-item {
+    padding: 1rem;
+  }
+  
+  .prayer-config-item input {
+    padding: 0.625rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ==================
+   📋 SUMMARY DISPLAY STYLES
+   ================== */
+.summary-display {
+  padding: 6rem 2rem;
+  margin: 2rem;
+  border-radius: 24px;
+  background: var(--bg-medium);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-border);
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px var(--primary-light);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.summary-display.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.summary-display .summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.summary-display .summary-card {
+  background: var(--bg-light);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--primary-border);
+  box-shadow: var(--shadow-lg);
+  transition: all 0.3s ease;
+}
+
+.summary-display .summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.summary-display .summary-card h3 {
+  color: var(--text-bright);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-display .summary-card h3 i {
+  color: var(--prayer-green);
+}
+
+.summary-display .config-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summary-display .config-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-medium);
+  border-radius: 8px;
+  border: 1px solid var(--primary-border);
+}
+
+.summary-display .config-label {
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.summary-display .config-value {
+  font-weight: 500;
+  color: var(--prayer-green);
+  background: var(--bg-light);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--prayer-green);
+}
+
+/* ==================
+   📋 INDIVIDUAL PADDINGS SUMMARY STYLES
+   ================== */
+.individual-paddings-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--primary-border);
+}
+
+.individual-paddings-section h4 {
+  color: var(--text-bright);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.individual-paddings-section h4 i {
+  color: var(--prayer-green);
+}
+
+.individual-paddings-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.individual-padding-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-medium);
+  border-radius: 8px;
+  border: 1px solid var(--primary-border);
+  transition: all 0.3s ease;
+}
+
+.individual-padding-item:hover {
+  background: var(--bg-light);
+  border-color: var(--prayer-green);
+  transform: translateY(-1px);
+}
+
+.individual-padding-item .prayer-name {
+  font-weight: 600;
+  color: var(--text-bright);
+  font-size: 0.9rem;
+}
+
+.individual-padding-item .padding-values {
+  font-weight: 500;
+  color: var(--prayer-green);
+  background: var(--bg-light);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--prayer-green);
+  font-size: 0.8rem;
+}
+
+/* ==================
+   📋 RESPONSIVE SUMMARY DISPLAY
+   ================== */
+@media (max-width: 768px) {
+  .summary-display .summary-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .summary-display .summary-card {
+    padding: 1.5rem;
+  }
+  
+  .individual-paddings-summary {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .individual-padding-item {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .individual-padding-item .prayer-name {
+    font-size: 0.8rem;
+  }
+  
+  .individual-padding-item .padding-values {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-display {
+    padding: 4rem 1rem;
+    margin: 1rem;
+  }
+  
+  .summary-display .summary-card {
+    padding: 1rem;
+  }
+  
+  .individual-paddings-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==================
+   📋 PADDING INFO STYLES
+   ================== */
+.padding-info {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.padding-info .info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: var(--text-bright);
+}
+
+.padding-info .info-box i {
+  color: var(--warning);
+  font-size: 1.1rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.padding-info .info-content {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.padding-info .info-content strong {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .padding-info {
+    margin-top: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .padding-info .info-box {
+    gap: 0.5rem;
+  }
+  
+  .padding-info .info-content {
+    font-size: 0.85rem;
+  }
 }
