@@ -59,15 +59,9 @@ def segment_available_time(prayer_times: dict, tz_str: str, padding_before: int,
         
         if prayer_paddings and current_prayer in prayer_paddings:
             current_padding_after = prayer_paddings[current_prayer]['after']
-            print(f"  🔧 [time_segmenter] Using custom padding for {current_prayer}: after={current_padding_after}")
-        else:
-            print(f"  🔄 [time_segmenter] Using default padding for {current_prayer}: after={current_padding_after}")
         
         if prayer_paddings and next_prayer in prayer_paddings:
             next_padding_before = prayer_paddings[next_prayer]['before']
-            print(f"  🔧 [time_segmenter] Using custom padding for {next_prayer}: before={next_padding_before}")
-        else:
-            print(f"  🔄 [time_segmenter] Using default padding for {next_prayer}: before={next_padding_before}")
 
         # Apply minimum padding of 10 minutes after prayer for uniform display
         MIN_PADDING_AFTER = 10
@@ -78,8 +72,6 @@ def segment_available_time(prayer_times: dict, tz_str: str, padding_before: int,
 
         start = times[i] + timedelta(minutes=current_padding_after)
         end = times[i + 1] - timedelta(minutes=next_padding_before)
-        
-        print(f"  📅 [time_segmenter] Creating segment: {current_prayer}-{next_prayer} from {start.strftime('%H:%M')} to {end.strftime('%H:%M')}")
         
         if start < end:
             segments.append({

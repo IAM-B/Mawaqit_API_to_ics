@@ -138,9 +138,6 @@ def generate_prayer_ics_file(
                 if prayer_paddings and name in prayer_paddings:
                     prayer_before = prayer_paddings[name]['before']
                     prayer_after = prayer_paddings[name]['after']
-                    print(f"  🔧 [prayer_generator] Using custom padding for {name}: before={prayer_before}, after={prayer_after}")
-                else:
-                    print(f"  🔄 [prayer_generator] Using default padding for {name}: before={prayer_before}, after={prayer_after}")
                 
                 # Apply minimum padding of 10 minutes after prayer for uniform display
                 MIN_PADDING_AFTER = 10

@@ -242,7 +242,6 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         has_individual_paddings = any(request.form.get(f'{prayer}_padding_before') and request.form.get(f'{prayer}_padding_after') for prayer in prayers)
         
         if has_individual_paddings:
-            print(f"🔧 [handle_planner_post] INDIVIDUAL mode detected - processing individual paddings...")
             for prayer in prayers:
                 before_key = f'{prayer}_padding_before'
                 after_key = f'{prayer}_padding_after'
@@ -256,7 +255,6 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                         'before': int(before_value),
                         'after': int(after_value)
                     }
-                    print(f"  ✅ [handle_planner_post] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
                 else:
                     # Use global config for missing prayers
                     backend_prayer_name = prayer_name_mapping[prayer]
@@ -264,9 +262,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                         prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
                     else:
                         prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
-                    print(f"  🔄 [handle_planner_post] {prayer} → {backend_prayer_name}: using global config")
         else:
-            print(f"🔧 [handle_planner_post] GLOBAL mode detected - using global config for all prayers")
             # Use global config for all prayers
             for prayer in prayers:
                 backend_prayer_name = prayer_name_mapping[prayer]
@@ -274,11 +270,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                     prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
                 else:
                     prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
-                print(f"  🔄 [handle_planner_post] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
-        
-        print(f"🎯 [handle_planner_post] Final prayer_paddings: {prayer_paddings}")
     except ValueError:
-        raise ValueError("Invalid padding values: padding_before and padding_after must be integers")
+        return {"error": "Invalid padding values: padding_before and padding_after must be integers"}, 400
 
     if padding_before < 0 or padding_after < 0:
         raise ValueError("Invalid padding values: padding_before and padding_after must be positive integers")
@@ -287,31 +280,20 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         raise ValueError("Scope must be 'today', 'month', or 'year'")
 
     try:
-        print(f"📥 Request received: masjid_id={masjid_id}, scope={scope}, padding_before={padding_before}, padding_after={padding_after}")
-
         # Get coordinates from form
         mosque_lat = request.form.get("mosque_lat")
         mosque_lng = request.form.get("mosque_lng")
         mosque_name = request.form.get("mosque_name")
         mosque_address = request.form.get("mosque_address")
-        
-        print(f"📍 Coordinates from form: lat={mosque_lat}, lng={mosque_lng}")
-        print(f"🕌 Mosque info from form: name={mosque_name}, address={mosque_address}")
 
         # Fetch prayer times and timezone
         prayer_times, tz_str = fetch_mosques_data(masjid_id, scope)
-
-        print(f"📦 Data retrieved from fetch_mosques_data()")
-        print(f"⏰ Timezone: {tz_str}")
-        print(f"📊 prayer_times type: {type(prayer_times)}")
-        print(f"📊 Raw prayer_times preview: {str(prayer_times)[:500]}")
 
         # Use form coordinates if available, otherwise retrieve from JSON
         if mosque_lat and mosque_lng and mosque_name:
             lat = float(mosque_lat)
             lng = float(mosque_lng)
             mosque_slug = masjid_id
-            print(f"🕌 Using coordinates from form: lat={lat}, lng={lng}")
         else:
             # Fallback: retrieve from JSON files
             mosque_info = get_mosque_info_from_json(masjid_id)
@@ -322,8 +304,6 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                 lat = mosque_info["lat"]
                 lng = mosque_info["lng"]
                 mosque_slug = mosque_info["slug"]
-                
-                print(f"🕌 Mosque info from JSON: name={mosque_name}, lat={lat}, lng={lng}")
             else:
                 # Fallback to web scraping if not found in JSON
                 mosque_data = fetch_mawaqit_data(masjid_id)
@@ -332,8 +312,6 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                 lat = mosque_data.get("lat")
                 lng = mosque_data.get("lng")
                 mosque_slug = mosque_data.get("slug", masjid_id)
-                
-                print(f"🕌 Mosque info from web: name={mosque_name}, lat={lat}, lng={lng}")
         
         # Use GPS coordinates if address is not available
         if not mosque_address and lat and lng:
@@ -382,10 +360,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
 
         # Normalize data for long scopes
         if scope == "month":
-            print("🔧 Normalizing monthly data...")
             prayer_times = normalize_month_data(prayer_times, include_sunset=include_sunset)
         elif scope == "year":
-            print("🔧 Normalizing yearly data...")
             prayer_times = normalize_year_data(prayer_times, include_sunset=include_sunset)
 
         # Generate prayer times ICS file
@@ -427,7 +403,6 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         # Process time segments for display
         segments = []
         if scope == "today":
-            print("📅 Processing today scope")
             if isinstance(prayer_times, dict):
                 slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after, prayer_paddings)
                 empty_slots = generate_empty_slots_for_timeline(slots)
@@ -439,7 +414,6 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                     "prayer_times": prayer_times
                 })
         elif isinstance(prayer_times, list):
-            print("📅 Processing month/year scope as list")
             if scope == "month":
                 # Use target month/year if provided, otherwise use current
                 if target_month and target_year:
@@ -580,7 +554,6 @@ def handle_planner_ajax():
         has_individual_paddings = any(request.form.get(f'{prayer}_padding_before') and request.form.get(f'{prayer}_padding_after') for prayer in prayers)
         
         if has_individual_paddings:
-            print(f"🔧 [handle_planner_ajax] INDIVIDUAL mode detected - processing individual paddings...")
             for prayer in prayers:
                 before_key = f'{prayer}_padding_before'
                 after_key = f'{prayer}_padding_after'
@@ -594,7 +567,6 @@ def handle_planner_ajax():
                         'before': int(before_value),
                         'after': int(after_value)
                     }
-                    print(f"  ✅ [handle_planner_ajax] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
                 else:
                     # Use global config for missing prayers
                     backend_prayer_name = prayer_name_mapping[prayer]
@@ -602,9 +574,7 @@ def handle_planner_ajax():
                         prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
                     else:
                         prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
-                    print(f"  🔄 [handle_planner_ajax] {prayer} → {backend_prayer_name}: using global config")
         else:
-            print(f"🔧 [handle_planner_ajax] GLOBAL mode detected - using global config for all prayers")
             # Use global config for all prayers
             for prayer in prayers:
                 backend_prayer_name = prayer_name_mapping[prayer]
@@ -612,7 +582,6 @@ def handle_planner_ajax():
                     prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
                 else:
                     prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
-                print(f"  🔄 [handle_planner_ajax] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
         
         print(f"🎯 [handle_planner_ajax] Final prayer_paddings: {prayer_paddings}")
         
@@ -628,8 +597,6 @@ def handle_planner_ajax():
 
         if scope not in ("today", "month", "year"):
             return {"error": "Invalid scope"}, 400
-
-        print(f"📥 AJAX Request received: masjid_id={masjid_id}, scope={scope}, padding_before={padding_before}, padding_after={padding_after}")
 
         # Get coordinates from form
         mosque_lat = request.form.get("mosque_lat")
