@@ -199,10 +199,16 @@ export class PlannerPage {
     window.currentMonth = new Date().getMonth();
     window.currentYear = new Date().getFullYear();
     
-    // Update progress state
+    // Store segments data globally for progress checking
+    if (data.segments) {
+      window.currentSegments = data.segments;
+    }
+    
+    // Update progress state - only mark planning as generated, don't force config completion
     this.progressState.planningGenerated = true;
-    this.progressState.configCompleted = true; // Configuration is necessarily complete if we get here
-    this.updateProgressIndicator(2);
+    
+    // Check if configuration is actually complete based on form data
+    this.updateProgressState();
     
     this.showPlanningSections();
     this.updateMosqueInfo(data);
@@ -949,7 +955,7 @@ export class PlannerPage {
       downloadsAvailable: false
     };
     
-    // Observe sections to detect changes
+    // Observe sections
     this.setupSectionObservers();
     
     // Observe forms
@@ -966,8 +972,41 @@ export class PlannerPage {
   }
 
   checkInitialState() {
-    // Update state based on interface reality
-    this.updateProgressState();
+    // Check if there's already data on the page (e.g., from a previous session)
+    const mosqueSelect = document.getElementById('mosque-select');
+    if (mosqueSelect && mosqueSelect.value) {
+      this.progressState.mosqueSelected = true;
+    }
+    
+    // Check if configuration form has values
+    const configForm = document.getElementById('configForm');
+    if (configForm) {
+      const paddingBefore = configForm.querySelector('input[name="padding_before"]');
+      const paddingAfter = configForm.querySelector('input[name="padding_after"]');
+      const includeSunset = configForm.querySelector('input[name="include_sunset"]');
+      
+      if (paddingBefore && paddingAfter && includeSunset) {
+        const hasPaddingValues = paddingBefore.value && paddingAfter.value &&
+                                !isNaN(parseInt(paddingBefore.value)) && 
+                                !isNaN(parseInt(paddingAfter.value));
+        const hasSunsetConfig = includeSunset.checked !== undefined;
+        
+        this.progressState.configCompleted = hasPaddingValues && hasSunsetConfig;
+      } else {
+        this.progressState.configCompleted = false;
+      }
+    } else {
+      this.progressState.configCompleted = false;
+    }
+    
+    // Check if planning data exists
+    this.progressState.planningGenerated = this.hasPlanningData();
+    
+    // Check if download data exists
+    this.progressState.downloadsAvailable = this.hasDownloadData();
+    
+    // Update display based on initial state
+    this.updateProgressDisplay();
   }
 
   updateProgressState() {
@@ -975,14 +1014,31 @@ export class PlannerPage {
     const mosqueSelect = document.getElementById('mosque-select');
     this.progressState.mosqueSelected = mosqueSelect && mosqueSelect.value ? true : false;
     
+    // Check configuration completion more rigorously
     const configForm = document.getElementById('configForm');
     if (configForm) {
       const paddingBefore = configForm.querySelector('input[name="padding_before"]');
       const paddingAfter = configForm.querySelector('input[name="padding_after"]');
-      this.progressState.configCompleted = (paddingBefore && paddingAfter && paddingBefore.value && paddingAfter.value);
+      const includeSunset = configForm.querySelector('input[name="include_sunset"]');
+      
+      // Check if both padding values are filled and valid
+      const hasPaddingValues = paddingBefore && paddingAfter && 
+                              paddingBefore.value && paddingAfter.value &&
+                              !isNaN(parseInt(paddingBefore.value)) && 
+                              !isNaN(parseInt(paddingAfter.value));
+      
+      // Check if sunset option is selected (if it exists)
+      const hasSunsetConfig = !includeSunset || includeSunset.checked !== undefined;
+      
+      this.progressState.configCompleted = hasPaddingValues && hasSunsetConfig;
+    } else {
+      this.progressState.configCompleted = false;
     }
     
+    // Check if planning data actually exists
     this.progressState.planningGenerated = this.hasPlanningData();
+    
+    // Check if download data actually exists
     this.progressState.downloadsAvailable = this.hasDownloadData();
     
     // Update the progress-indicator display
@@ -994,7 +1050,8 @@ export class PlannerPage {
     
     if (this.progressState.downloadsAvailable) {
       currentStep = 3;
-    } else if (this.progressState.planningGenerated) {
+    } else if (this.progressState.planningGenerated && this.progressState.configCompleted) {
+      // Only mark step 2 as completed if both planning is generated AND config is completed
       currentStep = 2;
     } else if (this.progressState.mosqueSelected) {
       currentStep = 1;
@@ -1006,35 +1063,9 @@ export class PlannerPage {
   }
 
   setupSectionObservers() {
-    // Observe benefits-section (Prayer schedule)
-    const benefitsSection = document.querySelector('.benefits-section');
-    if (benefitsSection) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && this.progressState.configCompleted) {
-            this.progressState.planningGenerated = true;
-            this.updateProgressIndicator(2);
-          }
-        });
-      }, { threshold: 0.3 });
-      
-      observer.observe(benefitsSection);
-    }
-    
-    // Observe how-it-works-section (Downloads)
-    const downloadsSection = document.querySelector('.how-it-works-section');
-    if (downloadsSection) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && this.progressState.planningGenerated) {
-            this.progressState.downloadsAvailable = true;
-            this.updateProgressIndicator(3);
-          }
-        });
-      }, { threshold: 0.3 });
-      
-      observer.observe(downloadsSection);
-    }
+    // Remove automatic progress completion based on scrolling
+    // Progress steps should only be completed based on actual user actions and form completion
+    // This prevents false completion when users just scroll down the page
   }
 
   setupFormObservers() {
@@ -1046,6 +1077,9 @@ export class PlannerPage {
           this.progressState.mosqueSelected = true;
           this.updateProgressIndicator(1);
           this.scrollToConfig();
+        } else {
+          // Reset progress if mosque is deselected
+          this.resetProgressState();
         }
       });
     }
@@ -1074,12 +1108,30 @@ export class PlannerPage {
     const includeSunset = configForm.querySelector('input[name="include_sunset"]');
     
     if (paddingBefore && paddingAfter && includeSunset) {
-      const isComplete = paddingBefore.value && paddingAfter.value;
+      // Check if both padding values are filled and valid numbers
+      const hasPaddingValues = paddingBefore.value && paddingAfter.value &&
+                              !isNaN(parseInt(paddingBefore.value)) && 
+                              !isNaN(parseInt(paddingAfter.value));
+      
+      // Check if sunset option is properly configured
+      const hasSunsetConfig = includeSunset.checked !== undefined;
+      
+      const isComplete = hasPaddingValues && hasSunsetConfig;
       
       if (isComplete && !this.progressState.configCompleted) {
         this.progressState.configCompleted = true;
-        this.updateProgressIndicator(1);
+        this.updateProgressState(); // Use updateProgressState for consistency
         this.showConfigCompleteMessage();
+      } else if (!isComplete && this.progressState.configCompleted) {
+        // If configuration becomes incomplete, update state
+        this.progressState.configCompleted = false;
+        this.updateProgressState();
+      }
+    } else {
+      // If any required element is missing, mark as incomplete
+      if (this.progressState.configCompleted) {
+        this.progressState.configCompleted = false;
+        this.updateProgressState();
       }
     }
   }
@@ -1253,8 +1305,19 @@ export class PlannerPage {
     const clockContent = document.getElementById('clockContent');
     const timelineSvg = document.querySelector('.slots-timeline-svg');
     
-    return (clockContent && clockContent.children.length > 0) || 
-           (timelineSvg && timelineSvg.children.length > 0);
+    // Check if global planning data exists
+    const hasGlobalData = window.currentMosqueId && 
+                         window.currentPaddingBefore && 
+                         window.currentPaddingAfter;
+    
+    // Check if visual components have content
+    const hasClockContent = clockContent && clockContent.children.length > 0;
+    const hasTimelineContent = timelineSvg && timelineSvg.children.length > 0;
+    
+    // Check if segments data exists (from API response)
+    const hasSegmentsData = window.currentSegments && window.currentSegments.length > 0;
+    
+    return hasGlobalData && (hasClockContent || hasTimelineContent || hasSegmentsData);
   }
 
   hasDownloadData() {
@@ -1262,9 +1325,21 @@ export class PlannerPage {
     const downloadsSection = document.querySelector('.how-it-works-section');
     if (!downloadsSection) return false;
     
-    // Check if there are download links
+    // Check if section is not hidden
+    if (downloadsSection.classList.contains('hidden')) return false;
+    
+    // Check if there are download links with valid href
     const downloadCards = downloadsSection.querySelectorAll('.download-card');
-    return downloadCards.length > 0;
+    let hasValidDownloads = false;
+    
+    downloadCards.forEach(card => {
+      const href = card.getAttribute('href');
+      if (href && href !== '#' && href !== '') {
+        hasValidDownloads = true;
+      }
+    });
+    
+    return hasValidDownloads;
   }
 
   showStepLockedMessage(stepIndex) {
@@ -1541,5 +1616,21 @@ export class PlannerPage {
     }
   }
 
+  resetProgressState() {
+    // Reset all progress states
+    this.progressState.mosqueSelected = false;
+    this.progressState.configCompleted = false;
+    this.progressState.planningGenerated = false;
+    this.progressState.downloadsAvailable = false;
+    
+    // Clear global data
+    window.currentMosqueId = null;
+    window.currentPaddingBefore = null;
+    window.currentPaddingAfter = null;
+    window.currentSegments = null;
+    
+    // Update display
+    this.updateProgressIndicator(0);
+  }
 
 }
