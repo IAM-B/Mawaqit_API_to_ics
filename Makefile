@@ -86,6 +86,8 @@ clean-ics:
 	rm -f tests/python/integration/api/*.ics
 	rm -f tests/python/integration/ics/*.ics
 	rm -f app/static/ics/*.ics
+	rm -f app/cache/*.json
+	rm -f app/cache/*.ics
 	@echo "✅ Test files cleaned."
 
 cleanup:

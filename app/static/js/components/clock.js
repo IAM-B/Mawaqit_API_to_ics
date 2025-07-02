@@ -389,8 +389,15 @@ export class Clock {
       return;
     }
     
-    // Define the logical order of prayers (not chronological)
-    const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
+    // Build dynamic prayer order based on available prayers
+    const prayerOrder = ['fajr'];
+    
+          // Add sunset only if it exists in the data
+      if (currentData.prayer_times['sunset']) {
+        prayerOrder.push('sunset');
+      }
+    
+    prayerOrder.push('dohr', 'asr', 'maghreb', 'icha');
     
     const calculatedSlots = [];
     
@@ -407,81 +414,81 @@ export class Clock {
         continue;
       }
       
-              // Special handling for the slot between maghreb and icha (always night slot)
-        if (currentPrayerName === 'maghreb' && nextPrayerName === 'icha') {
-          const ichaMinutes = timeToMinutes(nextPrayerTime);
-          const maghrebMinutes = timeToMinutes(currentPrayerTime);
+      // Special handling for the slot between maghreb and icha (always night slot)
+      if (currentPrayerName === 'maghreb' && nextPrayerName === 'icha') {
+        const ichaMinutes = timeToMinutes(nextPrayerTime);
+        const maghrebMinutes = timeToMinutes(currentPrayerTime);
+        
+        // Check if icha is after midnight by comparing with maghreb
+        if (ichaMinutes < maghrebMinutes) {
+          // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
+          const maghrebPadding = this.getIndividualPadding(currentPrayerName);
+          const ichaPadding = this.getIndividualPadding(nextPrayerName);
           
-          // Check if icha is after midnight by comparing with maghreb
-          if (ichaMinutes < maghrebMinutes) {
-            // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
-            const maghrebPadding = this.getIndividualPadding(currentPrayerName);
-            const ichaPadding = this.getIndividualPadding(nextPrayerName);
-            
-            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, maghrebPadding.after);
-            const maghrebToMidnightEnd = "23:59";
-            
-            const midnightToIchaStart = "00:00";
-            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, ichaPadding.before);
-            
-            // Create a unique identifier for the night slot pair
-            const nightSlotId = `night-slot-${maghrebToMidnightStart}-${midnightToIchaEnd}`;
-            // Create a common identifier for maghreb-icha slots only
-            const allNightSlotId = `maghreb-icha-slots`;
-            
-            // First slot: maghreb to 23:59
-            if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
-              const duration = timeToMinutes(maghrebToMidnightEnd) - timeToMinutes(maghrebToMidnightStart);
-              if (duration >= 5) { // Only add slots with duration >= 5 minutes
-                calculatedSlots.push({
-                  start: maghrebToMidnightStart,
-                  end: maghrebToMidnightEnd,
-                  nightSlotId: nightSlotId,
-                  allNightSlotId: allNightSlotId
-                });
-              }
+          const maghrebToMidnightStart = this.addPadding(currentPrayerTime, maghrebPadding.after);
+          const maghrebToMidnightEnd = "23:59";
+          
+          const midnightToIchaStart = "00:00";
+          const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, ichaPadding.before);
+          
+          // Create a unique identifier for the night slot pair
+          const nightSlotId = `night-slot-${maghrebToMidnightStart}-${midnightToIchaEnd}`;
+          // Create a common identifier for maghreb-icha slots only
+          const allNightSlotId = `maghreb-icha-slots`;
+          
+          // First slot: maghreb to 23:59
+          if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
+            const duration = timeToMinutes(maghrebToMidnightEnd) - timeToMinutes(maghrebToMidnightStart);
+            if (duration >= 5) { // Only add slots with duration >= 5 minutes
+              calculatedSlots.push({
+                start: maghrebToMidnightStart,
+                end: maghrebToMidnightEnd,
+                nightSlotId: nightSlotId,
+                allNightSlotId: allNightSlotId
+              });
             }
-            
-            // Second slot: 00:00 to icha
-            if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
-              const duration = timeToMinutes(midnightToIchaEnd) - timeToMinutes(midnightToIchaStart);
-              if (duration >= 5) { // Only add slots with duration >= 5 minutes
-                calculatedSlots.push({
-                  start: midnightToIchaStart,
-                  end: midnightToIchaEnd,
-                  nightSlotId: nightSlotId,
-                  allNightSlotId: allNightSlotId
-                });
-              }
-            }
-            
-            continue; // Skip the normal slot creation for this pair
-          } else {
-            // icha is before midnight, create a single night slot
-            const currentPadding = this.getIndividualPadding(currentPrayerName);
-            const nextPadding = this.getIndividualPadding(nextPrayerName);
-            
-            const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
-            const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
-            
-            if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
-              const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
-              if (duration >= 5) { // Only add slots with duration >= 5 minutes
-                const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
-                // Create a common identifier for maghreb-icha slots only
-                const allNightSlotId = `maghreb-icha-slots`;
-                calculatedSlots.push({
-                  start: slotStart,
-                  end: slotEnd,
-                  nightSlotId: nightSlotId,
-                  allNightSlotId: allNightSlotId
-                });
-              }
-            }
-            
-            continue; // Skip the normal slot creation for this pair
           }
+          
+          // Second slot: 00:00 to icha
+          if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
+            const duration = timeToMinutes(midnightToIchaEnd) - timeToMinutes(midnightToIchaStart);
+            if (duration >= 5) { // Only add slots with duration >= 5 minutes
+              calculatedSlots.push({
+                start: midnightToIchaStart,
+                end: midnightToIchaEnd,
+                nightSlotId: nightSlotId,
+                allNightSlotId: allNightSlotId
+              });
+            }
+          }
+          
+          continue; // Skip the normal slot creation for this pair
+        } else {
+          // icha is before midnight, create a single night slot
+          const currentPadding = this.getIndividualPadding(currentPrayerName);
+          const nextPadding = this.getIndividualPadding(nextPrayerName);
+          
+          const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+          const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
+          
+          if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
+            const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
+            if (duration >= 5) { // Only add slots with duration >= 5 minutes
+              const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
+              // Create a common identifier for maghreb-icha slots only
+              const allNightSlotId = `maghreb-icha-slots`;
+              calculatedSlots.push({
+                start: slotStart,
+                end: slotEnd,
+                nightSlotId: nightSlotId,
+                allNightSlotId: allNightSlotId
+              });
+            }
+          }
+          
+          continue; // Skip the normal slot creation for this pair
         }
+      }
       
       const currentPadding = this.getIndividualPadding(currentPrayerName);
       const nextPadding = this.getIndividualPadding(nextPrayerName);
@@ -854,8 +861,15 @@ export class Clock {
       });
     }
     if (currentData && currentData.prayer_times) {
-      // Define the logical order of prayers (not chronological)
-      const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
+      // Build dynamic prayer order based on available prayers
+      const prayerOrder = ['fajr'];
+      
+      // Add sunset only if it exists in the data
+      if (currentData.prayer_times['sunset']) {
+        prayerOrder.push('sunset');
+      }
+      
+      prayerOrder.push('dohr', 'asr', 'maghreb', 'icha');
       
       // Create slots between prayers in logical order
       for (let i = 0; i < prayerOrder.length - 1; i++) {

@@ -286,8 +286,15 @@ export class Timeline {
     const prayerTimes = dayData ? dayData.prayer_times : null;
     
     if (prayerTimes) {
-      // Define the logical order of prayers (not chronological)
-      const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
+      // Build dynamic prayer order based on available prayers
+      const prayerOrder = ['fajr'];
+      
+      // Add sunset only if it exists in the data
+      if (prayerTimes['sunset']) {
+        prayerOrder.push('sunset');
+      }
+      
+      prayerOrder.push('dohr', 'asr', 'maghreb', 'icha');
       
       // Create slots between prayers in logical order
       for (let i = 0; i < prayerOrder.length - 1; i++) {
