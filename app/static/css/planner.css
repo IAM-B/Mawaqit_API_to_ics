@@ -34,6 +34,11 @@
   --gray-dark: #353b48;
   --black: #000000;
   --black-transparent: rgba(0, 0, 0, 0.6);
+  
+  /* RGB values for transparency effects */
+  --primary-rgb: 99, 102, 241;
+  --accent-rgb: 20, 184, 166;
+  --prayer-green-rgb: 20, 184, 166;
 }
 
 /* ==================
@@ -251,19 +256,34 @@
 .summary-card {
   background: var(--bg-color);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 2rem;
   text-align: left;
   transition: all 0.3s ease;
   position: relative;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.summary-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px var(--shadow-color);
+  transform: translateY(-2px);
 }
 
 .summary-card h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.3rem;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.4rem;
   color: var(--text-bright);
   border-bottom: 2px solid var(--border-color);
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.summary-card h3 i {
+  color: var(--primary);
+  font-size: 1.2rem;
 }
 
 /* Form styles within summary cards */
@@ -294,19 +314,35 @@
 .summary-card select {
   width: 100%;
   padding: 10px;
-  background-color: var(--input-bg);
+  background-color: var(--bg-dark);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 8px;
   color: var(--text-color);
   font-size: 0.95em;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .summary-card input:focus,
 .summary-card select:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary-light);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Cacher les sélecteurs manuels des inputs number */
+.summary-card input[type="number"]::-webkit-outer-spin-button,
+.summary-card input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.summary-card input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 .summary-card .btn-submit {
@@ -2254,16 +2290,26 @@
 .config-switch {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 0 0 1rem 0;
-  padding: 0.75rem 0;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.config-switch:hover {
+  border-color: var(--primary);
+  background: var(--bg-light);
 }
 
 .switch {
   position: relative;
   display: inline-block;
-  width: 44px;
-  height: 24px;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
 }
 
 .switch input {
@@ -2279,508 +2325,108 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--text-muted);
-  transition: 0.3s;
-  border-radius: 24px;
+  background: var(--text-muted);
+  transition: all 0.3s ease;
+  border-radius: 26px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
+  height: 20px;
+  width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
-  transition: 0.3s;
+  background: white;
+  transition: all 0.3s ease;
   border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-span.slider.round {
-  background: var(--text-muted);
-}
+
 input:checked + .slider {
-  background: var(--prayer-green)
+  background: var(--primary);
 }
 
 input:checked + .slider:before {
-  transform: translateX(20px);
+  transform: translateX(22px);
 }
 
 .switch-label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  transition: color 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  transition: all 0.3s ease;
+  flex: 1;
 }
 
 .switch-label.active {
-  color: var(--prayer-green);
-  font-weight: 600;
+  color: var(--primary);
 }
 
 /* ==================
-   📋 CONFIGURATION INDIVIDUELLE
+   📋 CONFIGURATION SECTIONS - SIMPLIFIÉES
    ================== */
-.config-individual {
-  margin-top: 1.5rem;
-  animation: slideDown 0.3s ease;
-  background: var(--bg-medium);
-  border: 1px solid var(--primary-border);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: var(--shadow-md);
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.config-individual h4 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-bright);
+.config-section {
   margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
-.config-individual h4 i {
-  color: var(--prayer-green);
+.config-section:last-child {
+  margin-bottom: 0;
+}
+
+.config-section h4 {
   font-size: 1.1rem;
-}
-
-/* Grid to organize fields by prayer */
-.prayer-config-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.prayer-config-item {
-  background: var(--bg-light);
-  border: 1px solid var(--primary-border);
-  border-radius: 10px;
-  padding: 1.5rem;
-  transition: border-color 0.2s ease;
-}
-
-.prayer-config-item h5 {
-  font-size: 1rem;
   font-weight: 600;
   color: var(--text-bright);
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.prayer-config-item h5 i {
-  color: var(--prayer-green);
-  font-size: 1rem;
-}
-
-.prayer-config-item .input-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.prayer-config-item label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-.prayer-config-item input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--primary-border);
-  border-radius: 8px;
-  background: var(--bg-medium);
-  color: var(--text-bright);
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: border-color 0.2s ease;
-  text-align: center;
-}
-
-/* Actions at bottom */
-.config-individual .actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--primary-border);
-}
-
-.config-individual .btn-secondary {
-  padding: 0.75rem 1.5rem;
-  background: var(--bg-light);
-  color: var(--text-bright);
-  border: 1px solid var(--primary-border);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-}
-
-.config-individual .btn-secondary:hover {
-  background: var(--bg-medium);
-  border-color: var(--prayer-green);
-  color: var(--prayer-green);
-}
-
-.config-individual .btn-secondary i {
-  font-size: 0.85rem;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .config-individual {
-    padding: 1.5rem;
-    margin-top: 1rem;
-  }
-  
-  .config-individual h4 {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .prayer-config-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .prayer-config-item {
-    padding: 1.25rem;
-  }
-  
-  .prayer-config-item .input-group {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-  
-  .config-individual .actions {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .config-individual .btn-secondary {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .config-individual {
-    padding: 1rem;
-  }
-  
-  .prayer-config-item {
-    padding: 1rem;
-  }
-  
-  .prayer-config-item input {
-    padding: 0.625rem;
-    font-size: 0.85rem;
-  }
-}
-
-/* ==================
-   📋 SUMMARY DISPLAY STYLES
-   ================== */
-.summary-display {
-  padding: 6rem 2rem;
-  margin: 2rem;
-  border-radius: 24px;
-  background: var(--bg-medium);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--primary-border);
-  box-shadow: 
-    var(--shadow-xl),
-    0 0 0 1px var(--primary-light);
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.5s ease;
-}
-
-.summary-display.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.summary-display .summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.summary-display .summary-card {
-  background: var(--bg-light);
-  padding: 2rem;
-  border-radius: 16px;
-  border: 1px solid var(--primary-border);
-  box-shadow: var(--shadow-lg);
-  transition: all 0.3s ease;
-}
-
-.summary-display .summary-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-xl);
-}
-
-.summary-display .summary-card h3 {
-  color: var(--text-bright);
-  font-size: 1.5rem;
-  font-weight: 700;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.summary-display .summary-card h3 i {
-  color: var(--prayer-green);
-}
-
-.summary-display .config-items {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.summary-display .config-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: var(--bg-medium);
-  border-radius: 8px;
-  border: 1px solid var(--primary-border);
-}
-
-.summary-display .config-label {
-  font-weight: 600;
-  color: var(--text-bright);
-}
-
-.summary-display .config-value {
-  font-weight: 500;
-  color: var(--prayer-green);
-  background: var(--bg-light);
-  padding: 0.25rem 0.75rem;
-  border-radius: 6px;
-  border: 1px solid var(--prayer-green);
-}
-
-/* ==================
-   📋 INDIVIDUAL PADDINGS SUMMARY STYLES
-   ================== */
-.individual-paddings-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--primary-border);
-}
-
-.individual-paddings-section h4 {
-  color: var(--text-bright);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.individual-paddings-section h4 i {
-  color: var(--prayer-green);
-}
-
-.individual-paddings-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.individual-padding-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: var(--bg-medium);
-  border-radius: 8px;
-  border: 1px solid var(--primary-border);
-  transition: all 0.3s ease;
-}
-
-.individual-padding-item:hover {
-  background: var(--bg-light);
-  border-color: var(--prayer-green);
-  transform: translateY(-1px);
-}
-
-.individual-padding-item .prayer-name {
-  font-weight: 600;
-  color: var(--text-bright);
-  font-size: 0.9rem;
-}
-
-.individual-padding-item .padding-values {
-  font-weight: 500;
-  color: var(--prayer-green);
-  background: var(--bg-light);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  border: 1px solid var(--prayer-green);
-  font-size: 0.8rem;
+.config-section h4 i {
+  color: var(--primary);
+  font-size: 1rem;
 }
 
 /* ==================
-   📋 RESPONSIVE SUMMARY DISPLAY
+   📋 OPTION ITEMS - SIMPLIFIÉS
    ================== */
-@media (max-width: 768px) {
-  .summary-display .summary-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .summary-display .summary-card {
-    padding: 1.5rem;
-  }
-  
-  .individual-paddings-summary {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.5rem;
-  }
-  
-  .individual-padding-item {
-    padding: 0.5rem 0.75rem;
-  }
-  
-  .individual-padding-item .prayer-name {
-    font-size: 0.8rem;
-  }
-  
-  .individual-padding-item .padding-values {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.4rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .summary-display {
-    padding: 4rem 1rem;
-    margin: 1rem;
-  }
-  
-  .summary-display .summary-card {
-    padding: 1rem;
-  }
-  
-  .individual-paddings-summary {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ==================
-   📋 PADDING INFO STYLES
-   ================== */
-.padding-info {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-}
-
-.padding-info .info-box {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  color: var(--text-bright);
-}
-
-.padding-info .info-box i {
-  color: var(--warning);
-  font-size: 1.1rem;
-  margin-top: 0.1rem;
-  flex-shrink: 0;
-}
-
-.padding-info .info-content {
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.padding-info .info-content strong {
-  color: var(--warning);
-  font-weight: 600;
-}
-
-@media (max-width: 768px) {
-  .padding-info {
-    margin-top: 1rem;
-    padding: 0.75rem;
-  }
-  
-  .padding-info .info-box {
-    gap: 0.5rem;
-  }
-  
-  .padding-info .info-content {
-    font-size: 0.85rem;
-  }
-}
-
-/* ==================
-   📋 OPTIONS INTERFACE STYLES
-   ================== */
-
-/* Option Items */
 .option-item {
   margin-bottom: 1rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .option-item:last-child {
   margin-bottom: 0;
-  border-bottom: none;
 }
 
-/* Checkbox Labels */
+.option-item:hover {
+  border-color: var(--primary);
+  background: var(--bg-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+/* ==================
+   📋 CHECKBOX LABELS - SIMPLIFIÉS
+   ================== */
 .checkbox-label {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 1rem;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-.checkbox-label:hover {
-  background-color: var(--input-bg);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -2791,13 +2437,13 @@ input:checked + .slider:before {
   width: 0;
 }
 
-/* Custom Checkmark */
+/* Custom Checkmark - Simplifié */
 .checkmark {
-  height: 18px;
-  width: 18px;
+  height: 20px;
+  width: 20px;
   background: var(--input-bg);
   border: 2px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: 6px;
   position: relative;
   flex-shrink: 0;
   margin-top: 2px;
@@ -2817,10 +2463,10 @@ input:checked + .slider:before {
   content: '';
   position: absolute;
   display: none;
-  left: 5px;
-  top: 1px;
-  width: 4px;
-  height: 8px;
+  left: 10px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
   border: solid white;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
@@ -2828,65 +2474,244 @@ input:checked + .slider:before {
 
 .checkbox-label input:checked ~ .checkmark:after {
   display: block;
+  animation: checkmarkAppear 0.2s ease;
 }
 
-/* Option Text */
+@keyframes checkmarkAppear {
+  0% {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(45deg) scale(1);
+  }
+}
+
+/* ==================
+   📋 OPTION TEXT
+   ================== */
 .option-text {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .option-text strong {
   font-weight: 600;
   color: var(--text-bright);
   font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 .option-text small {
   color: var(--text-muted);
   font-size: 0.85rem;
-  line-height: 1.4;
+  line-height: 1.5;
+  font-style: italic;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .option-item {
-    margin-bottom: 0.75rem;
-  }
-  
-  .checkbox-label {
-    padding: 0.4rem;
-  }
-  
-  .option-text strong {
-    font-size: 0.9rem;
-  }
-  
-  .option-text small {
-    font-size: 0.8rem;
-  }
+/* ==================
+   📋 INPUT GROUPS
+   ================== */
+.input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-@media (max-width: 480px) {
-  .option-item {
-    margin-bottom: 0.5rem;
-  }
-  
-  .checkbox-label {
-    gap: 0.5rem;
-  }
-  
-  .checkmark {
-    height: 16px;
-    width: 16px;
-  }
-  
-  .checkmark:after {
-    left: 4px;
-    top: 0px;
-    width: 3px;
-    height: 7px;
-  }
+.input-group > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-bright);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Cacher les sélecteurs manuels pour les inputs number dans les groupes */
+.input-group input[type="number"]::-webkit-outer-spin-button,
+.input-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ==================
+   📋 PRAYER CONFIG ITEMS - SIMPLIFIÉS
+   ================== */
+.prayer-config-item {
+  margin-bottom: 1rem;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.prayer-config-item:hover {
+  border-color: var(--primary);
+  background: var(--bg-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.prayer-config-item h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.prayer-config-item h5 i {
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+/* ==================
+   📋 MOSQUE INFO - HARMONISÉ
+   ================== */
+.summary-card.mosque-info {
+  /* Hérite des styles de base de summary-card */
+}
+
+.summary-card.mosque-info #mosque-map {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.summary-card.mosque-info:hover #mosque-map {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+/* ==================
+   📋 FORM STYLES - HARMONISÉS
+   ================== */
+.summary-card .form {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  margin-top: 1rem;
+}
+
+.summary-card .form-section {
+  margin-bottom: 1rem;
+  border: none;
+  padding: 0;
+}
+
+.summary-card label {
+  display: block;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5em;
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.summary-card input,
+.summary-card select {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.95em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card input:focus,
+.summary-card select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Cacher les sélecteurs manuels des inputs number */
+.summary-card input[type="number"]::-webkit-outer-spin-button,
+.summary-card input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.summary-card input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.summary-card .btn-submit {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: var(--text-dark);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card .btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.summary-card .btn-submit:active {
+  transform: translateY(0);
+}
+
+.summary-card .btn-submit.loading {
+  background: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
 }
