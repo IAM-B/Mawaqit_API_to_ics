@@ -3,7 +3,7 @@
 import { initializeCompactMap } from '../components/map.js';
 import { Clock } from '../components/clock.js';
 import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
-import { getPaddingBefore, getPaddingAfter, getRealPaddingBefore, getRealPaddingAfter } from '../utils/padding.js';
+import { getPaddingBefore, getPaddingAfter } from '../utils/padding.js';
 
 export class PlannerPage {
   constructor() {
@@ -44,25 +44,25 @@ export class PlannerPage {
           if (isIndividualMode) {
             // Individual mode: use individual paddings
             const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+            
             prayers.forEach(prayer => {
               const beforeInput = document.getElementById(`${prayer}_padding_before`);
               const afterInput = document.getElementById(`${prayer}_padding_after`);
               
-              if (beforeInput) {
+              if (beforeInput && afterInput) {
                 const defaultValue = prayer === 'sunset' ? '5' : '10';
                 const beforeValue = beforeInput.value || defaultValue;
-                combinedFormData.set(`${prayer}_padding_before`, beforeValue);
-              }
-              if (afterInput) {
-                const defaultValue = prayer === 'sunset' ? '15' : '35';
-                let afterValue = afterInput.value || defaultValue;
+                const afterValue = afterInput.value || (prayer === 'sunset' ? '15' : '35');
                 
                 // Apply minimum 10 minutes padding after each prayer
-                if (parseInt(afterValue) < this.MIN_PADDING_AFTER) {
-                  afterValue = this.MIN_PADDING_AFTER.toString();
+                let finalAfterValue = afterValue;
+                if (parseInt(finalAfterValue) < this.MIN_PADDING_AFTER) {
+                  finalAfterValue = this.MIN_PADDING_AFTER.toString();
                 }
                 
-                combinedFormData.set(`${prayer}_padding_after`, afterValue);
+                // Always send individual paddings in individual mode
+                combinedFormData.set(`${prayer}_padding_before`, beforeValue);
+                combinedFormData.set(`${prayer}_padding_after`, finalAfterValue);
               }
             });
             
@@ -291,6 +291,7 @@ export class PlannerPage {
   }
 
   updateConfigSummary(data) {
+    
     const configItems = document.querySelectorAll('.summary-display .config-item');
     configItems.forEach(item => {
       const label = item.querySelector('.config-label');
@@ -313,6 +314,9 @@ export class PlannerPage {
     
     // Display individual paddings if available
     if (data.prayer_paddings) {
+      // Store individual paddings globally for clock and timeline components
+      window.currentPrayerPaddings = data.prayer_paddings;
+      
       const individualPaddingsContainer = document.querySelector('.individual-paddings-summary');
       if (individualPaddingsContainer) {
         individualPaddingsContainer.innerHTML = '';
@@ -339,6 +343,29 @@ export class PlannerPage {
           }
         });
       }
+    } else {
+      // Create individual paddings from global paddings for consistency
+      const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+      const backendPrayerNames = {
+        'fajr': 'fajr',
+        'sunset': 'sunset', 
+        'dhuhr': 'dohr',
+        'asr': 'asr',
+        'maghrib': 'maghreb',
+        'isha': 'icha'
+      };
+      
+      window.currentPrayerPaddings = {};
+      prayers.forEach(prayer => {
+        const backendName = backendPrayerNames[prayer];
+        if (backendName) {
+          // Use global paddings for all prayers
+          window.currentPrayerPaddings[backendName] = {
+            before: data.padding_before || 10,
+            after: data.padding_after || 35
+          };
+        }
+      });
     }
   }
 

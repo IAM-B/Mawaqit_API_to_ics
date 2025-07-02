@@ -18,16 +18,4 @@ export function getPaddingAfter() {
   return Math.max(paddingAfter, minPaddingAfter);
 }
 
-/**
- * Get real user-configured padding before value (without minimum)
- */
-export function getRealPaddingBefore() {
-  return window.currentPaddingBefore || 0;
-}
-
-/**
- * Get real user-configured padding after value (without minimum)
- */
-export function getRealPaddingAfter() {
-  return window.currentPaddingAfter || 0;
-} 
+ 

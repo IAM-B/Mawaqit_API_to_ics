@@ -1,7 +1,6 @@
 // Timeline component for vertical agenda display
 
 import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
-import { getPaddingBefore, getPaddingAfter, getRealPaddingBefore, getRealPaddingAfter } from '../utils/padding.js';
 
 /**
  * Main class for the vertical timeline (SVG agenda)
@@ -252,14 +251,6 @@ export class Timeline {
   displayPrayers(prayerTimes) {
     if (!prayerTimes) return;
     
-    // Get paddings from global variables (with minimum for calculation)
-    const paddingBefore = getPaddingBefore();
-    const paddingAfter = getPaddingAfter();
-    
-    // Get real user values for display
-    const realPaddingBefore = getRealPaddingBefore();
-    const realPaddingAfter = getRealPaddingAfter();
-    
     const prayerNames = {
       'fajr': 'Fajr',
       'sunset': 'Sunset',
@@ -270,9 +261,12 @@ export class Timeline {
     };
     Object.entries(prayerTimes).forEach(([prayer, time]) => {
       if (time && prayerNames[prayer]) {
-        // Calculate exact prayer time (without padding)
-        const exactStartTime = this.subtractPadding(time, paddingBefore);
-        const exactEndTime = this.addPadding(time, paddingAfter);
+        // Get individual padding for this specific prayer
+        const prayerPadding = this.getIndividualPadding(prayer);
+        
+        // Calculate prayer time with individual padding values
+        const exactStartTime = this.subtractPadding(time, prayerPadding.before);
+        const exactEndTime = this.addPadding(time, prayerPadding.after);
         
         // Display exact prayer time with displayed time between parentheses
         const prayerTitle = `${prayerNames[prayer]} (${time})`;
@@ -286,14 +280,6 @@ export class Timeline {
   // Display slots
   displaySlots(slots) {
     if (!slots || !Array.isArray(slots)) return;
-    
-    // Get paddings from global variables (with minimum for calculation)
-    const paddingBefore = getPaddingBefore();
-    const paddingAfter = getPaddingAfter();
-    
-    // Get real user values for display
-    const realPaddingBefore = getRealPaddingBefore();
-    const realPaddingAfter = getRealPaddingAfter();
     
     // Get prayer times for slot calculation
     const dayData = this.getDayData(this.currentDate);
@@ -324,15 +310,18 @@ export class Timeline {
           // Check if icha is after midnight by comparing with maghreb
           if (ichaMinutes < maghrebMinutes) {
             // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
-            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, paddingAfter);
+            const currentPadding = this.getIndividualPadding(currentPrayerName);
+            const nextPadding = this.getIndividualPadding(nextPrayerName);
+            
+            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, currentPadding.after);
             const maghrebToMidnightEnd = "23:59";
             
             const midnightToIchaStart = "00:00";
-            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
             
             // Calculate total duration for display
-            const realMaghrebToMidnightStart = this.addPadding(currentPrayerTime, realPaddingAfter);
-            const realMidnightToIchaEnd = this.subtractPadding(nextPrayerTime, realPaddingBefore);
+            const realMaghrebToMidnightStart = this.addPadding(currentPrayerTime, currentPadding.after);
+            const realMidnightToIchaEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
             const realStartMinutes = timeToMinutes(realMaghrebToMidnightStart);
             const realEndMinutes = timeToMinutes(realMidnightToIchaEnd);
             
@@ -384,12 +373,15 @@ export class Timeline {
             continue; // Skip the normal slot creation for this pair
           } else {
             // icha is before midnight, create a single night slot
-            const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
-            const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            const currentPadding = this.getIndividualPadding(currentPrayerName);
+            const nextPadding = this.getIndividualPadding(nextPrayerName);
+            
+            const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+            const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
             
             // Calculate slot duration using real user values for display
-            const realSlotStart = this.addPadding(currentPrayerTime, realPaddingAfter);
-            const realSlotEnd = this.subtractPadding(nextPrayerTime, realPaddingBefore);
+            const realSlotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+            const realSlotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
             const startMinutes = timeToMinutes(realSlotStart);
             const endMinutes = timeToMinutes(realSlotEnd);
             const durationMinutes = endMinutes - startMinutes;
@@ -418,13 +410,16 @@ export class Timeline {
         
         // Normal slot creation for other prayer pairs
         // Slot starts at the end of the current prayer
-        const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
+        const currentPadding = this.getIndividualPadding(currentPrayerName);
+        const nextPadding = this.getIndividualPadding(nextPrayerName);
+        
+        const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
         // Slot ends at the exact time of the next prayer
-        const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+        const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
         
         // Calculate slot duration using real user values for display
-        const realSlotStart = this.addPadding(currentPrayerTime, realPaddingAfter);
-        const realSlotEnd = this.subtractPadding(nextPrayerTime, realPaddingBefore);
+        const realSlotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+        const realSlotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
         const startMinutes = timeToMinutes(realSlotStart);
         const endMinutes = timeToMinutes(realSlotEnd);
         const durationMinutes = endMinutes - startMinutes;
@@ -480,15 +475,18 @@ export class Timeline {
         // Check if fajr is after midnight by comparing with icha
         if (fajrMinutes < ichaMinutes) {
           // fajr is after midnight, create two slots: icha to midnight and midnight to fajr
-          const ichaToMidnightStart = this.addPadding(ichaTime, paddingAfter);
+          const ichaPadding = this.getIndividualPadding('icha');
+          const fajrPadding = this.getIndividualPadding('fajr');
+          
+          const ichaToMidnightStart = this.addPadding(ichaTime, ichaPadding.after);
           const ichaToMidnightEnd = "23:59";
           
           const midnightToFajrStart = "00:00";
-          const midnightToFajrEnd = this.subtractPadding(fajrTime, paddingBefore);
+          const midnightToFajrEnd = this.subtractPadding(fajrTime, fajrPadding.before);
           
           // Calculate total duration for display
-          const realIchaToMidnightStart = this.addPadding(ichaTime, realPaddingAfter);
-          const realMidnightToFajrEnd = this.subtractPadding(fajrTime, realPaddingBefore);
+          const realIchaToMidnightStart = this.addPadding(ichaTime, ichaPadding.after);
+          const realMidnightToFajrEnd = this.subtractPadding(fajrTime, fajrPadding.before);
           const realStartMinutes = timeToMinutes(realIchaToMidnightStart);
           const realEndMinutes = timeToMinutes(realMidnightToFajrEnd);
           
@@ -538,12 +536,15 @@ export class Timeline {
           }
         } else {
           // fajr is before midnight, create a single deep night slot
-          const slotStart = this.addPadding(ichaTime, paddingAfter);
-          const slotEnd = this.subtractPadding(fajrTime, paddingBefore);
+          const ichaPadding = this.getIndividualPadding('icha');
+          const fajrPadding = this.getIndividualPadding('fajr');
+          
+          const slotStart = this.addPadding(ichaTime, ichaPadding.after);
+          const slotEnd = this.subtractPadding(fajrTime, fajrPadding.before);
           
           // Calculate slot duration using real user values for display
-          const realSlotStart = this.addPadding(ichaTime, realPaddingAfter);
-          const realSlotEnd = this.subtractPadding(fajrTime, realPaddingBefore);
+          const realSlotStart = this.addPadding(ichaTime, ichaPadding.after);
+          const realSlotEnd = this.subtractPadding(fajrTime, fajrPadding.before);
           const startMinutes = timeToMinutes(realSlotStart);
           const endMinutes = timeToMinutes(realSlotEnd);
           const durationMinutes = endMinutes - startMinutes;
@@ -612,13 +613,27 @@ export class Timeline {
     return minutesToTime(adjustedMinutes);
   }
 
+  // Get individual padding for a specific prayer
+  getIndividualPadding(prayerName) {
+    // Check if we have individual paddings from the backend
+    if (window.currentPrayerPaddings && window.currentPrayerPaddings[prayerName]) {
+      return window.currentPrayerPaddings[prayerName];
+    }
+    
+    // Fallback to global paddings
+    return {
+      before: window.currentPaddingBefore || 0,
+      after: window.currentPaddingAfter || 0
+    };
+  }
+
   // Create an SVG event
   createSVGEvent(title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null) {
     if (!this.svg || !this.eventsGroup) return;
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
     const y = startMin;
-    const height = Math.max(endMin - startMin, 8);
+    const height = endMin - startMin;
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', 60 + 6);
     rect.setAttribute('y', y);

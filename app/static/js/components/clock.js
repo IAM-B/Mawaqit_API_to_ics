@@ -1,7 +1,6 @@
 // Clock component for circular prayer/slot visualization
 
 import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
-import { getPaddingBefore, getPaddingAfter } from '../utils/padding.js';
 
 /**
  * Main class for the circular clock (slots and prayers)
@@ -73,6 +72,20 @@ export class Clock {
     const totalMinutes = timeToMinutes(timeStr);
     const adjustedMinutes = totalMinutes + paddingMinutes;
     return minutesToTime(adjustedMinutes);
+  }
+
+  // Get individual padding for a specific prayer
+  getIndividualPadding(prayerName) {
+    // Check if we have individual paddings from the backend
+    if (window.currentPrayerPaddings && window.currentPrayerPaddings[prayerName]) {
+      return window.currentPrayerPaddings[prayerName];
+    }
+    
+    // Fallback to global paddings
+    return {
+      before: window.currentPaddingBefore || 0,
+      after: window.currentPaddingAfter || 0
+    };
   }
   // Create an SVG arc for an event (prayer or slot)
   createEventElement(event, type) {
@@ -375,8 +388,6 @@ export class Clock {
       this.slotsContainer.innerHTML = '<p>No slots available for this period.</p>';
       return;
     }
-    const paddingBefore = getPaddingBefore();
-    const paddingAfter = getPaddingAfter();
     
     // Define the logical order of prayers (not chronological)
     const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
@@ -404,11 +415,14 @@ export class Clock {
           // Check if icha is after midnight by comparing with maghreb
           if (ichaMinutes < maghrebMinutes) {
             // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
-            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, paddingAfter);
+            const maghrebPadding = this.getIndividualPadding(currentPrayerName);
+            const ichaPadding = this.getIndividualPadding(nextPrayerName);
+            
+            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, maghrebPadding.after);
             const maghrebToMidnightEnd = "23:59";
             
             const midnightToIchaStart = "00:00";
-            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, ichaPadding.before);
             
             // Create a unique identifier for the night slot pair
             const nightSlotId = `night-slot-${maghrebToMidnightStart}-${midnightToIchaEnd}`;
@@ -444,8 +458,11 @@ export class Clock {
             continue; // Skip the normal slot creation for this pair
           } else {
             // icha is before midnight, create a single night slot
-            const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
-            const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            const currentPadding = this.getIndividualPadding(currentPrayerName);
+            const nextPadding = this.getIndividualPadding(nextPrayerName);
+            
+            const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+            const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
             
             if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
               const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
@@ -466,8 +483,11 @@ export class Clock {
           }
         }
       
-      const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
-      const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+      const currentPadding = this.getIndividualPadding(currentPrayerName);
+      const nextPadding = this.getIndividualPadding(nextPrayerName);
+      
+      const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+      const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
       
       if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
         const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
@@ -509,8 +529,11 @@ export class Clock {
       if (ichaTime && fajrTime) {
         // For circular clock display, we don't need to split the slot
         // The circular display naturally handles the midnight crossing
-        const slotStart = this.addPadding(ichaTime, paddingAfter);
-        const slotEnd = this.subtractPadding(fajrTime, paddingBefore);
+        const ichaPadding = this.getIndividualPadding('icha');
+        const fajrPadding = this.getIndividualPadding('fajr');
+        
+        const slotStart = this.addPadding(ichaTime, ichaPadding.after);
+        const slotEnd = this.subtractPadding(fajrTime, fajrPadding.before);
         
         if (slotStart && slotEnd) {
           // For circular display, we need to handle the case where fajr is after midnight
@@ -831,8 +854,6 @@ export class Clock {
       });
     }
     if (currentData && currentData.prayer_times) {
-      const paddingBefore = getPaddingBefore();
-      const paddingAfter = getPaddingAfter();
       // Define the logical order of prayers (not chronological)
       const prayerOrder = ['fajr', 'sunset', 'dohr', 'asr', 'maghreb', 'icha'];
       
@@ -857,11 +878,14 @@ export class Clock {
           // Check if icha is after midnight by comparing with maghreb
           if (ichaMinutes < maghrebMinutes) {
             // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
-            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, paddingAfter);
+            const maghrebPadding = this.getIndividualPadding(currentPrayerName);
+            const ichaPadding = this.getIndividualPadding(nextPrayerName);
+            
+            const maghrebToMidnightStart = this.addPadding(currentPrayerTime, maghrebPadding.after);
             const maghrebToMidnightEnd = "23:59";
             
             const midnightToIchaStart = "00:00";
-            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, ichaPadding.before);
             
             // Create a unique identifier for the night slot pair
             const nightSlotId = `night-slot-${maghrebToMidnightStart}-${midnightToIchaEnd}`;
@@ -901,8 +925,11 @@ export class Clock {
             continue; // Skip the normal slot creation for this pair
           } else {
             // icha is before midnight, create a single night slot
-            const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
-            const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+            const currentPadding = this.getIndividualPadding(currentPrayerName);
+            const nextPadding = this.getIndividualPadding(nextPrayerName);
+            
+            const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+            const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
             
             if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
               const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
@@ -925,8 +952,11 @@ export class Clock {
           }
         }
         
-        const slotStart = this.addPadding(currentPrayerTime, paddingAfter);
-        const slotEnd = this.subtractPadding(nextPrayerTime, paddingBefore);
+        const currentPadding = this.getIndividualPadding(currentPrayerName);
+        const nextPadding = this.getIndividualPadding(nextPrayerName);
+        
+        const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
+        const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
         
         if (slotStart && slotEnd && timeToMinutes(slotEnd) > timeToMinutes(slotStart)) {
           const duration = timeToMinutes(slotEnd) - timeToMinutes(slotStart);
@@ -970,8 +1000,11 @@ export class Clock {
       const fajrTime = currentData.prayer_times['fajr'];
       
       if (ichaTime && fajrTime) {
-        const slotStart = this.addPadding(ichaTime, paddingAfter);
-        const slotEnd = this.subtractPadding(fajrTime, paddingBefore);
+        const ichaPadding = this.getIndividualPadding('icha');
+        const fajrPadding = this.getIndividualPadding('fajr');
+        
+        const slotStart = this.addPadding(ichaTime, ichaPadding.after);
+        const slotEnd = this.subtractPadding(fajrTime, fajrPadding.before);
         
         if (slotStart && slotEnd) {
           // Create a single continuous arc from icha to fajr
