@@ -54,7 +54,8 @@ def generate_empty_slot_events(
     timezone_str: str,
     padding_before: int,
     padding_after: int,
-    PRAYERS_ORDER: list = None
+    PRAYERS_ORDER: list = None,
+    prayer_paddings: dict = None
 ) -> str:
     """
     Generate calendar events for empty slots between prayers for a single day.
@@ -87,13 +88,31 @@ def generate_empty_slot_events(
 
     # Generate slots between consecutive prayers
     for i in range(len(PRAYERS_ORDER) - 1):
-        t1 = prayer_times.get(PRAYERS_ORDER[i])
-        t2 = prayer_times.get(PRAYERS_ORDER[i + 1])
+        current_prayer = PRAYERS_ORDER[i]
+        next_prayer = PRAYERS_ORDER[i + 1]
+        
+        t1 = prayer_times.get(current_prayer)
+        t2 = prayer_times.get(next_prayer)
         if not t1 or not t2:
             continue
 
-        start = to_datetime(t1) + timedelta(minutes=padding_after)
-        end = to_datetime(t2) - timedelta(minutes=padding_before)
+        # Get individual paddings for current and next prayer
+        current_padding_after = padding_after
+        next_padding_before = padding_before
+        
+        if prayer_paddings and current_prayer in prayer_paddings:
+            current_padding_after = prayer_paddings[current_prayer]['after']
+        
+        if prayer_paddings and next_prayer in prayer_paddings:
+            next_padding_before = prayer_paddings[next_prayer]['before']
+
+        # Apply minimum padding of 10 minutes after prayer for uniform display
+        MIN_PADDING_AFTER = 10
+        if current_padding_after < MIN_PADDING_AFTER:
+            current_padding_after = MIN_PADDING_AFTER
+
+        start = to_datetime(t1) + timedelta(minutes=current_padding_after)
+        end = to_datetime(t2) - timedelta(minutes=next_padding_before)
         if start >= end:
             continue
 
@@ -129,8 +148,23 @@ def generate_empty_slot_events(
         if fajr_dt <= icha_dt:
             fajr_dt += timedelta(days=1)
         
-        night_start = icha_dt + timedelta(minutes=padding_after)
-        night_end = fajr_dt - timedelta(minutes=padding_before)
+        # Get individual paddings for icha and fajr
+        icha_padding_after = padding_after
+        fajr_padding_before = padding_before
+        
+        if prayer_paddings and "icha" in prayer_paddings:
+            icha_padding_after = prayer_paddings["icha"]['after']
+        
+        if prayer_paddings and "fajr" in prayer_paddings:
+            fajr_padding_before = prayer_paddings["fajr"]['before']
+        
+        # Apply minimum padding of 10 minutes after prayer for uniform display
+        MIN_PADDING_AFTER = 10
+        if icha_padding_after < MIN_PADDING_AFTER:
+            icha_padding_after = MIN_PADDING_AFTER
+        
+        night_start = icha_dt + timedelta(minutes=icha_padding_after)
+        night_end = fajr_dt - timedelta(minutes=fajr_padding_before)
         
         if night_start < night_end:
             # Handle night slot that crosses hour boundaries
@@ -180,7 +214,8 @@ def generate_empty_by_scope(
     padding_before: int,
     padding_after: int,
     prayer_times: list | dict,
-    include_sunset: bool = False
+    include_sunset: bool = False,
+    prayer_paddings: dict = None
 ) -> str:
     """
     Generate empty slot events for a specific time scope (today/month/year).
@@ -205,7 +240,7 @@ def generate_empty_by_scope(
     
     # Check cache first
     cached_path = cache_manager.get_cached_file_path(
-        masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots"
+        masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", prayer_paddings
     )
     
     if cached_path:
@@ -218,7 +253,7 @@ def generate_empty_by_scope(
             output_path = Path(current_app.static_folder) / "ics" / f"empty_slots_{masjid_id}_{datetime.now().year}_{datetime.now().month:02d}.ics"
         
         cache_manager.copy_cached_to_destination(
-            masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", str(output_path)
+            masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", str(output_path), prayer_paddings
         )
         return str(output_path)
     
@@ -249,7 +284,7 @@ def generate_empty_by_scope(
             daily_times (dict): Dictionary of prayer times for the day
         """
         tmp_file = Path("tmp_empty.ics")
-        generate_empty_slot_events(daily_times, base_date, tmp_file, timezone_str, padding_before, padding_after, PRAYERS_ORDER)
+        generate_empty_slot_events(daily_times, base_date, tmp_file, timezone_str, padding_before, padding_after, PRAYERS_ORDER, prayer_paddings)
         with open(tmp_file, "rb") as f:
             sub_cal = Calendar.from_ical(f.read())
             for component in sub_cal.walk():
@@ -305,7 +340,7 @@ def generate_empty_by_scope(
     # Save to cache for future use
     cache_manager.save_to_cache(
         masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", 
-        file_content, str(output_path)
+        file_content, str(output_path), prayer_paddings
     )
     
     print(f"✅ Generated and cached empty slots file: {output_path}")

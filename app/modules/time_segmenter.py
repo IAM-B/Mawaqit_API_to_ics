@@ -6,32 +6,35 @@ This module handles the segmentation of time periods into manageable slots.
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-def segment_available_time(prayer_times: dict, tz_str: str, padding_before: int, padding_after: int):
+def segment_available_time(prayer_times: dict, tz_str: str, padding_before: int, padding_after: int, prayer_paddings: dict = None):
     """
     Segment available time between prayer times into slots.
     
     Args:
         prayer_times (dict): Dictionary of prayer times
         tz_str (str): Timezone string
-        padding_before (int): Minutes to add before prayer times
-        padding_after (int): Minutes to add after prayer times
+        padding_before (int): Default minutes to add before prayer times
+        padding_after (int): Default minutes to add after prayer times
+        prayer_paddings (dict): Individual padding settings for each prayer
         
     Returns:
         list: List of time segments with start and end times
     """
     times = []
+    prayer_names = []
     tz = ZoneInfo(tz_str)
 
     if not isinstance(prayer_times, dict):
         print(f"⛔ segment_available_time received invalid type: {type(prayer_times)} → {prayer_times}")
         return []
         
-    # Convert prayer times to datetime objects
+    # Convert prayer times to datetime objects and store prayer names
     for name, time_str in prayer_times.items():
         try:
             hour, minute = map(int, time_str.strip().split(":"))
             dt = datetime.now(tz).replace(hour=hour, minute=minute, second=0, microsecond=0)
             times.append(dt)
+            prayer_names.append(name)
         except Exception as e:
             print(f"⚠️ Ignored: {name} → '{time_str}' ({e})")
 
@@ -39,17 +42,53 @@ def segment_available_time(prayer_times: dict, tz_str: str, padding_before: int,
         print("⚠️ Not enough valid times to generate segments.")
         return []
 
-    # Sort times and create segments
-    times = sorted(times)
+    # Sort times and prayer names together
+    sorted_data = sorted(zip(times, prayer_names))
+    times = [dt for dt, _ in sorted_data]
+    prayer_names = [name for _, name in sorted_data]
+    
     segments = []
 
     for i in range(len(times) - 1):
-        start = times[i] + timedelta(minutes=padding_before)
-        end = times[i + 1] - timedelta(minutes=padding_after)
-        if start < end:
-            segments.append({"start": start.strftime("%H:%M"), "end": end.strftime("%H:%M")})
+        current_prayer = prayer_names[i]
+        next_prayer = prayer_names[i + 1]
+        
+        # Get individual paddings for current and next prayer
+        current_padding_after = padding_after
+        next_padding_before = padding_before
+        
+        if prayer_paddings and current_prayer in prayer_paddings:
+            current_padding_after = prayer_paddings[current_prayer]['after']
+            print(f"  🔧 [time_segmenter] Using custom padding for {current_prayer}: after={current_padding_after}")
         else:
-            print(f"⛔ Invalid slot ignored between {times[i]} and {times[i+1]}")
+            print(f"  🔄 [time_segmenter] Using default padding for {current_prayer}: after={current_padding_after}")
+        
+        if prayer_paddings and next_prayer in prayer_paddings:
+            next_padding_before = prayer_paddings[next_prayer]['before']
+            print(f"  🔧 [time_segmenter] Using custom padding for {next_prayer}: before={next_padding_before}")
+        else:
+            print(f"  🔄 [time_segmenter] Using default padding for {next_prayer}: before={next_padding_before}")
+
+        # Apply minimum padding of 10 minutes after prayer for uniform display
+        MIN_PADDING_AFTER = 10
+        if current_padding_after < MIN_PADDING_AFTER:
+            original_after = current_padding_after
+            current_padding_after = MIN_PADDING_AFTER
+            print(f"  ⚠️ [time_segmenter] Applied minimum padding for {current_prayer}: {original_after} → {current_padding_after} min after")
+
+        start = times[i] + timedelta(minutes=current_padding_after)
+        end = times[i + 1] - timedelta(minutes=next_padding_before)
+        
+        print(f"  📅 [time_segmenter] Creating segment: {current_prayer}-{next_prayer} from {start.strftime('%H:%M')} to {end.strftime('%H:%M')}")
+        
+        if start < end:
+            segments.append({
+                "start": start.strftime("%H:%M"), 
+                "end": end.strftime("%H:%M"),
+                "between": f"{current_prayer}-{next_prayer}"
+            })
+        else:
+            print(f"⛔ Invalid slot ignored between {current_prayer} ({times[i]}) and {next_prayer} ({times[i+1]})")
 
     return segments
 

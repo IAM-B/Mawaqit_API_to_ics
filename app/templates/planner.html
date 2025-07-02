@@ -82,14 +82,142 @@
             <div class="summary-card config-info">
               <h3><i class="fa-solid fa-cog"></i> Configuration</h3>
               <form class="form" id="configForm">
-                <label for="padding_before">Temps avant prière (min) :</label>
-                <input type="number" name="padding_before" value="10" min="0" />
-                <label for="padding_after">Temps après prière (min) :</label>
-                <input type="number" name="padding_after" value="35" min="0" />
+                <!-- Configuration globale -->
+                <div class="config-section" id="globalConfigSection">
+                  <h4><i class="fa-solid fa-sliders"></i> Configuration globale</h4>
+                  <div class="input-group">
+                    <div>
+                      <label for="global_padding_before">Temps avant prière (min) :</label>
+                      <input type="number" name="global_padding_before" id="global_padding_before" value="10" min="0" />
+                    </div>
+                    <div>
+                      <label for="global_padding_after">Temps après prière (min) :</label>
+                      <input type="number" name="global_padding_after" id="global_padding_after" value="35" min="0" />
+                    </div>
+                  </div>
+                </div>
+                <!-- Note informative sur le padding minimum -->
+                <div class="padding-info" style="display: none;">
+                  <div class="info-box">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <div class="info-content">
+                      <strong>Padding minimum :</strong> Un padding de 10 minutes minimum est automatiquement appliqué après chaque prière pour garantir un affichage uniforme dans les agendas.
+                    </div>
+                  </div>
+                </div>
+                <!-- Switch pour basculer vers la configuration individuelle -->
+                <div class="config-switch">
+                  <label class="switch">
+                    <input type="checkbox" id="configModeSwitch">
+                    <span class="slider round"></span>
+                  </label>
+                  <span class="switch-label">Configuration individuelle</span>
+                </div>
+
+                <!-- Configuration individuelle des prières -->
+                <div class="config-section" id="individualConfigSection" style="display: none;">
+                  <h4><i class="fa-solid fa-clock"></i> Configuration par prière</h4>
+                  
+                  <div class="prayer-config-grid">
+                    <!-- Fajr -->
+                    <div class="prayer-config-item">
+                      <h5><i class="fa-solid fa-sun"></i> Fajr</h5>
+                      <div class="input-group">
+                        <div>
+                          <label for="fajr_padding_before">Avant (min)</label>
+                          <input type="number" name="fajr_padding_before" id="fajr_padding_before" value="10" min="0" />
+                        </div>
+                        <div>
+                          <label for="fajr_padding_after">Après (min)</label>
+                          <input type="number" name="fajr_padding_after" id="fajr_padding_after" value="35" min="0" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Sunset -->
+                    <div class="prayer-config-item">
+                      <h5><i class="fa-solid fa-sun"></i> Sunset</h5>
+                      <div class="input-group">
+                        <div>
+                          <label for="sunset_padding_before">Avant (min)</label>
+                          <input type="number" name="sunset_padding_before" id="sunset_padding_before" value="5" min="0" />
+                        </div>
+                        <div>
+                          <label for="sunset_padding_after">Après (min)</label>
+                          <input type="number" name="sunset_padding_after" id="sunset_padding_after" value="15" min="0" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Dhuhr -->
+                    <div class="prayer-config-item">
+                      <h5><i class="fa-solid fa-sun"></i> Dhuhr</h5>
+                      <div class="input-group">
+                        <div>
+                          <label for="dhuhr_padding_before">Avant (min)</label>
+                          <input type="number" name="dhuhr_padding_before" id="dhuhr_padding_before" value="10" min="0" />
+                        </div>
+                        <div>
+                          <label for="dhuhr_padding_after">Après (min)</label>
+                          <input type="number" name="dhuhr_padding_after" id="dhuhr_padding_after" value="35" min="0" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Asr -->
+                    <div class="prayer-config-item">
+                      <h5><i class="fa-solid fa-sun"></i> Asr</h5>
+                      <div class="input-group">
+                        <div>
+                          <label for="asr_padding_before">Avant (min)</label>
+                          <input type="number" name="asr_padding_before" id="asr_padding_before" value="10" min="0" />
+                        </div>
+                        <div>
+                          <label for="asr_padding_after">Après (min)</label>
+                          <input type="number" name="asr_padding_after" id="asr_padding_after" value="35" min="0" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Maghrib -->
+                    <div class="prayer-config-item">
+                      <h5><i class="fa-solid fa-moon"></i> Maghrib</h5>
+                      <div class="input-group">
+                        <div>
+                          <label for="maghrib_padding_before">Avant (min)</label>
+                          <input type="number" name="maghrib_padding_before" id="maghrib_padding_before" value="10" min="0" />
+                        </div>
+                        <div>
+                          <label for="maghrib_padding_after">Après (min)</label>
+                          <input type="number" name="maghrib_padding_after" id="maghrib_padding_after" value="35" min="0" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Isha -->
+                    <div class="prayer-config-item">
+                      <h5><i class="fa-solid fa-moon"></i> Isha</h5>
+                      <div class="input-group">
+                        <div>
+                          <label for="isha_padding_before">Avant (min)</label>
+                          <input type="number" name="isha_padding_before" id="isha_padding_before" value="10" min="0" />
+                        </div>
+                        <div>
+                          <label for="isha_padding_after">Après (min)</label>
+                          <input type="number" name="isha_padding_after" id="isha_padding_after" value="35" min="0" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Options supplémentaires -->
+                <div class="config-section">
+                  <h4><i class="fa-solid fa-options"></i> Options</h4>
                 <label for="include_sunset">
                   <input type="checkbox" name="include_sunset" id="include_sunset" checked />
                   Inclure le sunset (chourouk) dans les ICS
                 </label>
+                </div>
                 <button type="submit" class="btn-submit" aria-label="Générer planning">
                   📥 Générer planning
                 </button>

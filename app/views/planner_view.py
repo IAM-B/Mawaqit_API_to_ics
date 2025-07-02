@@ -223,6 +223,60 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         padding_before = int(request.form.get('padding_before', 10))
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
+        
+        # Get individual prayer paddings (if provided)
+        prayer_paddings = {}
+        prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha']
+        
+        # Mapping from frontend names to backend names
+        prayer_name_mapping = {
+            'fajr': 'fajr',
+            'sunset': 'sunset', 
+            'dhuhr': 'dohr',
+            'asr': 'asr',
+            'maghrib': 'maghreb',
+            'isha': 'icha'
+        }
+        
+        # Check if individual paddings are provided
+        has_individual_paddings = any(request.form.get(f'{prayer}_padding_before') and request.form.get(f'{prayer}_padding_after') for prayer in prayers)
+        
+        if has_individual_paddings:
+            print(f"🔧 [handle_planner_post] INDIVIDUAL mode detected - processing individual paddings...")
+            for prayer in prayers:
+                before_key = f'{prayer}_padding_before'
+                after_key = f'{prayer}_padding_after'
+                
+                before_value = request.form.get(before_key)
+                after_value = request.form.get(after_key)
+                
+                if before_value and after_value:
+                    backend_prayer_name = prayer_name_mapping[prayer]
+                    prayer_paddings[backend_prayer_name] = {
+                        'before': int(before_value),
+                        'after': int(after_value)
+                    }
+                    print(f"  ✅ [handle_planner_post] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
+                else:
+                    # Use global config for missing prayers
+                    backend_prayer_name = prayer_name_mapping[prayer]
+                    if prayer == 'sunset':
+                        prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
+                    else:
+                        prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
+                    print(f"  🔄 [handle_planner_post] {prayer} → {backend_prayer_name}: using global config")
+        else:
+            print(f"🔧 [handle_planner_post] GLOBAL mode detected - using global config for all prayers")
+            # Use global config for all prayers
+            for prayer in prayers:
+                backend_prayer_name = prayer_name_mapping[prayer]
+                if prayer == 'sunset':
+                    prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
+                else:
+                    prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
+                print(f"  🔄 [handle_planner_post] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
+        
+        print(f"🎯 [handle_planner_post] Final prayer_paddings: {prayer_paddings}")
     except ValueError:
         raise ValueError("Invalid padding values: padding_before and padding_after must be integers")
 
@@ -342,7 +396,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_before=padding_before,
             padding_after=padding_after,
             prayer_times=prayer_times,
-            include_sunset=include_sunset
+            include_sunset=include_sunset,
+            prayer_paddings=prayer_paddings
         )
 
         # Generate empty slots ICS file
@@ -353,7 +408,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_before=padding_before,
             padding_after=padding_after,
             prayer_times=prayer_times,
-            include_sunset=include_sunset
+            include_sunset=include_sunset,
+            prayer_paddings=prayer_paddings
         )
 
         # Generate available slots ICS file
@@ -364,7 +420,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_before=padding_before,
             padding_after=padding_after,
             prayer_times=prayer_times,
-            include_sunset=include_sunset
+            include_sunset=include_sunset,
+            prayer_paddings=prayer_paddings
         )
 
         # Process time segments for display
@@ -372,7 +429,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         if scope == "today":
             print("📅 Processing today scope")
             if isinstance(prayer_times, dict):
-                slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
+                slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after, prayer_paddings)
                 empty_slots = generate_empty_slots_for_timeline(slots)
                 segments.append({
                     "day": datetime.now().day,
@@ -398,7 +455,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                         continue
                     try:
                         date = datetime(year, month, i + 1)
-                        slots = segment_available_time(daily, tz_str, padding_before, padding_after)
+                        slots = segment_available_time(daily, tz_str, padding_before, padding_after, prayer_paddings)
                         empty_slots = generate_empty_slots_for_timeline(slots)
                         segments.append({
                             "day": i + 1,
@@ -418,7 +475,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                         try:
                             day_num = int(day_str)
                             date = datetime(year, month_index, day_num)
-                            slots = segment_available_time(times_dict, tz_str, padding_before, padding_after)
+                            slots = segment_available_time(times_dict, tz_str, padding_before, padding_after, prayer_paddings)
                             empty_slots = generate_empty_slots_for_timeline(slots)
                             month_segments.append({
                                 "day": day_num,
@@ -442,6 +499,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             segments=segments,
             padding_before=padding_before,
             padding_after=padding_after,
+            prayer_paddings=prayer_paddings,
             ics_path=ics_path,
             empty_slots_path=empty_slots_path,
             available_slots_path=available_slots_path,
@@ -503,6 +561,60 @@ def handle_planner_ajax():
         padding_before = int(request.form.get('padding_before', 10))
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
+        
+        # Get individual prayer paddings (if provided)
+        prayer_paddings = {}
+        prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha']
+        
+        # Mapping from frontend names to backend names
+        prayer_name_mapping = {
+            'fajr': 'fajr',
+            'sunset': 'sunset', 
+            'dhuhr': 'dohr',
+            'asr': 'asr',
+            'maghrib': 'maghreb',
+            'isha': 'icha'
+        }
+        
+        # Check if individual paddings are provided
+        has_individual_paddings = any(request.form.get(f'{prayer}_padding_before') and request.form.get(f'{prayer}_padding_after') for prayer in prayers)
+        
+        if has_individual_paddings:
+            print(f"🔧 [handle_planner_ajax] INDIVIDUAL mode detected - processing individual paddings...")
+            for prayer in prayers:
+                before_key = f'{prayer}_padding_before'
+                after_key = f'{prayer}_padding_after'
+                
+                before_value = request.form.get(before_key)
+                after_value = request.form.get(after_key)
+                
+                if before_value and after_value:
+                    backend_prayer_name = prayer_name_mapping[prayer]
+                    prayer_paddings[backend_prayer_name] = {
+                        'before': int(before_value),
+                        'after': int(after_value)
+                    }
+                    print(f"  ✅ [handle_planner_ajax] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
+                else:
+                    # Use global config for missing prayers
+                    backend_prayer_name = prayer_name_mapping[prayer]
+                    if prayer == 'sunset':
+                        prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
+                    else:
+                        prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
+                    print(f"  🔄 [handle_planner_ajax] {prayer} → {backend_prayer_name}: using global config")
+        else:
+            print(f"🔧 [handle_planner_ajax] GLOBAL mode detected - using global config for all prayers")
+            # Use global config for all prayers
+            for prayer in prayers:
+                backend_prayer_name = prayer_name_mapping[prayer]
+                if prayer == 'sunset':
+                    prayer_paddings[backend_prayer_name] = {'before': 5, 'after': 15}
+                else:
+                    prayer_paddings[backend_prayer_name] = {'before': padding_before, 'after': padding_after}
+                print(f"  🔄 [handle_planner_ajax] {prayer} → {backend_prayer_name}: {prayer_paddings[backend_prayer_name]}")
+        
+        print(f"🎯 [handle_planner_ajax] Final prayer_paddings: {prayer_paddings}")
         
         # Get target month/year for navigation (optional)
         target_month = request.form.get("target_month")
@@ -607,7 +719,8 @@ def handle_planner_ajax():
             padding_before=padding_before,
             padding_after=padding_after,
             prayer_times=prayer_times,
-            include_sunset=include_sunset
+            include_sunset=include_sunset,
+            prayer_paddings=prayer_paddings
         )
 
         empty_slots_path = generate_empty_by_scope(
@@ -617,7 +730,8 @@ def handle_planner_ajax():
             padding_before=padding_before,
             padding_after=padding_after,
             prayer_times=prayer_times,
-            include_sunset=include_sunset
+            include_sunset=include_sunset,
+            prayer_paddings=prayer_paddings
         )
 
         available_slots_path = generate_slots_by_scope(
@@ -627,14 +741,15 @@ def handle_planner_ajax():
             padding_before=padding_before,
             padding_after=padding_after,
             prayer_times=prayer_times,
-            include_sunset=include_sunset
+            include_sunset=include_sunset,
+            prayer_paddings=prayer_paddings
         )
 
         # Process time segments for display
         segments = []
         if scope == "today":
             if isinstance(prayer_times, dict):
-                slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after)
+                slots = segment_available_time(prayer_times, tz_str, padding_before, padding_after, prayer_paddings)
                 empty_slots = generate_empty_slots_for_timeline(slots)
                 segments.append({
                     "day": datetime.now().day,
@@ -658,7 +773,7 @@ def handle_planner_ajax():
                         continue
                     try:
                         date = datetime(year, month, i + 1)
-                        slots = segment_available_time(daily, tz_str, padding_before, padding_after)
+                        slots = segment_available_time(daily, tz_str, padding_before, padding_after, prayer_paddings)
                         empty_slots = generate_empty_slots_for_timeline(slots)
                         segments.append({
                             "day": i + 1,
@@ -678,7 +793,7 @@ def handle_planner_ajax():
                         try:
                             day_num = int(day_str)
                             date = datetime(year, month_index, day_num)
-                            slots = segment_available_time(times_dict, tz_str, padding_before, padding_after)
+                            slots = segment_available_time(times_dict, tz_str, padding_before, padding_after, prayer_paddings)
                             empty_slots = generate_empty_slots_for_timeline(slots)
                             month_segments.append({
                                 "day": day_num,
@@ -712,6 +827,7 @@ def handle_planner_ajax():
                 "end_date": end_date,
                 "padding_before": padding_before,
                 "padding_after": padding_after,
+                "prayer_paddings": prayer_paddings,
                 "scope": scope,
                 "mosque_lat": lat,
                 "mosque_lng": lng,

@@ -59,7 +59,8 @@ class ICSCacheManager:
                           padding_before: int, 
                           padding_after: int, 
                           include_sunset: bool,
-                          file_type: str) -> str:
+                          file_type: str,
+                          prayer_paddings: dict = None) -> str:
         """
         Generate a unique cache key based on generation parameters.
         
@@ -70,12 +71,21 @@ class ICSCacheManager:
             padding_after (int): Minutes after prayer
             include_sunset (bool): Whether to include sunset
             file_type (str): Type of ICS file (prayer_times/slots/empty_slots)
+            prayer_paddings (dict): Individual padding settings for each prayer
             
         Returns:
             str: Unique cache key
         """
         # Create a string with all parameters
         params_str = f"{masjid_id}_{scope}_{padding_before}_{padding_after}_{include_sunset}_{file_type}"
+        
+        # Add prayer paddings to the cache key if provided
+        if prayer_paddings:
+            # Sort prayer paddings for consistent ordering
+            sorted_paddings = sorted(prayer_paddings.items())
+            padding_str = "_".join([f"{prayer}_{paddings['before']}_{paddings['after']}" 
+                                  for prayer, paddings in sorted_paddings])
+            params_str += f"_paddings_{padding_str}"
         
         # Add current date for today scope, month for month scope, year for year scope
         now = datetime.now()
@@ -121,6 +131,7 @@ class ICSCacheManager:
                       padding_after: int, 
                       include_sunset: bool,
                       file_type: str,
+                      prayer_paddings: dict = None,
                       max_age_hours: int = 24) -> bool:
         """
         Check if cache is valid for the given parameters.
@@ -132,12 +143,13 @@ class ICSCacheManager:
             padding_after (int): Minutes after prayer
             include_sunset (bool): Whether to include sunset
             file_type (str): Type of ICS file
+            prayer_paddings (dict): Individual padding settings for each prayer
             max_age_hours (int): Maximum age of cache in hours
             
         Returns:
             bool: True if cache is valid, False otherwise
         """
-        cache_key = self._generate_cache_key(masjid_id, scope, padding_before, padding_after, include_sunset, file_type)
+        cache_key = self._generate_cache_key(masjid_id, scope, padding_before, padding_after, include_sunset, file_type, prayer_paddings)
         
         # Check if cache file exists
         cache_file = self._get_cache_file_path(cache_key, file_type)
@@ -181,7 +193,8 @@ class ICSCacheManager:
                            padding_before: int, 
                            padding_after: int, 
                            include_sunset: bool,
-                           file_type: str) -> Optional[str]:
+                           file_type: str,
+                           prayer_paddings: dict = None) -> Optional[str]:
         """
         Get the path to a cached file if it exists and is valid.
         
@@ -192,14 +205,15 @@ class ICSCacheManager:
             padding_after (int): Minutes after prayer
             include_sunset (bool): Whether to include sunset
             file_type (str): Type of ICS file
+            prayer_paddings (dict): Individual padding settings for each prayer
             
         Returns:
             Optional[str]: Path to cached file if valid, None otherwise
         """
-        if not self.is_cache_valid(masjid_id, scope, padding_before, padding_after, include_sunset, file_type):
+        if not self.is_cache_valid(masjid_id, scope, padding_before, padding_after, include_sunset, file_type, prayer_paddings):
             return None
         
-        cache_key = self._generate_cache_key(masjid_id, scope, padding_before, padding_after, include_sunset, file_type)
+        cache_key = self._generate_cache_key(masjid_id, scope, padding_before, padding_after, include_sunset, file_type, prayer_paddings)
         cache_file = self._get_cache_file_path(cache_key, file_type)
         
         if cache_file.exists():
@@ -215,7 +229,8 @@ class ICSCacheManager:
                      include_sunset: bool,
                      file_type: str,
                      file_content: bytes,
-                     original_path: str) -> str:
+                     original_path: str,
+                     prayer_paddings: dict = None) -> str:
         """
         Save a generated file to cache.
         
@@ -228,11 +243,12 @@ class ICSCacheManager:
             file_type (str): Type of ICS file
             file_content (bytes): File content to cache
             original_path (str): Original file path
+            prayer_paddings (dict): Individual padding settings for each prayer
             
         Returns:
             str: Path to the cached file
         """
-        cache_key = self._generate_cache_key(masjid_id, scope, padding_before, padding_after, include_sunset, file_type)
+        cache_key = self._generate_cache_key(masjid_id, scope, padding_before, padding_after, include_sunset, file_type, prayer_paddings)
         
         # Save the file
         cache_file = self._get_cache_file_path(cache_key, file_type)
@@ -250,7 +266,8 @@ class ICSCacheManager:
                 'padding_before': padding_before,
                 'padding_after': padding_after,
                 'include_sunset': include_sunset,
-                'file_type': file_type
+                'file_type': file_type,
+                'prayer_paddings': prayer_paddings
             }
         }
         
@@ -268,7 +285,8 @@ class ICSCacheManager:
                                  padding_after: int, 
                                  include_sunset: bool,
                                  file_type: str,
-                                 destination_path: str) -> bool:
+                                 destination_path: str,
+                                 prayer_paddings: dict = None) -> bool:
         """
         Copy a cached file to the destination path.
         
@@ -280,11 +298,12 @@ class ICSCacheManager:
             include_sunset (bool): Whether to include sunset
             file_type (str): Type of ICS file
             destination_path (str): Destination path
+            prayer_paddings (dict): Individual padding settings for each prayer
             
         Returns:
             bool: True if successful, False otherwise
         """
-        cached_path = self.get_cached_file_path(masjid_id, scope, padding_before, padding_after, include_sunset, file_type)
+        cached_path = self.get_cached_file_path(masjid_id, scope, padding_before, padding_after, include_sunset, file_type, prayer_paddings)
         
         if not cached_path:
             return False

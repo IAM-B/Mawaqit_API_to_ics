@@ -54,7 +54,8 @@ def generate_prayer_ics_file(
     padding_before: int,
     padding_after: int,
     prayer_times: list | dict,
-    include_sunset: bool = False
+    include_sunset: bool = False,
+    prayer_paddings: dict = None
 ) -> str:
     """
     Generate an ICS file containing prayer times with customizable padding.
@@ -79,7 +80,7 @@ def generate_prayer_ics_file(
     
     # Check cache first
     cached_path = cache_manager.get_cached_file_path(
-        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times"
+        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", prayer_paddings
     )
     
     if cached_path:
@@ -92,7 +93,7 @@ def generate_prayer_ics_file(
             output_path = Path(current_app.static_folder) / "ics" / f"prayer_times_{masjid_id}_{datetime.now().year}_{datetime.now().month:02d}.ics"
         
         cache_manager.copy_cached_to_destination(
-            masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", str(output_path)
+            masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", str(output_path), prayer_paddings
         )
         return str(output_path)
     
@@ -129,18 +130,41 @@ def generate_prayer_ics_file(
                 continue
             try:
                 base_dt = parse_time_str(time_str, date_obj).replace(tzinfo=tz)
-                dt_start = base_dt - timedelta(minutes=padding_before)
-                dt_end = base_dt + timedelta(minutes=padding_after)
+                
+                # Get individual padding for this prayer
+                prayer_before = padding_before
+                prayer_after = padding_after
+                
+                if prayer_paddings and name in prayer_paddings:
+                    prayer_before = prayer_paddings[name]['before']
+                    prayer_after = prayer_paddings[name]['after']
+                    print(f"  🔧 [prayer_generator] Using custom padding for {name}: before={prayer_before}, after={prayer_after}")
+                else:
+                    print(f"  🔄 [prayer_generator] Using default padding for {name}: before={prayer_before}, after={prayer_after}")
+                
+                # Apply minimum padding of 10 minutes after prayer for uniform display
+                MIN_PADDING_AFTER = 10
+                if prayer_after < MIN_PADDING_AFTER:
+                    original_after = prayer_after
+                    prayer_after = MIN_PADDING_AFTER
+                    print(f"  ⚠️ [prayer_generator] Applied minimum padding for {name}: {original_after} → {prayer_after} min after")
+                
+                dt_start = base_dt - timedelta(minutes=prayer_before)
+                dt_end = base_dt + timedelta(minutes=prayer_after)
+                
                 event = Event()
                 event.add('uid', str(uuid4()))
                 event.add('dtstart', dt_start)
                 event.add('dtend', dt_end)
+                
                 if name == "sunset":
                     event.add('summary', f"Sunset (Chourouk) ({time_str})")
                 else:
                     event.add('summary', f"{name.capitalize()} ({time_str})")
+                
                 event.add('location', f"Mosque {masjid_id.replace('-', ' ').title()}")
-                event.add('description', f"Prayer including {padding_before} min before and {padding_after} min after")
+                event.add('description', f"Prayer including {prayer_before} min before and {prayer_after} min after")
+                
                 alarm = Event()
                 alarm.add('action', 'AUDIO')
                 alarm.add('trigger', timedelta(minutes=0))
@@ -205,7 +229,7 @@ def generate_prayer_ics_file(
     # Save to cache for future use
     cache_manager.save_to_cache(
         masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", 
-        file_content, str(output_path)
+        file_content, str(output_path), prayer_paddings
     )
     
     print(f"✅ Generated and cached prayer times file: {output_path}")
