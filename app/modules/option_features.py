@@ -1,6 +1,6 @@
 """
-Islamic features module for prayer planning application.
-This module handles Islamic events, voluntary fasts, Jummah prayers, Hijri dates, and adhkar reminders.
+options features module for prayer planning application.
+This module handles options events, voluntary fasts, Jummah prayers, Hijri dates, and adhkar reminders.
 """
 
 from datetime import datetime, timedelta, date
@@ -8,12 +8,12 @@ from typing import Dict, List, Optional, Tuple
 from icalendar import Calendar, Event
 from uuid import uuid4
 
-class IslamicFeatures:
-    """Class to handle Islamic calendar features and events."""
+class OptionFeatures:
+    """Class to handle options calendar features and events."""
     
     def __init__(self, timezone_str: str):
         """
-        Initialize IslamicFeatures with the mosque's timezone.
+        Initialize OptionFeatures with the mosque's timezone.
         
         Args:
             timezone_str (str): Timezone string from the mosque data (e.g., "Europe/Paris", "America/New_York", "Asia/Dubai")
@@ -88,17 +88,17 @@ class IslamicFeatures:
         
         return f"{hijri_day} {hijri_months[hijri_month-1]} {hijri_year}"
     
-    def get_hijri_date_events(self, start_date: date, end_date: date, islamic_options: Dict = None) -> List[Dict]:
+    def get_hijri_date_events(self, start_date: date, end_date: date, features_options: Dict = None) -> List[Dict]:
         """
-        Get Hijri date events for each day with Islamic information integrated.
+        Get Hijri date events for each day with options information integrated.
         
         Args:
             start_date (date): Start date
             end_date (date): End date
-            islamic_options (Dict): Islamic options to include additional info
+            features_options (Dict): options options to include additional info
             
         Returns:
-            List[Dict]: List of Hijri date events with Islamic info
+            List[Dict]: List of Hijri date events with options info
         """
         hijri_events = []
         current_date = start_date
@@ -131,28 +131,28 @@ class IslamicFeatures:
                 title = f"{hijri_date_str}"
                 description = f"Date Hijri : {hijri_date_str}"
             
-            # Add Islamic information if options are enabled
-            if islamic_options:
-                islamic_info = []
+            # Add options information if options are enabled
+            if features_options:
+                options_info = []
                 
                 # Add Jummah if it's Friday
                 if current_date.weekday() == 4:
-                    islamic_info.append("Jummah")
+                    options_info.append("Jummah")
                 
                 # Add voluntary fasts
-                if islamic_options.get('include_voluntary_fasts', False):
+                if features_options.get('include_voluntary_fasts', False):
                     # Monday and Thursday fasts
                     if current_date.weekday() in [0, 3]:
-                        islamic_info.append("Jour de jeûne")
+                        options_info.append("Jour de jeûne")
                     
                     # Ayyam al-Bid (13-15 Hijri)
                     if hijri_day in [13, 14, 15]:
-                        islamic_info.append("Jour blanc")
+                        options_info.append("Jour blanc")
                 
-                # Add Islamic info to title and description
-                if islamic_info:
-                    title += f" - {', '.join(islamic_info)}"
-                    description += f"\nÉvénements islamiques : {', '.join(islamic_info)}"
+                # Add options info to title and description
+                if options_info:
+                    title += f" - {', '.join(options_info)}"
+                    description += f"\nÉvénements islamiques : {', '.join(options_info)}"
             
             # Set category based on sacred month
             category = 'hijri_date'
@@ -185,16 +185,16 @@ class IslamicFeatures:
             return "- Adhkar du soir"
         return ""
     
-    def add_islamic_events_to_calendar(self, cal: Calendar, start_date, end_date, 
-                                     islamic_options: Dict) -> None:
+    def add_options_events_to_calendar(self, cal: Calendar, start_date, end_date, 
+                                     features_options: Dict) -> None:
         """
-        Add Islamic events to the calendar based on options.
+        Add options events to the calendar based on options.
         
         Args:
             cal (Calendar): iCalendar object to add events to
             start_date: Start date for events (date or datetime)
             end_date: End date for events (date or datetime)
-            islamic_options (Dict): Dictionary of Islamic options
+            features_options (Dict): Dictionary of options options
         """
         # Convert to date if they are datetime objects
         if isinstance(start_date, datetime):
@@ -202,12 +202,12 @@ class IslamicFeatures:
         if isinstance(end_date, datetime):
             end_date = end_date.date()
         
-        if not islamic_options:
+        if not features_options:
             return
         
-        # Add Hijri dates with integrated Islamic information
-        if islamic_options.get('show_hijri_date', False):
-            hijri_events = self.get_hijri_date_events(start_date, end_date, islamic_options)
+        # Add Hijri dates with integrated options information
+        if features_options.get('show_hijri_date', False):
+            hijri_events = self.get_hijri_date_events(start_date, end_date, features_options)
             for hijri_event in hijri_events:
                 self._add_event_to_calendar(cal, hijri_event)
     

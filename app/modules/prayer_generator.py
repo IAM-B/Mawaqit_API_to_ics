@@ -10,7 +10,7 @@ from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
 from flask import current_app
 from .cache_manager import cache_manager
-from .islamic_features import IslamicFeatures
+from .option_features import OptionFeatures
 
 # Order of prayers in the day
 PRAYERS_ORDER = ["fajr"]
@@ -57,7 +57,7 @@ def generate_prayer_ics_file(
     prayer_times: list | dict,
     include_sunset: bool = False,
     prayer_paddings: dict = None,
-    islamic_options: dict = None
+    features_options: dict = None
 ) -> str:
     """
     Generate an ICS file containing prayer times with customizable padding.
@@ -82,7 +82,7 @@ def generate_prayer_ics_file(
     
     # Check cache first
     cached_path = cache_manager.get_cached_file_path(
-        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", prayer_paddings, islamic_options
+        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", prayer_paddings, features_options
     )
     
     if cached_path:
@@ -95,7 +95,7 @@ def generate_prayer_ics_file(
             output_path = Path(current_app.static_folder) / "ics" / f"prayer_times_{masjid_id}_{datetime.now().year}_{datetime.now().month:02d}.ics"
         
         cache_manager.copy_cached_to_destination(
-            masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", str(output_path), prayer_paddings, islamic_options
+            masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", str(output_path), prayer_paddings, features_options
         )
         return str(output_path)
     
@@ -112,8 +112,8 @@ def generate_prayer_ics_file(
     cal.add('name', current_app.config['ICS_CALENDAR_NAME'])
     cal.add('description', current_app.config['ICS_CALENDAR_DESCRIPTION'])
     
-    # Initialize Islamic features
-    islamic_features = IslamicFeatures(timezone_str)
+    # Initialize features
+    option_features = OptionFeatures(timezone_str)
 
     # Order of prayers in the day (dynamique)
     PRAYERS_ORDER = ["fajr"]
@@ -159,7 +159,7 @@ def generate_prayer_ics_file(
                 event.add('dtstart', dt_start)
                 event.add('dtend', dt_end)
                 
-                # Build prayer title with Islamic features
+                # Build prayer title with features
                 prayer_title = f"{name.capitalize()} ({time_str})"
                 
                 # Add Jummah prefix only for Dohr on Friday
@@ -169,8 +169,8 @@ def generate_prayer_ics_file(
                 # Note: Hijri dates are now separate events, not in prayer titles
                 
                 # Add adhkar info to specific prayers
-                if islamic_options and islamic_options.get('include_adhkar', False):
-                    adhkar_info = islamic_features.get_adhkar_info(name)
+                if features_options and features_options.get('include_adhkar', False):
+                    adhkar_info = option_features.get_adhkar_info(name)
                     if adhkar_info:
                         prayer_title += adhkar_info
                 
@@ -238,11 +238,11 @@ def generate_prayer_ics_file(
     else:
         raise ValueError("Scope must be 'today', 'month', or 'year'")
 
-    # Add Islamic events to the calendar
-    if islamic_options:
-        print(f"🕌 Adding Islamic features to calendar...")
+    # Add events to the calendar
+    if features_options:
+        print(f"🕌 Adding features to calendar...")
         
-        # Determine date range for Islamic events
+        # Determine date range for events
         if scope == "today":
             start_date = now.date()
             end_date = now.date()
@@ -256,8 +256,8 @@ def generate_prayer_ics_file(
             start_date = now.replace(month=1, day=1).date()
             end_date = now.replace(month=12, day=31).date()
         
-        islamic_features.add_islamic_events_to_calendar(cal, start_date, end_date, islamic_options)
-        print(f"✅ Islamic features added to calendar")
+        option_features.add_options_events_to_calendar(cal, start_date, end_date, features_options)
+        print(f"✅ features added to calendar")
 
     output_path = Path(current_app.static_folder) / "ics" / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -272,7 +272,7 @@ def generate_prayer_ics_file(
     # Save to cache for future use
     cache_manager.save_to_cache(
         masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", 
-        file_content, str(output_path), prayer_paddings, islamic_options
+        file_content, str(output_path), prayer_paddings, features_options
     )
     
     print(f"✅ Generated and cached prayer times file: {output_path}")

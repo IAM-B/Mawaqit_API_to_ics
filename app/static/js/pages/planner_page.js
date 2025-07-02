@@ -16,7 +16,7 @@ export class PlannerPage {
     this.setupPlanningAnimation();
     this.setupProgressIndicatorDetachment();
     this.setupPrayerPaddingConfig();
-    this.setupIslamicOptions();
+    this.setupFeaturesOptions();
   }
 
   setupFormHandling() {
@@ -431,14 +431,14 @@ export class PlannerPage {
               formData.append('padding_after', paddingAfter);
               formData.append('include_sunset', includeSunset ? 'on' : '');
               
-              // Add Islamic options
-              const islamicOptions = [
+              // Add Features options
+              const featuresOptions = [
                 'include_voluntary_fasts',
                 'show_hijri_date',
                 'include_adhkar'
               ];
               
-              islamicOptions.forEach(optionId => {
+              featuresOptions.forEach(optionId => {
                 const checkbox = document.getElementById(optionId);
                 if (checkbox) {
                   formData.append(optionId, checkbox.checked ? 'on' : '');
@@ -1060,13 +1060,14 @@ export class PlannerPage {
       });
     }
     
-    // Observe configuration (excluding Islamic options and config mode switch)
+    // Observe configuration (excluding features options and config mode switch)
     const configForm = document.getElementById('configForm');
     if (configForm) {
       const inputs = configForm.querySelectorAll('input, select');
       inputs.forEach(input => {
-        // Skip Islamic options and config mode switch to avoid triggering progress completion
+        // Skip features options and config mode switch to avoid triggering progress completion
         const excludedOptions = [
+          'include_sunset',
           'include_voluntary_fasts',
           'show_hijri_date',
           'include_adhkar',
@@ -1089,10 +1090,9 @@ export class PlannerPage {
     const configForm = document.getElementById('configForm');
     if (!configForm) return;
     
-    // Only check essential configuration elements (paddings and include_sunset)
+    // Only check essential configuration elements (paddings)
     const paddingBefore = configForm.querySelector('input[name="global_padding_before"]');
     const paddingAfter = configForm.querySelector('input[name="global_padding_after"]');
-    const includeSunset = configForm.querySelector('input[name="include_sunset"]');
     
     // Also check individual padding mode if it exists
     const configModeSwitch = document.getElementById('configModeSwitch');
@@ -1115,8 +1115,7 @@ export class PlannerPage {
         }
       });
       
-      const hasSunsetConfig = includeSunset && includeSunset.checked !== undefined;
-      const isComplete = hasValidIndividualPaddings && hasSunsetConfig;
+      const isComplete = hasValidIndividualPaddings;
       
       if (isComplete && !this.progressState.configCompleted) {
         this.progressState.configCompleted = true;
@@ -1127,14 +1126,12 @@ export class PlannerPage {
       }
     } else {
       // In global mode, check global padding values
-      if (paddingBefore && paddingAfter && includeSunset) {
+      if (paddingBefore && paddingAfter) {
         const hasPaddingValues = paddingBefore.value && paddingAfter.value &&
                                 !isNaN(parseInt(paddingBefore.value)) && 
                                 !isNaN(parseInt(paddingAfter.value));
         
-        const hasSunsetConfig = includeSunset.checked !== undefined;
-        
-        const isComplete = hasPaddingValues && hasSunsetConfig;
+        const isComplete = hasPaddingValues;
         
         if (isComplete && !this.progressState.configCompleted) {
           this.progressState.configCompleted = true;
@@ -1622,19 +1619,19 @@ export class PlannerPage {
     this.updateProgressIndicator(0);
   }
 
-  setupIslamicOptions() {
-    // Setup event listeners for Islamic options
-    const islamicOptions = [
+  setupFeaturesOptions() {
+    // Setup event listeners for features options
+    const featuresOptions = [
       'include_voluntary_fasts',
       'show_hijri_date',
       'include_adhkar'
     ];
 
-    islamicOptions.forEach(optionId => {
+    featuresOptions.forEach(optionId => {
       const checkbox = document.getElementById(optionId);
       if (checkbox) {
         checkbox.addEventListener('change', () => {
-          // Islamic options changes don't affect progress state
+          // features options changes don't affect progress state
         });
       }
     });
@@ -1644,7 +1641,7 @@ export class PlannerPage {
   }
 
   setupConditionalOptions() {
-    // Currently no conditional logic needed for Islamic options
+    // Currently no conditional logic needed for features options
     // This method is kept for future extensibility
   }
 }

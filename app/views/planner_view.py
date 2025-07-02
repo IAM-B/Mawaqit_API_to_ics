@@ -224,8 +224,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
         
-        # Get Islamic options (only active options)
-        islamic_options = {
+        # Get features options (only active options)
+        features_options = {
             'include_voluntary_fasts': request.form.get('include_voluntary_fasts') == 'on',
             'show_hijri_date': request.form.get('show_hijri_date') == 'on',
             'include_adhkar': request.form.get('include_adhkar') == 'on'
@@ -381,7 +381,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             prayer_times=prayer_times,
             include_sunset=include_sunset,
             prayer_paddings=prayer_paddings,
-            islamic_options=islamic_options
+            features_options=features_options
         )
 
         # Generate empty slots ICS file
@@ -394,7 +394,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             prayer_times=prayer_times,
             include_sunset=include_sunset,
             prayer_paddings=prayer_paddings,
-            islamic_options=islamic_options
+            features_options=features_options
         )
 
         # Generate available slots ICS file
@@ -407,7 +407,7 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             prayer_times=prayer_times,
             include_sunset=include_sunset,
             prayer_paddings=prayer_paddings,
-            islamic_options=islamic_options
+            features_options=features_options
         )
 
         # Process time segments for display
@@ -546,8 +546,8 @@ def handle_planner_ajax():
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
         
-        # Get Islamic options (only active options)
-        islamic_options = {
+        # Get features options (only active options)
+        features_options = {
             'include_voluntary_fasts': request.form.get('include_voluntary_fasts') == 'on',
             'show_hijri_date': request.form.get('show_hijri_date') == 'on',
             'include_adhkar': request.form.get('include_adhkar') == 'on'
@@ -705,7 +705,7 @@ def handle_planner_ajax():
             prayer_times=prayer_times,
             include_sunset=include_sunset,
             prayer_paddings=prayer_paddings,
-            islamic_options=islamic_options
+            features_options=features_options
         )
 
         empty_slots_path = generate_empty_by_scope(
@@ -717,7 +717,7 @@ def handle_planner_ajax():
             prayer_times=prayer_times,
             include_sunset=include_sunset,
             prayer_paddings=prayer_paddings,
-            islamic_options=islamic_options
+            features_options=features_options
         )
 
         available_slots_path = generate_slots_by_scope(
@@ -729,7 +729,7 @@ def handle_planner_ajax():
             prayer_times=prayer_times,
             include_sunset=include_sunset,
             prayer_paddings=prayer_paddings,
-            islamic_options=islamic_options
+            features_options=features_options
         )
 
         # Process time segments for display

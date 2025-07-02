@@ -216,7 +216,7 @@ def generate_empty_by_scope(
     prayer_times: list | dict,
     include_sunset: bool = False,
     prayer_paddings: dict = None,
-    islamic_options: dict = None
+    features_options: dict = None
 ) -> str:
     """
     Generate empty slot events for a specific time scope (today/month/year).
@@ -241,7 +241,7 @@ def generate_empty_by_scope(
     
     # Check cache first
     cached_path = cache_manager.get_cached_file_path(
-        masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", prayer_paddings, islamic_options
+        masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", prayer_paddings, features_options
     )
     
     if cached_path:
@@ -254,7 +254,7 @@ def generate_empty_by_scope(
             output_path = Path(current_app.static_folder) / "ics" / f"empty_slots_{masjid_id}_{datetime.now().year}_{datetime.now().month:02d}.ics"
         
         cache_manager.copy_cached_to_destination(
-            masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", str(output_path), prayer_paddings, islamic_options
+            masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", str(output_path), prayer_paddings, features_options
         )
         return str(output_path)
     
@@ -341,7 +341,7 @@ def generate_empty_by_scope(
     # Save to cache for future use
     cache_manager.save_to_cache(
         masjid_id, scope, padding_before, padding_after, include_sunset, "empty_slots", 
-        file_content, str(output_path), prayer_paddings, islamic_options
+        file_content, str(output_path), prayer_paddings, features_options
     )
     
     print(f"✅ Generated and cached empty slots file: {output_path}")
