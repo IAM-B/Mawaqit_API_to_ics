@@ -213,10 +213,71 @@
                 <!-- Options supplémentaires -->
                 <div class="config-section">
                   <h4><i class="fa-solid fa-options"></i> Options</h4>
-                <label for="include_sunset">
-                  <input type="checkbox" name="include_sunset" id="include_sunset" checked />
-                  Inclure le sunset (chourouk) dans les ICS
-                </label>
+                  <div class="option-item">
+                    <label for="include_sunset" class="checkbox-label">
+                      <input type="checkbox" name="include_sunset" id="include_sunset" checked />
+                      <span class="checkmark"></span>
+                      <span class="option-text">
+                        <strong>Inclure le sunset (chourouk)</strong>
+                        <small>Ajouter l'heure du coucher du soleil dans les ICS</small>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div class="option-item">
+                    <label for="include_islamic_events" class="checkbox-label">
+                      <input type="checkbox" name="include_islamic_events" id="include_islamic_events" checked />
+                      <span class="checkmark"></span>
+                      <span class="option-text">
+                        <strong>Événements islamiques</strong>
+                        <small>Aïd al-Fitr, Aïd al-Adha, Laylat al-Qadr, etc.</small>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div class="option-item">
+                    <label for="include_voluntary_fasts" class="checkbox-label">
+                      <input type="checkbox" name="include_voluntary_fasts" id="include_voluntary_fasts" checked />
+                      <span class="checkmark"></span>
+                      <span class="option-text">
+                        <strong>Rappel des jeûnes surérogatoires</strong>
+                        <small>Lundi, jeudi, 13-15 de chaque mois, etc.</small>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div class="option-item">
+                    <label for="include_jummah" class="checkbox-label">
+                      <input type="checkbox" name="include_jummah" id="include_jummah" checked />
+                      <span class="checkmark"></span>
+                      <span class="option-text">
+                        <strong>Prière du vendredi (Jummah)</strong>
+                        <small>Marquer spécialement la prière du vendredi</small>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div class="option-item">
+                    <label for="show_hijri_date" class="checkbox-label">
+                      <input type="checkbox" name="show_hijri_date" id="show_hijri_date" checked />
+                      <span class="checkmark"></span>
+                      <span class="option-text">
+                        <strong>Date hijrienne</strong>
+                        <small>Afficher la date du calendrier islamique</small>
+                      </span>
+                    </label>
+                  </div>
+
+                  <div class="option-item">
+                    <label for="include_adhkar" class="checkbox-label">
+                      <input type="checkbox" name="include_adhkar" id="include_adhkar" checked />
+                      <span class="checkmark"></span>
+                      <span class="option-text">
+                        <strong>Rappels d'adhkar</strong>
+                        <small>Inclure des rappels pour les invocations</small>
+                      </span>
+                    </label>
+                  </div>
                 </div>
                 <button type="submit" class="btn-submit" aria-label="Générer planning">
                   📥 Générer planning

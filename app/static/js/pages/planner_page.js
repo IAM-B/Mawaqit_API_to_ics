@@ -16,6 +16,7 @@ export class PlannerPage {
     this.setupPlanningAnimation();
     this.setupProgressIndicatorDetachment();
     this.setupPrayerPaddingConfig();
+    this.setupIslamicOptions();
   }
 
   setupFormHandling() {
@@ -1540,14 +1541,50 @@ export class PlannerPage {
         prayers.forEach(prayer => {
           const beforeInput = document.getElementById(`${prayer}_padding_before`);
           const afterInput = document.getElementById(`${prayer}_padding_after`);
-          if (beforeInput) beforeInput.value = prayer === 'sunset' ? 5 : 10;
-          if (afterInput) afterInput.value = prayer === 'sunset' ? 15 : 35;
+          
+          if (beforeInput) {
+            beforeInput.value = prayer === 'sunset' ? 5 : 10;
+          }
+          if (afterInput) {
+            afterInput.value = prayer === 'sunset' ? 15 : 35;
+            afterInput.style.borderColor = '';
+            afterInput.title = '';
+          }
         });
         
-        // Hide padding-info after reset
         this.hidePaddingInfo();
+      });
+    }
 
-        this.showMessage('Configuration reset to default values', 'success');
+    // Apply global button
+    if (applyGlobalBtn && globalPaddingBefore && globalPaddingAfter) {
+      applyGlobalBtn.addEventListener('click', () => {
+        const globalBefore = parseInt(globalPaddingBefore.value) || 10;
+        const globalAfter = parseInt(globalPaddingAfter.value) || 35;
+        
+        prayers.forEach(prayer => {
+          const beforeInput = document.getElementById(`${prayer}_padding_before`);
+          const afterInput = document.getElementById(`${prayer}_padding_after`);
+          
+          if (beforeInput) {
+            beforeInput.value = prayer === 'sunset' ? Math.min(globalBefore, 5) : globalBefore;
+          }
+          if (afterInput) {
+            const newValue = prayer === 'sunset' ? Math.min(globalAfter, 15) : globalAfter;
+            afterInput.value = newValue;
+            
+            // Validate minimum padding
+            if (newValue < this.MIN_PADDING_AFTER) {
+              afterInput.style.borderColor = '#f56565';
+              afterInput.title = `Minimum ${this.MIN_PADDING_AFTER} minutes required for uniform display`;
+            } else {
+              afterInput.style.borderColor = '';
+              afterInput.title = '';
+            }
+          }
+        });
+        
+        this.hidePaddingInfo();
       });
     }
   }
@@ -1631,6 +1668,68 @@ export class PlannerPage {
     
     // Update display
     this.updateProgressIndicator(0);
+  }
+
+  setupIslamicOptions() {
+    // Setup event listeners for Islamic options
+    const islamicOptions = [
+      'include_islamic_events',
+      'include_voluntary_fasts',
+      'include_jummah',
+      'show_hijri_date',
+      'include_adhkar'
+    ];
+
+    islamicOptions.forEach(optionId => {
+      const checkbox = document.getElementById(optionId);
+      if (checkbox) {
+        checkbox.addEventListener('change', () => {
+          this.updateOptionsState();
+        });
+      }
+    });
+
+    // Setup conditional logic for options
+    this.setupConditionalOptions();
+  }
+
+  setupConditionalOptions() {
+    // If Islamic events are disabled, disable related options
+    const islamicEventsCheckbox = document.getElementById('include_islamic_events');
+    const ramadanCheckbox = document.getElementById('include_ramadan');
+    const voluntaryFastsCheckbox = document.getElementById('include_voluntary_fasts');
+
+    if (islamicEventsCheckbox && ramadanCheckbox && voluntaryFastsCheckbox) {
+      islamicEventsCheckbox.addEventListener('change', () => {
+        const isEnabled = islamicEventsCheckbox.checked;
+        
+        // Enable/disable related options
+        ramadanCheckbox.disabled = !isEnabled;
+        voluntaryFastsCheckbox.disabled = !isEnabled;
+        
+        // Update visual state
+        [ramadanCheckbox, voluntaryFastsCheckbox].forEach(checkbox => {
+          const label = checkbox.closest('.checkbox-label');
+          if (label) {
+          if (isEnabled) {
+            label.style.opacity = '1';
+            label.style.pointerEvents = 'auto';
+          } else {
+            label.style.opacity = '0.5';
+            label.style.pointerEvents = 'none';
+          }
+        }
+        });
+      });
+
+      // Trigger initial state
+      islamicEventsCheckbox.dispatchEvent(new Event('change'));
+    }
+  }
+
+  updateOptionsState() {
+    // Update the progress state when options change
+    this.updateProgressState();
   }
 
 }

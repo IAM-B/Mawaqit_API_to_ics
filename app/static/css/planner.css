@@ -2300,7 +2300,7 @@ span.slider.round {
   background: var(--text-muted);
 }
 input:checked + .slider {
-  background: var(--bg-medium);
+  background: var(--prayer-green)
 }
 
 input:checked + .slider:before {
@@ -2749,5 +2749,144 @@ input:checked + .slider:before {
   
   .padding-info .info-content {
     font-size: 0.85rem;
+  }
+}
+
+/* ==================
+   📋 OPTIONS INTERFACE STYLES
+   ================== */
+
+/* Option Items */
+.option-item {
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.option-item:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+/* Checkbox Labels */
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.checkbox-label:hover {
+  background-color: var(--input-bg);
+}
+
+.checkbox-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Custom Checkmark */
+.checkmark {
+  height: 18px;
+  width: 18px;
+  background: var(--input-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.3s ease;
+}
+
+.checkbox-label:hover .checkmark {
+  border-color: var(--primary);
+}
+
+.checkbox-label input:checked ~ .checkmark {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-label input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Option Text */
+.option-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.option-text strong {
+  font-weight: 600;
+  color: var(--text-bright);
+  font-size: 0.95rem;
+}
+
+.option-text small {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .option-item {
+    margin-bottom: 0.75rem;
+  }
+  
+  .checkbox-label {
+    padding: 0.4rem;
+  }
+  
+  .option-text strong {
+    font-size: 0.9rem;
+  }
+  
+  .option-text small {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .option-item {
+    margin-bottom: 0.5rem;
+  }
+  
+  .checkbox-label {
+    gap: 0.5rem;
+  }
+  
+  .checkmark {
+    height: 16px;
+    width: 16px;
+  }
+  
+  .checkmark:after {
+    left: 4px;
+    top: 0px;
+    width: 3px;
+    height: 7px;
   }
 }

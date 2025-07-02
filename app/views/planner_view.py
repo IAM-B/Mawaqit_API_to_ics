@@ -224,6 +224,15 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
         
+        # Get Islamic options
+        islamic_options = {
+            'include_islamic_events': request.form.get('include_islamic_events') == 'on',
+            'include_voluntary_fasts': request.form.get('include_voluntary_fasts') == 'on',
+            'include_jummah': request.form.get('include_jummah') == 'on',
+            'show_hijri_date': request.form.get('show_hijri_date') == 'on',
+            'include_adhkar': request.form.get('include_adhkar') == 'on'
+        }
+        
         # Get individual prayer paddings (if provided)
         prayer_paddings = {}
         prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha']
@@ -373,7 +382,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_after=padding_after,
             prayer_times=prayer_times,
             include_sunset=include_sunset,
-            prayer_paddings=prayer_paddings
+            prayer_paddings=prayer_paddings,
+            islamic_options=islamic_options
         )
 
         # Generate empty slots ICS file
@@ -385,7 +395,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_after=padding_after,
             prayer_times=prayer_times,
             include_sunset=include_sunset,
-            prayer_paddings=prayer_paddings
+            prayer_paddings=prayer_paddings,
+            islamic_options=islamic_options
         )
 
         # Generate available slots ICS file
@@ -397,7 +408,8 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
             padding_after=padding_after,
             prayer_times=prayer_times,
             include_sunset=include_sunset,
-            prayer_paddings=prayer_paddings
+            prayer_paddings=prayer_paddings,
+            islamic_options=islamic_options
         )
 
         # Process time segments for display
@@ -535,6 +547,15 @@ def handle_planner_ajax():
         padding_before = int(request.form.get('padding_before', 10))
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
+        
+        # Get Islamic options
+        islamic_options = {
+            'include_islamic_events': request.form.get('include_islamic_events') == 'on',
+            'include_voluntary_fasts': request.form.get('include_voluntary_fasts') == 'on',
+            'include_jummah': request.form.get('include_jummah') == 'on',
+            'show_hijri_date': request.form.get('show_hijri_date') == 'on',
+            'include_adhkar': request.form.get('include_adhkar') == 'on'
+        }
         
         # Get individual prayer paddings (if provided)
         prayer_paddings = {}
@@ -687,7 +708,8 @@ def handle_planner_ajax():
             padding_after=padding_after,
             prayer_times=prayer_times,
             include_sunset=include_sunset,
-            prayer_paddings=prayer_paddings
+            prayer_paddings=prayer_paddings,
+            islamic_options=islamic_options
         )
 
         empty_slots_path = generate_empty_by_scope(
@@ -698,7 +720,8 @@ def handle_planner_ajax():
             padding_after=padding_after,
             prayer_times=prayer_times,
             include_sunset=include_sunset,
-            prayer_paddings=prayer_paddings
+            prayer_paddings=prayer_paddings,
+            islamic_options=islamic_options
         )
 
         available_slots_path = generate_slots_by_scope(
@@ -709,7 +732,8 @@ def handle_planner_ajax():
             padding_after=padding_after,
             prayer_times=prayer_times,
             include_sunset=include_sunset,
-            prayer_paddings=prayer_paddings
+            prayer_paddings=prayer_paddings,
+            islamic_options=islamic_options
         )
 
         # Process time segments for display
