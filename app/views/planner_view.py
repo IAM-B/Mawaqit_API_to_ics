@@ -224,11 +224,9 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
         
-        # Get Islamic options
+        # Get Islamic options (only active options)
         islamic_options = {
-            'include_islamic_events': request.form.get('include_islamic_events') == 'on',
             'include_voluntary_fasts': request.form.get('include_voluntary_fasts') == 'on',
-            'include_jummah': request.form.get('include_jummah') == 'on',
             'show_hijri_date': request.form.get('show_hijri_date') == 'on',
             'include_adhkar': request.form.get('include_adhkar') == 'on'
         }
@@ -548,11 +546,9 @@ def handle_planner_ajax():
         padding_after = int(request.form.get('padding_after', 35))
         include_sunset = request.form.get('include_sunset') == 'on'
         
-        # Get Islamic options
+        # Get Islamic options (only active options)
         islamic_options = {
-            'include_islamic_events': request.form.get('include_islamic_events') == 'on',
             'include_voluntary_fasts': request.form.get('include_voluntary_fasts') == 'on',
-            'include_jummah': request.form.get('include_jummah') == 'on',
             'show_hijri_date': request.form.get('show_hijri_date') == 'on',
             'include_adhkar': request.form.get('include_adhkar') == 'on'
         }

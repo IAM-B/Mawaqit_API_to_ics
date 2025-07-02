@@ -467,6 +467,20 @@ export class PlannerPage {
               formData.append('padding_after', paddingAfter);
               formData.append('include_sunset', includeSunset ? 'on' : '');
               
+              // Add Islamic options
+              const islamicOptions = [
+                'include_voluntary_fasts',
+                'show_hijri_date',
+                'include_adhkar'
+              ];
+              
+              islamicOptions.forEach(optionId => {
+                const checkbox = document.getElementById(optionId);
+                if (checkbox) {
+                  formData.append(optionId, checkbox.checked ? 'on' : '');
+                }
+              });
+              
               // Add individual paddings
               const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
               prayers.forEach(prayer => {
@@ -1085,17 +1099,26 @@ export class PlannerPage {
       });
     }
     
-    // Observe configuration
+    // Observe configuration (excluding Islamic options)
     const configForm = document.getElementById('configForm');
     if (configForm) {
       const inputs = configForm.querySelectorAll('input, select');
       inputs.forEach(input => {
-        input.addEventListener('change', () => {
-          this.checkConfigCompletion();
-        });
-        input.addEventListener('input', () => {
-          this.checkConfigCompletion();
-        });
+        // Skip Islamic options to avoid triggering progress completion
+        const islamicOptions = [
+          'include_voluntary_fasts',
+          'show_hijri_date',
+          'include_adhkar'
+        ];
+        
+        if (!islamicOptions.includes(input.id)) {
+          input.addEventListener('change', () => {
+            this.checkConfigCompletion();
+          });
+          input.addEventListener('input', () => {
+            this.checkConfigCompletion();
+          });
+        }
       });
     }
   }
@@ -1104,35 +1127,68 @@ export class PlannerPage {
     const configForm = document.getElementById('configForm');
     if (!configForm) return;
     
+    // Only check essential configuration elements (paddings and include_sunset)
     const paddingBefore = configForm.querySelector('input[name="padding_before"]');
     const paddingAfter = configForm.querySelector('input[name="padding_after"]');
     const includeSunset = configForm.querySelector('input[name="include_sunset"]');
     
-    if (paddingBefore && paddingAfter && includeSunset) {
-      // Check if both padding values are filled and valid numbers
-      const hasPaddingValues = paddingBefore.value && paddingAfter.value &&
-                              !isNaN(parseInt(paddingBefore.value)) && 
-                              !isNaN(parseInt(paddingAfter.value));
+    // Also check individual padding mode if it exists
+    const configModeSwitch = document.getElementById('configModeSwitch');
+    const isIndividualMode = configModeSwitch && configModeSwitch.checked;
+    
+    if (isIndividualMode) {
+      // In individual mode, check if at least one prayer has valid padding values
+      const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
+      let hasValidIndividualPaddings = false;
       
-      // Check if sunset option is properly configured
-      const hasSunsetConfig = includeSunset.checked !== undefined;
+      prayers.forEach(prayer => {
+        const beforeInput = document.getElementById(`${prayer}_padding_before`);
+        const afterInput = document.getElementById(`${prayer}_padding_after`);
+        
+        if (beforeInput && afterInput && 
+            beforeInput.value && afterInput.value &&
+            !isNaN(parseInt(beforeInput.value)) && 
+            !isNaN(parseInt(afterInput.value))) {
+          hasValidIndividualPaddings = true;
+        }
+      });
       
-      const isComplete = hasPaddingValues && hasSunsetConfig;
+      const hasSunsetConfig = includeSunset && includeSunset.checked !== undefined;
+      const isComplete = hasValidIndividualPaddings && hasSunsetConfig;
       
       if (isComplete && !this.progressState.configCompleted) {
         this.progressState.configCompleted = true;
-        this.updateProgressState(); // Use updateProgressState for consistency
+        this.updateProgressState();
         this.showConfigCompleteMessage();
       } else if (!isComplete && this.progressState.configCompleted) {
-        // If configuration becomes incomplete, update state
         this.progressState.configCompleted = false;
         this.updateProgressState();
       }
     } else {
-      // If any required element is missing, mark as incomplete
-      if (this.progressState.configCompleted) {
-        this.progressState.configCompleted = false;
-        this.updateProgressState();
+      // In global mode, check global padding values
+      if (paddingBefore && paddingAfter && includeSunset) {
+        const hasPaddingValues = paddingBefore.value && paddingAfter.value &&
+                                !isNaN(parseInt(paddingBefore.value)) && 
+                                !isNaN(parseInt(paddingAfter.value));
+        
+        const hasSunsetConfig = includeSunset.checked !== undefined;
+        
+        const isComplete = hasPaddingValues && hasSunsetConfig;
+        
+        if (isComplete && !this.progressState.configCompleted) {
+          this.progressState.configCompleted = true;
+          this.updateProgressState();
+          this.showConfigCompleteMessage();
+        } else if (!isComplete && this.progressState.configCompleted) {
+          this.progressState.configCompleted = false;
+          this.updateProgressState();
+        }
+      } else {
+        // If any required element is missing, mark as incomplete
+        if (this.progressState.configCompleted) {
+          this.progressState.configCompleted = false;
+          this.updateProgressState();
+        }
       }
     }
   }
@@ -1673,9 +1729,7 @@ export class PlannerPage {
   setupIslamicOptions() {
     // Setup event listeners for Islamic options
     const islamicOptions = [
-      'include_islamic_events',
       'include_voluntary_fasts',
-      'include_jummah',
       'show_hijri_date',
       'include_adhkar'
     ];
@@ -1684,7 +1738,7 @@ export class PlannerPage {
       const checkbox = document.getElementById(optionId);
       if (checkbox) {
         checkbox.addEventListener('change', () => {
-          this.updateOptionsState();
+          // Islamic options changes don't affect progress state
         });
       }
     });
@@ -1694,42 +1748,7 @@ export class PlannerPage {
   }
 
   setupConditionalOptions() {
-    // If Islamic events are disabled, disable related options
-    const islamicEventsCheckbox = document.getElementById('include_islamic_events');
-    const ramadanCheckbox = document.getElementById('include_ramadan');
-    const voluntaryFastsCheckbox = document.getElementById('include_voluntary_fasts');
-
-    if (islamicEventsCheckbox && ramadanCheckbox && voluntaryFastsCheckbox) {
-      islamicEventsCheckbox.addEventListener('change', () => {
-        const isEnabled = islamicEventsCheckbox.checked;
-        
-        // Enable/disable related options
-        ramadanCheckbox.disabled = !isEnabled;
-        voluntaryFastsCheckbox.disabled = !isEnabled;
-        
-        // Update visual state
-        [ramadanCheckbox, voluntaryFastsCheckbox].forEach(checkbox => {
-          const label = checkbox.closest('.checkbox-label');
-          if (label) {
-          if (isEnabled) {
-            label.style.opacity = '1';
-            label.style.pointerEvents = 'auto';
-          } else {
-            label.style.opacity = '0.5';
-            label.style.pointerEvents = 'none';
-          }
-        }
-        });
-      });
-
-      // Trigger initial state
-      islamicEventsCheckbox.dispatchEvent(new Event('change'));
-    }
+    // Currently no conditional logic needed for Islamic options
+    // This method is kept for future extensibility
   }
-
-  updateOptionsState() {
-    // Update the progress state when options change
-    this.updateProgressState();
-  }
-
 }

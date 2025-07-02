@@ -10,6 +10,7 @@ from icalendar import Calendar, Event
 from datetime import datetime, timedelta, time
 from flask import current_app
 from .cache_manager import cache_manager
+from .islamic_features import IslamicFeatures
 
 # Order of prayers in the day
 PRAYERS_ORDER = ["fajr"]
@@ -55,7 +56,8 @@ def generate_prayer_ics_file(
     padding_after: int,
     prayer_times: list | dict,
     include_sunset: bool = False,
-    prayer_paddings: dict = None
+    prayer_paddings: dict = None,
+    islamic_options: dict = None
 ) -> str:
     """
     Generate an ICS file containing prayer times with customizable padding.
@@ -80,7 +82,7 @@ def generate_prayer_ics_file(
     
     # Check cache first
     cached_path = cache_manager.get_cached_file_path(
-        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", prayer_paddings
+        masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", prayer_paddings, islamic_options
     )
     
     if cached_path:
@@ -93,7 +95,7 @@ def generate_prayer_ics_file(
             output_path = Path(current_app.static_folder) / "ics" / f"prayer_times_{masjid_id}_{datetime.now().year}_{datetime.now().month:02d}.ics"
         
         cache_manager.copy_cached_to_destination(
-            masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", str(output_path), prayer_paddings
+            masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", str(output_path), prayer_paddings, islamic_options
         )
         return str(output_path)
     
@@ -109,6 +111,9 @@ def generate_prayer_ics_file(
     cal.add('version', '2.0')
     cal.add('name', current_app.config['ICS_CALENDAR_NAME'])
     cal.add('description', current_app.config['ICS_CALENDAR_DESCRIPTION'])
+    
+    # Initialize Islamic features
+    islamic_features = IslamicFeatures(timezone_str)
 
     # Order of prayers in the day (dynamique)
     PRAYERS_ORDER = ["fajr"]
@@ -154,13 +159,33 @@ def generate_prayer_ics_file(
                 event.add('dtstart', dt_start)
                 event.add('dtend', dt_end)
                 
-                if name == "sunset":
-                    event.add('summary', f"Sunset (Chourouk) ({time_str})")
-                else:
-                    event.add('summary', f"{name.capitalize()} ({time_str})")
+                # Build prayer title with Islamic features
+                prayer_title = f"{name.capitalize()} ({time_str})"
                 
+                # Add Jummah prefix only for Dohr on Friday
+                if date_obj.weekday() == 4 and name == "dohr":  # Friday and Dohr only
+                    prayer_title = f"Jummah - {prayer_title}"
+                
+                # Note: Hijri dates are now separate events, not in prayer titles
+                
+                # Add adhkar info to specific prayers
+                if islamic_options and islamic_options.get('include_adhkar', False):
+                    adhkar_info = islamic_features.get_adhkar_info(name)
+                    if adhkar_info:
+                        prayer_title += adhkar_info
+                
+                # Handle sunset special case
+                if name == "sunset":
+                    prayer_title = f"Chourouk ({time_str})"
+                
+                event.add('summary', prayer_title)
                 event.add('location', f"Mosque {masjid_id.replace('-', ' ').title()}")
                 event.add('description', f"Prayer including {prayer_before} min before and {prayer_after} min after")
+                
+                # Add Jummah description only for Dohr on Friday
+                if date_obj.weekday() == 4 and name == "dohr":  # Friday and Dohr only
+                    current_desc = event.get('description', '')
+                    event.add('description', f"{current_desc}\n🕌 Prière du Jummah")
                 
                 alarm = Event()
                 alarm.add('action', 'AUDIO')
@@ -213,6 +238,27 @@ def generate_prayer_ics_file(
     else:
         raise ValueError("Scope must be 'today', 'month', or 'year'")
 
+    # Add Islamic events to the calendar
+    if islamic_options:
+        print(f"🕌 Adding Islamic features to calendar...")
+        
+        # Determine date range for Islamic events
+        if scope == "today":
+            start_date = now.date()
+            end_date = now.date()
+        elif scope == "month":
+            start_date = now.replace(day=1).date()
+            if now.month == 12:
+                end_date = now.replace(year=now.year + 1, month=1, day=1) - timedelta(days=1)
+            else:
+                end_date = now.replace(month=now.month + 1, day=1) - timedelta(days=1)
+        else:  # year
+            start_date = now.replace(month=1, day=1).date()
+            end_date = now.replace(month=12, day=31).date()
+        
+        islamic_features.add_islamic_events_to_calendar(cal, start_date, end_date, islamic_options)
+        print(f"✅ Islamic features added to calendar")
+
     output_path = Path(current_app.static_folder) / "ics" / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
@@ -226,7 +272,7 @@ def generate_prayer_ics_file(
     # Save to cache for future use
     cache_manager.save_to_cache(
         masjid_id, scope, padding_before, padding_after, include_sunset, "prayer_times", 
-        file_content, str(output_path), prayer_paddings
+        file_content, str(output_path), prayer_paddings, islamic_options
     )
     
     print(f"✅ Generated and cached prayer times file: {output_path}")
