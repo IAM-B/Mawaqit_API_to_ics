@@ -337,6 +337,7 @@
 
 .summary-card input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .summary-card .btn-submit {
@@ -2545,6 +2546,7 @@ input:checked + .slider:before {
 
 .input-group input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* ==================
@@ -2585,9 +2587,6 @@ input:checked + .slider:before {
 /* ==================
    📋 MOSQUE INFO - HARMONISÉ
    ================== */
-.summary-card.mosque-info {
-  /* Hérite des styles de base de summary-card */
-}
 
 .summary-card.mosque-info #mosque-map {
   border-radius: 12px;
@@ -2660,6 +2659,7 @@ input:checked + .slider:before {
 
 .summary-card input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .summary-card .btn-submit {
