@@ -698,6 +698,26 @@
   gap: 8px;
 }
 
+/* Hijri date in timeline */
+.timeline-hijri-date {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  fill: var(--white);
+  text-anchor: start;
+  dominant-baseline: middle;
+  filter: drop-shadow(0 1px 2px var(--shadow-color));
+  pointer-events: none;
+}
+
+.timeline-hijri-date-bg {
+  fill: var(--accent);
+  stroke: var(--accent-hover);
+  stroke-width: 2;
+  opacity: 0.95;
+  filter: drop-shadow(0 3px 6px var(--shadow-color));
+}
+
 .timeline-controls {
   display: flex;
   align-items: center;
