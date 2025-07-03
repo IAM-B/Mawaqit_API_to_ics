@@ -135,8 +135,8 @@ gstatus:
 
 # 📚 Documentation
 docs-serve:
-	@echo "📚 Starting documentation server..."
-	cd docs && python -m http.server 8000
+	@echo "📚 Starting modern documentation server..."
+	cd docs && python docs_server.py
 
 # 🔧 Configuration
 config-dev:

@@ -7,3 +7,5 @@ unidecode==1.4.0
 python-dotenv==1.1.1
 pytest==8.4.1
 pytest-cov==6.2.1
+markdown==3.8.2
+Jinja2==3.1.5

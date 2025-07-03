@@ -157,7 +157,7 @@ class OptionFeatures:
                 # Add voluntary fasts and Jummah to Hijri event if they exist
                 if all_info:
                     title += f" - {', '.join(all_info)}"
-                    description += f"\nÉvénements islamiques : {', '.join(all_info)}"
+                    description += f"\nÉvénements religieux : {', '.join(all_info)}"
                 
                 # Set category based on sacred month
                 category = 'hijri_date'
@@ -180,7 +180,7 @@ class OptionFeatures:
                 # Add Jummah info if it's Friday
                 if jummah_info:
                     title += f" - {', '.join(jummah_info)}"
-                    description += f"\nÉvénements islamiques : {', '.join(jummah_info)}"
+                    description += f"\nÉvénements religieux : {', '.join(jummah_info)}"
                 
                 hijri_events.append({
                     'date': current_date,

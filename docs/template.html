@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Mawaqit API to ICS</title>
+    <style>
+        :root {
+            /* Base colors */
+            --bg-color: #0f0f23;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --text-bright: #f8fafc;
+            --text-dark: #1e293b;
+            
+            /* Primary colors - Modern Blue from the project */
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-light: rgba(99, 102, 241, 0.15);
+            --primary-border: rgba(99, 102, 241, 0.3);
+            
+            /* Accent colors - Project purple */
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --accent-light: rgba(139, 92, 246, 0.05);
+            
+            /* Background colors from the project */
+            --form-bg: #1a1a2e;
+            --input-bg: #16213e;
+            --card-bg: #1e1e3f;
+            --surface-bg: #0f0f23;
+            --surface-color: #1e1e3f;
+            
+            /* Border colors from the project */
+            --border-color: #334155;
+            --border-light: #475569;
+            --border-dark: #1e293b;
+            
+            /* Success colors from the project */
+            --success: #10b981;
+            --success-hover: #059669;
+            --success-light: rgba(16, 185, 129, 0.15);
+            
+            /* Prayer colors from the project */
+            --prayer-green: #14b8a6;
+            --prayer-green-hover: #0d9488;
+            
+            /* Modern blue from the project */
+            --modern-blue: #6366f1;
+            --modern-blue-hover: #4f46e5;
+            
+            /* Code background */
+            --code-bg: #16213e;
+            
+            /* Link color */
+            --link-color: #6366f1;
+            
+            /* Shadows from the project */
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --shadow-light: rgba(0, 0, 0, 0.2);
+            --shadow: 0 4px 6px var(--shadow-light);
+            --shadow-lg: 0 10px 15px var(--shadow-color);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo:hover {
+            color: var(--primary-hover);
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav a:hover {
+            background: var(--primary);
+            color: var(--text-bright);
+        }
+
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-color);
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Main Content */
+        .main {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--surface-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background: var(--primary);
+            color: var(--text-bright);
+        }
+
+        .sidebar a.active {
+            background: var(--primary);
+            color: var(--text-bright);
+        }
+
+        /* Content */
+        .content {
+            background: var(--surface-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .content h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .content h2 {
+            color: var(--prayer-green);
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            padding-top: 1rem;
+        }
+
+        .content h3 {
+            color: var(--accent);
+            font-size: 1.4rem;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        .content h4 {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .content ul, .content ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code blocks */
+        .content pre {
+            background: var(--code-bg);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .content code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+
+        .content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Tables */
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--code-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .content th, .content td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content th {
+            background: var(--primary);
+            color: var(--text-bright);
+            font-weight: 600;
+        }
+
+        .content tr:hover {
+            background: var(--primary-light);
+        }
+
+        /* Links */
+        .content a {
+            color: var(--link-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .content a:hover {
+            border-bottom-color: var(--link-color);
+        }
+
+        /* Blockquotes */
+        .content blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            background: var(--primary-light);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        /* Lists */
+        .content ul li::marker {
+            color: var(--primary);
+        }
+
+        .content ol li::marker {
+            color: var(--prayer-green);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main {
+                grid-template-columns: 200px 1fr;
+                gap: 1rem;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            .content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .sidebar {
+                position: static;
+                margin-bottom: 1rem;
+                order: 2;
+            }
+
+            .content {
+                order: 1;
+                padding: 1rem;
+            }
+
+            .nav {
+                flex-direction: column;
+                gap: 0.5rem;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--surface-color);
+                border-top: 1px solid var(--border-color);
+                padding: 1rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .header-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .content h1 {
+                font-size: 2rem;
+            }
+            
+            .content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .content h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header {
+                padding: 0.5rem 0;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .nav {
+                gap: 0.25rem;
+            }
+            
+            .nav a {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .sidebar {
+                padding: 1rem;
+            }
+            
+            .sidebar h3 {
+                font-size: 1rem;
+            }
+            
+            .sidebar a {
+                padding: 0.25rem;
+                font-size: 0.9rem;
+            }
+            
+            .content {
+                padding: 0.75rem;
+            }
+            
+            .content h1 {
+                font-size: 1.75rem;
+            }
+            
+            .content h2 {
+                font-size: 1.3rem;
+            }
+            
+            .content h3 {
+                font-size: 1.1rem;
+            }
+            
+            .content pre {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+            
+            .content table {
+                font-size: 0.85rem;
+            }
+            
+            .content th, .content td {
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                padding: 0 5px;
+            }
+            
+            .logo {
+                font-size: 1rem;
+            }
+            
+            .content h1 {
+                font-size: 1.5rem;
+            }
+            
+            .content h2 {
+                font-size: 1.2rem;
+            }
+            
+            .content h3 {
+                font-size: 1rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Print styles */
+        @media print {
+            .header, .sidebar {
+                display: none;
+            }
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    🕌 Mawaqit API to ICS
+                </a>
+                <div class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <nav>
+                    <ul class="nav" id="navMenu">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/timeline.md">Timeline</a></li>
+                        <li><a href="/api.md">API</a></li>
+                        <li><a href="/setup.md">Setup</a></li>
+                        <li><a href="/testing.md">Testing</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+                    <aside class="sidebar">
+                <h3>📚 Documentation</h3>
+                <ul>
+                    <li><a href="/timeline.md" class="{{ 'active' if 'timeline' in title.lower() else '' }}">Timeline</a></li>
+                    <li><a href="/api.md" class="{{ 'active' if 'api' in title.lower() else '' }}">API</a></li>
+                    <li><a href="/setup.md" class="{{ 'active' if 'setup' in title.lower() else '' }}">Setup</a></li>
+                    <li><a href="/testing.md" class="{{ 'active' if 'testing' in title.lower() else '' }}">Testing</a></li>
+                    <li><a href="/project_review.md" class="{{ 'active' if 'review' in title.lower() else '' }}">Project Review</a></li>
+                    <li><a href="/features_integration.md" class="{{ 'active' if 'features' in title.lower() else '' }}">Features Integration</a></li>
+                    <li><a href="/e2e-testing-status.md" class="{{ 'active' if 'e2e' in title.lower() else '' }}">E2E Testing</a></li>
+                    <li><a href="/documentation_updates.md" class="{{ 'active' if 'updates' in title.lower() else '' }}">Doc Updates</a></li>
+                </ul>
+            </aside>
+
+        <article class="content">
+            {{ content | safe }}
+        </article>
+    </main>
+
+    <script>
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (menuToggle && navMenu) {
+            menuToggle.addEventListener('click', function() {
+                menuToggle.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+            
+            // Close menu when clicking on a link
+            const navLinks = navMenu.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    menuToggle.classList.remove('active');
+                    navMenu.classList.remove('active');
+                });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!menuToggle.contains(event.target) && !navMenu.contains(event.target)) {
+                    menuToggle.classList.remove('active');
+                    navMenu.classList.remove('active');
+                }
+            });
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

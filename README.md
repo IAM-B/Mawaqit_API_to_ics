@@ -21,6 +21,9 @@ It also generates an `.ics` calendar file that you can import into your favorite
   * Prayer times
   * Empty slots
   * Available slots
+* 🌟 Features integration (Hijri dates, voluntary fasts, adhkar)
+* 📊 Slot segmentation with hourly breakdown
+* 📚 Modern documentation server with HTML template
 
 ---
 
@@ -177,6 +180,7 @@ npm run test:full
 - Automatically calculated free slots
 - Padding management (before/after delays)
 - Responsive interface
+- **Slot segmentation**: Optional hourly breakdown mode
 
 ### Circular Clock
 - Circular visualization of schedules
@@ -198,6 +202,16 @@ npm run test:full
 - [API Documentation](docs/api.md)
 - [Testing Guide](docs/testing.md)
 - [Timeline and Interface](docs/timeline.md)
+- [Features Integration](docs/features_integration.md)
+- [Project Review](docs/project_review.md)
+- [E2E Testing Status](docs/e2e-testing-status.md)
+- [Documentation Updates](docs/documentation_updates.md)
+
+### 📚 Documentation Server
+```bash
+make docs-serve  # Start modern documentation server
+```
+Access at: [http://localhost:8000](http://localhost:8000)
 
 ---
 
@@ -209,10 +223,13 @@ npm run test:full
 * [x] Timeline interface with circular clock
 * [x] Padding management
 * [x] Modular JavaScript architecture
+* [x] Religious features integration (Hijri dates, voluntary fasts, adhkar)
+* [x] Slot segmentation with hourly breakdown
+* [x] Modern documentation server
+* [x] Complete documentation structure
 * [ ] Individual padding configuration per prayer
 * [ ] Add recurring tasks to free slots
 * [ ] Mobile interface
-* [ ] Complete documentation
 
 ---
 
@@ -238,6 +255,8 @@ npm run test:full
 - **Make**: Task automation
 - **npm**: Node.js dependency management
 - **pip**: Python dependency management
+- **Markdown**: Documentation conversion
+- **Jinja2**: HTML templating
 
 ---
 
