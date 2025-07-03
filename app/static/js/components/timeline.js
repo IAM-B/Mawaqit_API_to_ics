@@ -415,8 +415,17 @@ export class Timeline {
     const includeAdhkarCheckbox = document.getElementById('include_adhkar');
     const includeAdhkar = includeAdhkarCheckbox && includeAdhkarCheckbox.checked;
     
+    // Check if sunset option is enabled
+    const includeSunsetCheckbox = document.getElementById('include_sunset');
+    const includeSunset = includeSunsetCheckbox && includeSunsetCheckbox.checked;
+    
     Object.entries(prayerTimes).forEach(([prayer, time]) => {
       if (time && prayerNames[prayer]) {
+        // Skip sunset if the option is disabled
+        if (prayer === "sunset" && !includeSunset) {
+          return;
+        }
+        
         // Get individual padding for this specific prayer
         const prayerPadding = this.getIndividualPadding(prayer);
         
@@ -470,11 +479,15 @@ export class Timeline {
     const prayerTimes = dayData ? dayData.prayer_times : null;
     
     if (prayerTimes) {
-      // Build dynamic prayer order based on available prayers
+      // Check if sunset option is enabled
+      const includeSunsetCheckbox = document.getElementById('include_sunset');
+      const includeSunset = includeSunsetCheckbox && includeSunsetCheckbox.checked;
+      
+      // Build dynamic prayer order based on available prayers and options
       const prayerOrder = ['fajr'];
       
-      // Add sunset only if it exists in the data
-      if (prayerTimes['sunset']) {
+      // Add sunset only if it exists in the data AND the option is enabled
+      if (prayerTimes['sunset'] && includeSunset) {
         prayerOrder.push('sunset');
       }
       
@@ -1086,6 +1099,15 @@ export class Timeline {
     if (includeAdhkarCheckbox) {
       includeAdhkarCheckbox.addEventListener('change', () => {
         // Refresh the current day display to show/hide adhkar info in prayer titles
+        this.displayDayEvents(this.currentDate);
+      });
+    }
+    
+    // Listen for sunset option changes
+    const includeSunsetCheckbox = document.getElementById('include_sunset');
+    if (includeSunsetCheckbox) {
+      includeSunsetCheckbox.addEventListener('change', () => {
+        // Refresh the current day display to show/hide sunset prayer and update slots
         this.displayDayEvents(this.currentDate);
       });
     }
