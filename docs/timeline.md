@@ -17,6 +17,7 @@ The **Vertical Timeline** is a modern feature inspired by Google/Apple Calendar 
 - **Precise positioning**: Each block is positioned according to its exact time
 - **Informative tooltips**: Display details on hover
 - **Responsive design**: Automatic adaptation to different screen sizes
+- **Slot segmentation**: Optional display mode that splits slots into full-hour segments
 
 ### 🔄 Synchronization
 
@@ -24,6 +25,37 @@ The timeline is perfectly synchronized with:
 - **Calendar**: Day change when selecting in the calendar
 - **Clock**: Navigation between days via previous/next buttons
 - **Real-time data**: Automatic update according to backend data
+
+### 🧩 Slot Segmentation Mode
+
+The timeline now includes an advanced **slot segmentation feature** that provides two display modes:
+
+#### Normal Mode (Default)
+- Shows slots as continuous blocks between prayer times
+- Displays the total duration of each slot
+- Maintains the original visual representation
+
+#### Segmented Mode
+- Splits slots into full-hour segments for better time management
+- Each segment shows its individual duration
+- Uses dashed borders to indicate segmented slots
+- Helps users plan activities in hour-based increments
+- **Individual Hover**: Each segment can be hovered independently for precise interaction
+
+#### How to Use
+1. **Toggle Button**: Click the "Mode découpé" button in the timeline header
+2. **Visual Feedback**: The button changes appearance when active
+3. **Automatic Update**: The timeline immediately updates to show segmented slots
+4. **Duration Display**: Each segment shows its specific duration (e.g., "30min", "1h00")
+5. **Individual Interaction**: Hover over specific segments for detailed information
+
+#### Benefits
+- **Better Planning**: Easier to plan activities in hour-based increments
+- **Visual Clarity**: Clear separation between different time periods
+- **Flexibility**: Users can switch between modes based on their needs
+- **Consistency**: Follows the same logic as the ICS file generation
+- **Smart Text Display**: Main title appears on the largest segment for optimal readability
+- **Precise Interaction**: Individual segment hover for detailed time management
 
 ## Technical Architecture
 
@@ -46,6 +78,12 @@ class Timeline {
   displayEmptySlots(slots) // Display empty slots
   navigateToDay(date) // Navigate to a day
   syncWithCalendar(day, segments) // Synchronization with calendar
+  
+  // New slot segmentation methods
+  setupSlotDisplayToggle() // Create toggle button
+  toggleSlotDisplayMode() // Switch between modes
+  generateSegmentedSlots(startTime, endTime, title) // Split slots
+  createSegmentedSlotEvents() // Create segmented events
 }
 
 class Clock {
@@ -54,6 +92,37 @@ class Clock {
   calculateDuration(start, end) // Calculate duration between times
 }
 ```
+
+#### Slot Segmentation Logic
+
+The segmentation follows the same logic as the Python `empty_generator.py`:
+
+1. **Hour Boundary Detection**: Identifies when a slot crosses hour boundaries
+2. **First Partial Slot**: Creates a slot from start time to next full hour
+3. **Full-Hour Slots**: Creates complete hour segments (e.g., 15:00-16:00)
+4. **Final Partial Slot**: Creates a slot from last full hour to end time
+5. **Duration Calculation**: Each segment shows its individual duration
+6. **Smart Text Placement**: Main title appears on the largest segment for optimal visibility
+7. **Individual Hover Management**: Each segment gets unique identifiers for independent interaction
+
+Example:
+```
+Original slot: 14:30 - 17:45 (3h15)
+Segmented into:
+- 14:30 - 15:00 (30min) - "Disponibilité (3h15) - 30min"
+- 15:00 - 16:00 (1h00) - "Disponibilité (3h15)" ← Main title here (largest segment)
+- 16:00 - 17:00 (1h00) - "Disponibilité (3h15) - 1h00"
+- 17:00 - 17:45 (45min) - "Disponibilité (3h15) - 45min"
+```
+
+#### Hover Synchronization
+
+The segmented slots maintain perfect synchronization with the clock component:
+
+- **Individual Hover**: Each segment can be hovered independently
+- **Clock Synchronization**: Hovering a segment highlights the corresponding clock arc
+- **Cross-Night Slots**: Special handling for slots spanning midnight (Isha-Fajr)
+- **Night Slots**: Enhanced hover for Maghrib-Isha slots when Isha is after midnight
 
 ### Backend
 
@@ -126,6 +195,72 @@ window.timeline.syncWithCalendar(day, segments);
 - `.timeline-event.prayer` - Prayer styles
 - `.timeline-event.slot` - Slot styles
 - `.timeline-event.empty` - Empty slot styles
+
+### Toggle Button
+```css
+.slot-display-toggle {
+  background: var(--bg-medium);
+  border: 1px solid var(--primary-border);
+  color: var(--text-bright);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slot-display-toggle.active {
+  background: var(--prayer-green);
+  border-color: var(--prayer-green);
+  color: var(--white);
+}
+```
+
+### Segmented Slots
+```css
+.timeline-event.slot.segmented {
+  stroke-dasharray: 5, 5;
+  stroke-width: 2;
+}
+
+.timeline-event.slot.segmented:hover {
+  stroke-dasharray: 3, 3;
+  stroke-width: 3;
+}
+
+/* Individual hover for deep-night segmented slots */
+.timeline-event.slot.deep-night.segmented {
+  fill: var(--night-dark);
+  stroke: var(--modern-blue);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+.timeline-event.slot.deep-night.segmented:hover {
+  fill: var(--night-dark-hover);
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px var(--drop-shadow-night));
+  stroke-width: 3;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* Individual hover for night segmented slots */
+.timeline-event.slot.night.segmented {
+  fill: url(#nightGradient);
+  stroke: var(--modern-blue);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+.timeline-event.slot.night.segmented:hover {
+  fill: url(#nightGradientHover);
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px var(--drop-shadow-primary));
+  stroke-width: 3;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+```
 
 ## Padding Management
 
@@ -227,6 +362,9 @@ const testSegments = [
 - **Event display**: 95%
 - **Navigation**: 90%
 - **Padding management**: 85%
+- **Slot segmentation**: 90%
+- **Individual hover**: 95%
+- **Clock synchronization**: 95%
 
 ## Performance Optimization
 
@@ -295,4 +433,97 @@ For questions or issues regarding the timeline, consult:
 - Application logs
 - Browser console for JavaScript errors
 - Network data to verify AJAX requests
-- [Testing Documentation](testing.md) for debugging tests 
+- [Testing Documentation](testing.md) for debugging tests
+
+## Integration with Backend
+
+The slot segmentation feature is fully integrated with the existing backend logic:
+
+### Python Integration
+- Uses the same segmentation logic as `empty_generator.py`
+- Maintains consistency between frontend display and ICS file generation
+- Supports all prayer time configurations and padding settings
+
+### Data Flow
+1. **Backend**: Generates prayer times and slot data
+2. **Frontend**: Receives data and displays in timeline
+3. **Segmentation**: Applied on-the-fly based on user preference
+4. **Synchronization**: Maintains sync with clock and calendar components
+
+## Testing
+
+### Unit Tests
+The slot segmentation functionality is thoroughly tested:
+
+```javascript
+describe('Slot Segmentation', () => {
+  test('should generate segmented slots correctly', () => {
+    const slots = timeline.generateSegmentedSlots('14:30', '17:45', 'Test Slot');
+    expect(slots).toHaveLength(4);
+  });
+  
+  test('should handle slots that do not cross hour boundaries', () => {
+    const slots = timeline.generateSegmentedSlots('14:30', '14:45', 'Short Slot');
+    expect(slots).toHaveLength(1);
+  });
+});
+```
+
+### Test Coverage
+- ✅ Slot generation logic
+- ✅ Hour boundary detection
+- ✅ Duration calculations
+- ✅ Toggle button functionality
+- ✅ Visual state management
+- ✅ Error handling
+- ✅ Individual hover behavior
+- ✅ Clock synchronization
+- ✅ Cross-night slot handling
+- ✅ Night slot hover effects
+
+## Future Enhancements
+
+### Planned Features
+- **Custom Segmentation**: Allow users to set custom time intervals
+- **Visual Indicators**: Add icons or colors to distinguish segment types
+- **Export Options**: Include segmented view in ICS exports
+- **Analytics**: Track usage patterns of different display modes
+- **Enhanced Hover**: Add more detailed tooltips for individual segments
+- **Keyboard Navigation**: Support for keyboard-based segment selection
+
+### Performance Optimizations
+- **Lazy Loading**: Load segmented data only when needed
+- **Caching**: Cache segmented slot calculations
+- **Virtual Scrolling**: For large datasets with many segments
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Toggle Button Not Appearing**
+   - Check if timeline is properly initialized
+   - Verify DOM structure includes `.slots-header`
+
+2. **Segments Not Displaying**
+   - Ensure slot data is valid
+   - Check console for JavaScript errors
+   - Verify time format (HH:MM)
+
+3. **Visual Inconsistencies**
+   - Clear browser cache
+   - Check CSS file loading
+   - Verify responsive breakpoints
+
+4. **Hover Synchronization Issues**
+   - Check if clock component is properly initialized
+   - Verify segment IDs are correctly assigned
+   - Ensure CSS hover states are properly defined
+   - Test with different slot types (night, deep-night, day)
+
+### Debug Mode
+Enable debug logging by setting:
+```javascript
+window.timelineDebug = true;
+```
+
+This will log segmentation calculations and display state changes to the console. 

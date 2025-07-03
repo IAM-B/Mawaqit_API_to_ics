@@ -14,6 +14,7 @@ export class Timeline {
     this.scope = 'today';
     this.tooltip = null;
     this.currentView = 'timeline'; // 'timeline' or 'slots'
+    this.slotDisplayMode = 'normal'; // 'normal' or 'segmented'
     this.init();
   }
 
@@ -22,6 +23,7 @@ export class Timeline {
     this.createTimelineContainer();
     this.createTooltip();
     this.setupViewToggle();
+    this.setupSlotDisplayToggle();
     
     // Set initial date to today and update display
     const today = new Date();
@@ -42,6 +44,173 @@ export class Timeline {
     if (this.container && this.svg) {
       this.createSVGGrid(this.svg);
     }
+  }
+
+  // Setup slot display mode toggle
+  setupSlotDisplayToggle() {
+    // Create toggle switch if it doesn't exist
+    let toggleSwitch = document.querySelector('.slot-toggle-switch');
+    if (!toggleSwitch) {
+      toggleSwitch = document.createElement('div');
+      toggleSwitch.className = 'slot-toggle-switch';
+      toggleSwitch.innerHTML = `
+        <input type="checkbox" id="slotToggle" class="toggle-input">
+        <label for="slotToggle" class="toggle-label">
+          <span class="toggle-slider"></span>
+          <span class="toggle-icon">
+            <i class="fa-solid fa-clock"></i>
+          </span>
+        </label>
+      `;
+      toggleSwitch.setAttribute('title', 'Mode découpé');
+      
+      // Insert into the existing toggle wrapper at the beginning
+      const toggleWrapper = document.querySelector('.slot-toggle-wrapper');
+      if (toggleWrapper) {
+        toggleWrapper.insertBefore(toggleSwitch, toggleWrapper.firstChild);
+      }
+      
+      // Add event listener
+      const toggleInput = toggleSwitch.querySelector('.toggle-input');
+      toggleInput.addEventListener('change', () => {
+        this.toggleSlotDisplayMode();
+      });
+    }
+  }
+
+  // Toggle between normal and segmented slot display
+  toggleSlotDisplayMode() {
+    this.slotDisplayMode = this.slotDisplayMode === 'normal' ? 'segmented' : 'normal';
+    
+    // Update toggle switch state
+    const toggleInput = document.querySelector('.toggle-input');
+    const toggleIcon = document.querySelector('.toggle-icon i');
+    const toggleSwitch = document.querySelector('.slot-toggle-switch');
+    
+    if (toggleInput && toggleIcon && toggleSwitch) {
+      if (this.slotDisplayMode === 'segmented') {
+        toggleInput.checked = true;
+        toggleIcon.className = 'fa-solid fa-puzzle-piece';
+        toggleSwitch.setAttribute('title', 'Mode découpé actif');
+      } else {
+        toggleInput.checked = false;
+        toggleIcon.className = 'fa-solid fa-clock';
+        toggleSwitch.setAttribute('title', 'Mode normal actif');
+      }
+    }
+    
+    // Redisplay current day events with new mode
+    this.displayDayEvents(this.currentDate);
+  }
+
+  // Get current slot display mode
+  getSlotDisplayMode() {
+    return this.slotDisplayMode;
+  }
+
+  // Generate segmented slots (split into full hours)
+  generateSegmentedSlots(startTime, endTime, originalTitle) {
+    const slots = [];
+    const startMinutes = timeToMinutes(startTime);
+    const endMinutes = timeToMinutes(endTime);
+    
+    if (startMinutes >= endMinutes) {
+      return slots;
+    }
+    
+    // Find the next full hour after start
+    const nextHour = Math.ceil(startMinutes / 60) * 60;
+    
+    if (nextHour > endMinutes) {
+      // Slot doesn't cross hour boundary, keep as is
+      slots.push({
+        start: startTime,
+        end: endTime,
+        title: originalTitle,
+        isSegmented: false
+      });
+    } else {
+      // Create first partial slot
+      const firstSlotEnd = minutesToTime(nextHour);
+      slots.push({
+        start: startTime,
+        end: firstSlotEnd,
+        title: originalTitle,
+        isSegmented: true
+      });
+      
+      let current = nextHour;
+      
+      // Add full-hour slots
+      while (current + 60 <= endMinutes) {
+        const slotStart = minutesToTime(current);
+        const slotEnd = minutesToTime(current + 60);
+        slots.push({
+          start: slotStart,
+          end: slotEnd,
+          title: originalTitle,
+          isSegmented: true
+        });
+        current += 60;
+      }
+      
+      // Add final partial slot if needed
+      if (current < endMinutes) {
+        const finalSlotStart = minutesToTime(current);
+        slots.push({
+          start: finalSlotStart,
+          end: endTime,
+          title: originalTitle,
+          isSegmented: true
+        });
+      }
+    }
+    
+    return slots;
+  }
+
+  // Create segmented slot events
+  createSegmentedSlotEvents(slotStart, slotEnd, slotTitle, slotClass, syncTime, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null) {
+    const segmentedSlots = this.generateSegmentedSlots(slotStart, slotEnd, slotTitle);
+    
+    segmentedSlots.forEach((slot, index) => {
+      // Calculate duration for this segment
+      const startMinutes = timeToMinutes(slot.start);
+      const endMinutes = timeToMinutes(slot.end);
+      const durationMinutes = endMinutes - startMinutes;
+      const hours = Math.floor(durationMinutes / 60);
+      const minutes = durationMinutes % 60;
+      const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
+      
+      // Create title for this segment
+      const segmentTitle = slot.isSegmented ? 
+        `${slotTitle} - ${durationText}` : 
+        slotTitle;
+      
+      // Add 1 minute of margin for UI
+      const adjustedStart = this.addPadding(slot.start, 1);
+      const adjustedEnd = this.subtractPadding(slot.end, 1);
+      
+      if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+        // Only show text on the first segment or if it's not segmented
+        const showSegmentText = index === 0 && showText;
+        
+        // Use original IDs for synchronization, but add segment index for individual hover
+        this.createSVGEvent(
+          segmentTitle, 
+          adjustedStart, 
+          adjustedEnd, 
+          'slot', 
+          slotClass + (slot.isSegmented ? ' segmented' : ''), 
+          syncTime, 
+          showSegmentText, 
+          nightSlotId, 
+          deepNightSlotId, 
+          allNightSlotId,
+          index // Segment index for individual hover
+        );
+      }
+    });
   }
 
   // Create the SVG grid (hours, labels, groups)
@@ -556,21 +725,49 @@ export class Timeline {
             
             // First slot: maghreb to 23:59
             if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
-              const adjustedStart = this.addPadding(maghrebToMidnightStart, 1);
-              const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 1);
-              
-              if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', maghrebToMidnightStart + '-' + maghrebToMidnightEnd, showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
+              if (this.slotDisplayMode === 'segmented') {
+                this.createSegmentedSlotEvents(
+                  maghrebToMidnightStart, 
+                  maghrebToMidnightEnd, 
+                  slotTitle, 
+                  'slot night', 
+                  maghrebToMidnightStart + '-' + maghrebToMidnightEnd, 
+                  showTextOnFirstSlot, 
+                  nightSlotId, 
+                  null, 
+                  allNightSlotId
+                );
+              } else {
+                const adjustedStart = this.addPadding(maghrebToMidnightStart, 1);
+                const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 1);
+                
+                if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+                  this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', maghrebToMidnightStart + '-' + maghrebToMidnightEnd, showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
+                }
               }
             }
             
             // Second slot: 00:00 to icha
             if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
-              const adjustedStart = this.addPadding(midnightToIchaStart, 1);
-              const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 1);
-              
-              if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToIchaStart + '-' + midnightToIchaEnd, !showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
+              if (this.slotDisplayMode === 'segmented') {
+                this.createSegmentedSlotEvents(
+                  midnightToIchaStart, 
+                  midnightToIchaEnd, 
+                  slotTitle, 
+                  'slot night', 
+                  midnightToIchaStart + '-' + midnightToIchaEnd, 
+                  !showTextOnFirstSlot, 
+                  nightSlotId, 
+                  null, 
+                  allNightSlotId
+                );
+              } else {
+                const adjustedStart = this.addPadding(midnightToIchaStart, 1);
+                const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 1);
+                
+                if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+                  this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToIchaStart + '-' + midnightToIchaEnd, !showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
+                }
               }
             }
             
@@ -604,8 +801,23 @@ export class Timeline {
               const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
               // Create a common identifier for maghreb-icha slots only
               const allNightSlotId = `maghreb-icha-slots`;
-              // For synchronization, use exact times (without padding)
-              this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId, null, allNightSlotId);
+              
+              if (this.slotDisplayMode === 'segmented') {
+                this.createSegmentedSlotEvents(
+                  slotStart, 
+                  slotEnd, 
+                  slotTitle, 
+                  'slot night', 
+                  slotStart + '-' + slotEnd, 
+                  true, 
+                  nightSlotId, 
+                  null, 
+                  allNightSlotId
+                );
+              } else {
+                // For synchronization, use exact times (without padding)
+                this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId, null, allNightSlotId);
+              }
             }
             
             continue; // Skip the normal slot creation for this pair
@@ -662,8 +874,19 @@ export class Timeline {
           // Determine the CSS class based on slot type
           const slotClass = isDaySlot ? 'slot day' : 'slot';
           
-          // For synchronization, use exact times (without padding)
-          this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', slotClass, slotStart + '-' + slotEnd);
+          if (this.slotDisplayMode === 'segmented') {
+            this.createSegmentedSlotEvents(
+              slotStart, 
+              slotEnd, 
+              slotTitle, 
+              slotClass, 
+              slotStart + '-' + slotEnd, 
+              true
+            );
+          } else {
+            // For synchronization, use exact times (without padding)
+            this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', slotClass, slotStart + '-' + slotEnd);
+          }
         }
       }
       
@@ -721,21 +944,49 @@ export class Timeline {
           
           // First slot: icha to 23:59
           if (ichaToMidnightStart && ichaToMidnightEnd && timeToMinutes(ichaToMidnightEnd) > timeToMinutes(ichaToMidnightStart)) {
-            const adjustedStart = this.addPadding(ichaToMidnightStart, 1);
-            const adjustedEnd = this.subtractPadding(ichaToMidnightEnd, 1);
-            
-            if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', ichaToMidnightStart + '-' + ichaToMidnightEnd, showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
+            if (this.slotDisplayMode === 'segmented') {
+              this.createSegmentedSlotEvents(
+                ichaToMidnightStart, 
+                ichaToMidnightEnd, 
+                slotTitle, 
+                'slot deep-night', 
+                ichaToMidnightStart + '-' + ichaToMidnightEnd, 
+                true, // Always show text on first slot (after icha) in segmented mode
+                null, 
+                deepNightSlotId, 
+                allNightSlotId
+              );
+            } else {
+              const adjustedStart = this.addPadding(ichaToMidnightStart, 1);
+              const adjustedEnd = this.subtractPadding(ichaToMidnightEnd, 1);
+              
+              if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', ichaToMidnightStart + '-' + ichaToMidnightEnd, showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
+              }
             }
           }
           
           // Second slot: 00:00 to fajr
           if (midnightToFajrStart && midnightToFajrEnd && timeToMinutes(midnightToFajrEnd) > timeToMinutes(midnightToFajrStart)) {
-            const adjustedStart = this.addPadding(midnightToFajrStart, 1);
-            const adjustedEnd = this.subtractPadding(midnightToFajrEnd, 1);
-            
-            if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
-              this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', midnightToFajrStart + '-' + midnightToFajrEnd, !showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
+            if (this.slotDisplayMode === 'segmented') {
+              this.createSegmentedSlotEvents(
+                midnightToFajrStart, 
+                midnightToFajrEnd, 
+                slotTitle, 
+                'slot deep-night', 
+                midnightToFajrStart + '-' + midnightToFajrEnd, 
+                false, // Never show text on second slot in segmented mode
+                null, 
+                deepNightSlotId, 
+                allNightSlotId
+              );
+            } else {
+              const adjustedStart = this.addPadding(midnightToFajrStart, 1);
+              const adjustedEnd = this.subtractPadding(midnightToFajrEnd, 1);
+              
+              if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
+                this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', midnightToFajrStart + '-' + midnightToFajrEnd, !showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
+              }
             }
           }
         } else {
@@ -767,8 +1018,23 @@ export class Timeline {
             const deepNightSlotId = `deep-night-slot-${slotStart}-${slotEnd}`;
             // Create a common identifier for icha-fajr slots only
             const allNightSlotId = `icha-fajr-slots`;
-            // For synchronization, use exact times (without padding)
-            this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot deep-night', slotStart + '-' + slotEnd, true, null, deepNightSlotId, allNightSlotId);
+            
+            if (this.slotDisplayMode === 'segmented') {
+              this.createSegmentedSlotEvents(
+                slotStart, 
+                slotEnd, 
+                slotTitle, 
+                'slot deep-night', 
+                slotStart + '-' + slotEnd, 
+                true, 
+                null, 
+                deepNightSlotId, 
+                allNightSlotId
+              );
+            } else {
+              // For synchronization, use exact times (without padding)
+              this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot deep-night', slotStart + '-' + slotEnd, true, null, deepNightSlotId, allNightSlotId);
+            }
           }
         }
       }
@@ -794,8 +1060,19 @@ export class Timeline {
         const adjustedEndTime = this.subtractPadding(endTime, 1);
         
         if (adjustedStartTime && adjustedEndTime && timeToMinutes(adjustedEndTime) > timeToMinutes(adjustedStartTime)) {
-          // For synchronization, use exact times (without padding)
-          this.createSVGEvent(slotTitle, adjustedStartTime, adjustedEndTime, 'slot', 'slot', startTime + '-' + endTime);
+          if (this.slotDisplayMode === 'segmented') {
+            this.createSegmentedSlotEvents(
+              startTime, 
+              endTime, 
+              slotTitle, 
+              'slot', 
+              startTime + '-' + endTime, 
+              true
+            );
+          } else {
+            // For synchronization, use exact times (without padding)
+            this.createSVGEvent(slotTitle, adjustedStartTime, adjustedEndTime, 'slot', 'slot', startTime + '-' + endTime);
+          }
         }
       });
     }
@@ -832,7 +1109,7 @@ export class Timeline {
   }
 
   // Create an SVG event
-  createSVGEvent(title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null) {
+  createSVGEvent(title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null, segmentIndex = null) {
     if (!this.svg || !this.eventsGroup) return;
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
@@ -876,6 +1153,11 @@ export class Timeline {
       rect.setAttribute('data-all-night-slot-id', allNightSlotId);
     }
     
+    // Add segment index for individual hover control
+    if (segmentIndex !== null) {
+      rect.setAttribute('data-segment-index', segmentIndex);
+    }
+    
     // Add hover events for synchronization
     rect.addEventListener('mouseover', () => {
       if (allNightSlotId) {
@@ -900,7 +1182,7 @@ export class Timeline {
         relatedClockArcs.forEach(arc => arc.classList.add('active'));
         
         // Also activate related list items
-        const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.add('active'));
       } else if (nightSlotId) {
         // For night slots, activate all related elements
@@ -912,7 +1194,7 @@ export class Timeline {
         relatedClockArcs.forEach(arc => arc.classList.add('active'));
         
         // Also activate related list items
-        const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${nightSlotId}"]`);
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.add('active'));
       } else {
         // Normal synchronization for regular slots
@@ -947,7 +1229,7 @@ export class Timeline {
         relatedClockArcs.forEach(arc => arc.classList.remove('active'));
         
         // Also deactivate related list items
-        const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${deepNightSlotId}"]`);
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.remove('active'));
       } else if (nightSlotId) {
         // For night slots, deactivate all related elements
@@ -959,7 +1241,7 @@ export class Timeline {
         relatedClockArcs.forEach(arc => arc.classList.remove('active'));
         
         // Also deactivate related list items
-        const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${nightSlotId}"]`);
+        const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.remove('active'));
       } else {
         // Normal synchronization for regular slots

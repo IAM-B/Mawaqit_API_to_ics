@@ -46,4 +46,4 @@ if __name__ == "__main__":
     # Create and run the application
     app = create_app(args.env)
     print(f">> Starting Flask application in {args.env} mode...")
-    app.run(debug=app.config['DEBUG'])
+    app.run(host='0.0.0.0', port=5000, debug=app.config['DEBUG'])

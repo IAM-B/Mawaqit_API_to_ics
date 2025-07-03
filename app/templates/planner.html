@@ -26,7 +26,7 @@
     <div class="progress-indicator-fixed" id="progressIndicatorFixed">
       <div class="progress-step active"><i class="fa-solid fa-mosque"></i><span>Sélection</span></div>
       <div class="progress-step"><i class="fa-solid fa-cog"></i><span>Configuration</span></div>
-      <div class="progress-step"><i class="fa-regular fa-clock"></i><span>Horaires</span></div>
+      <div class="progress-step"><i class="fa-regular fa-calendar"></i><span>Emploi du temps</span></div>
       <div class="progress-step"><i class="fa-solid fa-download"></i><span>Téléchargement</span></div>
     </div>
 
@@ -44,7 +44,7 @@
         <div class="progress-indicator" id="progressIndicatorHero">
           <div class="progress-step active"><i class="fa-solid fa-mosque"></i><span>Sélection</span></div>
           <div class="progress-step"><i class="fa-solid fa-cog"></i><span>Configuration</span></div>
-          <div class="progress-step"><i class="fa-regular fa-clock"></i><span>Horaires</span></div>
+          <div class="progress-step"><i class="fa-regular fa-calendar"></i><span>Emploi du temps</span></div>
           <div class="progress-step"><i class="fa-solid fa-download"></i><span>Téléchargement</span></div>
         </div>
       </div>
@@ -271,6 +271,10 @@
     <section class="benefits-section">
       <div class="container">
         <h2 class="section-title"><i class="fa-regular fa-calendar"></i> Agenda des prières</h2>
+        <div class="slot-toggle-wrapper">
+          <!-- Toggle switch will be inserted here by JavaScript -->
+          <strong>Découpage des créneaux</strong>
+        </div>
         <div class="clock-layout">
           <div class="slots-half">
             <div class="slots-header">
@@ -332,14 +336,14 @@
           {% if available_slots_path %}
           <a href="{{ url_for('static', filename='ics/' + available_slots_path) }}" download class="download-card secondary">
             <span class="download-icon"><i class="fa-regular fa-clock"></i></span>
-            <span class="download-title">Créneaux synchronisés</span>
+            <span class="download-title">Créneaux disponibles</span>
             <span class="download-format">.ics</span>
           </a>
           {% endif %}
           {% if empty_slots_path %}
           <a href="{{ url_for('static', filename='ics/' + empty_slots_path) }}" download class="download-card secondary">
             <span class="download-icon"><i class="fa-regular fa-clipboard"></i></span>
-            <span class="download-title">Créneaux disponibles</span>
+            <span class="download-title">Créneaux découpés</span>
             <span class="download-format">.ics</span>
           </a>
           {% endif %}

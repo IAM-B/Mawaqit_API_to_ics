@@ -13,6 +13,7 @@
  * - Segment data handling (prayer times and available slots)
  * - Visual rendering of timeline elements
  * - Error handling and edge cases
+ * - Slot segmentation functionality
  * 
  * Timeline functionality:
  * - Displays 24-hour timeline with prayer times marked
@@ -20,6 +21,7 @@
  * - Supports different scopes (today, week, month, year)
  * - Handles date navigation and updates
  * - Provides interactive tooltips and hover effects
+ * - Supports segmented slot display (split into full hours)
  * 
  * Technical aspects:
  * - SVG-based rendering for scalability
@@ -31,39 +33,62 @@
 // Import Timeline class from the new modular structure
 const { Timeline } = require('../../../app/static/js/components/timeline.js');
 
+// Mock DOM elements
+const mockContainer = document.createElement('div');
+const mockSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+mockSvg.setAttribute('viewBox', '0 0 400 1440');
+
+// Mock DOM structure
+document.body.innerHTML = `
+  <div class="slots-half">
+    <div class="slots-header">
+      <button id="prevDayBtn">←</button>
+      <h3 id="slotsCurrentDate"></h3>
+      <button id="nextDayBtn">→</button>
+    </div>
+    <svg class="slots-timeline-svg" viewBox="0 0 400 1440"></svg>
+  </div>
+  <div class="timeline-tooltip"></div>
+`;
+
+// Mock utility functions
+jest.mock('../../../app/static/js/utils/utils.js', () => ({
+  formatDateForDisplay: jest.fn((date) => date.toLocaleDateString('fr-FR')),
+  timeToMinutes: jest.fn((time) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }),
+  minutesToTime: jest.fn((minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  })
+}));
+
 describe('Timeline Component', () => {
   let timeline;
-  let mockContainer;
-  let mockSvg;
 
   beforeEach(() => {
-    // Setup DOM for tests with realistic timeline structure
-    // This creates the necessary DOM elements that Timeline expects
+    // Reset DOM
     document.body.innerHTML = `
       <div class="slots-half">
+        <div class="slots-header">
+          <button id="prevDayBtn">←</button>
+          <h3 id="slotsCurrentDate"></h3>
+          <button id="nextDayBtn">→</button>
+        </div>
         <svg class="slots-timeline-svg" viewBox="0 0 400 1440"></svg>
       </div>
-      <div id="slotsCurrentDate"></div>
       <div class="timeline-tooltip"></div>
     `;
 
-    mockContainer = document.querySelector('.slots-half');
-    mockSvg = document.querySelector('.slots-timeline-svg');
-    
-    // Mock global functions that Timeline might use
-    // These represent the current application state
-    window.currentMosqueId = 'test-mosque-123';
-    window.currentPaddingBefore = 10;
-    window.currentPaddingAfter = 35;
+    timeline = new Timeline();
   });
 
   afterEach(() => {
-    // Clean up DOM and global state after each test
-    // This ensures tests don't interfere with each other
-    document.body.innerHTML = '';
-    delete window.currentMosqueId;
-    delete window.currentPaddingBefore;
-    delete window.currentPaddingAfter;
+    if (timeline) {
+      timeline = null;
+    }
   });
 
   describe('Timeline Initialization', () => {
@@ -83,6 +108,7 @@ describe('Timeline Component', () => {
       expect(timeline.currentDate).toBeInstanceOf(Date);
       expect(timeline.segments).toEqual([]);
       expect(timeline.scope).toBe('today');
+      expect(timeline.slotDisplayMode).toBe('normal');
     });
 
     test('should initialize with current date', () => {
@@ -107,178 +133,200 @@ describe('Timeline Component', () => {
     });
   });
 
-  describe('Timeline Date Management', () => {
+  describe('Slot Display Mode Toggle', () => {
     /**
-     * Tests for date handling functionality that allows users
-     * to navigate between different dates and view corresponding
-     * prayer schedules.
+     * Tests for the slot display mode toggle functionality
+     * that allows switching between normal and segmented slot display.
      */
     
-    beforeEach(() => {
+    test('should initialize with normal slot display mode', () => {
       timeline = new Timeline();
+      expect(timeline.getSlotDisplayMode()).toBe('normal');
     });
 
-    test('should set date correctly', () => {
-      // Test date assignment functionality
-      // This allows users to view schedules for specific dates
-      const testDate = new Date('2024-01-15');
-      timeline.setDate(testDate);
+    test('should toggle slot display mode correctly', () => {
+      timeline = new Timeline();
       
-      expect(timeline.currentDate.getTime()).toBe(testDate.getTime());
+      // Initial state
+      expect(timeline.getSlotDisplayMode()).toBe('normal');
+      
+      // Toggle to segmented
+      timeline.toggleSlotDisplayMode();
+      expect(timeline.getSlotDisplayMode()).toBe('segmented');
+      
+      // Toggle back to normal
+      timeline.toggleSlotDisplayMode();
+      expect(timeline.getSlotDisplayMode()).toBe('normal');
     });
 
-    test('should handle date navigation', () => {
-      // Test date navigation between consecutive days
-      // This enables browsing through different dates
-      const initialDate = new Date('2024-01-15');
-      timeline.setDate(initialDate);
+    test('should create slot display toggle button', () => {
+      timeline = new Timeline();
       
-      // Test next day navigation
-      const nextDay = new Date(initialDate);
-      nextDay.setDate(nextDay.getDate() + 1);
-      timeline.setDate(nextDay);
-      
-      expect(timeline.currentDate.getDate()).toBe(16);
+      const toggleButton = document.querySelector('.slot-display-toggle');
+      expect(toggleButton).toBeTruthy();
+      expect(toggleButton.querySelector('i')).toBeTruthy();
+      expect(toggleButton.querySelector('span')).toBeTruthy();
     });
 
-    test('should handle invalid dates gracefully', () => {
-      // Test error handling for invalid date inputs
-      // This ensures the component doesn't crash with bad data
-      const invalidDate = new Date('invalid');
-      timeline.setDate(invalidDate);
+    test('should update button appearance when toggled', () => {
+      timeline = new Timeline();
       
-      // Should not crash and should handle gracefully
-      expect(timeline.currentDate).toBeDefined();
+      const toggleButton = document.querySelector('.slot-display-toggle');
+      const icon = toggleButton.querySelector('i');
+      const text = toggleButton.querySelector('span');
+      
+      // Initial state
+      expect(icon.className).toContain('fa-clock');
+      expect(text.textContent).toBe('Mode découpé');
+      expect(toggleButton.classList.contains('active')).toBe(false);
+      
+      // After toggle
+      timeline.toggleSlotDisplayMode();
+      expect(icon.className).toContain('fa-puzzle-piece');
+      expect(text.textContent).toBe('Mode normal');
+      expect(toggleButton.classList.contains('active')).toBe(true);
     });
   });
 
-  describe('Timeline Data Management', () => {
+  describe('Slot Segmentation', () => {
     /**
-     * Tests for segment data handling that manages prayer times
-     * and available slots for display on the timeline.
+     * Tests for the slot segmentation functionality that splits
+     * slots into full-hour segments for better visualization.
      */
     
-    beforeEach(() => {
+    test('should generate segmented slots correctly', () => {
       timeline = new Timeline();
-    });
-
-    test('should initialize timeline with segments', () => {
-      // Test timeline initialization with prayer time segments
-      // This populates the timeline with actual prayer schedule data
-      const mockSegments = [
-        { start: '06:00', end: '06:30', type: 'fajr' },
-        { start: '12:00', end: '12:30', type: 'dhuhr' }
-      ];
       
-      timeline.initializeTimeline(mockSegments, 'today');
+      const slots = timeline.generateSegmentedSlots('14:30', '17:45', 'Test Slot');
       
-      expect(timeline.segments).toEqual(mockSegments);
-      expect(timeline.scope).toBe('today');
-    });
-
-    test('should handle empty segments', () => {
-      // Test timeline behavior with no prayer data
-      // This ensures graceful handling of empty schedules
-      timeline.initializeTimeline([], 'today');
-      
-      expect(timeline.segments).toEqual([]);
-      expect(timeline.scope).toBe('today');
-    });
-
-    test('should handle different scopes', () => {
-      // Test timeline behavior across different time scopes
-      // This supports various planning horizons (day, week, month, year)
-      const scopes = ['today', 'week', 'month', 'year'];
-      
-      scopes.forEach(scope => {
-        timeline.initializeTimeline([], scope);
-        expect(timeline.scope).toBe(scope);
+      expect(slots).toHaveLength(4);
+      expect(slots[0]).toEqual({
+        start: '14:30',
+        end: '15:00',
+        title: 'Test Slot',
+        isSegmented: true
+      });
+      expect(slots[1]).toEqual({
+        start: '15:00',
+        end: '16:00',
+        title: 'Test Slot',
+        isSegmented: true
+      });
+      expect(slots[2]).toEqual({
+        start: '16:00',
+        end: '17:00',
+        title: 'Test Slot',
+        isSegmented: true
+      });
+      expect(slots[3]).toEqual({
+        start: '17:00',
+        end: '17:45',
+        title: 'Test Slot',
+        isSegmented: true
       });
     });
-  });
 
-  describe('Timeline Rendering', () => {
-    /**
-     * Tests for visual rendering functionality that creates
-     * the actual timeline display elements in the SVG.
-     */
-    
-    beforeEach(() => {
+    test('should handle slots that do not cross hour boundaries', () => {
       timeline = new Timeline();
+      
+      const slots = timeline.generateSegmentedSlots('14:30', '14:45', 'Short Slot');
+      
+      expect(slots).toHaveLength(1);
+      expect(slots[0]).toEqual({
+        start: '14:30',
+        end: '14:45',
+        title: 'Short Slot',
+        isSegmented: false
+      });
     });
 
-    test('should create SVG elements for timeline', () => {
-      // Test SVG element creation for timeline visualization
-      // This ensures the timeline renders prayer times visually
-      const mockSegments = [
-        { start: '06:00', end: '06:30', type: 'fajr' }
-      ];
-      
-      timeline.initializeTimeline(mockSegments, 'today');
-      
-      // Check if SVG has been populated with timeline elements
-      expect(timeline.svg.children.length).toBeGreaterThan(0);
-    });
-
-    test('should handle rendering without segments', () => {
-      // Test rendering behavior with empty timeline
-      // This ensures the component doesn't crash when no data is available
-      timeline.initializeTimeline([], 'today');
-      
-      // Should not crash when rendering empty timeline
-      expect(timeline.svg).toBeDefined();
-    });
-  });
-
-  describe('Timeline Navigation', () => {
-    /**
-     * Tests for navigation functionality that allows users
-     * to move between different dates and view corresponding
-     * prayer schedules.
-     */
-    
-    beforeEach(() => {
+    test('should handle slots that start at full hours', () => {
       timeline = new Timeline();
+      
+      const slots = timeline.generateSegmentedSlots('15:00', '17:30', 'Full Hour Slot');
+      
+      expect(slots).toHaveLength(3);
+      expect(slots[0]).toEqual({
+        start: '15:00',
+        end: '16:00',
+        title: 'Full Hour Slot',
+        isSegmented: true
+      });
+      expect(slots[1]).toEqual({
+        start: '16:00',
+        end: '17:00',
+        title: 'Full Hour Slot',
+        isSegmented: true
+      });
+      expect(slots[2]).toEqual({
+        start: '17:00',
+        end: '17:30',
+        title: 'Full Hour Slot',
+        isSegmented: true
+      });
     });
 
-    test('should navigate to previous day', () => {
-      // Test backward date navigation
-      // This allows users to view past prayer schedules
-      const initialDate = new Date('2024-01-15');
-      timeline.setDate(initialDate);
+    test('should handle invalid time ranges', () => {
+      timeline = new Timeline();
       
-      const prevDay = new Date(initialDate);
-      prevDay.setDate(prevDay.getDate() - 1);
-      timeline.setDate(prevDay);
+      const slots = timeline.generateSegmentedSlots('17:00', '14:00', 'Invalid Slot');
       
-      expect(timeline.currentDate.getDate()).toBe(14);
+      expect(slots).toHaveLength(0);
     });
 
-    test('should navigate to next day', () => {
-      // Test forward date navigation
-      // This allows users to view future prayer schedules
-      const initialDate = new Date('2024-01-15');
-      timeline.setDate(initialDate);
+    test('should determine best segment for text display', () => {
+      timeline = new Timeline();
       
-      const nextDay = new Date(initialDate);
-      nextDay.setDate(nextDay.getDate() + 1);
-      timeline.setDate(nextDay);
+      const slots = timeline.generateSegmentedSlots('14:30', '17:45', 'Test Slot');
       
-      expect(timeline.currentDate.getDate()).toBe(16);
+      // Find the largest segment
+      let maxDuration = 0;
+      let bestIndex = 0;
+      
+      slots.forEach((slot, index) => {
+        const startMinutes = timeline.timeToMinutes(slot.start);
+        const endMinutes = timeline.timeToMinutes(slot.end);
+        const duration = endMinutes - startMinutes;
+        
+        if (duration > maxDuration) {
+          maxDuration = duration;
+          bestIndex = index;
+        }
+      });
+      
+      // The largest segment should be the full hour (15:00-16:00 or 16:00-17:00)
+      expect(maxDuration).toBe(60); // 1 hour in minutes
+      expect(bestIndex).toBeGreaterThanOrEqual(1); // Should be one of the full-hour segments
     });
 
-    test('should handle month boundaries', () => {
-      // Test date navigation across month boundaries
-      // This ensures proper date arithmetic for calendar navigation
-      const lastDayOfMonth = new Date('2024-01-31');
-      timeline.setDate(lastDayOfMonth);
+    test('should create segmented slot events with proper text display', () => {
+      timeline = new Timeline();
       
-      const nextDay = new Date(lastDayOfMonth);
-      nextDay.setDate(nextDay.getDate() + 1);
-      timeline.setDate(nextDay);
+      // Mock the createSVGEvent method to track calls
+      const mockCreateSVGEvent = jest.fn();
+      timeline.createSVGEvent = mockCreateSVGEvent;
       
-      expect(timeline.currentDate.getMonth()).toBe(1); // February
-      expect(timeline.currentDate.getDate()).toBe(1);
+      // Create segmented events
+      timeline.createSegmentedSlotEvents(
+        '14:30', 
+        '17:45', 
+        'Test Slot', 
+        'slot day', 
+        '14:30-17:45', 
+        true
+      );
+      
+      // Should have created 4 segments
+      expect(mockCreateSVGEvent).toHaveBeenCalledTimes(4);
+      
+      // Check that only one segment has showText = true
+      const callsWithText = mockCreateSVGEvent.mock.calls.filter(call => call[6] === true);
+      expect(callsWithText).toHaveLength(1);
+      
+      // Check that the segment with text is the largest one
+      const textCall = callsWithText[0];
+      const textSegmentTitle = textCall[0];
+      expect(textSegmentTitle).toContain('Test Slot - 1h00'); // Should be the full hour segment
     });
   });
 

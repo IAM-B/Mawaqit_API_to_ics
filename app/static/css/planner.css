@@ -754,6 +754,95 @@
   transform: translateY(0);
 }
 
+.slot-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.slot-toggle-switch {
+  position: relative;
+  display: inline-block;
+}
+
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  background: var(--surface-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  margin-bottom: 15px;
+  padding: 4px;
+  width: 48px;
+  height: 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px var(--shadow-light);
+}
+
+.toggle-label:hover {
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: var(--text-color);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.toggle-icon {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-color);
+  font-size: 0.7em;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+/* Active state */
+.toggle-input:checked + .toggle-label {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.toggle-input:checked + .toggle-label .toggle-slider {
+  transform: translateX(24px);
+  background: var(--text-bright);
+}
+
+.toggle-input:checked + .toggle-label .toggle-icon {
+  color: var(--text-bright);
+  left: 6px;
+}
+
+/* Hover effects */
+.toggle-label:hover .toggle-slider {
+  box-shadow: 0 0 4px var(--primary);
+}
+
+.toggle-input:checked + .toggle-label:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
 .timeline-content {
   height: 600px;
   max-height: 80vh;
@@ -897,6 +986,85 @@
   stroke: var(--modern-blue-hover);
   filter: brightness(1.1) drop-shadow(0 0 5px var(--drop-shadow-night));
   stroke-width: 1;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* Segmented slot styles */
+.timeline-event.slot.segmented {
+  stroke-width: 2;
+}
+
+.timeline-event.slot.segmented:hover {
+  stroke-width: 3;
+}
+
+/* Individual hover for segmented deep-night slots */
+.timeline-event.slot.deep-night.segmented {
+  fill: var(--night-dark);
+  stroke: var(--modern-blue);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+.timeline-event.slot.deep-night.segmented:hover {
+  fill: var(--night-dark-hover);
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px var(--drop-shadow-night));
+  stroke-width: 3;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* When one segment is active, keep others normal */
+.timeline-event.slot.deep-night.segmented.active:not(:hover) {
+  fill: var(--night-dark);
+  stroke: var(--modern-blue);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+/* Only the hovered segment should be highlighted */
+.timeline-event.slot.deep-night.segmented.active:hover {
+  fill: var(--night-dark-hover);
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px var(--drop-shadow-night));
+  stroke-width: 3;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* Individual hover for segmented night slots (Maghrib-Isha when Isha is after midnight) */
+.timeline-event.slot.night.segmented {
+  fill: url(#nightGradient);
+  stroke: var(--modern-blue);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+.timeline-event.slot.night.segmented:hover {
+  fill: url(#nightGradientHover);
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px var(--drop-shadow-primary));
+  stroke-width: 3;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* When one segment is active, keep others normal */
+.timeline-event.slot.night.segmented.active:not(:hover) {
+  fill: url(#nightGradient);
+  stroke: var(--modern-blue);
+  stroke-width: 2;
+  opacity: 0.5;
+}
+
+/* Only the hovered segment should be highlighted */
+.timeline-event.slot.night.segmented.active:hover {
+  fill: url(#nightGradientHover);
+  stroke: var(--modern-blue-hover);
+  filter: brightness(1.1) drop-shadow(0 0 5px var(--drop-shadow-primary));
+  stroke-width: 3;
   opacity: 1;
   transition: all 0.3s ease;
 }
@@ -1280,6 +1448,30 @@
   .timeline-header .clock-nav-btn {
     padding: 6px 10px;
     font-size: 0.9em;
+  }
+  
+  .slot-toggle-wrapper {
+    margin-left: 8px;
+  }
+  
+  .toggle-label {
+    width: 44px;
+    height: 22px;
+  }
+  
+  .toggle-slider {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .toggle-input:checked + .toggle-label .toggle-slider {
+    transform: translateX(22px);
+  }
+  
+  .slot-display-toggle {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7em;
   }
   
   .timeline-hour-text {
