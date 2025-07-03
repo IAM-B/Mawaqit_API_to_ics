@@ -223,10 +223,35 @@ export class Timeline {
   // Display Hijri date at the top of the timeline
   displayHijriDate(date) {
     const showHijriCheckbox = document.getElementById('show_hijri_date');
-    if (!showHijriCheckbox || !showHijriCheckbox.checked) return;
+    const includeVoluntaryFastsCheckbox = document.getElementById('include_voluntary_fasts');
     
-    const hijriDate = this.getHijriDate(date);
-    if (!hijriDate) return;
+    // Get voluntary fasts information if the option is enabled
+    let voluntaryFastsInfo = [];
+    if (includeVoluntaryFastsCheckbox && includeVoluntaryFastsCheckbox.checked) {
+      voluntaryFastsInfo = this.getVoluntaryFastsInfo(date);
+    }
+    
+    // Show Hijri date if the option is enabled
+    let hijriDate = null;
+    if (showHijriCheckbox && showHijriCheckbox.checked) {
+      hijriDate = this.getHijriDate(date);
+      if (!hijriDate) return;
+    }
+    
+    // Only show if we have either Hijri date or voluntary fasts info
+    if (!hijriDate && voluntaryFastsInfo.length === 0) return;
+    
+    // Combine Hijri date with voluntary fasts info
+    let displayText = '';
+    if (hijriDate) {
+      displayText = hijriDate;
+      if (voluntaryFastsInfo.length > 0) {
+        displayText += ` - ${voluntaryFastsInfo.join(', ')}`;
+      }
+    } else {
+      // Only voluntary fasts info (no Hijri date)
+      displayText = voluntaryFastsInfo.join(', ');
+    }
     
     // Create Hijri date background rectangle
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -251,15 +276,37 @@ export class Timeline {
     text.setAttribute('fill', 'var(--accent)');
     text.setAttribute('font-size', '14px');
     text.setAttribute('font-weight', '600');
-    text.textContent = hijriDate;
+    text.textContent = displayText;
     
     // Add directly to SVG
     this.svg.appendChild(rect);
     this.svg.appendChild(text);
   }
 
-  // Get Hijri date string (simplified conversion)
-  getHijriDate(date) {
+  // Get voluntary fasts information for a given date
+  getVoluntaryFastsInfo(date) {
+    const voluntaryFastsInfo = [];
+    
+    // Get Hijri date components
+    const hijriDate = this.getHijriDateComponents(date);
+    if (!hijriDate) return voluntaryFastsInfo;
+    
+    // Monday and Thursday fasts
+    const weekday = date.getDay();
+    if (weekday === 1 || weekday === 4) { // Monday (1) or Thursday (4)
+      voluntaryFastsInfo.push("Jour de jeûne");
+    }
+    
+    // Ayyam al-Bid (13-15 Hijri)
+    if (hijriDate.day >= 13 && hijriDate.day <= 15) {
+      voluntaryFastsInfo.push("Jour blanc");
+    }
+    
+    return voluntaryFastsInfo;
+  }
+
+  // Get Hijri date components (year, month, day)
+  getHijriDateComponents(date) {
     // Simplified Hijri conversion (approximate)
     // Reference: 1 Muharram 1445 AH = 19 July 2023 CE
     const referenceDate = new Date(2023, 6, 19); // July 19, 2023
@@ -286,6 +333,18 @@ export class Timeline {
       }
     }
     
+    return {
+      year: hijriYear,
+      month: hijriMonth,
+      day: hijriDay
+    };
+  }
+
+  // Get Hijri date string (simplified conversion)
+  getHijriDate(date) {
+    const hijriComponents = this.getHijriDateComponents(date);
+    if (!hijriComponents) return null;
+    
     // Hijri month names
     const hijriMonthNames = [
       'Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani',
@@ -293,10 +352,10 @@ export class Timeline {
       'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'
     ];
     
-    const monthName = hijriMonthNames[hijriMonth - 1];
+    const monthName = hijriMonthNames[hijriComponents.month - 1];
     
     // Check if it's a sacred month (1, 7, 11, 12)
-    const isSacredMonth = [1, 7, 11, 12].includes(hijriMonth);
+    const isSacredMonth = [1, 7, 11, 12].includes(hijriComponents.month);
     
     // Check if it's Friday (weekday 5)
     const isFriday = date.getDay() === 5;
@@ -307,7 +366,7 @@ export class Timeline {
     // Add Jummah for Fridays
     const jummahSuffix = isFriday ? ' - Jummah' : '';
     
-    return `${sacredPrefix}${hijriDay} ${monthName} ${hijriYear}${jummahSuffix}`;
+    return `${sacredPrefix}${hijriComponents.day} ${monthName} ${hijriComponents.year}${jummahSuffix}`;
   }
 
   // Get the day's data
@@ -976,6 +1035,15 @@ export class Timeline {
     if (showHijriCheckbox) {
       showHijriCheckbox.addEventListener('change', () => {
         // Refresh the current day display to show/hide Hijri date
+        this.displayDayEvents(this.currentDate);
+      });
+    }
+    
+    // Listen for voluntary fasts option changes
+    const includeVoluntaryFastsCheckbox = document.getElementById('include_voluntary_fasts');
+    if (includeVoluntaryFastsCheckbox) {
+      includeVoluntaryFastsCheckbox.addEventListener('change', () => {
+        // Refresh the current day display to show/hide voluntary fasts info
         this.displayDayEvents(this.currentDate);
       });
     }

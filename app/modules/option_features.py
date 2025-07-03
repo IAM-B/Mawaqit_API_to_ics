@@ -120,51 +120,75 @@ class OptionFeatures:
                 elif hijri_month == 12:
                     sacred_month_name = "Dhul Hijjah"
             
-            # Base title with sacred month indicator
-            if is_sacred_month:
-                title = f"🌟 {hijri_date_str}"
-                description = f"Date Hijri :🌟 {hijri_date_str}"
-                # Add sacred month reminder
-                if sacred_month_name:
-                    description += f"\nRappel : Mois sacré de {sacred_month_name}"
-            else:
-                title = f"{hijri_date_str}"
-                description = f"Date Hijri : {hijri_date_str}"
-            
-            # Add options information if options are enabled
-            if features_options:
-                options_info = []
+            # Get voluntary fasts info
+            voluntary_fasts_info = []
+            if features_options and features_options.get('include_voluntary_fasts', False):
+                # Monday and Thursday fasts
+                if current_date.weekday() in [0, 3]:
+                    voluntary_fasts_info.append("Jour de jeûne")
                 
-                # Add Jummah if it's Friday
-                if current_date.weekday() == 4:
-                    options_info.append("Jummah")
-                
-                # Add voluntary fasts
-                if features_options.get('include_voluntary_fasts', False):
-                    # Monday and Thursday fasts
-                    if current_date.weekday() in [0, 3]:
-                        options_info.append("Jour de jeûne")
-                    
-                    # Ayyam al-Bid (13-15 Hijri)
-                    if hijri_day in [13, 14, 15]:
-                        options_info.append("Jour blanc")
-                
-                # Add options info to title and description
-                if options_info:
-                    title += f" - {', '.join(options_info)}"
-                    description += f"\nÉvénements islamiques : {', '.join(options_info)}"
+                # Ayyam al-Bid (13-15 Hijri)
+                if hijri_day in [13, 14, 15]:
+                    voluntary_fasts_info.append("Jour blanc")
             
-            # Set category based on sacred month
-            category = 'hijri_date'
-            if is_sacred_month:
-                category = 'hijri_date,sacred_month'
+            # Get Jummah info
+            jummah_info = []
+            if features_options and current_date.weekday() == 4:
+                jummah_info.append("Jummah")
             
-            hijri_events.append({
-                'date': current_date,
-                'name': title,
-                'description': description,
-                'type': category
-            })
+            # Combine all info
+            all_info = voluntary_fasts_info + jummah_info
+            
+            # Create events based on options
+            show_hijri = features_options and features_options.get('show_hijri_date', False)
+            show_voluntary_fasts = features_options and features_options.get('include_voluntary_fasts', False)
+            
+            if show_hijri:
+                # Create Hijri date event (with or without voluntary fasts)
+                if is_sacred_month:
+                    title = f"🌟 {hijri_date_str}"
+                    description = f"Date Hijri :🌟 {hijri_date_str}"
+                    if sacred_month_name:
+                        description += f"\nRappel : Mois sacré de {sacred_month_name}"
+                else:
+                    title = f"{hijri_date_str}"
+                    description = f"Date Hijri : {hijri_date_str}"
+                
+                # Add voluntary fasts and Jummah to Hijri event if they exist
+                if all_info:
+                    title += f" - {', '.join(all_info)}"
+                    description += f"\nÉvénements islamiques : {', '.join(all_info)}"
+                
+                # Set category based on sacred month
+                category = 'hijri_date'
+                if is_sacred_month:
+                    category = 'hijri_date,sacred_month'
+                
+                hijri_events.append({
+                    'date': current_date,
+                    'name': title,
+                    'description': description,
+                    'type': category
+                })
+            
+            # Create separate voluntary fasts events ONLY if Hijri dates are disabled
+            elif show_voluntary_fasts and voluntary_fasts_info:
+                # Create separate voluntary fasts event
+                title = f"{', '.join(voluntary_fasts_info)}"
+                description = f"Jeûnes surérogatoires : {', '.join(voluntary_fasts_info)}"
+                
+                # Add Jummah info if it's Friday
+                if jummah_info:
+                    title += f" - {', '.join(jummah_info)}"
+                    description += f"\nÉvénements islamiques : {', '.join(jummah_info)}"
+                
+                hijri_events.append({
+                    'date': current_date,
+                    'name': title,
+                    'description': description,
+                    'type': 'voluntary_fasts'
+                })
+            
             current_date += timedelta(days=1)
         
         return hijri_events
@@ -210,6 +234,14 @@ class OptionFeatures:
             hijri_events = self.get_hijri_date_events(start_date, end_date, features_options)
             for hijri_event in hijri_events:
                 self._add_event_to_calendar(cal, hijri_event)
+        
+        # Add voluntary fasts events ONLY if Hijri dates are disabled
+        elif features_options.get('include_voluntary_fasts', False):
+            hijri_events = self.get_hijri_date_events(start_date, end_date, features_options)
+            for hijri_event in hijri_events:
+                # Only add voluntary fasts events, not Hijri date events
+                if hijri_event['type'] == 'voluntary_fasts':
+                    self._add_event_to_calendar(cal, hijri_event)
     
     def _add_event_to_calendar(self, cal: Calendar, event_data: Dict) -> None:
         """
