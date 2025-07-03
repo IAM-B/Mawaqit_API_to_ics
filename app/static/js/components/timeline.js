@@ -410,6 +410,11 @@ export class Timeline {
       'maghreb': 'Maghreb',
       'icha': 'Icha'
     };
+    
+    // Check if adhkar option is enabled
+    const includeAdhkarCheckbox = document.getElementById('include_adhkar');
+    const includeAdhkar = includeAdhkarCheckbox && includeAdhkarCheckbox.checked;
+    
     Object.entries(prayerTimes).forEach(([prayer, time]) => {
       if (time && prayerNames[prayer]) {
         // Get individual padding for this specific prayer
@@ -427,6 +432,14 @@ export class Timeline {
           prayerTitle = `Jummah - ${prayerTitle}`;
         }
         
+        // Add adhkar info to specific prayers (reproducing Python logic)
+        if (includeAdhkar) {
+          const adhkarInfo = this.getAdhkarInfo(prayer);
+          if (adhkarInfo) {
+            prayerTitle += adhkarInfo;
+          }
+        }
+        
         // Handle sunset special case
         if (prayer === "sunset") {
           prayerTitle = `Chourouk (${time})`;
@@ -436,6 +449,16 @@ export class Timeline {
         this.createSVGEvent(prayerTitle, exactStartTime, exactEndTime, 'prayer', 'prayer', time);
       }
     });
+  }
+
+  // Get adhkar information for specific prayers (reproducing Python logic)
+  getAdhkarInfo(prayerName) {
+    if (prayerName.toLowerCase() === 'fajr') {
+      return " - Adhkar du matin";
+    } else if (prayerName.toLowerCase() === 'asr') {
+      return " - Adhkar du soir";
+    }
+    return "";
   }
 
   // Display slots
@@ -1054,6 +1077,15 @@ export class Timeline {
     if (includeVoluntaryFastsCheckbox) {
       includeVoluntaryFastsCheckbox.addEventListener('change', () => {
         // Refresh the current day display to show/hide voluntary fasts info
+        this.displayDayEvents(this.currentDate);
+      });
+    }
+    
+    // Listen for adhkar option changes
+    const includeAdhkarCheckbox = document.getElementById('include_adhkar');
+    if (includeAdhkarCheckbox) {
+      includeAdhkarCheckbox.addEventListener('change', () => {
+        // Refresh the current day display to show/hide adhkar info in prayer titles
         this.displayDayEvents(this.currentDate);
       });
     }
