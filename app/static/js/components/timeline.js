@@ -419,8 +419,18 @@ export class Timeline {
         const exactStartTime = this.subtractPadding(time, prayerPadding.before);
         const exactEndTime = this.addPadding(time, prayerPadding.after);
         
-        // Display exact prayer time with displayed time between parentheses
-        const prayerTitle = `${prayerNames[prayer]} (${time})`;
+        // Build prayer title with features
+        let prayerTitle = `${prayerNames[prayer]} (${time})`;
+        
+        // Add Jummah prefix only for Dohr on Friday
+        if (this.currentDate.getDay() === 5 && prayer === "dohr") { // Friday and Dohr only
+          prayerTitle = `Jummah - ${prayerTitle}`;
+        }
+        
+        // Handle sunset special case
+        if (prayer === "sunset") {
+          prayerTitle = `Chourouk (${time})`;
+        }
         
         // For synchronization, use exact time (without padding)
         this.createSVGEvent(prayerTitle, exactStartTime, exactEndTime, 'prayer', 'prayer', time);
