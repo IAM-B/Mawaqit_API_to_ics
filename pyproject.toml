@@ -1,22 +1,167 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "mawaqit-api-to-ics"
-version = "0.1.0"
-description = "Convert Mawaqit prayer times to ICS format"
+version = "1.0.0"
+description = "Générateur d'horaires de prières synchronisés avec Mawaqit et export ICS"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "IAM-B", email = "salamualyk@pm.me"}
 ]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+keywords = ["prayer", "mawaqit", "ics", "calendar", "flask"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Office/Business :: Scheduling",
+]
+
 dependencies = [
-    "flask",
-    "requests",
-    "icalendar",
-    "python-dotenv",
+    "Flask==3.1.1",
+    "requests==2.32.4",
+    "pandas==2.3.0",
+    "icalendar==6.3.1",
+    "beautifulsoup4==4.13.4",
+    "unidecode==1.4.0",
+    "python-dotenv==1.1.1",
+    "Jinja2==3.1.5",
+    "markdown==3.8.2",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.4.1",
+    "pytest-cov==6.2.1",
+    "pytest-mock",
+    "black",
+    "flake8",
+    "mypy",
+]
+test = [
+    "pytest==8.4.1",
+    "pytest-cov==6.2.1",
+    "pytest-mock",
+]
+
+[project.scripts]
+mawaqit-ics = "app:main"
+
+[project.urls]
+Homepage = "https://github.com/IAM-B/Mawaqit_API_to_ics"
+Repository = "https://github.com/IAM-B/Mawaqit_API_to_ics"
+Documentation = "https://github.com/IAM-B/Mawaqit_API_to_ics/blob/main/README.md"
+Issues = "https://github.com/IAM-B/Mawaqit_API_to_ics/issues"
 
 [tool.pytest.ini_options]
 testpaths = ["tests/python"]
 python_files = ["test_*.py"]
-addopts = "--cov=app --cov-report=term-missing --cov-report=html:htmlcov/python" 
+addopts = [
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov/python",
+    "--maxfail=2",
+    "--disable-warnings",
+    "-v"
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    ".venv",
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "flask.*",
+    "requests.*",
+    "pandas.*",
+    "icalendar.*",
+    "bs4.*",
+    "unidecode.*",
+    "dotenv.*",
+    "jinja2.*",
+    "markdown.*",
+]
+ignore_missing_imports = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"] 
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+]

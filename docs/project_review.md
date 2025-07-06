@@ -58,7 +58,7 @@ Flask web application that generates personalized schedules synchronized with lo
 ### 🔧 Tools and Automation
 
 - **Complete Makefile** with automated commands
-- **direnv configuration** for environment
+- **UV configuration** for environment
 - **npm scripts** for JS tests
 - **Log and coverage management**
 
@@ -207,7 +207,7 @@ npm run test:e2e:ui
 - **Make**: Automation
 - **npm**: Node.js dependencies
 - **pip**: Python dependencies
-- **direnv**: Environment
+- **UV**: Environment management
 
 ## 📝 Recommendations
 

@@ -75,7 +75,7 @@ module.exports = defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: './env-planner/bin/python app.py --env testing',
+            command: 'uv run python app.py --env testing',
     url: 'http://localhost:5000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,

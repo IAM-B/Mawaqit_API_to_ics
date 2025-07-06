@@ -22,7 +22,8 @@ wheels/
 MANIFEST
 
 # Virtual environments
-env-planner/
+# env-planner/ (removed - using UV now)
+# .envrc (removed - using UV now)
 venv/
 ENV/
 env/

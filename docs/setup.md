@@ -70,7 +70,7 @@ Mawaqit_API_to_ics/
 ### 🚀 Installation & Setup
 ```bash
 make install        # Create environment and install dependencies
-make init-direnv    # Configure direnv for automatic environment activation
+# make init-direnv    # Removed - using UV now
 ```
 
 ### 🚀 Running the Application
@@ -189,8 +189,8 @@ FLASK_ENV=testing make run-test
 
 #### 1. Import Errors
 ```bash
-# Ensure virtual environment is activated
-source env-planner/bin/activate
+# Ensure UV environment is ready
+uv sync
 
 # Check PYTHONPATH includes project root
 export PYTHONPATH=.

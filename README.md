@@ -1,266 +1,175 @@
 # Mawaqit to ICS
 
-**Mawaqit to ICS** is a local tool that generates a personalized schedule synchronized with prayer times from your local mosque.
+A modern web application that generates personalized prayer schedules synchronized with local mosque times from [Mawaqit](https://mawaqit.net). Exports `.ics` calendar files for seamless integration with your favorite calendar apps.
 
-This application fetches prayer times from [Mawaqit](https://mawaqit.net), calculates free time slots between prayers, and helps you plan your daily, monthly, or yearly routine.
+## 🛠️ Tech Stack
 
-It also generates an `.ics` calendar file that you can import into your favorite calendar app (Google Calendar, Proton Calendar, etc.).
+### Backend
 
----
+- **Python 3.9+** with **UV** package manager
+- **Flask 3.1.1** - Web framework
+- **Pandas 2.3.0** - Data manipulation
+- **iCalendar 6.3.1** - Calendar file generation
+- **Requests 2.32.4** - HTTP client
+- **BeautifulSoup4 4.13.4** - Web scraping
 
-## 📦 Features
+### Frontend
 
-* 🌍 Select your mosque
-* 🕒 Choose scope: daily, monthly, or yearly prayer times
-* 📅 Calculate free time slots between prayers
-* 📤 Export schedule as `.ics` file
-* 📁 Local web interface via Flask
-* 🎨 Modern interface with timeline and circular clock
-* ⚙️ Padding configuration (delays before/after prayers)
-* 🔄 Generate three types of ICS files:
-  * Prayer times
-  * Empty slots
-  * Available slots
-* 🌟 Features integration (Hijri dates, voluntary fasts, adhkar)
-* 📊 Slot segmentation with hourly breakdown
-* 📚 Modern documentation server with HTML template
+- **Vanilla JavaScript** with modular architecture
+- **Jest** - Unit and integration testing
+- **Playwright** - End-to-end testing
+- **Modern CSS** with responsive design
 
----
+### Development Tools
+
+- **UV** - Fast Python package manager (replaces pip/venv)
+- **Node.js** - JavaScript runtime and testing
+- **Make** - Build automation and development scripts
 
 ## 🚀 Quick Start
 
-### 1. Clone the repository
+### Prerequisites
+
+- Python 3.9+
+- Node.js 18+
+- UV package manager
+
+### Installation
 
 ```bash
+# Clone the repository
 git clone https://github.com/IAM-B/Mawaqit_API_to_ics
 cd Mawaqit_API_to_ics
-```
 
-### 2. Environment Setup
-
-```bash
-# Create and activate virtual environment
+# Install dependencies
 make install
+
+# Start development server
+make run-dev
 ```
 
-### 3. Run the application
+Visit [http://localhost:5000](http://localhost:5000) to access the application.
+
+## 🧪 Testing
 
 ```bash
-# Development mode
-make run-dev
+# All tests (Python + JavaScript + E2E)
+make test
 
-# Production mode
-make run-prod
+# Python tests only
+make test-py
 
-# Test mode
-make run-test
+# JavaScript tests only
+make test-js-all
+
+# End-to-end tests
+make test-e2e
+
+# Coverage reports
+make coverage
 ```
 
-Then open your browser at: [http://localhost:5000](http://localhost:5000)
-
----
-
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
 Mawaqit_API_to_ics/
-├── app/
-│   ├── api/                 # API endpoints
-│   ├── cache/               # Cache management
-│   ├── controllers/         # Flask controllers
-│   ├── modules/             # Business modules
-│   │   ├── mawaqit_fetcher.py
-│   │   ├── prayer_generator.py
-│   │   ├── slots_generator.py
-│   │   └── ...
-│   ├── static/              # Static assets
-│   │   ├── css/            # Styles (landing, planner, styles)
-│   │   ├── js/             # JavaScript modules
-│   │   │   ├── components/ # UI components (calendar, clock, map, etc.)
-│   │   │   ├── pages/      # Page-specific logic (landing, planner)
-│   │   │   ├── utils/      # Utility functions
-│   │   │   └── main.js     # Main initialization
-│   │   └── ics/            # Generated ICS files
-│   ├── templates/           # HTML templates
-│   ├── utils/               # Utilities
-│   └── views/               # Flask views
-├── config/                  # Multi-environment configuration
-├── data/                    # Data (metadata, mosques)
-├── docs/                    # Documentation
-├── tests/                   # Complete tests
-│   ├── js/                 # JavaScript tests
-│   │   ├── unit/           # Unit tests
-│   │   └── integration/    # Integration tests
-│   ├── python/             # Python tests
-│   │   ├── unit/           # Unit tests
-│   │   └── integration/    # Integration tests
-│   └── e2e/                # End-to-end Playwright tests
-├── app.py                   # Flask entry point
-├── package.json             # Node.js dependencies
-├── requirements.txt         # Python dependencies
-└── Makefile                 # Automated commands
+├── app/                    # Flask application
+│   ├── api/               # API endpoints
+│   ├── controllers/       # Flask controllers
+│   ├── modules/           # Business logic
+│   ├── static/            # Frontend assets
+│   │   ├── css/          # Stylesheets
+│   │   ├── js/           # JavaScript modules
+│   │   └── ics/          # Generated calendar files
+│   └── templates/         # HTML templates
+├── config/                # Environment configurations
+├── data/                  # Mosque data and metadata
+├── docs/                  # Documentation
+├── tests/                 # Test suite
+│   ├── python/           # Python tests (unit + integration)
+│   ├── js/               # JavaScript tests (unit + integration)
+│   └── e2e/              # End-to-end tests (Playwright)
+├── pyproject.toml        # Python dependencies (UV)
+├── package.json          # Node.js dependencies
+└── Makefile              # Development automation
 ```
 
----
+## 🔧 Development Commands
 
-## 🛠️ Available Commands
+### Application
 
-### 🚀 Launch
 ```bash
-make install        # Create environment and install dependencies
-make run-dev        # Launch in development mode
-make run-prod       # Launch in production mode
-make run-test       # Launch in test mode
+make run-dev      # Development mode
+make run-prod     # Production mode
+make run-test     # Test mode
 ```
-
-### 🧪 Tests
-```bash
-make test           # All tests (JS + E2E + Python)
-make test-js        # JavaScript unit tests (Jest)
-make test-js-integration # JavaScript integration tests (Jest)
-make test-js-all    # All JavaScript tests (Jest)
-make test-e2e       # End-to-end tests (Playwright)
-make test-py        # Python tests (pytest)
-make coverage       # Complete coverage (JS + Python)
-```
-
-### 🧼 Maintenance
-```bash
-make cleanup        # Clean environment and test files
-make reset          # Reset project
-```
-
-### 📚 Documentation
-```bash
-make docs-serve     # Start documentation server
-```
-
----
-
-## 🧪 Test Structure
-
-### Python Tests (`tests/python/`)
-- **Unit tests** (`unit/`): Individual functions and components
-- **Integration tests** (`integration/`): Component interactions
-- **Coverage**: 65% (140 tests, 1 xfailed)
-
-### JavaScript Tests (`tests/js/`)
-- **Unit tests** (`unit/`): Individual components and utilities
-- **Integration tests** (`integration/`): Component interactions
-- **E2E tests** (`tests/e2e/`): User interface tests with Playwright
-- **JS coverage**: 94% for landing.js, 1.73% for planner.js
-
-### Test Commands
-```bash
-# Python tests
-pytest tests/python/ --cov=app --cov-report=html:htmlcov/python
-
-# JavaScript unit tests
-npm run test:js:unit
-
-# JavaScript integration tests
-npm run test:js:integration
-
-# All JavaScript tests
-npm run test:js
-
-# E2E tests
-npm run test:e2e
-
-# All tests
-npm run test:full
-```
-
----
-
-## 🎨 User Interface
-
-### Interactive Timeline
-- Prayer time display
-- Automatically calculated free slots
-- Padding management (before/after delays)
-- Responsive interface
-- **Slot segmentation**: Optional hourly breakdown mode
-
-### Circular Clock
-- Circular visualization of schedules
-- Colored arcs for each prayer
-- Automatic adaptation based on paddings
-- Touch interaction
-
-### Padding Configuration
-- Customizable delays before each prayer
-- Customizable delays after each prayer
-- Minimum values for display
-- Calculation/display separation
-
----
-
-## 📝 Documentation
-
-- [Installation Guide](docs/setup.md)
-- [API Documentation](docs/api.md)
-- [Testing Guide](docs/testing.md)
-- [Timeline and Interface](docs/timeline.md)
-- [Features Integration](docs/features_integration.md)
-- [Project Review](docs/project_review.md)
-- [E2E Testing Status](docs/e2e-testing-status.md)
-- [Documentation Updates](docs/documentation_updates.md)
-
-### 📚 Documentation Server
-```bash
-make docs-serve  # Start modern documentation server
-```
-Access at: [http://localhost:8000](http://localhost:8000)
-
----
-
-## 🗺️ Roadmap
-
-* [x] Python unit and integration tests
-* [x] JavaScript unit tests (Jest)
-* [x] End-to-end tests (Playwright)
-* [x] Timeline interface with circular clock
-* [x] Padding management
-* [x] Modular JavaScript architecture
-* [x] Religious features integration (Hijri dates, voluntary fasts, adhkar)
-* [x] Slot segmentation with hourly breakdown
-* [x] Modern documentation server
-* [x] Complete documentation structure
-* [ ] Individual padding configuration per prayer
-* [ ] Add recurring tasks to free slots
-* [ ] Mobile interface
-
----
-
-## 🛠️ Technologies Used
-
-### Backend
-- **Python 3.13**: Main language
-- **Flask**: Web framework
-- **pytest**: Python testing
-- **requests**: Mawaqit API
-
-### Frontend
-- **JavaScript ES6+**: User interface
-- **CSS3**: Styles and animations
-- **HTML5**: Structure
 
 ### Testing
-- **Jest**: JavaScript unit testing
-- **Playwright**: End-to-end testing
-- **jsdom**: DOM environment for Jest
 
-### Tools
-- **Make**: Task automation
-- **npm**: Node.js dependency management
-- **pip**: Python dependency management
-- **Markdown**: Documentation conversion
-- **Jinja2**: HTML templating
+```bash
+make test         # All tests
+make test-py      # Python tests
+make test-js-all  # JavaScript tests
+make test-e2e     # End-to-end tests
+make coverage     # Generate coverage reports
+```
 
----
+### Maintenance
 
-## 📖 License
+```bash
+make cleanup      # Clean temporary files
+make reset        # Reset project state
+make install      # Install dependencies
+```
 
-MIT License – © 2025
+## 🌟 Features
 
+- **Mosque Selection**: Choose from 50,000+ mosques worldwide
+- **Flexible Scheduling**: Daily, monthly, or yearly prayer times
+- **Smart Time Slots**: Calculate free time between prayers
+- **Calendar Export**: Generate `.ics` files for any calendar app
+- **Modern UI**: Interactive timeline and circular clock visualization
+- **Padding Configuration**: Customize delays before/after prayers
+- **Multiple Export Types**: Prayer times, empty slots, available slots
+- **Advanced Features**: Hijri dates, voluntary fasts, adhkar
+- **Slot Segmentation**: Hourly breakdown mode
+
+## 🤝 Contributing
+
+### Development Setup
+
+1. Fork the repository
+2. Install dependencies: `make install`
+3. Run tests: `make test`
+4. Start development: `make run-dev`
+
+### Code Quality
+
+- Python: Follow PEP 8, use type hints
+- JavaScript: Use ES6+ features, modular architecture
+- Tests: Maintain >80% coverage
+- Documentation: Update README for new features
+
+### Pull Request Process
+
+1. Create feature branch from `main`
+2. Implement changes with tests
+3. Run full test suite: `make test`
+4. Update documentation if needed
+5. Submit PR with clear description
+
+## 📚 Documentation
+
+- **API Documentation**: Available at `/docs` when running locally
+- **UV Documentation**: [https://docs.astral.sh/uv/](https://docs.astral.sh/uv/)
+- **Flask Documentation**: [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
+
+## 🔗 Links
+
+- **Repository**: [https://github.com/IAM-B/Mawaqit_API_to_ics](https://github.com/IAM-B/Mawaqit_API_to_ics)
+- **Issues**: [https://github.com/IAM-B/Mawaqit_API_to_ics/issues](https://github.com/IAM-B/Mawaqit_API_to_ics/issues)
+- **Mawaqit API**: [https://mawaqit.net](https://mawaqit.net)
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.

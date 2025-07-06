@@ -1,82 +1,57 @@
 # Variables
-VENV := env-planner
-PYTHON := $(VENV)/bin/python
-PIP := $(VENV)/bin/pip
+PYTHON := uv run python
+UV := uv
 APP := app.py
 
-# 📦 Installation and Configuration
-init-direnv:
-	@echo "👉 Creating .envrc file for direnv..."
-	@echo 'source env-planner/bin/activate' > .envrc
-	@direnv allow .
-	@echo "✅ direnv configured. Environment will activate automatically."
+# 📦 Installation and configuration
+install:
+	$(UV) sync
+	@echo "✅ Installation of dependencies with UV completed."
 
-install: $(VENV)/bin/activate
-
-$(VENV)/bin/activate: requirements.txt
-	@echo "🔧 Creating virtual environment..."
-	python -m venv $(VENV)
-	$(PIP) install --upgrade pip
-	$(PIP) install -r requirements.txt
-	@$(MAKE) init-direnv
-	@echo "✅ Installation complete."
-	@echo "🧠 Tip: direnv will automatically activate your environment in the future."
-
-# 🚀 Application Launch
+# 🚀 Launching the application
 run-dev: install
-	@echo "🚀 Starting Flask application in development mode..."
-	FLASK_ENV=development $(PYTHON) $(APP)
+	@echo "🚀 Starting the Flask application in development mode..."
+	FLASK_ENV=development $(UV) run python $(APP)
 
 run-prod: install
-	@echo "🚀 Starting Flask application in production mode..."
-	FLASK_ENV=production $(PYTHON) $(APP)
+	@echo "🚀 Starting the Flask application in production mode..."
+	FLASK_ENV=production $(UV) run python $(APP)
 
 run-test: install
-	@echo "🧪 Starting Flask application in test mode..."
-	FLASK_ENV=testing $(PYTHON) $(APP)
+	@echo "🧪 Starting the Flask application in test mode..."
+	FLASK_ENV=testing $(UV) run python $(APP)
 
 # 🧪 Tests
 test-js:
-	@echo "🧪 Running JavaScript unit tests (Jest)..."
 	npm run test -- tests/js/unit/
 
 test-js-integration:
-	@echo "🧪 Running JavaScript integration tests (Jest)..."
 	npm run test -- tests/js/integration/
 
 test-js-all:
-	@echo "🧪 Running all JavaScript tests (Jest)..."
 	npm run test -- tests/js/
 
 test-e2e:
-	@echo "🧪 Running end-to-end tests (Playwright)..."
 	npm run test:e2e
 
 test-py:
-	@echo "🧪 Running Python tests (pytest)..."
-	@mkdir -p logs
-	FLASK_ENV=testing $(PYTHON) -m pytest tests/python/ --maxfail=2 --disable-warnings -v | tee logs/python_tests.log logs/result_tests.txt
-	@$(MAKE) clean-ics
+	$(UV) run pytest tests/python/ --maxfail=2 --disable-warnings -v
 
 test: test-js-all test-e2e test-py
-	@echo "✅ All tests completed."
+	@echo "✅ All tests are done."
 
 # 📊 Coverage
 coverage-js:
-	@echo "📊 Generating JavaScript coverage..."
 	npm run test:coverage
 
 coverage-py:
-	@echo "📊 Generating Python coverage..."
-	@mkdir -p logs
-	PYTHONPATH=. $(PYTHON) -m pytest tests/python/ --cov=app --cov-report=html:htmlcov/python --cov-report=term-missing --disable-warnings -q | tee logs/coverage_report.log
+	$(UV) run pytest tests/python/ --cov=app --cov-report=html:htmlcov/python --cov-report=term-missing --disable-warnings -q
 
 coverage: coverage-js coverage-py
 	@echo "✅ Complete coverage generated."
 
-# 🧼 Cleanup
+# 🧼 Clean files
 clean-ics:
-	@echo "🗑️ Cleaning generated test files..."
 	rm -f *.ics
 	rm -f tests/*.ics
 	rm -f tests/python/unit/*.ics
@@ -88,55 +63,26 @@ clean-ics:
 	rm -f app/static/ics/*.ics
 	rm -f app/cache/*.json
 	rm -f app/cache/*.ics
-	@echo "✅ Test files cleaned."
+	@echo "✅ ICS files and cache cleaned."
 
 cleanup:
-	@echo "🗑️ Removing virtual environment..."
-	rm -rf $(VENV)
-	@echo "🗑️ Removing compiled Python files..."
+	rm -rf .venv
 	find . -type d -name "__pycache__" -exec rm -r {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
-	@echo "🗑️ Removing log files..."
 	rm -rf logs/*.log logs/*.txt 2>/dev/null || true
-	@echo "🗑️ Removing coverage files..."
 	rm -rf htmlcov/ coverage/ .nyc_output/ 2>/dev/null || true
-	@echo "🗑️ Removing test reports..."
 	rm -rf test-results/ playwright-report/ 2>/dev/null || true
-	@echo "🗑️ Removing Node.js modules..."
 	rm -rf node_modules/ 2>/dev/null || true
-	@$(MAKE) clean-ics
-	@echo "✅ Cleanup complete."
+	$(MAKE) clean-ics
+	@echo "✅ Complete cleanup."
 
 # 🔄 Reset
 reset: cleanup install
-	@echo "♻️ Project reset complete."
-
-# 📝 Git
-gcommit:
-	@echo "📝 Adding and committing changes..."
-	git add .
-	git commit
-
-gpush:
-	@echo "📤 Pushing to origin/master..."
-	git push origin master
-
-gpull:
-	@echo "📥 Pulling from origin/master..."
-	git pull origin master
-
-greset:
-	@echo "↩️ Resetting last commit (soft)..."
-	git reset HEAD~
-
-gstatus:
-	@echo "📊 Git status..."
-	git status
+	@echo "♻️ Project reset."
 
 # 📚 Documentation
 docs-serve:
-	@echo "📚 Starting modern documentation server..."
-	cd docs && python docs_server.py
+	cd docs && $(UV) run python docs_server.py
 
 # 🔧 Configuration
 config-dev:
@@ -157,26 +103,26 @@ help:
 	@echo "Available commands:"
 	@echo ""
 	@echo "🚀 Launch:"
-	@echo "  make install        → Create environment and install dependencies"
+	@echo "  make install        → Install dependencies with UV"
 	@echo "  make run-dev        → Launch in development mode"
 	@echo "  make run-prod       → Launch in production mode"
 	@echo "  make run-test       → Launch in test mode"
 	@echo ""
-	@echo "🧪 Tests:"
+	@echo "🧪 Tests :"
 	@echo "  make test           → All tests (JS + E2E + Python)"
-	@echo "  make test-js        → JavaScript unit tests (Jest)"
-	@echo "  make test-js-integration → JavaScript integration tests (Jest)"
-	@echo "  make test-js-all    → All JavaScript tests (Jest)"
+	@echo "  make test-js        → Unit tests JS (Jest)"
+	@echo "  make test-js-integration → Integration tests JS (Jest)"
+	@echo "  make test-js-all    → All JS tests (Jest)"
 	@echo "  make test-e2e       → End-to-end tests (Playwright)"
 	@echo "  make test-py        → Python tests (pytest)"
 	@echo "  make coverage       → Complete coverage (JS + Python)"
 	@echo ""
-	@echo "🧼 Maintenance:"
+	@echo "🧼 Maintenance :"
 	@echo "  make cleanup        → Clean environment and temporary files"
 	@echo "  make reset          → Clean and reinstall"
 	@echo ""
-	@echo "📚 Documentation:"
-	@echo "  make docs-serve     → Start documentation server"
+	@echo "📚 Documentation :"
+	@echo "  make docs-serve     → Launch the documentation server"
 	@echo ""
 	@echo "🔧 Configuration:"
 	@echo "  make config-dev     → Configure development environment"
