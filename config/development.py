@@ -15,4 +15,7 @@ MAWAQIT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.
 
 # Configuration des logs
 LOG_LEVEL = 'DEBUG'
-LOG_FILE = 'logs/dev.log' 
+LOG_FILE = 'logs/dev.log'
+
+# Configuration des données de mosquées
+MOSQUE_DATA_DIR = 'data/mosques_by_country' 

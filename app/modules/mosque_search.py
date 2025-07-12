@@ -25,7 +25,7 @@ def get_mosque_dir():
     Returns:
         Path: Directory path for mosque data files
     """
-    return Path(current_app.config.get('MOSQUE_DATA_DIR', Path(__file__).resolve().parent.parent / "data" / "mosques_by_country"))
+    return Path(current_app.config.get('MOSQUE_DATA_DIR', Path(__file__).resolve().parents[2] / "data" / "mosques_by_country"))
 
 def get_formatted_mosques():
     """
