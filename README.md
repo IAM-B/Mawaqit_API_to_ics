@@ -20,7 +20,6 @@ A modern web application that generates personalized prayer schedules synchroniz
 
 - **Python 3.9+** with **UV** package manager
 - **Flask 3.1.1** - Web framework
-- **Pandas 2.3.0** - Data manipulation
 - **iCalendar 6.3.1** - Calendar file generation
 - **Requests 2.32.4** - HTTP client
 - **BeautifulSoup4 4.13.4** - Web scraping
