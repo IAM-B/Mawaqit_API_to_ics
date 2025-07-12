@@ -1,7 +1,7 @@
 # Variables
 PYTHON := uv run python
 UV := uv
-APP := app.py
+APP := main.py
 
 # 📦 Installation and configuration
 install:
@@ -97,6 +97,22 @@ config-test:
 	@echo "🔧 Configuring test environment..."
 	cp config/testing.py config/__init__.py
 
+# 🎨 Code Quality
+format:
+	@echo "🎨 Formatting code with Ruff..."
+	$(UV) run ruff format .
+
+lint:
+	@echo "🔍 Linting code with Ruff..."
+	$(UV) run ruff check .
+
+check: format lint
+	@echo "✅ Code quality check completed."
+
+fix:
+	@echo "🔧 Auto-fixing code issues with Ruff..."
+	$(UV) run ruff check --fix .
+
 # ℹ️ Help
 help:
 	@echo ""
@@ -116,6 +132,12 @@ help:
 	@echo "  make test-e2e       → End-to-end tests (Playwright)"
 	@echo "  make test-py        → Python tests (pytest)"
 	@echo "  make coverage       → Complete coverage (JS + Python)"
+	@echo ""
+	@echo "🎨 Code Quality:"
+	@echo "  make format         → Format code with Ruff"
+	@echo "  make lint           → Lint code with Ruff"
+	@echo "  make check          → Format + Lint"
+	@echo "  make fix            → Auto-fix code issues"
 	@echo ""
 	@echo "🧼 Maintenance :"
 	@echo "  make cleanup        → Clean environment and temporary files"

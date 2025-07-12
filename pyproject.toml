@@ -45,9 +45,7 @@ dev = [
     "pytest==8.4.1",
     "pytest-cov==6.2.1",
     "pytest-mock",
-    "black",
-    "flake8",
-    "mypy",
+    "ruff",
 ]
 test = [
     "pytest==8.4.1",
@@ -56,7 +54,7 @@ test = [
 ]
 
 [project.scripts]
-mawaqit-ics = "app:main"
+mawaqit-ics = "main:main"
 
 [project.urls]
 Homepage = "https://github.com/IAM-B/Mawaqit_API_to_ics"
@@ -98,64 +96,62 @@ exclude_lines = [
     "@(abc\\.)?abstractmethod",
 ]
 
-[tool.black]
-line-length = 88
-target-version = ['py39']
-include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # directories
-  \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | build
-  | dist
-)/
-'''
+[tool.ruff]
+# Enable pycodestyle (`E`), Pyflakes (`F`), and isort (`I`) codes
+select = ["E", "F", "I", "W", "B", "C4", "UP", "ARG", "SIM", "TCH", "TID", "Q", "RUF"]
+ignore = ["E501", "E203"]
 
-[tool.flake8]
-max-line-length = 88
-extend-ignore = ["E203", "W503"]
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
 exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
     ".git",
-    "__pycache__",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
     "build",
     "dist",
-    ".venv",
-    ".venv",
+    "node_modules",
+    "venv",
 ]
 
-[tool.mypy]
-python_version = "3.9"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-no_implicit_optional = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_equality = true
+# Same as Black.
+line-length = 88
+indent-width = 4
 
-[[tool.mypy.overrides]]
-module = [
-    "flask.*",
-    "requests.*",
-    "pandas.*",
-    "icalendar.*",
-    "bs4.*",
-    "unidecode.*",
-    "dotenv.*",
-    "jinja2.*",
-    "markdown.*",
-]
-ignore_missing_imports = true
+# Assume Python 3.9
+target-version = "py39"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[tool.ruff.isort]
+known-first-party = ["app"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["app"] 
@@ -164,4 +160,5 @@ packages = ["app"]
 dev = [
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
+    "ruff>=0.12.3",
 ]

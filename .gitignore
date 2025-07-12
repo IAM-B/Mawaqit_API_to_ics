@@ -21,6 +21,10 @@ wheels/
 *.egg
 MANIFEST
 
+# UV (Python package manager)
+.uv/
+uv.lock
+
 # Virtual environments
 # env-planner/ (removed - using UV now)
 # .envrc (removed - using UV now)
@@ -174,3 +178,10 @@ pnpm-lock.yaml
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Ruff cache
+.ruff_cache/
+
+# Temporary test files
+test_*.py
+fix_*.py

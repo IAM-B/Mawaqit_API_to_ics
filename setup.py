@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="mawaqit-api-to-ics",
@@ -10,4 +10,4 @@ setup(
         "icalendar",
         "python-dotenv",
     ],
-) 
+)

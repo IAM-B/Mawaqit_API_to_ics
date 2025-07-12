@@ -1,21 +1,21 @@
 import json
-import re
-import time
-import requests
 import logging
-from pathlib import Path
-from bs4 import BeautifulSoup
+import re
 from datetime import datetime, timezone
-from unidecode import unidecode
+from pathlib import Path
+
+import requests
+from bs4 import BeautifulSoup
 from flask import current_app
+from unidecode import unidecode
 
 # === CONFIG ===
-BASE_URL = current_app.config['MAWAQIT_BASE_URL']
+BASE_URL = current_app.config["MAWAQIT_BASE_URL"]
 HTML_MAIN = BASE_URL
 API_URL_TEMPLATE = f"{BASE_URL}/api/2.0/mosque/map/{{code}}"
 DATA_DIR = Path("data/mosques_by_country")
 META_FILE = Path("data/metadata.json")
-LOG_FILE = Path(current_app.config['LOG_FILE'])
+LOG_FILE = Path(current_app.config["LOG_FILE"])
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # === LOGGING SETUP ===
@@ -24,12 +24,14 @@ logging.basicConfig(
     filemode="a",
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    level=getattr(logging, current_app.config['LOG_LEVEL'])
+    level=getattr(logging, current_app.config["LOG_LEVEL"]),
 )
+
 
 def log(msg, level="info"):
     print(msg)
     getattr(logging, level)(msg)
+
 
 # === SANITIZE COUNTRY NAME ===
 def sanitize_country_name(name: str) -> str:
@@ -39,6 +41,7 @@ def sanitize_country_name(name: str) -> str:
     name = re.sub(r"\s+", "_", name)
     name = re.sub(r"[^\w\-]", "", name)
     return name
+
 
 # === GET COUNTRY CODES FROM MAIN PAGE ===
 def get_country_codes() -> dict:
@@ -52,7 +55,10 @@ def get_country_codes() -> dict:
     soup = BeautifulSoup(res.text, "html.parser")
     buttons = soup.select("button.country")
     if not buttons:
-        log("[✘] Aucun bouton de pays trouvé. La structure HTML a peut-être changé.", "error")
+        log(
+            "[✘] Aucun bouton de pays trouvé. La structure HTML a peut-être changé.",
+            "error",
+        )
         return {}
 
     countries = {}
@@ -61,18 +67,19 @@ def get_country_codes() -> dict:
             data = json.loads(btn.get("data-data"))
             countries[data["country"]] = {
                 "count": data["nb"],
-                "name": btn.get_text(strip=True).split("\n")[0]
+                "name": btn.get_text(strip=True).split("\n")[0],
             }
         except Exception as e:
             log(f"[!] Erreur parsing bouton pays : {e}", "warning")
             continue
     return countries
 
+
 # === LOAD EXISTING METADATA ===
 def load_existing_metadata():
     if META_FILE.exists():
         try:
-            with open(META_FILE, "r", encoding="utf-8") as f:
+            with open(META_FILE, encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, list):
                     return data
@@ -82,6 +89,7 @@ def load_existing_metadata():
         except Exception as e:
             log(f"[!] Erreur lecture metadata : {e}", "warning")
     return []
+
 
 # === SAVE METADATA APPEND ===
 def append_metadata(entry):
@@ -102,14 +110,14 @@ def main():
     total_mosques = 0
     updated_countries = 0
     for code, info in countries.items():
-        country_name = sanitize_country_name(info['name'])
+        country_name = sanitize_country_name(info["name"])
         api_url = API_URL_TEMPLATE.format(code=code)
         output_file = DATA_DIR / f"{country_name}.json"
 
         current_count = 0
         if output_file.exists():
             try:
-                with open(output_file, "r", encoding="utf-8") as f:
+                with open(output_file, encoding="utf-8") as f:
                     existing_data = json.load(f)
                     current_count = len(existing_data)
             except Exception as e:
@@ -136,11 +144,14 @@ def main():
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "total_countries": len(countries),
         "updated_countries": updated_countries,
-        "total_mosques": total_mosques
+        "total_mosques": total_mosques,
     }
     append_metadata(metadata_entry)
 
-    log(f"[✔] Terminé : {updated_countries} pays mis à jour / {len(countries)} total, {total_mosques} mosquées")
+    log(
+        f"[✔] Terminé : {updated_countries} pays mis à jour / {len(countries)} total, {total_mosques} mosquées"
+    )
+
 
 if __name__ == "__main__":
     main()
