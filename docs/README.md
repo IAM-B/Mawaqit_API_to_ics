@@ -26,6 +26,7 @@ The server starts at `http://localhost:8000` and automatically converts Markdown
 | `setup.md` | Installation and configuration guide | `/setup.md` |
 | `testing.md` | Testing strategy (Python, JS, E2E) | `/testing.md` |
 
+
 ### 📊 Reports and Status
 
 | File | Description | URL |
@@ -57,7 +58,7 @@ The server starts at `http://localhost:8000` and automatically converts Markdown
 
 ### Dependencies
 ```bash
-pip install markdown jinja2
+uv run pip install markdown jinja2
 ```
 
 ### File Structure

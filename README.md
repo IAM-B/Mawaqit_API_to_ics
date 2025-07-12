@@ -2,6 +2,18 @@
 
 A modern web application that generates personalized prayer schedules synchronized with local mosque times from [Mawaqit](https://mawaqit.net). Exports `.ics` calendar files for seamless integration with your favorite calendar apps.
 
+---
+
+**🚀 Major Update:**
+- Full migration to [UV](https://github.com/astral-sh/uv) (no more venv/pip, no `env-planner/`)
+- Centralized Flask configuration (all environments, with `ICS_CALENDAR_NAME` and `ICS_CALENDAR_DESCRIPTION`)
+- Refactor: `app.py` renamed to `main.py`, only one application factory (`create_app`)
+- Python linting and formatting with [Ruff](https://docs.astral.sh/ruff/) (replaces black, isort, flake8)
+- All Python/JS tests pass (E2E Playwright: **coming soon**)
+- `.gitignore` and Makefile updated for UV and modern workflow
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Backend
@@ -17,12 +29,13 @@ A modern web application that generates personalized prayer schedules synchroniz
 
 - **Vanilla JavaScript** with modular architecture
 - **Jest** - Unit and integration testing
-- **Playwright** - End-to-end testing
+- **Playwright** - End-to-end testing (**E2E coming soon**)
 - **Modern CSS** with responsive design
 
 ### Development Tools
 
 - **UV** - Fast Python package manager (replaces pip/venv)
+- **Ruff** - Python linter & formatter (replaces black, isort, flake8)
 - **Node.js** - JavaScript runtime and testing
 - **Make** - Build automation and development scripts
 
@@ -32,7 +45,7 @@ A modern web application that generates personalized prayer schedules synchroniz
 
 - Python 3.9+
 - Node.js 18+
-- UV package manager
+- [UV](https://github.com/astral-sh/uv) package manager
 
 ### Installation
 
@@ -53,7 +66,7 @@ Visit [http://localhost:5000](http://localhost:5000) to access the application.
 ## 🧪 Testing
 
 ```bash
-# All tests (Python + JavaScript + E2E)
+# All tests (Python + JavaScript)
 make test
 
 # Python tests only
@@ -62,8 +75,8 @@ make test-py
 # JavaScript tests only
 make test-js-all
 
-# End-to-end tests
-make test-e2e
+# End-to-end tests (Playwright)
+make test-e2e   # (coming soon)
 
 # Coverage reports
 make coverage
@@ -88,10 +101,11 @@ Mawaqit_API_to_ics/
 ├── tests/                 # Test suite
 │   ├── python/           # Python tests (unit + integration)
 │   ├── js/               # JavaScript tests (unit + integration)
-│   └── e2e/              # End-to-end tests (Playwright)
-├── pyproject.toml        # Python dependencies (UV)
-├── package.json          # Node.js dependencies
-└── Makefile              # Development automation
+│   └── e2e/              # End-to-end tests (Playwright, WIP)
+├── main.py                # Main Flask entrypoint (was app.py)
+├── pyproject.toml         # Python dependencies (UV)
+├── package.json           # Node.js dependencies
+└── Makefile               # Development automation
 ```
 
 ## 🔧 Development Commands
@@ -109,8 +123,10 @@ make run-test     # Test mode
 ```bash
 make test         # All tests
 make test-py      # Python tests
-make test-js-all  # JavaScript tests
-make test-e2e     # End-to-end tests
+make test-js      # JavaScript unit tests
+make test-js-integration  # JavaScript integration tests
+make test-js-all  # All JavaScript tests
+make test-e2e     # End-to-end tests (coming soon)
 make coverage     # Generate coverage reports
 ```
 
@@ -120,7 +136,15 @@ make coverage     # Generate coverage reports
 make cleanup      # Clean temporary files
 make reset        # Reset project state
 make install      # Install dependencies
+make fix          # Auto-fix Python code style (Ruff)
+make lint         # Lint Python code (Ruff)
 ```
+
+## ⚙️ Flask Configuration
+
+- All environment variables and config options are centralized in `config/`
+- Main variables: `ICS_CALENDAR_NAME`, `ICS_CALENDAR_DESCRIPTION`, `MAWAQIT_BASE_URL`, etc.
+- Use `main.create_app(config_name, config_overrides)` for custom test/dev setups
 
 ## 🌟 Features
 
@@ -145,10 +169,10 @@ make install      # Install dependencies
 
 ### Code Quality
 
-- Python: Follow PEP 8, use type hints
+- Python: Use type hints, follow PEP 8, auto-format with Ruff
 - JavaScript: Use ES6+ features, modular architecture
-- Tests: Maintain >80% coverage
-- Documentation: Update README for new features
+- Tests: Maintain high coverage, use mocks for external APIs
+- Documentation: Update README and docs for new features
 
 ### Pull Request Process
 
@@ -162,6 +186,7 @@ make install      # Install dependencies
 
 - **API Documentation**: Available at `/docs` when running locally
 - **UV Documentation**: [https://docs.astral.sh/uv/](https://docs.astral.sh/uv/)
+- **Ruff Documentation**: [https://docs.astral.sh/ruff/](https://docs.astral.sh/ruff/)
 - **Flask Documentation**: [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
 
 ## 🔗 Links

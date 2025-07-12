@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-- **Python 3.8+** (Python 3.13 recommended)
+- **Python 3.9+** (Python 3.13 recommended)
 - **Node.js 18+** (for JavaScript tests and tools)
-- **pip** (Python package manager)
-- **npm** (Node.js package manager)
-- **make** (optional, but recommended for automation)
+- **[UV](https://github.com/astral-sh/uv)** (Python package manager - replaces pip/venv)
+- **npm** (Node.js package manager - for JavaScript dependencies)
+- **make** (recommended for automation - all commands use make)
 
 ## Quick Installation
 
@@ -51,26 +51,26 @@ Mawaqit_API_to_ics/
 │   ├── utils/             # Utility functions
 │   └── views/             # View handlers
 ├── config/                # Configuration files
-│   ├── __init__.py
-│   ├── development.py
-│   ├── production.py
-│   └── testing.py
+│   ├── __init__.py        # Base configuration
+│   ├── development.py     # Development environment
+│   ├── production.py      # Production environment
+│   └── testing.py         # Testing environment
 ├── tests/                 # Test suite
 │   ├── js/               # JavaScript unit tests
-│   ├── e2e/              # End-to-end tests
-│   ├── unit/             # Python unit tests
-│   └── integration/      # Python integration tests
+│   ├── e2e/              # End-to-end tests (WIP)
+│   ├── python/           # Python tests (unit + integration)
+│   └── data/             # Test data files
 ├── docs/                  # Documentation
 ├── data/                  # Data storage
-└── logs/                  # Application logs
+├── logs/                  # Application logs
+└── main.py                # Main Flask entrypoint (was app.py)
 ```
 
 ## Available Commands
 
 ### 🚀 Installation & Setup
 ```bash
-make install        # Create environment and install dependencies
-# make init-direnv    # Removed - using UV now
+make install        # Install dependencies with UV
 ```
 
 ### 🚀 Running the Application
@@ -82,9 +82,11 @@ make run-test       # Run in test mode
 
 ### 🧪 Testing
 ```bash
-make test           # All tests (JS + E2E + Python)
+make test           # All tests (JS + Python)
 make test-js        # JavaScript unit tests (Jest)
-make test-e2e       # End-to-end tests (Playwright)
+make test-js-integration  # JavaScript integration tests (Jest)
+make test-js-all    # All JavaScript tests (Jest)
+make test-e2e       # End-to-end tests (Playwright - coming soon)
 make test-py        # Python tests (pytest)
 make coverage       # Complete coverage (JS + Python)
 ```
@@ -101,11 +103,56 @@ make clean-ics      # Clean generated ICS files
 make docs-serve     # Start documentation server
 ```
 
-### 🔧 Configuration
+### 🔧 Code Quality
 ```bash
-make config-dev     # Configure development environment
-make config-prod    # Configure production environment
-make config-test    # Configure test environment
+make lint           # Lint Python code (Ruff)
+make fix            # Auto-fix Python code style (Ruff)
+make format         # Format code (Ruff)
+```
+
+## Flask Configuration
+
+### Centralized Configuration
+All environment variables and configuration options are centralized in the `config/` directory:
+
+- **`config/__init__.py`**: Base configuration class with common settings
+- **`config/development.py`**: Development environment settings
+- **`config/production.py`**: Production environment settings  
+- **`config/testing.py`**: Testing environment settings
+
+### Key Configuration Variables
+```python
+# ICS Calendar Settings
+ICS_CALENDAR_NAME = 'Prayer Times'
+ICS_CALENDAR_DESCRIPTION = 'Prayer times from Mawaqit'
+
+# Mawaqit API Settings
+MAWAQIT_BASE_URL = 'https://mawaqit.net/fr'
+MAWAQIT_REQUEST_TIMEOUT = 10
+MAWAQIT_USER_AGENT = 'Mozilla/5.0...'
+
+# Data Directories
+MOSQUE_DATA_DIR = 'data/mosques_by_country'
+
+# Logging
+LOG_LEVEL = 'DEBUG'  # or 'INFO' for production
+LOG_FILE = 'logs/dev.log'
+```
+
+### Application Factory
+The main application factory is in `main.py`:
+```python
+from main import create_app
+
+# Create app with default configuration
+app = create_app('development')
+
+# Create app with custom overrides
+app = create_app('testing', {
+    'TESTING': True,
+    'DEBUG': True,
+    'ICS_CALENDAR_NAME': 'Test Calendar'
+})
 ```
 
 ## Testing
@@ -113,19 +160,19 @@ make config-test    # Configure test environment
 ### Test Structure
 
 #### Python Tests
-- **Unit Tests**: Located in `tests/unit/`
+- **Unit Tests**: Located in `tests/python/unit/`
   - Test individual components in isolation
   - Use mocks and stubs to isolate dependencies
   - Focus on edge cases and error handling
 
-- **Integration Tests**: Located in `tests/integration/`
+- **Integration Tests**: Located in `tests/python/integration/`
   - Test component interactions
   - Verify API endpoints
   - Test ICS file generation
   - Validate mosque search functionality
 
 #### JavaScript Tests
-- **Unit Tests**: Located in `tests/js/`
+- **Unit Tests**: Located in `tests/js/unit/`
   - Test individual JavaScript functions
   - Use Jest with jsdom environment
   - Focus on UI logic and utilities
@@ -134,6 +181,7 @@ make config-test    # Configure test environment
   - Test complete user workflows
   - Use Playwright for browser automation
   - Validate user interface functionality
+  - **Status**: Coming soon
 
 ### Test Artifacts Cleanup
 The following files are automatically cleaned after test execution:
@@ -152,8 +200,8 @@ make cleanup        # Full cleanup including cache
 ```
 
 ### Current Coverage
-- **Python**: 65% overall coverage (140 tests, 1 xfailed)
-- **JavaScript**: 94% for landing.js, 1.73% for planner.js (36 tests)
+- **Python**: 65% overall coverage (147 tests, 1 xfailed)
+- **JavaScript**: 128 tests total (100% pass rate)
 
 ### Best Practices
 1. Keep unit and integration tests separate
@@ -162,25 +210,26 @@ make cleanup        # Full cleanup including cache
 4. Clean up test data after each test
 5. Use fixtures for common test setup
 6. Test both success and error scenarios
+7. Use mocks for external API calls
 
 ## Environment Configuration
 
 ### Development Environment
 ```bash
-make config-dev
-FLASK_ENV=development make run-dev
+make run-dev
+# Uses config/development.py automatically
 ```
 
 ### Production Environment
 ```bash
-make config-prod
-FLASK_ENV=production make run-prod
+make run-prod
+# Uses config/production.py automatically
 ```
 
 ### Test Environment
 ```bash
-make config-test
-FLASK_ENV=testing make run-test
+make run-test
+# Uses config/testing.py automatically
 ```
 
 ## Troubleshooting
@@ -199,83 +248,54 @@ export PYTHONPATH=.
 make cleanup
 ```
 
-#### 2. Test Failures
+#### 2. Configuration Issues
 ```bash
-# Clear cache and test files
-make cleanup
+# Verify configuration is loaded
+python -c "from main import create_app; app = create_app('development'); print(app.config['ICS_CALENDAR_NAME'])"
 
-# Check test database configuration
-# Verify all dependencies are installed
-npm install  # For JavaScript dependencies
-```
-
-#### 3. Environment Issues
-```bash
-# Ensure correct Python version
-python --version  # Should be 3.8+
-
-# Check all required packages are installed
-pip list
-
-# Verify environment variables are set correctly
+# Check environment variables
 echo $FLASK_ENV
 ```
 
-#### 4. JavaScript Issues
+#### 3. Test Failures
 ```bash
-# Install Node.js dependencies
-npm install
-
-# Run JavaScript tests
-npm run test:js
-
-# Check for linting issues
-npm run lint  # If configured
-```
-
-#### 5. Test Artifacts
-```bash
-# If test files (.ics) remain after tests
-make clean-ics
-
-# If Python cache issues persist
+# Clear test cache
 make cleanup
+
+# Run tests with verbose output
+make test-py -v
+
+# Check test data
+ls -la tests/data/
 ```
 
-### Performance Optimization
+#### 4. UV Issues
+```bash
+# Reinstall UV
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-#### For Development
-     ```bash
-# Use development mode for faster reloads
-make run-dev
+# Sync dependencies
+uv sync
 
-# Enable debug mode for detailed error messages
-export FLASK_DEBUG=1
+# Check UV version
+uv --version
 ```
 
-#### For Production
-     ```bash
-# Use production mode for better performance
-make run-prod
+## Migration Notes
 
-# Set appropriate environment variables
-export FLASK_ENV=production
-```
+### From venv/pip to UV
+- **Old**: `python -m venv env-planner && source env-planner/bin/activate && pip install -r requirements.txt`
+- **New**: `uv sync` (automatically handled by `make install`)
 
-## Next Steps
+### From app.py to main.py
+- **Old**: `from app import create_app`
+- **New**: `from main import create_app`
 
-After successful installation:
+### From black/isort/flake8 to Ruff
+- **Old**: `black . && isort . && flake8 .`
+- **New**: `make fix` (auto-fix) or `make lint` (check only)
 
-1. **Explore the interface** at [http://localhost:5000](http://localhost:5000)
-2. **Run all tests** to ensure everything works: `make test`
-3. **Check coverage** to understand test quality: `make coverage`
-4. **Read the documentation** in the `docs/` folder
-5. **Start developing** by modifying the code in `app/` directory
-
-## Support
-
-For additional help:
-- Check the [API Documentation](api.md)
-- Review the [Testing Guide](testing.md)
-- Examine the [Timeline Documentation](timeline.md)
-- Open an issue on GitHub for bugs or feature requests
+### Configuration Changes
+- All configuration is now centralized in `config/` directory
+- Environment-specific settings in separate files
+- `ICS_CALENDAR_NAME` and `ICS_CALENDAR_DESCRIPTION` added to all environments

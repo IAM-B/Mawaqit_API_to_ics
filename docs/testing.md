@@ -51,17 +51,17 @@ tests/python/integration/
 - **Location**: `tests/js/unit/`
 - **Purpose**: Test individual JavaScript functions and components
 - **Tools**: Jest, jsdom, @testing-library/jest-dom
-- **Coverage**: 130 tests total (+400% improvement)
+- **Coverage**: 128 tests total (100% pass rate)
 
 **Structure:**
 ```
 tests/js/unit/
-├── test_timeline.js              # Timeline class tests (25 tests)
-├── test_clock.js                 # Clock class tests (25 tests)
-├── test_planner_page.js          # PlannerPage class tests (25 tests)
-├── test_calendar_views_manager.js # CalendarViewsManager tests (26 tests)
-├── test_planner_utils.js         # Utility functions tests (22 tests)
-├── test_landing.js               # Landing page tests (9 tests)
+├── test_timeline.js              # Timeline class tests
+├── test_clock.js                 # Clock class tests
+├── test_planner_page.js          # PlannerPage class tests
+├── test_calendar_views_manager.js # CalendarViewsManager tests
+├── test_planner_utils.js         # Utility functions tests
+├── test_landing.js               # Landing page tests
 └── setup.js                      # Test configuration
 ```
 
@@ -91,15 +91,14 @@ tests/js/integration/
 - **Purpose**: Test complete user workflows
 - **Tools**: Playwright
 - **Coverage**: User interface and workflows
-- **Status**: Basic tests implemented, ready for expansion
+- **Status**: Coming soon (basic structure in place)
 
 **Structure:**
 ```
 tests/e2e/
 ├── landing.spec.js           # Landing page workflows
-├── planner.spec.js           # Planner interface workflows (legacy)
-├── planner-simple.spec.js    # Simplified planner tests (legacy)
-├── planner-basic.spec.js     # Basic planner tests (current)
+├── planner.spec.js           # Planner interface workflows
+├── planner-basic.spec.js     # Basic planner tests
 ├── helpers.js                # Reusable test helper functions
 └── error-handling.spec.js    # Error handling workflows
 ```
@@ -127,7 +126,7 @@ tests/e2e/
 
 ### All Tests
 ```bash
-make test           # Run all tests (JS + E2E + Python)
+make test           # Run all tests (JS + Python)
 ```
 
 ### Python Tests
@@ -140,9 +139,11 @@ pytest tests/python/ -k "test_name"  # Run specific test
 
 ### JavaScript Tests
 ```bash
+make test-js-all    # Run all JavaScript tests
 make test-js        # Run JavaScript unit tests only
 make test-js-integration  # Run JavaScript integration tests only
-make test-js-all    # Run all JavaScript tests
+
+# Direct Jest commands (if needed)
 npm run test:js:unit     # Direct Jest command for unit tests
 npm run test:js:integration  # Direct Jest command for integration tests
 npm run test:js          # Direct Jest command for all JS tests
@@ -150,7 +151,9 @@ npm run test:js          # Direct Jest command for all JS tests
 
 ### E2E Tests
 ```bash
-make test-e2e       # Run end-to-end tests
+make test-e2e       # Run end-to-end tests (coming soon)
+
+# Direct Playwright commands (if needed)
 npm run test:e2e    # Direct Playwright command
 npm run test:e2e:ui # UI mode for debugging
 npm run test:e2e:headed  # Headed browser mode
@@ -198,308 +201,208 @@ module.exports = {
     '!**/node_modules/**'
   ],
   coverageDirectory: 'htmlcov/js'
-};
+}
 ```
 
-### Playwright Configuration
-```javascript
-// playwright.config.js
-module.exports = {
-  testDir: './tests/e2e',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    ['html'],
-    ['json', { outputFile: 'test-results/results.json' }]
-  ]
-};
+## Code Quality
+
+### Python Linting with Ruff
+```bash
+make lint           # Check code style
+make fix            # Auto-fix code style issues
+make format         # Format code
 ```
+
+**Ruff Configuration (`pyproject.toml`):**
+```toml
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+```
+
+### Test Import Structure
+All Python tests now use the correct import structure:
+```python
+# Correct import for tests
+from main import create_app
+
+# Example test fixture
+@pytest.fixture
+def app():
+    """Create and configure a Flask app for testing."""
+    test_config = {
+        "TESTING": True,
+        "DEBUG": True,
+        "ICS_CALENDAR_NAME": "Test Calendar",
+        "ICS_CALENDAR_DESCRIPTION": "Test Description",
+    }
+    app = create_app("testing", test_config)
+    return app
+```
+
+## Test Best Practices
+
+### Python Testing
+1. **Use the application factory pattern**:
+   ```python
+   from main import create_app
+   app = create_app("testing", config_overrides)
+   ```
+
+2. **Mock external dependencies**:
+   ```python
+   with patch("app.modules.mawaqit_fetcher.fetch_mawaqit_data") as mock_fetch:
+       mock_fetch.return_value = {"times": ["05:00", "13:00"]}
+       # Test your code
+   ```
+
+3. **Use fixtures for common setup**:
+   ```python
+   @pytest.fixture
+   def mock_mosque_data():
+       return {"name": "Test Mosque", "address": "Test Address"}
+   ```
+
+4. **Test both success and error scenarios**:
+   ```python
+   def test_success_case(app):
+       # Test normal operation
+       pass
+   
+   def test_error_case(app):
+       # Test error handling
+       with pytest.raises(ValueError):
+           # Code that should raise an error
+           pass
+   ```
+
+### JavaScript Testing
+1. **Use Jest with jsdom environment**:
+   ```javascript
+   // tests/js/unit/setup.js
+   import '@testing-library/jest-dom';
+   ```
+
+2. **Test component initialization**:
+   ```javascript
+   test('should initialize with correct properties', () => {
+     const timeline = new Timeline(container, data);
+     expect(timeline.container).toBe(container);
+     expect(timeline.data).toBe(data);
+   });
+   ```
+
+3. **Test user interactions**:
+   ```javascript
+   test('should handle button click', () => {
+     const button = screen.getByRole('button');
+     fireEvent.click(button);
+     expect(mockCallback).toHaveBeenCalled();
+   });
+   ```
+
+4. **Test error handling**:
+   ```javascript
+   test('should handle missing DOM elements', () => {
+     const container = document.createElement('div');
+     expect(() => new Timeline(container, data)).not.toThrow();
+   });
+   ```
 
 ## Test Data Management
 
 ### Python Test Data
-```python
-# conftest.py
-import pytest
-from app import create_app
-
-@pytest.fixture
-def app():
-    app = create_app('testing')
-    return app
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
-
-@pytest.fixture
-def sample_prayer_times():
-    return {
-        "fajr": "05:30",
-        "dohr": "13:00",
-        "asr": "16:30",
-        "maghreb": "19:00",
-        "icha": "20:30"
-    }
-```
+- **Location**: `tests/data/`
+- **Structure**: Organized by test type
+- **Cleanup**: Automatic cleanup after tests
 
 ### JavaScript Test Data
-```javascript
-// tests/js/unit/setup.js
-import '@testing-library/jest-dom';
-
-// Mock window.location
-Object.defineProperty(window, 'location', {
-  value: {
-    href: 'http://localhost:5000',
-    pathname: '/',
-    search: '',
-    hash: ''
-  },
-  writable: true
-});
-
-// Global test utilities
-global.testUtils = {
-  createMockEvent: (type = 'click') => ({
-    type,
-    preventDefault: jest.fn(),
-    stopPropagation: jest.fn()
-  })
-};
-```
-
-## Best Practices
-
-### Python Testing
-1. **Use fixtures** for common test setup
-2. **Mock external dependencies** (API calls, file system)
-3. **Test edge cases** and error conditions
-4. **Use descriptive test names**
-5. **Follow AAA pattern** (Arrange, Act, Assert)
-6. **Clean up test data** after each test
-
-### JavaScript Testing
-1. **Test user interactions** not implementation details
-2. **Use semantic queries** (@testing-library/jest-dom)
-3. **Mock browser APIs** (localStorage, fetch)
-4. **Test accessibility** features
-5. **Use data-testid** for complex selectors
-6. **Test error states** and loading states
-7. **Organize tests by component** (Timeline, Clock, PlannerPage, etc.)
-8. **Use descriptive test suites** and test names
-9. **Mock DOM elements** for isolated testing
-10. **Test component lifecycle** (init, destroy, cleanup)
-
-### E2E Testing
-1. **Test user workflows** not individual components
-2. **Use realistic test data**
-3. **Test across different browsers** (currently Chromium only)
-4. **Handle async operations** properly with helper functions
-5. **Use helper functions** from `tests/e2e/helpers.js` for consistency
-6. **Test responsive design** on different screen sizes
-7. **Use specific selectors** (IDs over generic tags)
-8. **Keep tests focused and atomic**
-9. **Handle network timing** with proper waits
-10. **Test form validation and error states**
+- **Mock data**: Defined in test files
+- **Fixtures**: Reusable test data
+- **Cleanup**: Automatic DOM cleanup
 
 ## Coverage Goals
 
 ### Current Coverage
-- **Python**: 65% (140 tests, 1 xfailed)
-- **JavaScript**: 130 tests (+400% improvement)
-  - Timeline: 25 tests (initialization, dates, events, views, navigation)
-  - Clock: 25 tests (hands, display, segments, operation)
-  - PlannerPage: 25 tests (forms, data, components, events)
-  - CalendarViewsManager: 26 tests (navigation, scopes, synchronization)
-  - Utils: 22 tests (formatting, conversions, padding)
-  - Landing: 9 tests (animations, interactions)
-- **E2E**: Basic workflow coverage (4 tests passing on Chromium)
-  - Page loading and form visibility
-  - Padding configuration
-  - Form submission readiness
-  - Responsive design validation
+- **Python**: 65% overall (147 tests, 1 xfailed)
+- **JavaScript**: 128 tests (100% pass rate)
+- **E2E**: Coming soon
 
 ### Coverage Targets
-- **Python**: 80% minimum, 90% target
-- **JavaScript**: 90% minimum, 95% target
-- **E2E**: 100% of critical user paths
+- **Python**: 80% minimum
+- **JavaScript**: 90% minimum
+- **E2E**: 100% of user workflows
 
-### Areas Needing Coverage
-- **Python**: Complex business logic, error handling
-- **JavaScript**: Additional integration scenarios, edge cases
-- **E2E**: 
-  - Complete user flows (country → mosque → submission)
-  - Error handling scenarios
-  - Multi-browser support (Firefox/Webkit)
-  - Mobile responsiveness, accessibility
-  - ICS file generation verification
+## Troubleshooting
 
-## Continuous Integration
+### Common Test Issues
 
-### GitHub Actions Workflow
-```yaml
-name: Tests
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.13'
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Install dependencies
-        run: |
-          make install
-          npm install
-      - name: Run tests
-        run: make test
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
+#### Python Tests
+```bash
+# Import errors
+export PYTHONPATH=.
+python -c "from main import create_app"
+
+# Configuration issues
+python -c "from main import create_app; app = create_app('testing'); print(app.config)"
+
+# Cache issues
+make cleanup
+pytest tests/python/ --cache-clear
 ```
 
-## Debugging Tests
-
-### Python Debugging
+#### JavaScript Tests
 ```bash
-# Run with debugger
-pytest --pdb
+# Node modules issues
+npm install
 
-# Run specific test with debugger
-pytest test_file.py::test_function --pdb
+# Jest configuration (direct commands)
+npm run test:js -- --verbose
 
-# Verbose output
-pytest -v -s
+# Coverage issues
+npm run test:js -- --coverage --watchAll=false
 
-# Show local variables on failure
-pytest --tb=long
+# Or use make commands
+make test-js-all
+make coverage-js
 ```
 
-### JavaScript Debugging
+#### E2E Tests
 ```bash
-# Run in debug mode
-npm run test -- tests/js/unit/ --debug
+# Playwright installation
+npx playwright install
 
-# Run specific test
-npm run test -- tests/js/unit/test_timeline.js --testNamePattern="test name"
+# Browser dependencies
+npx playwright install-deps
 
-# Watch mode with coverage
-npm run test -- tests/js/unit/ --watch --coverage
-
-# Run integration tests
-npm run test -- tests/js/integration/ --verbose
-```
-
-### E2E Debugging
-```bash
-# Run with UI
-npm run test:e2e:ui
-
-# Run in headed mode
+# Debug mode
 npm run test:e2e:headed
-
-# Debug specific test
-npm run test:e2e -- --grep "test name"
-
-# Run basic E2E tests (most reliable)
-npx playwright test tests/e2e/planner-basic.spec.js --project=chromium
-
-# View test reports
-npx playwright show-report
 ```
 
-## Performance Testing
+## Migration Notes
 
-### Load Testing
-```bash
-# Install locust
-pip install locust
+### From app.py to main.py
+- **Old**: `from app import create_app`
+- **New**: `from main import create_app`
 
-# Run load test
-locust -f tests/load/locustfile.py --host=http://localhost:5000
-```
+### From venv to UV
+- **Old**: `source env-planner/bin/activate && pip install -r requirements.txt`
+- **New**: `uv sync` (handled by `make install`)
 
-### Memory Testing
-```bash
-# Run with memory profiler
-python -m memory_profiler app.py
-
-# Check for memory leaks
-pytest --memray
-```
-
-## Security Testing
-
-### Static Analysis
-```bash
-# Python security
-bandit -r app/
-
-# JavaScript security
-npm audit
-
-# Dependency scanning
-safety check
-```
-
-### Dynamic Testing
-```bash
-# Run security tests
-pytest tests/security/
-
-# API security testing
-pytest tests/python/integration/test_security.py
-```
-
-## Test Organization
-
-### JavaScript Test Structure
-The JavaScript tests follow a clear organizational pattern:
-
-```
-tests/js/
-├── unit/                    # Unit tests for individual components
-│   ├── test_timeline.js     # Timeline class (25 tests)
-│   ├── test_clock.js        # Clock class (25 tests)
-│   ├── test_planner_page.js # PlannerPage class (25 tests)
-│   ├── test_calendar_views_manager.js # CalendarViewsManager (26 tests)
-│   ├── test_planner_utils.js # Utility functions (22 tests)
-│   ├── test_landing.js      # Landing page (9 tests)
-│   └── setup.js             # Test configuration
-├── integration/             # Integration tests
-│   └── test_planner_integration.js # Component interactions
-└── README.md               # Test documentation
-```
-
-### Test Naming Conventions
-- **Unit tests**: `test_*.js` (e.g., `test_timeline.js`)
-- **Integration tests**: `test_*_integration.js` (e.g., `test_planner_integration.js`)
-- **E2E tests**: `*.spec.js` (e.g., `landing.spec.js`)
-
-### Component Testing Strategy
-Each JavaScript component is tested comprehensively:
-
-1. **Initialization**: Component setup, DOM element creation
-2. **Core Functionality**: Main features and methods
-3. **User Interactions**: Event handling, form submissions
-4. **State Management**: Data updates, component synchronization
-5. **Error Handling**: Invalid inputs, edge cases
-6. **Cleanup**: Resource management, event listener removal
-
-## Support
-
-For testing support:
-- Check the test logs in `logs/` directory
-- Review coverage reports in `htmlcov/`
-- Examine test artifacts in `test-results/`
-- Consult the [Setup Guide](setup.md) for environment issues
-- Read the [JavaScript Test README](../tests/js/README.md) for detailed JS testing information
-- Check [E2E Testing Status](e2e-testing-status.md) for current E2E test progress and known issues
+### From black/isort/flake8 to Ruff
+- **Old**: `black . && isort . && flake8 .`
+- **New**: `make fix` (auto-fix) or `make lint` (check only)

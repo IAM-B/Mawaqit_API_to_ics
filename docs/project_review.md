@@ -128,19 +128,26 @@ pytest --cov=app --cov-report=html
 
 ```bash
 # Unit tests
-npm run test:js
+make test-js
+
+# Integration tests
+make test-js-integration
+
+# All JS tests
+make test-js-all
 
 # Coverage
-npm run test:js:coverage
+make coverage-js
 ```
 
 ### E2E Tests (Playwright)
 
 ```bash
 # End-to-end tests
-npm run test:e2e
+make test-e2e
 
-# Graphical interface
+# Direct commands (if needed)
+npm run test:e2e
 npm run test:e2e:ui
 ```
 
@@ -204,10 +211,10 @@ npm run test:e2e:ui
 
 ### Tools
 
-- **Make**: Automation
-- **npm**: Node.js dependencies
-- **pip**: Python dependencies
-- **UV**: Environment management
+- **Make**: Primary automation (all commands)
+- **UV**: Python package management (replaces pip/venv)
+- **npm**: Node.js dependencies (for JavaScript tools)
+- **Ruff**: Python linting and formatting
 
 ## 📝 Recommendations
 
