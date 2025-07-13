@@ -6,7 +6,7 @@ import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/uti
  * Main class for the vertical timeline (SVG agenda)
  */
 export class Timeline {
-  constructor() {
+  constructor () {
     this.container = null;
     this.svg = null;
     this.currentDate = new Date();
@@ -19,17 +19,17 @@ export class Timeline {
   }
 
   // Timeline initialization
-  init() {
+  init () {
     this.createTimelineContainer();
     this.createTooltip();
     this.setupViewToggle();
     this.setupSlotDisplayToggle();
-    
+
     // Set initial date to today and update display
     const today = new Date();
     this.currentDate = today;
     this.updateTimelineDate();
-    
+
     if (this.container && this.svg) {
       this.showTimelineView();
     } else {
@@ -38,7 +38,7 @@ export class Timeline {
   }
 
   // Create the main container
-  createTimelineContainer() {
+  createTimelineContainer () {
     this.container = document.querySelector('.slots-half');
     this.svg = document.querySelector('.slots-timeline-svg');
     if (this.container && this.svg) {
@@ -47,7 +47,7 @@ export class Timeline {
   }
 
   // Setup slot display mode toggle
-  setupSlotDisplayToggle() {
+  setupSlotDisplayToggle () {
     // Create toggle switch if it doesn't exist
     let toggleSwitch = document.querySelector('.slot-toggle-switch');
     if (!toggleSwitch) {
@@ -63,13 +63,13 @@ export class Timeline {
         </label>
       `;
       toggleSwitch.setAttribute('title', 'Mode découpé');
-      
+
       // Insert into the existing toggle wrapper at the beginning
       const toggleWrapper = document.querySelector('.slot-toggle-wrapper');
       if (toggleWrapper) {
         toggleWrapper.insertBefore(toggleSwitch, toggleWrapper.firstChild);
       }
-      
+
       // Add event listener
       const toggleInput = toggleSwitch.querySelector('.toggle-input');
       toggleInput.addEventListener('change', () => {
@@ -79,14 +79,14 @@ export class Timeline {
   }
 
   // Toggle between normal and segmented slot display
-  toggleSlotDisplayMode() {
+  toggleSlotDisplayMode () {
     this.slotDisplayMode = this.slotDisplayMode === 'normal' ? 'segmented' : 'normal';
-    
+
     // Update toggle switch state
     const toggleInput = document.querySelector('.toggle-input');
     const toggleIcon = document.querySelector('.toggle-icon i');
     const toggleSwitch = document.querySelector('.slot-toggle-switch');
-    
+
     if (toggleInput && toggleIcon && toggleSwitch) {
       if (this.slotDisplayMode === 'segmented') {
         toggleInput.checked = true;
@@ -98,29 +98,29 @@ export class Timeline {
         toggleSwitch.setAttribute('title', 'Mode normal actif');
       }
     }
-    
+
     // Redisplay current day events with new mode
     this.displayDayEvents(this.currentDate);
   }
 
   // Get current slot display mode
-  getSlotDisplayMode() {
+  getSlotDisplayMode () {
     return this.slotDisplayMode;
   }
 
   // Generate segmented slots (split into full hours)
-  generateSegmentedSlots(startTime, endTime, originalTitle) {
+  generateSegmentedSlots (startTime, endTime, originalTitle) {
     const slots = [];
     const startMinutes = timeToMinutes(startTime);
     const endMinutes = timeToMinutes(endTime);
-    
+
     if (startMinutes >= endMinutes) {
       return slots;
     }
-    
+
     // Find the next full hour after start
     const nextHour = Math.ceil(startMinutes / 60) * 60;
-    
+
     if (nextHour > endMinutes) {
       // Slot doesn't cross hour boundary, keep as is
       slots.push({
@@ -138,9 +138,9 @@ export class Timeline {
         title: originalTitle,
         isSegmented: true
       });
-      
+
       let current = nextHour;
-      
+
       // Add full-hour slots
       while (current + 60 <= endMinutes) {
         const slotStart = minutesToTime(current);
@@ -153,7 +153,7 @@ export class Timeline {
         });
         current += 60;
       }
-      
+
       // Add final partial slot if needed
       if (current < endMinutes) {
         const finalSlotStart = minutesToTime(current);
@@ -165,14 +165,14 @@ export class Timeline {
         });
       }
     }
-    
+
     return slots;
   }
 
   // Create segmented slot events
-  createSegmentedSlotEvents(slotStart, slotEnd, slotTitle, slotClass, syncTime, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null) {
+  createSegmentedSlotEvents (slotStart, slotEnd, slotTitle, slotClass, syncTime, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null) {
     const segmentedSlots = this.generateSegmentedSlots(slotStart, slotEnd, slotTitle);
-    
+
     segmentedSlots.forEach((slot, index) => {
       // Calculate duration for this segment
       const startMinutes = timeToMinutes(slot.start);
@@ -181,31 +181,31 @@ export class Timeline {
       const hours = Math.floor(durationMinutes / 60);
       const minutes = durationMinutes % 60;
       const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
-      
+
       // Create title for this segment
-      const segmentTitle = slot.isSegmented ? 
-        `${slotTitle} - ${durationText}` : 
-        slotTitle;
-      
+      const segmentTitle = slot.isSegmented
+        ? `${slotTitle} - ${durationText}`
+        : slotTitle;
+
       // Add 1 minute of margin for UI
       const adjustedStart = this.addPadding(slot.start, 1);
       const adjustedEnd = this.subtractPadding(slot.end, 1);
-      
+
       if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
         // Only show text on the first segment or if it's not segmented
         const showSegmentText = index === 0 && showText;
-        
+
         // Use original IDs for synchronization, but add segment index for individual hover
         this.createSVGEvent(
-          segmentTitle, 
-          adjustedStart, 
-          adjustedEnd, 
-          'slot', 
-          slotClass + (slot.isSegmented ? ' segmented' : ''), 
-          syncTime, 
-          showSegmentText, 
-          nightSlotId, 
-          deepNightSlotId, 
+          segmentTitle,
+          adjustedStart,
+          adjustedEnd,
+          'slot',
+          slotClass + (slot.isSegmented ? ' segmented' : ''),
+          syncTime,
+          showSegmentText,
+          nightSlotId,
+          deepNightSlotId,
           allNightSlotId,
           index // Segment index for individual hover
         );
@@ -214,12 +214,12 @@ export class Timeline {
   }
 
   // Create the SVG grid (hours, labels, groups)
-  createSVGGrid(svg) {
+  createSVGGrid (svg) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
-    
+
     // Add definitions for gradients (now defined in CSS)
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    
+
     // Night gradient (primary to dark)
     const nightGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     nightGradient.setAttribute('id', 'nightGradient');
@@ -227,16 +227,16 @@ export class Timeline {
     nightGradient.setAttribute('y1', '0%');
     nightGradient.setAttribute('x2', '100%');
     nightGradient.setAttribute('y2', '100%');
-    
+
     const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1.setAttribute('offset', '0%');
-    
+
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
-    
+
     nightGradient.appendChild(stop1);
     nightGradient.appendChild(stop2);
-    
+
     // Night gradient hover (primary-hover to darker)
     const nightGradientHover = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     nightGradientHover.setAttribute('id', 'nightGradientHover');
@@ -244,16 +244,16 @@ export class Timeline {
     nightGradientHover.setAttribute('y1', '0%');
     nightGradientHover.setAttribute('x2', '100%');
     nightGradientHover.setAttribute('y2', '100%');
-    
+
     const stop1Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1Hover.setAttribute('offset', '0%');
-    
+
     const stop2Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2Hover.setAttribute('offset', '100%');
-    
+
     nightGradientHover.appendChild(stop1Hover);
     nightGradientHover.appendChild(stop2Hover);
-    
+
     // Day gradient (dark to primary - inverse of night gradient)
     const dayGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     dayGradient.setAttribute('id', 'dayGradient');
@@ -261,16 +261,16 @@ export class Timeline {
     dayGradient.setAttribute('y1', '0%');
     dayGradient.setAttribute('x2', '100%');
     dayGradient.setAttribute('y2', '100%');
-    
+
     const dayStop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop1.setAttribute('offset', '0%');
-    
+
     const dayStop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop2.setAttribute('offset', '100%');
-    
+
     dayGradient.appendChild(dayStop1);
     dayGradient.appendChild(dayStop2);
-    
+
     // Day gradient hover (darker to primary-hover - inverse of night gradient hover)
     const dayGradientHover = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     dayGradientHover.setAttribute('id', 'dayGradientHover');
@@ -278,22 +278,22 @@ export class Timeline {
     dayGradientHover.setAttribute('y1', '0%');
     dayGradientHover.setAttribute('x2', '100%');
     dayGradientHover.setAttribute('y2', '100%');
-    
+
     const dayStop1Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop1Hover.setAttribute('offset', '0%');
-    
+
     const dayStop2Hover = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     dayStop2Hover.setAttribute('offset', '100%');
-    
+
     dayGradientHover.appendChild(dayStop1Hover);
     dayGradientHover.appendChild(dayStop2Hover);
-    
+
     defs.appendChild(nightGradient);
     defs.appendChild(nightGradientHover);
     defs.appendChild(dayGradient);
     defs.appendChild(dayGradientHover);
     svg.appendChild(defs);
-    
+
     const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     gridGroup.setAttribute('class', 'timeline-grid');
     const labelsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -337,7 +337,7 @@ export class Timeline {
   }
 
   // Tooltip for events
-  createTooltip() {
+  createTooltip () {
     this.tooltip = document.querySelector('.timeline-tooltip');
     if (!this.tooltip) {
       this.tooltip = document.createElement('div');
@@ -350,21 +350,21 @@ export class Timeline {
   }
 
   // Timeline data initialization
-  initializeTimeline(segments, scope) {
+  initializeTimeline (segments, scope) {
     this.segments = segments;
     this.scope = scope;
-    
+
     // Set current date to today and update display
     const today = new Date();
     this.currentDate = today;
     this.updateTimelineDate();
-    
+
     // Display events for today by default
     this.displayDayEvents(today);
   }
 
   // Update the date displayed in the header
-  updateTimelineDate() {
+  updateTimelineDate () {
     const currentDateElement = document.getElementById('slotsCurrentDate');
     if (currentDateElement) {
       currentDateElement.textContent = formatDateForDisplay(this.currentDate);
@@ -372,14 +372,14 @@ export class Timeline {
   }
 
   // Display events for a given day
-  displayDayEvents(date) {
+  displayDayEvents (date) {
     this.currentDate = date;
     this.updateTimelineDate();
     this.clearEvents();
-    
+
     // Display Hijri date if option is enabled
     this.displayHijriDate(date);
-    
+
     const dayData = this.getDayData(date);
     if (!dayData) {
       this.showEmptyState();
@@ -390,26 +390,26 @@ export class Timeline {
   }
 
   // Display Hijri date at the top of the timeline
-  displayHijriDate(date) {
+  displayHijriDate (date) {
     const showHijriCheckbox = document.getElementById('show_hijri_date');
     const includeVoluntaryFastsCheckbox = document.getElementById('include_voluntary_fasts');
-    
+
     // Get voluntary fasts information if the option is enabled
     let voluntaryFastsInfo = [];
     if (includeVoluntaryFastsCheckbox && includeVoluntaryFastsCheckbox.checked) {
       voluntaryFastsInfo = this.getVoluntaryFastsInfo(date);
     }
-    
+
     // Show Hijri date if the option is enabled
     let hijriDate = null;
     if (showHijriCheckbox && showHijriCheckbox.checked) {
       hijriDate = this.getHijriDate(date);
       if (!hijriDate) return;
     }
-    
+
     // Only show if we have either Hijri date or voluntary fasts info
     if (!hijriDate && voluntaryFastsInfo.length === 0) return;
-    
+
     // Combine Hijri date with voluntary fasts info
     let displayText = '';
     if (hijriDate) {
@@ -421,7 +421,7 @@ export class Timeline {
       // Only voluntary fasts info (no Hijri date)
       displayText = voluntaryFastsInfo.join(', ');
     }
-    
+
     // Create Hijri date background rectangle
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', 60 + 6);
@@ -434,7 +434,7 @@ export class Timeline {
     rect.setAttribute('fill', 'var(--accent-light)');
     rect.setAttribute('stroke', 'var(--accent)');
     rect.setAttribute('stroke-width', '1');
-    
+
     // Create Hijri date text element
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', 60 + 16);
@@ -446,52 +446,52 @@ export class Timeline {
     text.setAttribute('font-size', '14px');
     text.setAttribute('font-weight', '600');
     text.textContent = displayText;
-    
+
     // Add directly to SVG
     this.svg.appendChild(rect);
     this.svg.appendChild(text);
   }
 
   // Get voluntary fasts information for a given date
-  getVoluntaryFastsInfo(date) {
+  getVoluntaryFastsInfo (date) {
     const voluntaryFastsInfo = [];
-    
+
     // Get Hijri date components
     const hijriDate = this.getHijriDateComponents(date);
     if (!hijriDate) return voluntaryFastsInfo;
-    
+
     // Monday and Thursday fasts
     const weekday = date.getDay();
     if (weekday === 1 || weekday === 4) { // Monday (1) or Thursday (4)
-      voluntaryFastsInfo.push("Jour de jeûne");
+      voluntaryFastsInfo.push('Jour de jeûne');
     }
-    
+
     // Ayyam al-Bid (13-15 Hijri)
     if (hijriDate.day >= 13 && hijriDate.day <= 15) {
-      voluntaryFastsInfo.push("Jour blanc");
+      voluntaryFastsInfo.push('Jour blanc');
     }
-    
+
     return voluntaryFastsInfo;
   }
 
   // Get Hijri date components (year, month, day)
-  getHijriDateComponents(date) {
+  getHijriDateComponents (date) {
     // Simplified Hijri conversion (approximate)
     // Reference: 1 Muharram 1445 AH = 19 July 2023 CE
     const referenceDate = new Date(2023, 6, 19); // July 19, 2023
     const referenceHijri = { year: 1445, month: 1, day: 1 };
-    
+
     const daysDiff = Math.floor((date - referenceDate) / (1000 * 60 * 60 * 24));
-    
+
     // Approximate Hijri year length (354.37 days)
     const hijriYear = referenceHijri.year + Math.floor(daysDiff / 354);
     let remainingDays = daysDiff % 354;
-    
+
     // Simplified month calculation
     const hijriMonths = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
     let hijriMonth = 1;
     let hijriDay = 1;
-    
+
     for (const monthDays of hijriMonths) {
       if (remainingDays >= monthDays) {
         remainingDays -= monthDays;
@@ -501,7 +501,7 @@ export class Timeline {
         break;
       }
     }
-    
+
     return {
       year: hijriYear,
       month: hijriMonth,
@@ -510,36 +510,36 @@ export class Timeline {
   }
 
   // Get Hijri date string (simplified conversion)
-  getHijriDate(date) {
+  getHijriDate (date) {
     const hijriComponents = this.getHijriDateComponents(date);
     if (!hijriComponents) return null;
-    
+
     // Hijri month names
     const hijriMonthNames = [
       'Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani',
       'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', 'Sha\'ban',
       'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'
     ];
-    
+
     const monthName = hijriMonthNames[hijriComponents.month - 1];
-    
+
     // Check if it's a sacred month (1, 7, 11, 12)
     const isSacredMonth = [1, 7, 11, 12].includes(hijriComponents.month);
-    
+
     // Check if it's Friday (weekday 5)
     const isFriday = date.getDay() === 5;
-    
+
     // Add star for sacred months
     const sacredPrefix = isSacredMonth ? '🌟 ' : '';
-    
+
     // Add Jummah for Fridays
     const jummahSuffix = isFriday ? ' - Jummah' : '';
-    
+
     return `${sacredPrefix}${hijriComponents.day} ${monthName} ${hijriComponents.year}${jummahSuffix}`;
   }
 
   // Get the day's data
-  getDayData(date) {
+  getDayData (date) {
     if (!this.segments || this.segments.length === 0) return null;
     const day = date.getDate();
     const month = date.getMonth();
@@ -568,48 +568,48 @@ export class Timeline {
   }
 
   // Display prayers
-  displayPrayers(prayerTimes) {
+  displayPrayers (prayerTimes) {
     if (!prayerTimes) return;
-    
+
     const prayerNames = {
-      'fajr': 'Fajr',
-      'sunset': 'Sunset',
-      'dohr': 'Dohr',
-      'asr': 'Asr',
-      'maghreb': 'Maghreb',
-      'icha': 'Icha'
+      fajr: 'Fajr',
+      sunset: 'Sunset',
+      dohr: 'Dohr',
+      asr: 'Asr',
+      maghreb: 'Maghreb',
+      icha: 'Icha'
     };
-    
+
     // Check if adhkar option is enabled
     const includeAdhkarCheckbox = document.getElementById('include_adhkar');
     const includeAdhkar = includeAdhkarCheckbox && includeAdhkarCheckbox.checked;
-    
+
     // Check if sunset option is enabled
     const includeSunsetCheckbox = document.getElementById('include_sunset');
     const includeSunset = includeSunsetCheckbox && includeSunsetCheckbox.checked;
-    
+
     Object.entries(prayerTimes).forEach(([prayer, time]) => {
       if (time && prayerNames[prayer]) {
         // Skip sunset if the option is disabled
-        if (prayer === "sunset" && !includeSunset) {
+        if (prayer === 'sunset' && !includeSunset) {
           return;
         }
-        
+
         // Get individual padding for this specific prayer
         const prayerPadding = this.getIndividualPadding(prayer);
-        
+
         // Calculate prayer time with individual padding values
         const exactStartTime = this.subtractPadding(time, prayerPadding.before);
         const exactEndTime = this.addPadding(time, prayerPadding.after);
-        
+
         // Build prayer title with features
         let prayerTitle = `${prayerNames[prayer]} (${time})`;
-        
+
         // Add Jummah prefix only for Dohr on Friday
-        if (this.currentDate.getDay() === 5 && prayer === "dohr") { // Friday and Dohr only
+        if (this.currentDate.getDay() === 5 && prayer === 'dohr') { // Friday and Dohr only
           prayerTitle = `Jummah - ${prayerTitle}`;
         }
-        
+
         // Add adhkar info to specific prayers (reproducing Python logic)
         if (includeAdhkar) {
           const adhkarInfo = this.getAdhkarInfo(prayer);
@@ -617,12 +617,12 @@ export class Timeline {
             prayerTitle += adhkarInfo;
           }
         }
-        
+
         // Handle sunset special case
-        if (prayer === "sunset") {
+        if (prayer === 'sunset') {
           prayerTitle = `Chourouk (${time})`;
         }
-        
+
         // For synchronization, use exact time (without padding)
         this.createSVGEvent(prayerTitle, exactStartTime, exactEndTime, 'prayer', 'prayer', time);
       }
@@ -630,74 +630,74 @@ export class Timeline {
   }
 
   // Get adhkar information for specific prayers (reproducing Python logic)
-  getAdhkarInfo(prayerName) {
+  getAdhkarInfo (prayerName) {
     if (prayerName.toLowerCase() === 'fajr') {
-      return " - Adhkar du matin";
+      return ' - Adhkar du matin';
     } else if (prayerName.toLowerCase() === 'asr') {
-      return " - Adhkar du soir";
+      return ' - Adhkar du soir';
     }
-    return "";
+    return '';
   }
 
   // Display slots
-  displaySlots(slots) {
+  displaySlots (slots) {
     if (!slots || !Array.isArray(slots)) return;
-    
+
     // Get prayer times for slot calculation
     const dayData = this.getDayData(this.currentDate);
     const prayerTimes = dayData ? dayData.prayer_times : null;
-    
+
     if (prayerTimes) {
       // Check if sunset option is enabled
       const includeSunsetCheckbox = document.getElementById('include_sunset');
       const includeSunset = includeSunsetCheckbox && includeSunsetCheckbox.checked;
-      
+
       // Build dynamic prayer order based on available prayers and options
       const prayerOrder = ['fajr'];
-      
+
       // Add sunset only if it exists in the data AND the option is enabled
-      if (prayerTimes['sunset'] && includeSunset) {
+      if (prayerTimes.sunset && includeSunset) {
         prayerOrder.push('sunset');
       }
-      
+
       prayerOrder.push('dohr', 'asr', 'maghreb', 'icha');
-      
+
       // Create slots between prayers in logical order
       for (let i = 0; i < prayerOrder.length - 1; i++) {
         const currentPrayerName = prayerOrder[i];
         const nextPrayerName = prayerOrder[i + 1];
-        
+
         const currentPrayerTime = prayerTimes[currentPrayerName];
         const nextPrayerTime = prayerTimes[nextPrayerName];
-        
+
         // Skip if either prayer time is missing
         if (!currentPrayerTime || !nextPrayerTime) {
           continue;
         }
-        
+
         // Special handling for the slot between maghreb and icha (always night slot)
         if (currentPrayerName === 'maghreb' && nextPrayerName === 'icha') {
           const ichaMinutes = timeToMinutes(nextPrayerTime);
           const maghrebMinutes = timeToMinutes(currentPrayerTime);
-          
+
           // Check if icha is after midnight by comparing with maghreb
           if (ichaMinutes < maghrebMinutes) {
             // icha is after midnight, create two slots: maghreb to midnight and midnight to icha
             const currentPadding = this.getIndividualPadding(currentPrayerName);
             const nextPadding = this.getIndividualPadding(nextPrayerName);
-            
+
             const maghrebToMidnightStart = this.addPadding(currentPrayerTime, currentPadding.after);
-            const maghrebToMidnightEnd = "23:59";
-            
-            const midnightToIchaStart = "00:00";
+            const maghrebToMidnightEnd = '23:59';
+
+            const midnightToIchaStart = '00:00';
             const midnightToIchaEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
-            
+
             // Calculate total duration for display
             const realMaghrebToMidnightStart = this.addPadding(currentPrayerTime, currentPadding.after);
             const realMidnightToIchaEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
             const realStartMinutes = timeToMinutes(realMaghrebToMidnightStart);
             const realEndMinutes = timeToMinutes(realMidnightToIchaEnd);
-            
+
             // Handle case where icha is the next day
             let totalDurationMinutes;
             if (realEndMinutes <= realStartMinutes) {
@@ -706,80 +706,80 @@ export class Timeline {
             } else {
               totalDurationMinutes = realEndMinutes - realStartMinutes;
             }
-            
+
             const totalHours = Math.floor(totalDurationMinutes / 60);
             const totalMinutes = totalDurationMinutes % 60;
             const totalDurationText = totalHours > 0 ? `${totalHours}h${totalMinutes.toString().padStart(2, '0')}` : `${totalMinutes}min`;
-            
+
             const slotTitle = `Disponibilité (${totalDurationText})`;
-            
+
             // Calculate which slot is larger to determine where to show the text
             const maghrebToMidnightDuration = timeToMinutes(maghrebToMidnightEnd) - timeToMinutes(maghrebToMidnightStart);
             const midnightToIchaDuration = timeToMinutes(midnightToIchaEnd) - timeToMinutes(midnightToIchaStart);
             const showTextOnFirstSlot = maghrebToMidnightDuration >= midnightToIchaDuration;
-            
+
             // Create a unique identifier for the night slot
             const nightSlotId = `night-slot-${maghrebToMidnightStart}-${midnightToIchaEnd}`;
             // Create a common identifier for maghreb-icha slots only
-            const allNightSlotId = `maghreb-icha-slots`;
-            
+            const allNightSlotId = 'maghreb-icha-slots';
+
             // First slot: maghreb to 23:59
             if (maghrebToMidnightStart && maghrebToMidnightEnd && timeToMinutes(maghrebToMidnightEnd) > timeToMinutes(maghrebToMidnightStart)) {
               if (this.slotDisplayMode === 'segmented') {
                 this.createSegmentedSlotEvents(
-                  maghrebToMidnightStart, 
-                  maghrebToMidnightEnd, 
-                  slotTitle, 
-                  'slot night', 
-                  maghrebToMidnightStart + '-' + maghrebToMidnightEnd, 
-                  showTextOnFirstSlot, 
-                  nightSlotId, 
-                  null, 
+                  maghrebToMidnightStart,
+                  maghrebToMidnightEnd,
+                  slotTitle,
+                  'slot night',
+                  maghrebToMidnightStart + '-' + maghrebToMidnightEnd,
+                  showTextOnFirstSlot,
+                  nightSlotId,
+                  null,
                   allNightSlotId
                 );
               } else {
                 const adjustedStart = this.addPadding(maghrebToMidnightStart, 1);
                 const adjustedEnd = this.subtractPadding(maghrebToMidnightEnd, 1);
-                
+
                 if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
                   this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', maghrebToMidnightStart + '-' + maghrebToMidnightEnd, showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
                 }
               }
             }
-            
+
             // Second slot: 00:00 to icha
             if (midnightToIchaStart && midnightToIchaEnd && timeToMinutes(midnightToIchaEnd) > timeToMinutes(midnightToIchaStart)) {
               if (this.slotDisplayMode === 'segmented') {
                 this.createSegmentedSlotEvents(
-                  midnightToIchaStart, 
-                  midnightToIchaEnd, 
-                  slotTitle, 
-                  'slot night', 
-                  midnightToIchaStart + '-' + midnightToIchaEnd, 
-                  !showTextOnFirstSlot, 
-                  nightSlotId, 
-                  null, 
+                  midnightToIchaStart,
+                  midnightToIchaEnd,
+                  slotTitle,
+                  'slot night',
+                  midnightToIchaStart + '-' + midnightToIchaEnd,
+                  !showTextOnFirstSlot,
+                  nightSlotId,
+                  null,
                   allNightSlotId
                 );
               } else {
                 const adjustedStart = this.addPadding(midnightToIchaStart, 1);
                 const adjustedEnd = this.subtractPadding(midnightToIchaEnd, 1);
-                
+
                 if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
                   this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot night', midnightToIchaStart + '-' + midnightToIchaEnd, !showTextOnFirstSlot, nightSlotId, null, allNightSlotId);
                 }
               }
             }
-            
+
             continue; // Skip the normal slot creation for this pair
           } else {
             // icha is before midnight, create a single night slot
             const currentPadding = this.getIndividualPadding(currentPrayerName);
             const nextPadding = this.getIndividualPadding(nextPrayerName);
-            
+
             const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
             const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
-            
+
             // Calculate slot duration using real user values for display
             const realSlotStart = this.addPadding(currentPrayerTime, currentPadding.after);
             const realSlotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
@@ -789,29 +789,29 @@ export class Timeline {
             const hours = Math.floor(durationMinutes / 60);
             const minutes = durationMinutes % 60;
             const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
-            
+
             const slotTitle = `Disponibilité (${durationText})`;
-            
+
             // Add 1 minute of margin at the beginning and end to improve UI (without affecting displayed duration)
             const adjustedSlotStart = this.addPadding(slotStart, 1);
             const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
-            
+
             if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
               // Create a unique identifier for the night slot
               const nightSlotId = `night-slot-${slotStart}-${slotEnd}`;
               // Create a common identifier for maghreb-icha slots only
-              const allNightSlotId = `maghreb-icha-slots`;
-              
+              const allNightSlotId = 'maghreb-icha-slots';
+
               if (this.slotDisplayMode === 'segmented') {
                 this.createSegmentedSlotEvents(
-                  slotStart, 
-                  slotEnd, 
-                  slotTitle, 
-                  'slot night', 
-                  slotStart + '-' + slotEnd, 
-                  true, 
-                  nightSlotId, 
-                  null, 
+                  slotStart,
+                  slotEnd,
+                  slotTitle,
+                  'slot night',
+                  slotStart + '-' + slotEnd,
+                  true,
+                  nightSlotId,
+                  null,
                   allNightSlotId
                 );
               } else {
@@ -819,20 +819,20 @@ export class Timeline {
                 this.createSVGEvent(slotTitle, adjustedSlotStart, adjustedSlotEnd, 'slot', 'slot night', slotStart + '-' + slotEnd, true, nightSlotId, null, allNightSlotId);
               }
             }
-            
+
             continue; // Skip the normal slot creation for this pair
           }
         }
-        
+
         // Normal slot creation for other prayer pairs
         // Slot starts at the end of the current prayer
         const currentPadding = this.getIndividualPadding(currentPrayerName);
         const nextPadding = this.getIndividualPadding(nextPrayerName);
-        
+
         const slotStart = this.addPadding(currentPrayerTime, currentPadding.after);
         // Slot ends at the exact time of the next prayer
         const slotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
-        
+
         // Calculate slot duration using real user values for display
         const realSlotStart = this.addPadding(currentPrayerTime, currentPadding.after);
         const realSlotEnd = this.subtractPadding(nextPrayerTime, nextPadding.before);
@@ -842,20 +842,20 @@ export class Timeline {
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
         const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
-        
+
         const slotTitle = `Disponibilité (${durationText})`;
-        
+
         // Determine if this is a day slot (between fajr and sunset)
-        const fajrTime = prayerTimes['fajr'];
-        const sunsetTime = prayerTimes['sunset'];
+        const fajrTime = prayerTimes.fajr;
+        const sunsetTime = prayerTimes.sunset;
         let isDaySlot = false;
-        
+
         if (fajrTime && sunsetTime) {
           const fajrMinutes = timeToMinutes(fajrTime);
           const sunsetMinutes = timeToMinutes(sunsetTime);
           const currentPrayerMinutes = timeToMinutes(currentPrayerTime);
           const nextPrayerMinutes = timeToMinutes(nextPrayerTime);
-          
+
           // Check if the slot is between fajr and sunset
           if (fajrMinutes < sunsetMinutes) {
             // Normal case: fajr before sunset
@@ -865,22 +865,22 @@ export class Timeline {
             isDaySlot = currentPrayerMinutes >= fajrMinutes || nextPrayerMinutes <= sunsetMinutes;
           }
         }
-        
+
         // Add 1 minute of margin at the beginning and end to improve UI (without affecting displayed duration)
         const adjustedSlotStart = this.addPadding(slotStart, 1);
         const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
-        
+
         if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
           // Determine the CSS class based on slot type
           const slotClass = isDaySlot ? 'slot day' : 'slot';
-          
+
           if (this.slotDisplayMode === 'segmented') {
             this.createSegmentedSlotEvents(
-              slotStart, 
-              slotEnd, 
-              slotTitle, 
-              slotClass, 
-              slotStart + '-' + slotEnd, 
+              slotStart,
+              slotEnd,
+              slotTitle,
+              slotClass,
+              slotStart + '-' + slotEnd,
               true
             );
           } else {
@@ -889,34 +889,34 @@ export class Timeline {
           }
         }
       }
-      
+
       // Special handling for the slot between icha and fajr (always deep night slot)
       // This is handled separately because icha is the last prayer in the order
-      const ichaTime = prayerTimes['icha'];
-      const fajrTime = prayerTimes['fajr'];
-      
+      const ichaTime = prayerTimes.icha;
+      const fajrTime = prayerTimes.fajr;
+
       if (ichaTime && fajrTime) {
         const ichaMinutes = timeToMinutes(ichaTime);
         const fajrMinutes = timeToMinutes(fajrTime);
-        
+
         // Check if fajr is after midnight by comparing with icha
         if (fajrMinutes < ichaMinutes) {
           // fajr is after midnight, create two slots: icha to midnight and midnight to fajr
           const ichaPadding = this.getIndividualPadding('icha');
           const fajrPadding = this.getIndividualPadding('fajr');
-          
+
           const ichaToMidnightStart = this.addPadding(ichaTime, ichaPadding.after);
-          const ichaToMidnightEnd = "23:59";
-          
-          const midnightToFajrStart = "00:00";
+          const ichaToMidnightEnd = '23:59';
+
+          const midnightToFajrStart = '00:00';
           const midnightToFajrEnd = this.subtractPadding(fajrTime, fajrPadding.before);
-          
+
           // Calculate total duration for display
           const realIchaToMidnightStart = this.addPadding(ichaTime, ichaPadding.after);
           const realMidnightToFajrEnd = this.subtractPadding(fajrTime, fajrPadding.before);
           const realStartMinutes = timeToMinutes(realIchaToMidnightStart);
           const realEndMinutes = timeToMinutes(realMidnightToFajrEnd);
-          
+
           // Handle case where fajr is the next day
           let totalDurationMinutes;
           if (realEndMinutes <= realStartMinutes) {
@@ -925,65 +925,65 @@ export class Timeline {
           } else {
             totalDurationMinutes = realEndMinutes - realStartMinutes;
           }
-          
+
           const totalHours = Math.floor(totalDurationMinutes / 60);
           const totalMinutes = totalDurationMinutes % 60;
           const totalDurationText = totalHours > 0 ? `${totalHours}h${totalMinutes.toString().padStart(2, '0')}` : `${totalMinutes}min`;
-          
+
           const slotTitle = `Disponibilité (${totalDurationText})`;
-          
+
           // Calculate which slot is larger to determine where to show the text
           const ichaToMidnightDuration = timeToMinutes(ichaToMidnightEnd) - timeToMinutes(ichaToMidnightStart);
           const midnightToFajrDuration = timeToMinutes(midnightToFajrEnd) - timeToMinutes(midnightToFajrStart);
           const showTextOnFirstSlot = ichaToMidnightDuration >= midnightToFajrDuration;
-          
+
           // Create a unique identifier for the deep night slot
           const deepNightSlotId = `deep-night-slot-${ichaToMidnightStart}-${midnightToFajrEnd}`;
           // Create a common identifier for icha-fajr slots only
-          const allNightSlotId = `icha-fajr-slots`;
-          
+          const allNightSlotId = 'icha-fajr-slots';
+
           // First slot: icha to 23:59
           if (ichaToMidnightStart && ichaToMidnightEnd && timeToMinutes(ichaToMidnightEnd) > timeToMinutes(ichaToMidnightStart)) {
             if (this.slotDisplayMode === 'segmented') {
               this.createSegmentedSlotEvents(
-                ichaToMidnightStart, 
-                ichaToMidnightEnd, 
-                slotTitle, 
-                'slot deep-night', 
-                ichaToMidnightStart + '-' + ichaToMidnightEnd, 
+                ichaToMidnightStart,
+                ichaToMidnightEnd,
+                slotTitle,
+                'slot deep-night',
+                ichaToMidnightStart + '-' + ichaToMidnightEnd,
                 true, // Always show text on first slot (after icha) in segmented mode
-                null, 
-                deepNightSlotId, 
+                null,
+                deepNightSlotId,
                 allNightSlotId
               );
             } else {
               const adjustedStart = this.addPadding(ichaToMidnightStart, 1);
               const adjustedEnd = this.subtractPadding(ichaToMidnightEnd, 1);
-              
+
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
                 this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', ichaToMidnightStart + '-' + ichaToMidnightEnd, showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
               }
             }
           }
-          
+
           // Second slot: 00:00 to fajr
           if (midnightToFajrStart && midnightToFajrEnd && timeToMinutes(midnightToFajrEnd) > timeToMinutes(midnightToFajrStart)) {
             if (this.slotDisplayMode === 'segmented') {
               this.createSegmentedSlotEvents(
-                midnightToFajrStart, 
-                midnightToFajrEnd, 
-                slotTitle, 
-                'slot deep-night', 
-                midnightToFajrStart + '-' + midnightToFajrEnd, 
+                midnightToFajrStart,
+                midnightToFajrEnd,
+                slotTitle,
+                'slot deep-night',
+                midnightToFajrStart + '-' + midnightToFajrEnd,
                 false, // Never show text on second slot in segmented mode
-                null, 
-                deepNightSlotId, 
+                null,
+                deepNightSlotId,
                 allNightSlotId
               );
             } else {
               const adjustedStart = this.addPadding(midnightToFajrStart, 1);
               const adjustedEnd = this.subtractPadding(midnightToFajrEnd, 1);
-              
+
               if (adjustedStart && adjustedEnd && timeToMinutes(adjustedEnd) > timeToMinutes(adjustedStart)) {
                 this.createSVGEvent(slotTitle, adjustedStart, adjustedEnd, 'slot', 'slot deep-night', midnightToFajrStart + '-' + midnightToFajrEnd, !showTextOnFirstSlot, null, deepNightSlotId, allNightSlotId);
               }
@@ -993,10 +993,10 @@ export class Timeline {
           // fajr is before midnight, create a single deep night slot
           const ichaPadding = this.getIndividualPadding('icha');
           const fajrPadding = this.getIndividualPadding('fajr');
-          
+
           const slotStart = this.addPadding(ichaTime, ichaPadding.after);
           const slotEnd = this.subtractPadding(fajrTime, fajrPadding.before);
-          
+
           // Calculate slot duration using real user values for display
           const realSlotStart = this.addPadding(ichaTime, ichaPadding.after);
           const realSlotEnd = this.subtractPadding(fajrTime, fajrPadding.before);
@@ -1006,29 +1006,29 @@ export class Timeline {
           const hours = Math.floor(durationMinutes / 60);
           const minutes = durationMinutes % 60;
           const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
-          
+
           const slotTitle = `Disponibilité (${durationText})`;
-          
+
           // Add 1 minute of margin at the beginning and end to improve UI (without affecting displayed duration)
           const adjustedSlotStart = this.addPadding(slotStart, 1);
           const adjustedSlotEnd = this.subtractPadding(slotEnd, 1);
-          
+
           if (adjustedSlotStart && adjustedSlotEnd && timeToMinutes(adjustedSlotEnd) > timeToMinutes(adjustedSlotStart)) {
             // Create a unique identifier for the deep night slot
             const deepNightSlotId = `deep-night-slot-${slotStart}-${slotEnd}`;
             // Create a common identifier for icha-fajr slots only
-            const allNightSlotId = `icha-fajr-slots`;
-            
+            const allNightSlotId = 'icha-fajr-slots';
+
             if (this.slotDisplayMode === 'segmented') {
               this.createSegmentedSlotEvents(
-                slotStart, 
-                slotEnd, 
-                slotTitle, 
-                'slot deep-night', 
-                slotStart + '-' + slotEnd, 
-                true, 
-                null, 
-                deepNightSlotId, 
+                slotStart,
+                slotEnd,
+                slotTitle,
+                'slot deep-night',
+                slotStart + '-' + slotEnd,
+                true,
+                null,
+                deepNightSlotId,
                 allNightSlotId
               );
             } else {
@@ -1044,7 +1044,7 @@ export class Timeline {
         const startTime = slot.start_time || slot.start || slot.startTime;
         const endTime = slot.end_time || slot.end || slot.endTime;
         const title = slot.title || slot.summary || `Slot ${index + 1}`;
-        
+
         // Calculate slot duration
         const startMinutes = timeToMinutes(startTime);
         const endMinutes = timeToMinutes(endTime);
@@ -1052,21 +1052,21 @@ export class Timeline {
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
         const durationText = hours > 0 ? `${hours}h${minutes.toString().padStart(2, '0')}` : `${minutes}min`;
-        
+
         const slotTitle = `Disponibilité (${durationText})`;
-        
+
         // Add 1 minute of margin at the beginning and end to improve UI
         const adjustedStartTime = this.addPadding(startTime, 1);
         const adjustedEndTime = this.subtractPadding(endTime, 1);
-        
+
         if (adjustedStartTime && adjustedEndTime && timeToMinutes(adjustedEndTime) > timeToMinutes(adjustedStartTime)) {
           if (this.slotDisplayMode === 'segmented') {
             this.createSegmentedSlotEvents(
-              startTime, 
-              endTime, 
-              slotTitle, 
-              'slot', 
-              startTime + '-' + endTime, 
+              startTime,
+              endTime,
+              slotTitle,
+              'slot',
+              startTime + '-' + endTime,
               true
             );
           } else {
@@ -1077,17 +1077,17 @@ export class Timeline {
       });
     }
   }
-  
+
   // Helper: Subtract padding from a time
-  subtractPadding(timeStr, paddingMinutes) {
+  subtractPadding (timeStr, paddingMinutes) {
     if (!timeStr || !paddingMinutes) return timeStr;
     const totalMinutes = timeToMinutes(timeStr);
     const adjustedMinutes = totalMinutes - paddingMinutes;
     return minutesToTime(adjustedMinutes);
   }
-  
+
   // Helper: Add padding to a time
-  addPadding(timeStr, paddingMinutes) {
+  addPadding (timeStr, paddingMinutes) {
     if (!timeStr || !paddingMinutes) return timeStr;
     const totalMinutes = timeToMinutes(timeStr);
     const adjustedMinutes = totalMinutes + paddingMinutes;
@@ -1095,12 +1095,12 @@ export class Timeline {
   }
 
   // Get individual padding for a specific prayer
-  getIndividualPadding(prayerName) {
+  getIndividualPadding (prayerName) {
     // Check if we have individual paddings from the backend
     if (window.currentPrayerPaddings && window.currentPrayerPaddings[prayerName]) {
       return window.currentPrayerPaddings[prayerName];
     }
-    
+
     // Fallback to global paddings
     return {
       before: window.currentPaddingBefore || 0,
@@ -1109,7 +1109,7 @@ export class Timeline {
   }
 
   // Create an SVG event
-  createSVGEvent(title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null, segmentIndex = null) {
+  createSVGEvent (title, startTime, endTime, type, className, syncTime = null, showText = true, nightSlotId = null, deepNightSlotId = null, allNightSlotId = null, segmentIndex = null) {
     if (!this.svg || !this.eventsGroup) return;
     const startMin = timeToMinutes(startTime);
     const endMin = timeToMinutes(endTime);
@@ -1123,7 +1123,7 @@ export class Timeline {
     rect.setAttribute('rx', 5);
     rect.setAttribute('ry', 5);
     rect.setAttribute('class', `timeline-event ${className}`);
-    
+
     // Add data-attributes for synchronization with clock-arc
     // For prayers, use syncTime (exact time), otherwise startTime
     // For slots, syncTime contains "start-end"
@@ -1139,7 +1139,7 @@ export class Timeline {
     rect.setAttribute('data-start', syncStartTime);
     rect.setAttribute('data-end', syncEndTime);
     rect.setAttribute('data-type', type);
-    
+
     // Add deep night slot ID if provided
     if (deepNightSlotId) {
       rect.setAttribute('data-deep-night-slot-id', deepNightSlotId);
@@ -1152,23 +1152,23 @@ export class Timeline {
     if (allNightSlotId) {
       rect.setAttribute('data-all-night-slot-id', allNightSlotId);
     }
-    
+
     // Add segment index for individual hover control
     if (segmentIndex !== null) {
       rect.setAttribute('data-segment-index', segmentIndex);
     }
-    
+
     // Add hover events for synchronization
     rect.addEventListener('mouseover', () => {
       if (allNightSlotId) {
         // For all night slots, activate all related elements (maghreb-icha and icha-fajr)
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-all-night-slot-id="${allNightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.add('active'));
-        
+
         // Activate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-all-night-slot-id="${allNightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.add('active'));
-        
+
         // Also activate related list items
         const relatedListItems = document.querySelectorAll(`.slot-item[data-all-night-slot-id="${allNightSlotId}"]`);
         relatedListItems.forEach(item => item.classList.add('active'));
@@ -1176,11 +1176,11 @@ export class Timeline {
         // For deep night slots, activate all related elements
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-deep-night-slot-id="${deepNightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.add('active'));
-        
+
         // Activate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-deep-night-slot-id="${deepNightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.add('active'));
-        
+
         // Also activate related list items
         const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.add('active'));
@@ -1188,34 +1188,34 @@ export class Timeline {
         // For night slots, activate all related elements
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-night-slot-id="${nightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.add('active'));
-        
+
         // Activate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-night-slot-id="${nightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.add('active'));
-        
+
         // Also activate related list items
         const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.add('active'));
       } else {
         // Normal synchronization for regular slots
-      const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
-      if (clockArc) {
-        clockArc.classList.add('active');
-      }
-      rect.classList.add('active');
+        const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
+        if (clockArc) {
+          clockArc.classList.add('active');
+        }
+        rect.classList.add('active');
       }
     });
-    
+
     rect.addEventListener('mouseout', () => {
       if (allNightSlotId) {
         // For all night slots, deactivate all related elements (maghreb-icha and icha-fajr)
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-all-night-slot-id="${allNightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.remove('active'));
-        
+
         // Deactivate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-all-night-slot-id="${allNightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.remove('active'));
-        
+
         // Also deactivate related list items
         const relatedListItems = document.querySelectorAll(`.slot-item[data-all-night-slot-id="${allNightSlotId}"]`);
         relatedListItems.forEach(item => item.classList.remove('active'));
@@ -1223,11 +1223,11 @@ export class Timeline {
         // For deep night slots, deactivate all related elements
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-deep-night-slot-id="${deepNightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.remove('active'));
-        
+
         // Deactivate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-deep-night-slot-id="${deepNightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.remove('active'));
-        
+
         // Also deactivate related list items
         const relatedListItems = document.querySelectorAll(`.slot-item[data-deep-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.remove('active'));
@@ -1235,27 +1235,27 @@ export class Timeline {
         // For night slots, deactivate all related elements
         const relatedTimelineEvents = document.querySelectorAll(`.timeline-event[data-night-slot-id="${nightSlotId}"]`);
         relatedTimelineEvents.forEach(event => event.classList.remove('active'));
-        
+
         // Deactivate related clock arcs
         const relatedClockArcs = document.querySelectorAll(`.clock-arc[data-night-slot-id="${nightSlotId}"]`);
         relatedClockArcs.forEach(arc => arc.classList.remove('active'));
-        
+
         // Also deactivate related list items
         const relatedListItems = document.querySelectorAll(`.slot-item[data-night-slot-id="${clockArcId}"]`);
         relatedListItems.forEach(item => item.classList.remove('active'));
       } else {
         // Normal synchronization for regular slots
-      const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
-      if (clockArc) {
-        clockArc.classList.remove('active');
-      }
-      rect.classList.remove('active');
+        const clockArc = document.querySelector(`.clock-arc[data-start="${syncStartTime}"][data-end="${syncEndTime}"]`);
+        if (clockArc) {
+          clockArc.classList.remove('active');
+        }
+        rect.classList.remove('active');
       }
     });
-    
+
     // Add rect first, then text to ensure proper layering
     this.eventsGroup.appendChild(rect);
-    
+
     // Only create text element if showText is true
     if (showText) {
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -1263,19 +1263,19 @@ export class Timeline {
       text.setAttribute('y', y + height / 2 + 6);
       text.textContent = title;
       text.setAttribute('class', 'timeline-event-text');
-    this.eventsGroup.appendChild(text);
+      this.eventsGroup.appendChild(text);
     }
   }
 
   // Calculate the end of a prayer (35min by default)
-  calculatePrayerEndTime(startTime) {
+  calculatePrayerEndTime (startTime) {
     const startMin = timeToMinutes(startTime);
     const endMin = startMin + 35;
     return minutesToTime(endMin);
   }
 
   // Tooltip (show)
-  showTooltip(event, title, startTime, endTime) {
+  showTooltip (event, title, startTime, endTime) {
     if (this.tooltip) {
       this.tooltip.textContent = `${title} - ${startTime} to ${endTime}`;
       this.tooltip.style.left = (event.clientX + 10) + 'px';
@@ -1285,18 +1285,18 @@ export class Timeline {
   }
 
   // Tooltip (hide)
-  hideTooltip() {
+  hideTooltip () {
     if (this.tooltip) {
       this.tooltip.classList.remove('show');
     }
   }
 
   // Remove all SVG events
-  clearEvents() {
+  clearEvents () {
     if (this.eventsGroup) {
       while (this.eventsGroup.firstChild) this.eventsGroup.removeChild(this.eventsGroup.firstChild);
     }
-    
+
     // Also clear Hijri date elements from SVG
     if (this.svg) {
       const hijriDateElements = this.svg.querySelectorAll('.timeline-hijri-date, .timeline-hijri-date-bg');
@@ -1305,7 +1305,7 @@ export class Timeline {
   }
 
   // Show an empty state
-  showEmptyState() {
+  showEmptyState () {
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', '50%');
     text.setAttribute('y', '50%');
@@ -1318,21 +1318,21 @@ export class Timeline {
   }
 
   // Day navigation
-  navigateToDay(date) {
+  navigateToDay (date) {
     this.displayDayEvents(date);
   }
 
   // Method called by central sync
-  setDate(date) {
+  setDate (date) {
     if (!date) return;
-    
+
     this.currentDate = new Date(date);
     this.updateTimelineDate();
     this.displayDayEvents(this.currentDate);
   }
 
   // Navigation and toggle buttons
-  setupViewToggle() {
+  setupViewToggle () {
     const toggleBtn = document.getElementById('toggleViewBtn');
     if (toggleBtn) {
       toggleBtn.addEventListener('click', () => {
@@ -1357,7 +1357,7 @@ export class Timeline {
         window.setSelectedDate(d);
       });
     }
-    
+
     // Listen for Hijri date option changes
     const showHijriCheckbox = document.getElementById('show_hijri_date');
     if (showHijriCheckbox) {
@@ -1366,7 +1366,7 @@ export class Timeline {
         this.displayDayEvents(this.currentDate);
       });
     }
-    
+
     // Listen for voluntary fasts option changes
     const includeVoluntaryFastsCheckbox = document.getElementById('include_voluntary_fasts');
     if (includeVoluntaryFastsCheckbox) {
@@ -1375,7 +1375,7 @@ export class Timeline {
         this.displayDayEvents(this.currentDate);
       });
     }
-    
+
     // Listen for adhkar option changes
     const includeAdhkarCheckbox = document.getElementById('include_adhkar');
     if (includeAdhkarCheckbox) {
@@ -1384,7 +1384,7 @@ export class Timeline {
         this.displayDayEvents(this.currentDate);
       });
     }
-    
+
     // Listen for sunset option changes
     const includeSunsetCheckbox = document.getElementById('include_sunset');
     if (includeSunsetCheckbox) {
@@ -1396,7 +1396,7 @@ export class Timeline {
   }
 
   // Show timeline view
-  showTimelineView() {
+  showTimelineView () {
     const timelineContent = document.querySelector('.timeline-content');
     const slotsList = document.getElementById('availableSlotsList');
     if (timelineContent && slotsList) {
@@ -1407,7 +1407,7 @@ export class Timeline {
   }
 
   // Show classic slots view
-  showSlotsView() {
+  showSlotsView () {
     const timelineContent = document.querySelector('.timeline-content');
     const slotsList = document.getElementById('availableSlotsList');
     if (timelineContent && slotsList) {
@@ -1418,12 +1418,12 @@ export class Timeline {
   }
 
   // Current view
-  getCurrentView() {
+  getCurrentView () {
     return this.currentView;
   }
 
   // Check if the timeline is initialized
-  isInitialized() {
+  isInitialized () {
     return this.container !== null && this.svg !== null;
   }
-} 
+}

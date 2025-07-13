@@ -26,14 +26,14 @@ from main import create_app
 def app():
     """Create and configure a Flask app for testing."""
     test_config = {
-        "TESTING": True,
-        "WTF_CSRF_ENABLED": False,
-        "MAWAQIT_BASE_URL": "https://mawaqit.net/fr",
-        "MAWAQIT_REQUEST_TIMEOUT": 10,
-        "MAWAQIT_USER_AGENT": "Test User Agent",
-        "MOSQUE_DATA_DIR": "tests/data/mosques_by_country",
-        "ICS_OUTPUT_DIR": "tests/data/ics",
-    }
+            "TESTING": True,
+            "WTF_CSRF_ENABLED": False,
+            "MAWAQIT_BASE_URL": "https://mawaqit.net/fr",
+            "MAWAQIT_REQUEST_TIMEOUT": 10,
+            "MAWAQIT_USER_AGENT": "Test User Agent",
+            "MOSQUE_DATA_DIR": "tests/data/mosques_by_country",
+            "ICS_OUTPUT_DIR": "tests/data/ics",
+        }
     app = create_app("testing", test_config)
     return app
 

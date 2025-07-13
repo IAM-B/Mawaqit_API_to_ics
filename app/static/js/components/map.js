@@ -3,7 +3,7 @@
 /**
  * Initialize the compact map (Leaflet)
  */
-export function initializeCompactMap(containerId, lat, lng, mosqueName) {
+export function initializeCompactMap (containerId, lat, lng, mosqueName) {
   if (!lat || !lng) {
     return;
   }
@@ -26,14 +26,14 @@ export function initializeCompactMap(containerId, lat, lng, mosqueName) {
 /**
  * Initialize the main mosque map with clusters and interactions
  */
-export function initMosqueMapLoader() {
-  const mosqueSelectEl = document.getElementById("mosque-select");
-  const countrySelectEl = document.getElementById("country-select");
+export function initMosqueMapLoader () {
+  const mosqueSelectEl = document.getElementById('mosque-select');
+  const countrySelectEl = document.getElementById('country-select');
   if (!mosqueSelectEl || !countrySelectEl) return;
   // OSM map
-  const map = L.map("mosque-map").setView([20, 0], 2);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "© OpenStreetMap contributors",
+  const map = L.map('mosque-map').setView([20, 0], 2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
   }).addTo(map);
   // Clusters
   const markerCluster = L.markerClusterGroup();
@@ -41,7 +41,7 @@ export function initMosqueMapLoader() {
   // Markers by slug
   const markers = {};
   // Select a mosque after loading
-  function selectMosqueAfterLoad(mosqueSelect, mosqueSlug) {
+  function selectMosqueAfterLoad (mosqueSelect, mosqueSlug) {
     let attempts = 0;
     const maxAttempts = 20;
     const wait = setInterval(() => {
@@ -61,15 +61,15 @@ export function initMosqueMapLoader() {
     }, 300);
   }
   // Load all mosques and create markers
-  async function loadAllMosques() {
+  async function loadAllMosques () {
     try {
-    const countries = await (await fetch("/get_countries")).json();
-    for (const country of countries) {
+      const countries = await (await fetch('/get_countries')).json();
+      for (const country of countries) {
         try {
-      const mosques = await (await fetch(`/get_mosques?country=${country.code}`)).json();
-      mosques.forEach((mosque) => {
-        if (!mosque.lat || !mosque.lng) return;
-        const popupContent = `
+          const mosques = await (await fetch(`/get_mosques?country=${country.code}`)).json();
+          mosques.forEach((mosque) => {
+            if (!mosque.lat || !mosque.lng) return;
+            const popupContent = `
           <div class="popup-content" style="min-width:220px;max-width:320px;padding:1em 1.2em;background:var(--form-bg,#1a1a1a);color:var(--text-color,#e2e8f0);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.25);">
             <div style="display:flex;align-items:center;gap:0.5em;margin-bottom:0.5em;">
               <i class="fa-solid fa-mosque" style="font-size:1.3em;color:var(--primary,#d4af37);"></i>
@@ -86,23 +86,23 @@ export function initMosqueMapLoader() {
             </button>
           </div>
         `;
-        const marker = L.marker([mosque.lat, mosque.lng]).bindPopup(popupContent);
-        markerCluster.addLayer(marker);
-        markers[mosque.slug] = marker;
-      });
+            const marker = L.marker([mosque.lat, mosque.lng]).bindPopup(popupContent);
+            markerCluster.addLayer(marker);
+            markers[mosque.slug] = marker;
+          });
         } catch (err) {
-          console.error("Error loading mosques for country", country.code, err);
+          console.error('Error loading mosques for country', country.code, err);
         }
       }
     } catch (err) {
-      console.error("Error loading countries or mosques", err);
+      console.error('Error loading countries or mosques', err);
     }
   }
   // Event delegation for selection from the map
-  map.on("popupopen", (e) => {
-    const btn = e.popup.getElement().querySelector(".btn-sync-mosque");
+  map.on('popupopen', (e) => {
+    const btn = e.popup.getElement().querySelector('.btn-sync-mosque');
     if (!btn) return;
-    btn.addEventListener("click", (event) => {
+    btn.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
       const countryCode = btn.dataset.country;
@@ -123,7 +123,7 @@ export function initMosqueMapLoader() {
               slug: m.slug,
               city: m.city,
               address: m.address,
-              zipcode: m.zipcode,
+              zipcode: m.zipcode
             }))
           );
           selectMosqueAfterLoad(mosqueSelect, mosqueSlug);
@@ -142,7 +142,7 @@ export function initMosqueMapLoader() {
     }
   });
   // Update the map view when manually selecting
-  mosqueSelectEl.addEventListener("change", () => {
+  mosqueSelectEl.addEventListener('change', () => {
     const mosqueSlug = mosqueSelectEl.value;
     const marker = markers[mosqueSlug];
     if (marker) {
@@ -151,7 +151,7 @@ export function initMosqueMapLoader() {
     }
   });
   // Auto-focus on the selected country
-  countrySelectEl.addEventListener("change", () => {
+  countrySelectEl.addEventListener('change', () => {
     const code = countrySelectEl.value;
     fetch(`/get_mosques?country=${code}`)
       .then((res) => res.json())
@@ -161,5 +161,5 @@ export function initMosqueMapLoader() {
       });
   });
   // Initial loading of all mosques
-  loadAllMosques().catch(err => console.error("Error loading initial mosques", err));
-} 
+  loadAllMosques().catch(err => console.error('Error loading initial mosques', err));
+}

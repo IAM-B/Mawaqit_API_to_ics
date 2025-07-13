@@ -270,7 +270,7 @@ ls -la tests/data/
 ```
 
 #### 4. UV Issues
-```bash
+     ```bash
 # Reinstall UV
 curl -LsSf https://astral.sh/uv/install.sh | sh
 

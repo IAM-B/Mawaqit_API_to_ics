@@ -23,7 +23,9 @@
     "test:e2e:report": "playwright show-report",
     "test:all": "npm run test:js && python -m pytest tests/python/",
     "test:all:coverage": "npm run test:js:coverage && python -m pytest tests/python/ --cov=app --cov-report=html:htmlcov/python",
-    "test:full": "npm run test:js && npm run test:e2e && python -m pytest tests/python/"
+    "test:full": "npm run test:js && npm run test:e2e && python -m pytest tests/python/",
+    "lint": "eslint app/static/js/ tests/js/ --ext .js",
+    "lint:fix": "eslint app/static/js/ tests/js/ --ext .js --fix"
   },
   "repository": {
     "type": "git",
@@ -44,6 +46,12 @@
     "@playwright/test": "^1.40.1",
     "@testing-library/jest-dom": "^6.4.2",
     "babel-jest": "^30.0.2",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jest": "^27.9.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.0.2",
     "jsdom": "^24.0.0"

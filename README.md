@@ -81,6 +81,23 @@ make test-e2e   # (coming soon)
 make coverage
 ```
 
+## 🚀 CI/CD Pipeline
+
+The project includes a minimal CI/CD pipeline using GitHub Actions:
+
+### 🔄 Continuous Integration
+- **Code Quality**: Ruff linting and formatting for Python
+- **JavaScript Linting**: ESLint with standard configuration
+- **Python Tests**: Unit and integration tests with coverage
+- **JavaScript Tests**: Jest unit and integration tests
+
+### 📊 Monitoring
+- **Coverage Reports**: Code coverage tracking
+- **Test Results**: Detailed test reports and artifacts
+- **Quality Checks**: Automated code quality validation
+
+For detailed information, see [CI/CD Pipeline Documentation](docs/ci-cd-pipeline.md).
+
 ## 📁 Project Structure
 
 ```

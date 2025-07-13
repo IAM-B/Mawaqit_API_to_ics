@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Central synchronization of planner views
 window.selectedDate = new Date();
-window.setSelectedDate = function(date) {
+window.setSelectedDate = function (date) {
   if (!date) return;
   if (window.selectedDate && window.selectedDate.toDateString && window.selectedDate.toDateString() === date.toDateString()) {
     console.log('⚠️ Same date, skipping sync to prevent loops');
@@ -61,4 +61,4 @@ window.setSelectedDate = function(date) {
   } else {
     console.warn('⚠️ Calendar not available for sync');
   }
-}; 
+};

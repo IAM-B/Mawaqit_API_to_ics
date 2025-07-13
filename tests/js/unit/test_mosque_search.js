@@ -1,16 +1,16 @@
 /**
  * Unit tests for mosque_search.js component
- * 
+ *
  * This test suite covers the mosque search functionality that allows users
  * to find and select mosques for prayer planning. The component provides:
  * 1. Country selection dropdown with dynamic loading
  * 2. Mosque selection dropdown filtered by country
  * 3. Integration with TomSelect for enhanced UX
  * 4. Error handling for network and data issues
- * 
+ *
  * Functions tested:
  * - initMosqueSearchDropdowns: Initializes the search interface
- * 
+ *
  * Dependencies mocked:
  * - TomSelect for dropdown functionality
  * - Fetch API for country and mosque data
@@ -30,7 +30,7 @@ describe('Mosque Search Component', () => {
   beforeEach(() => {
     // Mock fetch global for API calls
     global.fetch = jest.fn();
-    
+
     // Mock DOM elements with correct IDs for realistic testing
     // These elements represent the actual form structure used in the application
     const countrySelect = document.createElement('select');
@@ -117,7 +117,7 @@ describe('Mosque Search Component', () => {
      * Tests for the initialization process that sets up the search interface
      * and establishes the connection between country and mosque selection.
      */
-    
+
     test('should initialize mosque search dropdowns', async () => {
       // Test the complete initialization process
       // This ensures the search interface is properly set up for user interaction
@@ -147,12 +147,12 @@ describe('Mosque Search Component', () => {
      * Tests for the country data loading functionality that populates
      * the country dropdown with available countries from the API.
      */
-    
+
     test('should load countries on initialization', async () => {
       // Test the loading and population of country data
       // This ensures users can select from available countries
       const mockCountries = [{ code: 'FR', name: 'France' }, { code: 'BE', name: 'Belgique' }];
-      
+
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockCountries)
@@ -178,7 +178,7 @@ describe('Mosque Search Component', () => {
      * Tests for error handling scenarios to ensure the component
      * remains functional even when encountering network or data issues.
      */
-    
+
     test('should handle network errors gracefully', async () => {
       // Test error handling when the API is unavailable
       // This ensures the application remains stable during network issues
@@ -192,7 +192,7 @@ describe('Mosque Search Component', () => {
       await new Promise(resolve => setTimeout(resolve, 0));
 
       expect(consoleSpy).toHaveBeenCalledWith('Error loading countries:', expect.any(Error));
-      
+
       consoleSpy.mockRestore();
     });
 
@@ -210,7 +210,7 @@ describe('Mosque Search Component', () => {
       await initMosqueSearchDropdowns();
 
       expect(consoleSpy).not.toHaveBeenCalled();
-      
+
       consoleSpy.mockRestore();
     });
 
@@ -227,7 +227,7 @@ describe('Mosque Search Component', () => {
       await initMosqueSearchDropdowns();
 
       expect(consoleSpy).not.toHaveBeenCalled();
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -237,7 +237,7 @@ describe('Mosque Search Component', () => {
      * Tests for cleanup functionality that properly disposes of
      * TomSelect instances to prevent memory leaks.
      */
-    
+
     test('should destroy TomSelect instances on cleanup', async () => {
       // Test proper cleanup of TomSelect instances
       // This prevents memory leaks when the component is destroyed
@@ -258,4 +258,4 @@ describe('Mosque Search Component', () => {
       }
     });
   });
-}); 
+});

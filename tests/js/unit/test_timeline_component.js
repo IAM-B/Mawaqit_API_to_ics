@@ -1,12 +1,12 @@
 /**
  * Unit tests for timeline.js component
- * 
+ *
  * This test suite covers the Timeline class functionality that provides
  * visual representation of prayer times and available slots throughout
  * the day. The Timeline component is a critical part of the prayer
  * planning interface, showing users when prayers occur and when they
  * have free time for other activities.
- * 
+ *
  * Key features tested:
  * - Timeline initialization and DOM setup
  * - Date management and navigation
@@ -14,7 +14,7 @@
  * - Visual rendering of timeline elements
  * - Error handling and edge cases
  * - Slot segmentation functionality
- * 
+ *
  * Timeline functionality:
  * - Displays 24-hour timeline with prayer times marked
  * - Shows available time slots for planning
@@ -22,7 +22,7 @@
  * - Handles date navigation and updates
  * - Provides interactive tooltips and hover effects
  * - Supports segmented slot display (split into full hours)
- * 
+ *
  * Technical aspects:
  * - SVG-based rendering for scalability
  * - Real-time updates when data changes
@@ -96,12 +96,12 @@ describe('Timeline Component', () => {
      * Tests for the initialization process that sets up the timeline
      * component and establishes its basic structure and properties.
      */
-    
+
     test('should create Timeline instance with correct properties', () => {
       // Test basic Timeline object creation and property initialization
       // This ensures the component is properly structured
       timeline = new Timeline();
-      
+
       expect(timeline).toBeDefined();
       expect(timeline.container).toBeTruthy();
       expect(timeline.svg).toBeTruthy();
@@ -116,7 +116,7 @@ describe('Timeline Component', () => {
       // This ensures proper initial state for date-based operations
       const now = new Date();
       timeline = new Timeline();
-      
+
       expect(timeline.currentDate.getDate()).toBe(now.getDate());
       expect(timeline.currentDate.getMonth()).toBe(now.getMonth());
       expect(timeline.currentDate.getFullYear()).toBe(now.getFullYear());
@@ -126,7 +126,7 @@ describe('Timeline Component', () => {
       // Test DOM element connection and configuration
       // This ensures the timeline can render properly
       timeline = new Timeline();
-      
+
       expect(timeline.container).toBeTruthy();
       expect(timeline.svg).toBeTruthy();
       expect(timeline.svg.getAttribute('viewBox')).toBe('0 0 400 1440');
@@ -138,7 +138,7 @@ describe('Timeline Component', () => {
      * Tests for the slot display mode toggle functionality
      * that allows switching between normal and segmented slot display.
      */
-    
+
     test('should initialize with normal slot display mode', () => {
       timeline = new Timeline();
       expect(timeline.getSlotDisplayMode()).toBe('normal');
@@ -146,14 +146,14 @@ describe('Timeline Component', () => {
 
     test('should toggle slot display mode correctly', () => {
       timeline = new Timeline();
-      
+
       // Initial state
       expect(timeline.getSlotDisplayMode()).toBe('normal');
-      
+
       // Toggle to segmented
       timeline.toggleSlotDisplayMode();
       expect(timeline.getSlotDisplayMode()).toBe('segmented');
-      
+
       // Toggle back to normal
       timeline.toggleSlotDisplayMode();
       expect(timeline.getSlotDisplayMode()).toBe('normal');
@@ -164,15 +164,15 @@ describe('Timeline Component', () => {
       const wrapper = document.createElement('div');
       wrapper.className = 'slot-toggle-wrapper';
       document.body.appendChild(wrapper);
-      
+
       timeline = new Timeline();
       timeline.setupSlotDisplayToggle();
-      
+
       const toggleButton = document.querySelector('.slot-toggle-switch');
       expect(toggleButton).toBeTruthy();
       expect(toggleButton.querySelector('i')).toBeTruthy();
       expect(toggleButton.querySelector('.toggle-label')).toBeTruthy();
-      
+
       // Cleanup
       document.body.removeChild(wrapper);
     });
@@ -182,23 +182,23 @@ describe('Timeline Component', () => {
       const wrapper = document.createElement('div');
       wrapper.className = 'slot-toggle-wrapper';
       document.body.appendChild(wrapper);
-      
+
       timeline = new Timeline();
       timeline.setupSlotDisplayToggle();
-      
+
       const toggleButton = document.querySelector('.slot-toggle-switch');
       const icon = toggleButton.querySelector('i');
       const input = toggleButton.querySelector('.toggle-input');
-      
+
       // Initial state
       expect(icon.className).toContain('fa-clock');
       expect(input.checked).toBe(false);
-      
+
       // After toggle
       timeline.toggleSlotDisplayMode();
       expect(icon.className).toContain('fa-puzzle-piece');
       expect(input.checked).toBe(true);
-      
+
       // Cleanup
       document.body.removeChild(wrapper);
     });
@@ -209,12 +209,12 @@ describe('Timeline Component', () => {
      * Tests for the slot segmentation functionality that splits
      * slots into full-hour segments for better visualization.
      */
-    
+
     test('should generate segmented slots correctly', () => {
       timeline = new Timeline();
-      
+
       const slots = timeline.generateSegmentedSlots('14:30', '17:45', 'Test Slot');
-      
+
       expect(slots).toHaveLength(4);
       expect(slots[0]).toEqual({
         start: '14:30',
@@ -244,9 +244,9 @@ describe('Timeline Component', () => {
 
     test('should handle slots that do not cross hour boundaries', () => {
       timeline = new Timeline();
-      
+
       const slots = timeline.generateSegmentedSlots('14:30', '14:45', 'Short Slot');
-      
+
       expect(slots).toHaveLength(1);
       expect(slots[0]).toEqual({
         start: '14:30',
@@ -258,9 +258,9 @@ describe('Timeline Component', () => {
 
     test('should handle slots that start at full hours', () => {
       timeline = new Timeline();
-      
+
       const slots = timeline.generateSegmentedSlots('15:00', '17:30', 'Full Hour Slot');
-      
+
       expect(slots).toHaveLength(4);
       expect(slots[0]).toEqual({
         start: '15:00',
@@ -290,24 +290,24 @@ describe('Timeline Component', () => {
 
     test('should handle invalid time ranges', () => {
       timeline = new Timeline();
-      
+
       const slots = timeline.generateSegmentedSlots('17:00', '14:00', 'Invalid Slot');
-      
+
       expect(slots).toHaveLength(0);
     });
 
     test('should determine best segment for text display', () => {
       timeline = new Timeline();
-      
+
       const slots = timeline.generateSegmentedSlots('14:30', '17:45', 'Test Slot');
-      
+
       // Verify that we have the expected segments
       expect(slots).toHaveLength(4);
       expect(slots[1].start).toBe('15:00');
       expect(slots[1].end).toBe('16:00');
       expect(slots[2].start).toBe('16:00');
       expect(slots[2].end).toBe('17:00');
-      
+
       // The full hour segments should be the largest ones
       expect(slots[1].isSegmented).toBe(true);
       expect(slots[2].isSegmented).toBe(true);
@@ -315,28 +315,28 @@ describe('Timeline Component', () => {
 
     test('should create segmented slot events with proper text display', () => {
       timeline = new Timeline();
-      
+
       // Mock the createSVGEvent method to track calls
       const mockCreateSVGEvent = jest.fn();
       timeline.createSVGEvent = mockCreateSVGEvent;
-      
+
       // Create segmented events
       timeline.createSegmentedSlotEvents(
-        '14:30', 
-        '17:45', 
-        'Test Slot', 
-        'slot day', 
-        '14:30-17:45', 
+        '14:30',
+        '17:45',
+        'Test Slot',
+        'slot day',
+        '14:30-17:45',
         true
       );
-      
+
       // Should have created 4 segments
       expect(mockCreateSVGEvent).toHaveBeenCalledTimes(4);
-      
+
       // Check that only one segment has showText = true
       const callsWithText = mockCreateSVGEvent.mock.calls.filter(call => call[6] === true);
       expect(callsWithText).toHaveLength(1);
-      
+
       // Check that the segment with text is the largest one
       const textCall = callsWithText[0];
       const textSegmentTitle = textCall[0];
@@ -350,12 +350,12 @@ describe('Timeline Component', () => {
      * the timeline component remains robust and doesn't crash
      * under unusual conditions.
      */
-    
+
     test('should handle missing DOM elements gracefully', () => {
       // Test behavior when required DOM elements are missing
       // This ensures the component doesn't crash in incomplete DOM setups
       document.body.innerHTML = '';
-      
+
       // Should not crash when DOM elements are missing
       expect(() => {
         timeline = new Timeline();
@@ -366,17 +366,17 @@ describe('Timeline Component', () => {
       // Test behavior with malformed or invalid segment data
       // This ensures the component handles bad data gracefully
       timeline = new Timeline();
-      
+
       const invalidSegments = [
         { start: 'invalid', end: 'invalid', type: 'unknown' },
         null,
         undefined
       ];
-      
+
       // Should not crash with invalid data
       expect(() => {
         timeline.initializeTimeline(invalidSegments, 'today');
       }).not.toThrow();
     });
   });
-}); 
+});

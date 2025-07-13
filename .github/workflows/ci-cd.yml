@@ -1,0 +1,127 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '18'
+
+jobs:
+  # 🔍 Code Quality & Linting
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: latest
+
+      - name: Install Python dependencies
+        run: uv sync
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Lint Python code
+        run: uv run ruff check .
+
+      - name: Format check Python code
+        run: uv run ruff format --check .
+
+      - name: Lint JavaScript code
+        run: npm run lint
+
+  # 🧪 Python Tests
+  test-python:
+    name: Python Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v1
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run Python tests
+        run: uv run pytest tests/python/ --cov=app --cov-report=term-missing --maxfail=2 --disable-warnings -v
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-coverage-report
+          path: htmlcov/python/
+
+  # 🧪 JavaScript Tests
+  test-javascript:
+    name: JavaScript Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run JavaScript unit tests
+        run: npm run test:js:unit
+
+      - name: Run JavaScript integration tests
+        run: npm run test:js:integration
+
+      - name: Run JavaScript coverage
+        run: npm run test:js:coverage
+
+      - name: Upload JS coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: js-coverage-report
+          path: coverage/
+
+  # 📋 Summary
+  summary:
+    name: Pipeline Summary
+    runs-on: ubuntu-latest
+    needs: [lint, test-python, test-javascript]
+    if: always()
+    steps:
+      - name: Pipeline Status
+        run: |
+          echo "🎉 Pipeline completed!"
+          echo "✅ Code Quality: ${{ needs.lint.result }}"
+          echo "✅ Python Tests: ${{ needs.test-python.result }}"
+          echo "✅ JavaScript Tests: ${{ needs.test-javascript.result }}" 

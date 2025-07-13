@@ -6,7 +6,7 @@ import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/uti
  * Main class for the calendar (day grid)
  */
 export class CalendarViewsManager {
-  constructor() {
+  constructor () {
     this.currentMonth = new Date().getMonth();
     this.currentYear = new Date().getFullYear();
     this.selectedMonth = this.currentMonth;
@@ -17,12 +17,14 @@ export class CalendarViewsManager {
     this.clockInstance = null;
     this.init();
   }
+
   // Calendar initialization
-  init() {
+  init () {
     this.bindEvents();
   }
+
   // Bind month navigation events
-  bindEvents() {
+  bindEvents () {
     document.addEventListener('click', (e) => {
       if (e.target.id === 'prevMonthBtn') {
         this.navigateMonth(-1);
@@ -31,26 +33,30 @@ export class CalendarViewsManager {
       }
     });
   }
+
   // To synchronize with the clock
-  setClockInstance(clockInstance) {
+  setClockInstance (clockInstance) {
     this.clockInstance = clockInstance;
   }
+
   // Initialize views according to the scope
-  initializeViews(segments, scope) {
+  initializeViews (segments, scope) {
     this.segments = segments;
     this.scope = scope;
     this.showClockCalendar();
     this.renderClockCalendar();
   }
+
   // Show the calendar
-  showClockCalendar() {
+  showClockCalendar () {
     const calendar = document.getElementById('clockCalendar');
     const slotsView = document.getElementById('defaultSlotsView');
     if (calendar) calendar.style.display = 'block';
     if (slotsView) slotsView.style.display = 'block';
   }
+
   // Render the calendar grid
-  renderClockCalendar() {
+  renderClockCalendar () {
     const container = document.getElementById('clockCalendarDays');
     const titleElement = document.getElementById('currentMonthTitle');
     if (!container || !titleElement) return;
@@ -72,8 +78,9 @@ export class CalendarViewsManager {
       container.appendChild(dayElement);
     }
   }
+
   // Create a day of the calendar
-  createDayElement(date) {
+  createDayElement (date) {
     const dayElement = document.createElement('div');
     dayElement.className = 'calendar-day';
     const dayNumber = document.createElement('div');
@@ -108,8 +115,9 @@ export class CalendarViewsManager {
     });
     return dayElement;
   }
+
   // Select a day
-  selectDay(day, dayData = null) {
+  selectDay (day, dayData = null) {
     const previousSelected = document.querySelector('.calendar-day.selected');
     if (previousSelected) previousSelected.classList.remove('selected');
     const dayElements = document.querySelectorAll('.calendar-day:not(.other-month)');
@@ -134,8 +142,9 @@ export class CalendarViewsManager {
       window.setSelectedDate(selectedDate);
     }
   }
+
   // Update the list of slots for the selected day
-  updateSlotsList(dayData) {
+  updateSlotsList (dayData) {
     const slotsList = document.getElementById('availableSlotsList');
     if (!slotsList || !dayData.slots) return;
     slotsList.innerHTML = '';
@@ -161,8 +170,9 @@ export class CalendarViewsManager {
       });
     });
   }
+
   // Previous/next month navigation
-  navigateMonth(direction) {
+  navigateMonth (direction) {
     this.selectedMonth += direction;
     if (this.selectedMonth < 0) {
       this.selectedMonth = 11;
@@ -176,8 +186,9 @@ export class CalendarViewsManager {
       window.setSelectedDate(firstDay);
     }
   }
+
   // Calculate the duration between two times
-  calculateDuration(start, end) {
+  calculateDuration (start, end) {
     const startMinutes = this.timeToMinutes(start);
     const endMinutes = this.timeToMinutes(end);
     let duration = endMinutes - startMinutes;
@@ -188,8 +199,9 @@ export class CalendarViewsManager {
     else if (minutes === 0) return `${hours}h`;
     else return `${hours}h${minutes.toString().padStart(2, '0')}min`;
   }
+
   // Convert a time string to minutes
-  timeToMinutes(time) {
+  timeToMinutes (time) {
     if (typeof time !== 'string' || !/^\d{2}:\d{2}$/.test(time)) {
       throw new Error('Invalid time format');
     }
@@ -199,10 +211,11 @@ export class CalendarViewsManager {
     }
     return hours * 60 + minutes;
   }
+
   // Select a day in the clock calendar
-  selectClockCalendarDay(day, segments) {
+  selectClockCalendarDay (day, segments) {
     const dayIndex = day - 1;
-    
+
     // Update calendar selection
     this.updateCalendarSelection(dayIndex);
 
@@ -210,7 +223,7 @@ export class CalendarViewsManager {
     const currentMonth = window.currentMonth || new Date().getMonth();
     const currentYear = window.currentYear || new Date().getFullYear();
     const selectedDate = new Date(currentYear, currentMonth, day);
-    
+
     // Call central synchronization to update all components
     if (window.setSelectedDate) {
       window.setSelectedDate(selectedDate);
@@ -229,19 +242,20 @@ export class CalendarViewsManager {
           monthSegments = segments;
         }
       }
-      
+
       if (dayIndex >= 0 && dayIndex < monthSegments.length) {
         window.clockInstance.currentIndex = dayIndex;
         window.clockInstance.updateClock();
       }
     }
   }
+
   // Method called by central sync
-  setDate(date) {
+  setDate (date) {
     if (!date) return;
     this.selectedDay = date.getDate();
     this.selectedMonth = date.getMonth();
     this.selectedYear = date.getFullYear();
     this.renderClockCalendar();
   }
-} 
+}

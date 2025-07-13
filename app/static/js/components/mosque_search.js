@@ -3,16 +3,16 @@
 /**
  * Initialize TomSelect dropdowns for mosque and country search
  */
-export function initMosqueSearchDropdowns() {
-  const countrySelectEl = document.getElementById("country-select");
-  const mosqueSelectEl = document.getElementById("mosque-select");
+export function initMosqueSearchDropdowns () {
+  const countrySelectEl = document.getElementById('country-select');
+  const mosqueSelectEl = document.getElementById('mosque-select');
   if (!countrySelectEl || !mosqueSelectEl) return;
   // Dropdown mosquée
   const mosqueSelect = new TomSelect(mosqueSelectEl, {
-    placeholder: "Choisir une mosquée...",
-    valueField: "value",
-    labelField: "text",
-    searchField: ["name", "slug", "city", "address", "zipcode"],
+    placeholder: 'Choisir une mosquée...',
+    valueField: 'value',
+    labelField: 'text',
+    searchField: ['name', 'slug', 'city', 'address', 'zipcode'],
     options: [],
     shouldLoad: () => false,
     render: {
@@ -31,7 +31,7 @@ export function initMosqueSearchDropdowns() {
   });
   // Dropdown pays
   const countrySelect = new TomSelect(countrySelectEl, {
-    placeholder: "Choisir un pays...",
+    placeholder: 'Choisir un pays...',
     onChange: (value) => {
       if (!value) return;
       mosqueSelect.clear(true);
@@ -62,7 +62,7 @@ export function initMosqueSearchDropdowns() {
     }
   });
   // Initial loading of countries
-  fetch("/get_countries")
+  fetch('/get_countries')
     .then(res => res.json())
     .then(countries => {
       countrySelect.addOptions(
@@ -75,4 +75,4 @@ export function initMosqueSearchDropdowns() {
   // Expose globally
   window.countrySelectInstance = countrySelect;
   window.mosqueSelectInstance = mosqueSelect;
-} 
+}

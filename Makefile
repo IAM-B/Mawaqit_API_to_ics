@@ -106,12 +106,23 @@ lint:
 	@echo "🔍 Linting code with Ruff..."
 	$(UV) run ruff check .
 
-check: format lint
+lint-js:
+	@echo "🔍 Linting JavaScript code with ESLint..."
+	npm run lint
+
+lint-all: lint lint-js
+	@echo "✅ All linting completed."
+
+check: format lint lint-js
 	@echo "✅ Code quality check completed."
 
 fix:
 	@echo "🔧 Auto-fixing code issues with Ruff..."
 	$(UV) run ruff check --fix .
+
+fix-js:
+	@echo "🔧 Auto-fixing JavaScript code issues with ESLint..."
+	npm run lint:fix
 
 # ℹ️ Help
 help:
@@ -136,8 +147,11 @@ help:
 	@echo "🎨 Code Quality:"
 	@echo "  make format         → Format code with Ruff"
 	@echo "  make lint           → Lint code with Ruff"
-	@echo "  make check          → Format + Lint"
-	@echo "  make fix            → Auto-fix code issues"
+	@echo "  make lint-js        → Lint JavaScript with ESLint"
+	@echo "  make lint-all       → Lint Python + JavaScript"
+	@echo "  make check          → Format + Lint (Python + JS)"
+	@echo "  make fix            → Auto-fix Python code issues"
+	@echo "  make fix-js         → Auto-fix JavaScript code issues"
 	@echo ""
 	@echo "🧼 Maintenance :"
 	@echo "  make cleanup        → Clean environment and temporary files"

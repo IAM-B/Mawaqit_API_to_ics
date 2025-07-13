@@ -48,7 +48,7 @@ def sample_mosque_data(tmp_path):
     """Create sample mosque data for testing."""
     mosque_dir = tmp_path / "mosques_by_country"
     mosque_dir.mkdir(parents=True)
-
+    
     # Create sample data for Algeria
     algeria_data = [
         {
@@ -59,10 +59,10 @@ def sample_mosque_data(tmp_path):
             "slug": "grande-mosquee-alger",
         }
     ]
-
+    
     with open(mosque_dir / "algerie6641.json", "w", encoding="utf-8") as f:
         json.dump(algeria_data, f)
-
+    
     return mosque_dir
 
 
@@ -75,7 +75,7 @@ def test_get_countries(client, sample_mosque_data):
         response = client.get("/get_countries")
         assert response.status_code == 200
         data = response.get_json()
-
+        
         assert isinstance(data, list)
         assert len(data) > 0
         # Check that each country has a code and a name
@@ -98,7 +98,7 @@ def test_get_mosques(client, sample_mosque_data):
         data = response.get_json()
         assert isinstance(data, list)
         assert len(data) > 0
-
+        
         # Check the data structure
         mosque = data[0]
         assert "name" in mosque
@@ -107,7 +107,7 @@ def test_get_mosques(client, sample_mosque_data):
         assert isinstance(mosque["name"], str)
         assert isinstance(mosque["city"], str)
         assert isinstance(mosque["text"], str)
-
+        
         # Test with invalid country
         response = client.get("/get_mosques?country=invalid")
         assert response.status_code == 200
@@ -125,7 +125,7 @@ def test_get_mosques_with_text(client, sample_mosque_data):
         response = client.get("/get_mosques?country=algerie6641")
         assert response.status_code == 200
         data = response.get_json()
-
+        
         assert len(data) > 0
         mosque = data[0]
         assert "text" in mosque
@@ -150,7 +150,7 @@ def test_planner_post_endpoint(client):
         "mosque_lat": "36.7538",
         "mosque_lng": "3.0588",
     }
-
+    
     with patch("app.views.planner_view.fetch_mosques_data") as mock_fetch:
         # Mock the response from fetch_mosques_data
         mock_fetch.return_value = (
@@ -163,7 +163,7 @@ def test_planner_post_endpoint(client):
             },
             "Africa/Algiers",
         )
-
+        
         response = client.post("/planner", data=data)
         assert response.status_code == 200
         # Vérifier que la réponse contient le contenu du planning
@@ -177,7 +177,7 @@ def test_planner_post_invalid_data(client):
     """Test the POST /planner endpoint with invalid data."""
     # Test with missing required fields
     data = {"scope": "today", "padding_before": 10, "padding_after": 15}
-
+    
     response = client.post("/planner", data=data)
     assert response.status_code == 200  # Should still return 200 but with error message
     assert b"error" in response.data.lower() or b"erreur" in response.data.lower()
@@ -194,8 +194,8 @@ def test_edit_slot_get(client):
 def test_edit_slot_post(client):
     """Test the POST /edit_slot endpoint."""
     data = {"action": "test", "data": "test_data"}
-
+    
     response = client.post("/edit_slot", data=data)
     assert response.status_code == 200
     # Accepter la réponse JSON actuelle
-    assert b"Slot POST not implemented" in response.data
+    assert b"Slot POST not implemented" in response.data 

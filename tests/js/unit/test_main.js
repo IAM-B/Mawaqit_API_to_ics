@@ -1,25 +1,25 @@
 /**
  * Unit tests for main.js
- * 
+ *
  * This test suite covers the main application initialization and
  * synchronization logic that orchestrates the entire prayer planning
  * application. The main.js file serves as the entry point that sets up
  * the application, establishes component connections, and manages
  * global state synchronization.
- * 
+ *
  * Key responsibilities tested:
  * - Application initialization and DOM setup
  * - Component synchronization and coordination
  * - Global state management and date handling
  * - Event listener setup and management
  * - Error handling and graceful degradation
- * 
+ *
  * Architecture tested:
  * - Main application entry point
  * - Component lifecycle management
  * - Global function registration
  * - Cross-component communication
- * 
+ *
  * Dependencies mocked:
  * - All major components (Clock, Map, MosqueSearch, Calendar, Timeline)
  * - PlannerPage for page-specific initialization
@@ -93,12 +93,12 @@ describe('Main Application', () => {
      * Tests for the DOM content loaded event handling that
      * initializes the application when the page is ready.
      */
-    
+
     test('should set up DOM content loaded listener', () => {
       // Test that the application sets up proper event listening
       // This ensures the app initializes when the DOM is ready
       require('../../../app/static/js/main.js');
-      
+
       expect(document.addEventListener).toHaveBeenCalledWith('DOMContentLoaded', expect.any(Function));
     });
 
@@ -106,10 +106,10 @@ describe('Main Application', () => {
       // Test that the initialization callback executes without errors
       // This ensures the app starts properly when triggered
       require('../../../app/static/js/main.js');
-      
+
       // Get the callback function that was registered
       const callback = document.addEventListener.mock.calls[0][1];
-      
+
       // Simulate DOMContentLoaded event execution
       expect(() => callback()).not.toThrow();
     });
@@ -120,12 +120,12 @@ describe('Main Application', () => {
      * Tests for global functions that provide cross-component
      * communication and state management capabilities.
      */
-    
+
     test('should set up setSelectedDate function', () => {
       // Test global function registration for date management
       // This enables components to communicate date changes
       require('../../../app/static/js/main.js');
-      
+
       expect(typeof window.setSelectedDate).toBe('function');
     });
 
@@ -133,7 +133,7 @@ describe('Main Application', () => {
       // Test date setting functionality with valid input
       // This allows users to navigate to specific dates
       require('../../../app/static/js/main.js');
-      
+
       const testDate = new Date('2024-01-01');
       expect(() => window.setSelectedDate(testDate)).not.toThrow();
     });
@@ -142,7 +142,7 @@ describe('Main Application', () => {
       // Test date setting with null input for edge case handling
       // This ensures graceful handling of invalid date inputs
       require('../../../app/static/js/main.js');
-      
+
       expect(() => window.setSelectedDate(null)).not.toThrow();
     });
 
@@ -150,10 +150,10 @@ describe('Main Application', () => {
       // Test optimization for same date selection
       // This prevents unnecessary updates and potential infinite loops
       require('../../../app/static/js/main.js');
-      
+
       const testDate = new Date('2024-01-01');
       window.selectedDate = testDate;
-      
+
       expect(() => window.setSelectedDate(testDate)).not.toThrow();
       expect(mockConsoleLog).toHaveBeenCalledWith('⚠️ Same date, skipping sync to prevent loops');
     });
@@ -164,20 +164,20 @@ describe('Main Application', () => {
      * Tests for component synchronization that ensures all
      * visual components stay in sync when the selected date changes.
      */
-    
+
     test('should sync timeline when available', () => {
       // Test timeline synchronization with date changes
       // This ensures the timeline updates when date is changed
       require('../../../app/static/js/main.js');
-      
+
       const mockTimeline = {
         setDate: jest.fn()
       };
       window.timeline = mockTimeline;
-      
+
       const testDate = new Date('2024-01-01');
       window.setSelectedDate(testDate);
-      
+
       expect(mockTimeline.setDate).toHaveBeenCalledWith(testDate);
     });
 
@@ -185,12 +185,12 @@ describe('Main Application', () => {
       // Test graceful handling when timeline component is not available
       // This prevents crashes when components are not initialized
       require('../../../app/static/js/main.js');
-      
+
       window.timeline = null;
-      
+
       const testDate = new Date('2024-01-01');
       window.setSelectedDate(testDate);
-      
+
       expect(mockConsoleWarn).toHaveBeenCalledWith('⚠️ Timeline not available for sync');
     });
 
@@ -198,15 +198,15 @@ describe('Main Application', () => {
       // Test clock synchronization with date changes
       // This ensures the clock displays the correct date
       require('../../../app/static/js/main.js');
-      
+
       const mockClock = {
         setDate: jest.fn()
       };
       window.clockInstance = mockClock;
-      
+
       const testDate = new Date('2024-01-01');
       window.setSelectedDate(testDate);
-      
+
       expect(mockClock.setDate).toHaveBeenCalledWith(testDate);
     });
 
@@ -214,12 +214,12 @@ describe('Main Application', () => {
       // Test graceful handling when clock component is not available
       // This prevents crashes when components are not initialized
       require('../../../app/static/js/main.js');
-      
+
       window.clockInstance = null;
-      
+
       const testDate = new Date('2024-01-01');
       window.setSelectedDate(testDate);
-      
+
       expect(mockConsoleWarn).toHaveBeenCalledWith('⚠️ Clock not available for sync');
     });
 
@@ -227,15 +227,15 @@ describe('Main Application', () => {
       // Test calendar synchronization with date changes
       // This ensures the calendar highlights the correct date
       require('../../../app/static/js/main.js');
-      
+
       const mockCalendar = {
         setDate: jest.fn()
       };
       window.calendarViewsManager = mockCalendar;
-      
+
       const testDate = new Date('2024-01-01');
       window.setSelectedDate(testDate);
-      
+
       expect(mockCalendar.setDate).toHaveBeenCalledWith(testDate);
     });
 
@@ -243,12 +243,12 @@ describe('Main Application', () => {
       // Test graceful handling when calendar component is not available
       // This prevents crashes when components are not initialized
       require('../../../app/static/js/main.js');
-      
+
       window.calendarViewsManager = null;
-      
+
       const testDate = new Date('2024-01-01');
       window.setSelectedDate(testDate);
-      
+
       expect(mockConsoleWarn).toHaveBeenCalledWith('⚠️ Calendar not available for sync');
     });
   });
@@ -258,31 +258,31 @@ describe('Main Application', () => {
      * Tests for clock-specific initialization that occurs
      * when the clock configuration element is present on the page.
      */
-    
+
     test('should initialize clock when clockConfig is present', () => {
       // Test clock initialization when clock configuration is available
       // This enables clock functionality on pages that need it
       const mockPlannerPage = {
         initClock: jest.fn()
       };
-      
+
       // Mock document.getElementById to return clockConfig element
       document.getElementById = jest.fn((id) => {
         if (id === 'clockConfig') return { style: {} };
         return null;
       });
-      
+
       // Mock PlannerPage.initClock method
       const { PlannerPage } = require('../../../app/static/js/pages/planner_page.js');
       PlannerPage.initClock = jest.fn();
-      
+
       // Import the main.js file to trigger initialization
       require('../../../app/static/js/main.js');
-      
+
       // Execute the DOMContentLoaded callback
       const callback = document.addEventListener.mock.calls[0][1];
       callback();
-      
+
       expect(PlannerPage.initClock).toHaveBeenCalled();
     });
 
@@ -291,14 +291,14 @@ describe('Main Application', () => {
       // This prevents unnecessary initialization on pages without clock
       const { PlannerPage } = require('../../../app/static/js/pages/planner_page.js');
       PlannerPage.initClock = jest.fn();
-      
+
       // Import the main.js file to trigger initialization
       require('../../../app/static/js/main.js');
-      
+
       // Execute the DOMContentLoaded callback
       const callback = document.addEventListener.mock.calls[0][1];
       callback();
-      
+
       expect(PlannerPage.initClock).not.toHaveBeenCalled();
     });
   });
@@ -308,7 +308,7 @@ describe('Main Application', () => {
      * Tests for error handling and graceful degradation
      * when components fail to load or initialize properly.
      */
-    
+
     test('should handle initialization errors gracefully', () => {
       // Test error handling during module loading
       // This ensures the application doesn't crash if components fail
@@ -321,4 +321,4 @@ describe('Main Application', () => {
       }).toThrow('Module error');
     });
   });
-}); 
+});

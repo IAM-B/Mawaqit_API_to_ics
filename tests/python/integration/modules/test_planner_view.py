@@ -322,4 +322,4 @@ def test_handle_planner_post_invalid_padding(app):
         error_dict, status_code = result
         assert "error" in error_dict
         assert "Invalid padding values" in error_dict["error"]
-        assert status_code == 400
+        assert status_code == 400 

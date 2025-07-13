@@ -1,22 +1,22 @@
 /**
  * Unit tests for padding.js
- * 
+ *
  * This test suite covers the padding utility functions that handle
  * time adjustments for prayer planning. Padding represents the additional
  * time needed before and after prayer times for preparation and completion.
- * 
+ *
  * Key concepts:
  * - Padding Before: Time needed to prepare for prayer (e.g., wudu, travel)
  * - Padding After: Time needed after prayer (e.g., dua, travel back)
  * - Real Padding: Actual configured values (can be negative)
  * - Safe Padding: Values adjusted for display (always >= 0 or >= 20)
- * 
+ *
  * Functions tested:
  * - getPaddingBefore: Returns safe padding before prayer (>= 0)
  * - getPaddingAfter: Returns safe padding after prayer (>= 20)
  * - getRealPaddingBefore: Returns actual configured padding before
  * - getRealPaddingAfter: Returns actual configured padding after
- * 
+ *
  * These utilities are critical for accurate prayer time calculations
  * and user experience in the planning system.
  */
@@ -30,7 +30,6 @@ const {
 } = require('../../../app/static/js/utils/padding.js');
 
 describe('Padding.js - Padding utility functions', () => {
-  
   beforeEach(() => {
     // Reset global values before each test to ensure clean state
     // These global variables store the current padding configuration
@@ -44,7 +43,7 @@ describe('Padding.js - Padding utility functions', () => {
      * preparation time is always non-negative for display purposes.
      * This function is used when calculating prayer start times.
      */
-    
+
     test('should return configured value if >= 0', () => {
       // Test normal case where padding is a positive value
       // This represents typical preparation time needed
@@ -87,7 +86,7 @@ describe('Padding.js - Padding utility functions', () => {
      * completion time is always >= 20 minutes for display purposes.
      * This function is used when calculating prayer end times.
      */
-    
+
     test('should return configured value if >= 20', () => {
       // Test normal case where padding is sufficient
       // This represents typical completion time needed
@@ -135,7 +134,7 @@ describe('Padding.js - Padding utility functions', () => {
      * Tests for padding configuration validation to ensure
      * the new padding logic works correctly with the updated structure.
      */
-    
+
     test('should handle individual prayer padding configuration', () => {
       // Test that individual prayer padding can be configured
       // This reflects the new structure with per-prayer padding
@@ -150,8 +149,8 @@ describe('Padding.js - Padding utility functions', () => {
       // This ensures UI consistency and user experience
       window.currentPaddingBefore = -5;
       window.currentPaddingAfter = 15;
-      expect(getPaddingBefore()).toBe(0);  // Minimum enforced
-      expect(getPaddingAfter()).toBe(20);  // Minimum enforced
+      expect(getPaddingBefore()).toBe(0); // Minimum enforced
+      expect(getPaddingAfter()).toBe(20); // Minimum enforced
     });
 
     test('should handle undefined padding values', () => {
@@ -170,7 +169,7 @@ describe('Padding.js - Padding utility functions', () => {
      * correctly and maintain consistency across different scenarios.
      * These tests verify the relationship between safe and real padding.
      */
-    
+
     test('getPaddingBefore should always return >= 0', () => {
       // Test that safe padding before is never negative
       // This ensures valid time calculations in the UI
@@ -212,7 +211,7 @@ describe('Padding.js - Padding utility functions', () => {
      * Tests for edge cases and unusual input scenarios to ensure
      * the padding functions remain robust and predictable.
      */
-    
+
     test('should handle null values', () => {
       // Test behavior with null values
       // This ensures the functions handle invalid input gracefully
@@ -240,4 +239,4 @@ describe('Padding.js - Padding utility functions', () => {
       expect(getPaddingAfter()).toBe(999999);
     });
   });
-}); 
+});

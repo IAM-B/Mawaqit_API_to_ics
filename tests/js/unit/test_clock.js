@@ -1,18 +1,18 @@
 /**
  * Unit tests for clock.js component
- * 
+ *
  * This test suite covers the Clock component that provides a visual
  * representation of prayer times and available slots in a circular format.
  * The clock displays prayer times as segments and allows users to
  * visualize their daily schedule.
- * 
+ *
  * Key features tested:
  * - Circular clock visualization with SVG
  * - Prayer time segment rendering
  * - Available slot visualization
  * - Date and time calculations
  * - User interaction handling
- * 
+ *
  * Dependencies mocked:
  * - SVG DOM manipulation
  * - Date/time utilities
@@ -91,11 +91,11 @@ describe('Clock Component', () => {
           remove: jest.fn()
         }
       };
-      
+
       if (tagName === 'svg') {
         element.innerHTML = '';
       }
-      
+
       return element;
     });
 
@@ -125,12 +125,12 @@ describe('Clock Component', () => {
     // This ensures each test runs in isolation
     jest.clearAllMocks();
     jest.restoreAllMocks();
-    
+
     // Clean up global variables to prevent memory leaks
     if (clock && clock.container) {
       clock.container.innerHTML = '';
     }
-    
+
     // Reset document to clean state
     document.body.innerHTML = '';
   });
@@ -140,7 +140,7 @@ describe('Clock Component', () => {
      * Tests for the Clock constructor that initializes the component
      * with the provided container and data.
      */
-    
+
     test('should initialize with valid container', () => {
       // Test basic initialization with proper container reference
       // This ensures the clock is properly connected to the DOM
@@ -155,12 +155,12 @@ describe('Clock Component', () => {
       // This prevents crashes when the clock is initialized incorrectly
       document.getElementById = jest.fn(() => null);
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-      
+
       const invalidClock = new Clock('nonexistent', [], 'today');
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('Container not found:', 'nonexistent');
       expect(invalidClock.container).toBeNull();
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -170,7 +170,7 @@ describe('Clock Component', () => {
      * Tests for static methods that handle global clock functionality
      * such as planning generation animations.
      */
-    
+
     test('should handle planning generation animation', () => {
       // Test the animation sequence when a planning is generated
       // This provides visual feedback to users during planning creation
@@ -205,7 +205,7 @@ describe('Clock Component', () => {
      * Tests for utility methods that perform calculations
      * and conversions for the clock display.
      */
-    
+
     test('should convert minutes to angle correctly', () => {
       // Test angle calculations for circular clock positioning
       // This ensures prayer times are displayed at correct positions
@@ -226,10 +226,10 @@ describe('Clock Component', () => {
       // Test padding calculations for prayer time adjustments
       // This accounts for preparation time before and after prayers
       const { timeToMinutes, minutesToTime } = require('../../../app/static/js/utils/utils.js');
-      
+
       timeToMinutes.mockReturnValueOnce(600); // 10:00
       minutesToTime.mockReturnValueOnce('09:50');
-      
+
       const result = clock.subtractPadding('10:00', 10);
       expect(result).toBe('09:50');
     });
@@ -240,7 +240,7 @@ describe('Clock Component', () => {
      * Tests for SVG element creation that builds the visual
      * representation of the clock and its segments.
      */
-    
+
     test('should create event element for prayer', () => {
       // Test creation of prayer time segments on the clock
       // This creates the visual representation of prayer times
@@ -251,7 +251,7 @@ describe('Clock Component', () => {
       };
 
       const element = clock.createEventElement(prayerEvent, 'prayer');
-      
+
       expect(element).toBeDefined();
       expect(document.createElementNS).toHaveBeenCalledWith('http://www.w3.org/2000/svg', 'path');
     });
@@ -265,7 +265,7 @@ describe('Clock Component', () => {
       };
 
       const element = clock.createSlotElement(slot);
-      
+
       expect(element).toBeDefined();
       expect(document.createElementNS).toHaveBeenCalledWith('http://www.w3.org/2000/svg', 'path');
     });
@@ -280,10 +280,10 @@ describe('Clock Component', () => {
 
     test('should navigate between segments', () => {
       const initialIndex = clock.currentIndex;
-      
+
       clock.navigate('next');
       expect(clock.currentIndex).toBe(initialIndex);
-      
+
       clock.navigate('prev');
       expect(clock.currentIndex).toBe(initialIndex);
     });
@@ -330,4 +330,4 @@ describe('Clock Component', () => {
       expect(() => clock.calculateDuration('invalid', '12:00')).not.toThrow();
     });
   });
-}); 
+});

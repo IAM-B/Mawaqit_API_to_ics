@@ -53,7 +53,7 @@ describe('Planner Integration Tests', () => {
     // Test form elements are properly set up
     const mosqueSelect = document.querySelector('#mosque-select');
     const scopeSelect = document.querySelector('#scope-select');
-    
+
     expect(mosqueSelect.options.length).toBe(2);
     expect(scopeSelect.options.length).toBe(3);
     expect(mosqueSelect.value).toBe('');
@@ -64,10 +64,10 @@ describe('Planner Integration Tests', () => {
     // Test padding input elements
     const paddingBefore = document.querySelector('#padding-before');
     const paddingAfter = document.querySelector('#padding-after');
-    
+
     expect(paddingBefore.value).toBe('0');
     expect(paddingAfter.value).toBe('20');
     expect(parseInt(paddingBefore.value)).toBe(0);
     expect(parseInt(paddingAfter.value)).toBe(20);
   });
-}); 
+});

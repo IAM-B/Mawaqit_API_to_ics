@@ -4,11 +4,11 @@
  */
 
 // Handle smooth redirects
-function handleSmoothRedirect(url, event) {
+function handleSmoothRedirect (url, event) {
   const button = event && event.target ? event.target.closest('.cta-button') : null;
   if (button) {
     button.classList.add('redirecting');
-    
+
     setTimeout(() => {
       window.location.href = url;
     }, 300);
@@ -16,9 +16,9 @@ function handleSmoothRedirect(url, event) {
 }
 
 // Add smooth redirect functionality to CTA buttons
-function initSmoothRedirects() {
+function initSmoothRedirects () {
   const ctaButtons = document.querySelectorAll('.cta-button[href]');
-  
+
   ctaButtons.forEach(button => {
     button.addEventListener('click', (e) => {
       e.preventDefault();
@@ -29,62 +29,62 @@ function initSmoothRedirects() {
 }
 
 // Initialize all functionality when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   console.log('Landing page loaded');
-  
+
   // CTA buttons management
   const ctaButtons = document.querySelectorAll('.cta-button');
-  
+
   ctaButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
+    button.addEventListener('click', function (e) {
       e.preventDefault();
-      
+
       const action = this.getAttribute('data-action');
-      
+
       // Add ripple effect
       createRippleEffect(this, e);
-      
+
       // Handle different actions
-      switch(action) {
-        case 'start-planning':
-          // Redirect to planner page
-          window.location.href = '/planner';
-          break;
-          
-        case 'scroll-to-how-it-works':
-          // Scroll to "How it works" section
-          const howItWorksSection = document.getElementById('how-it-works');
-          if (howItWorksSection) {
-            howItWorksSection.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start'
-            });
-          }
-          break;
-          
-        default:
-          console.log('Action non reconnue:', action);
+      switch (action) {
+      case 'start-planning':
+        // Redirect to planner page
+        window.location.href = '/planner';
+        break;
+
+      case 'scroll-to-how-it-works':
+        // Scroll to "How it works" section
+        const howItWorksSection = document.getElementById('how-it-works');
+        if (howItWorksSection) {
+          howItWorksSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+        break;
+
+      default:
+        console.log('Action non reconnue:', action);
       }
     });
-    
+
     // Focus effect for accessibility
-    button.addEventListener('focus', function() {
+    button.addEventListener('focus', function () {
       this.classList.add('focused');
     });
-    
-    button.addEventListener('blur', function() {
+
+    button.addEventListener('blur', function () {
       this.classList.remove('focused');
     });
   });
-  
+
   // Function to create ripple effect
-  function createRippleEffect(button, event) {
+  function createRippleEffect (button, event) {
     const ripple = document.createElement('span');
     const rect = button.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     const x = event.clientX - rect.left - size / 2;
     const y = event.clientY - rect.top - size / 2;
-    
+
     ripple.style.cssText = `
       position: absolute;
       width: ${size}px;
@@ -98,14 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
       pointer-events: none;
       z-index: 3;
     `;
-    
+
     button.appendChild(ripple);
-    
+
     setTimeout(() => {
       ripple.remove();
     }, 600);
   }
-  
+
   // CSS animation for ripple effect
   const style = document.createElement('style');
   style.textContent = `
@@ -117,18 +117,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   `;
   document.head.appendChild(style);
-  
+
   // Animation for sections with Intersection Observer
   const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
   };
-  
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('animate-in');
-        
+
         // Animate child elements
         const cards = entry.target.querySelectorAll('.value-card, .benefit-card, .step-card, .stat-item');
         cards.forEach((card, index) => {
@@ -139,21 +139,21 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }, observerOptions);
-  
+
   // Observe sections for animation
   const sections = document.querySelectorAll('section');
   sections.forEach(section => {
     observer.observe(section);
   });
-  
+
   // Smooth scroll for internal links
   const internalLinks = document.querySelectorAll('a[href^="#"]');
   internalLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
+    link.addEventListener('click', function (e) {
       e.preventDefault();
       const targetId = this.getAttribute('href').substring(1);
       const targetElement = document.getElementById(targetId);
-      
+
       if (targetElement) {
         targetElement.scrollIntoView({
           behavior: 'smooth',

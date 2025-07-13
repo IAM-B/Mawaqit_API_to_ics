@@ -46,7 +46,7 @@ def test_format_country_display():
     assert format_country_display("allemagne1313.json") == "ALLEMAGNE"
     assert format_country_display("espagne749.json") == "ESPAGNE"
     assert format_country_display("maroc1289.json") == "MAROC"
-
+    
     # Test with invalid input
     assert format_country_display("") == ""
-    assert format_country_display(None) == ""
+    assert format_country_display(None) == "" 

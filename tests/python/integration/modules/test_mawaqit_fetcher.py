@@ -34,10 +34,10 @@ def app():
         "ICS_CALENDAR_NAME": "Prayer Times",
         "ICS_CALENDAR_DESCRIPTION": "Prayer times from Mawaqit",
         "STATIC_FOLDER": "static",
-        "MAWAQIT_BASE_URL": "https://mawaqit.net",
-        "MAWAQIT_REQUEST_TIMEOUT": 5,
-        "MAWAQIT_USER_AGENT": "Mozilla/5.0 (Test)",
-    }
+            "MAWAQIT_BASE_URL": "https://mawaqit.net",
+            "MAWAQIT_REQUEST_TIMEOUT": 5,
+            "MAWAQIT_USER_AGENT": "Mozilla/5.0 (Test)",
+        }
     app = create_app("testing", test_config)
     return app
 

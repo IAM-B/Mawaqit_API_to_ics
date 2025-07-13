@@ -6,12 +6,12 @@ import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/uti
 import { getPaddingBefore, getPaddingAfter } from '../utils/padding.js';
 
 export class PlannerPage {
-  constructor() {
+  constructor () {
     this.MIN_PADDING_AFTER = 10; // Minimum 10 minutes padding after each prayer
     this.init();
   }
 
-  init() {
+  init () {
     this.setupFormHandling();
     this.setupPlanningAnimation();
     this.setupProgressIndicatorDetachment();
@@ -19,14 +19,14 @@ export class PlannerPage {
     this.setupFeaturesOptions();
   }
 
-  setupFormHandling() {
+  setupFormHandling () {
     const plannerForm = document.getElementById('plannerForm');
     const configForm = document.getElementById('configForm');
     const submitBtn = document.querySelector('.btn-submit');
-    
+
     // Progress system initialization
     this.initializeProgressSystem();
-    
+
     if (configForm && submitBtn) {
       configForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -35,82 +35,80 @@ export class PlannerPage {
           const plannerFormData = new FormData(plannerForm);
           const configFormData = new FormData(configForm);
           const combinedFormData = new FormData();
-          for (let [key, value] of plannerFormData.entries()) {
+          for (const [key, value] of plannerFormData.entries()) {
             combinedFormData.append(key, value);
           }
           // Determine active configuration mode
           const configModeSwitch = document.getElementById('configModeSwitch');
           const isIndividualMode = configModeSwitch && configModeSwitch.checked;
-          
+
           if (isIndividualMode) {
             // Individual mode: use individual paddings
             const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
-            
+
             prayers.forEach(prayer => {
               const beforeInput = document.getElementById(`${prayer}_padding_before`);
               const afterInput = document.getElementById(`${prayer}_padding_after`);
-              
+
               if (beforeInput && afterInput) {
                 const defaultValue = prayer === 'sunset' ? '5' : '10';
                 const beforeValue = beforeInput.value || defaultValue;
                 const afterValue = afterInput.value || (prayer === 'sunset' ? '15' : '35');
-                
+
                 // Apply minimum 10 minutes padding after each prayer
                 let finalAfterValue = afterValue;
                 if (parseInt(finalAfterValue) < this.MIN_PADDING_AFTER) {
                   finalAfterValue = this.MIN_PADDING_AFTER.toString();
                 }
-                
+
                 // Always send individual paddings in individual mode
                 combinedFormData.set(`${prayer}_padding_before`, beforeValue);
                 combinedFormData.set(`${prayer}_padding_after`, finalAfterValue);
               }
             });
-            
+
             // Add other configuration data (excluding global paddings)
-            for (let [key, value] of configFormData.entries()) {
+            for (const [key, value] of configFormData.entries()) {
               if (!key.includes('padding')) { // Don't include global paddings
                 combinedFormData.append(key, value);
               }
             }
           } else {
             // Global mode: use global paddings
-            
+
             // Get and validate global "before" padding
             const globalPaddingBeforeInput = document.getElementById('global_padding_before');
             if (globalPaddingBeforeInput) {
               const globalPaddingBefore = globalPaddingBeforeInput.value || '10';
               combinedFormData.set('padding_before', globalPaddingBefore);
             }
-            
+
             // Get and validate global "after" padding
             const globalPaddingAfterInput = document.getElementById('global_padding_after');
             if (globalPaddingAfterInput) {
               let globalPaddingAfter = globalPaddingAfterInput.value || '35';
-              
+
               // Apply minimum padding to global padding
               if (parseInt(globalPaddingAfter) < this.MIN_PADDING_AFTER) {
                 globalPaddingAfter = this.MIN_PADDING_AFTER.toString();
               }
-              
+
               combinedFormData.set('padding_after', globalPaddingAfter);
             }
-            
+
             // Add other configuration data (excluding individual paddings)
-            for (let [key, value] of configFormData.entries()) {
+            for (const [key, value] of configFormData.entries()) {
               if (!key.includes('padding') || key === 'scope') { // Always include scope
                 combinedFormData.append(key, value);
               }
             }
           }
-          
+
           const includeSunsetCheckbox = document.getElementById('include_sunset');
           if (includeSunsetCheckbox) {
             combinedFormData.set('include_sunset', includeSunsetCheckbox.checked ? 'on' : '');
           }
 
-
-          
           const response = await fetch('/api/generate_planning', {
             method: 'POST',
             body: combinedFormData
@@ -123,10 +121,10 @@ export class PlannerPage {
           }
         } catch (error) {
           console.error('Error generating planning:', error);
-          
+
           // Improve error messages for the user
           let errorMessage = 'Error generating planning';
-          
+
           if (error.message.includes('HTTP error 500')) {
             errorMessage = 'Mawaqit service temporarily unavailable. Please try again in a few seconds.';
           } else if (error.message.includes('timeout') || error.message.includes('network')) {
@@ -138,7 +136,6 @@ export class PlannerPage {
           } else if (error.message) {
             errorMessage = error.message;
           }
-          
         } finally {
           this.hideLoadingState(submitBtn);
         }
@@ -146,36 +143,36 @@ export class PlannerPage {
     }
   }
 
-  showLoadingState(submitBtn) {
+  showLoadingState (submitBtn) {
     submitBtn.classList.add('loading');
     submitBtn.textContent = '🔄 Génération en cours...';
     submitBtn.disabled = true;
   }
 
-  hideLoadingState(submitBtn) {
+  hideLoadingState (submitBtn) {
     submitBtn.classList.remove('loading');
     submitBtn.textContent = '📥 Générer planning';
     submitBtn.disabled = false;
   }
 
-  updatePageWithPlanningData(data) {
+  updatePageWithPlanningData (data) {
     window.currentMosqueId = data.masjid_id;
     window.currentPaddingBefore = data.padding_before;
     window.currentPaddingAfter = data.padding_after;
     window.currentMonth = new Date().getMonth();
     window.currentYear = new Date().getFullYear();
-    
+
     // Store segments data globally for progress checking
     if (data.segments) {
       window.currentSegments = data.segments;
     }
-    
+
     // Update progress state - only mark planning as generated, don't force config completion
     this.progressState.planningGenerated = true;
-    
+
     // Check if configuration is actually complete based on form data
     this.updateProgressState();
-    
+
     this.showPlanningSections();
     this.updateMosqueInfo(data);
     this.updateConfigSummary(data);
@@ -204,7 +201,7 @@ export class PlannerPage {
     }
   }
 
-  showSummaryDisplay() {
+  showSummaryDisplay () {
     const summaryDisplay = document.querySelector('.summary-display');
     if (summaryDisplay) {
       summaryDisplay.classList.remove('hidden');
@@ -213,7 +210,7 @@ export class PlannerPage {
     }
   }
 
-  updateMosqueInfo(data) {
+  updateMosqueInfo (data) {
     const mosqueNameEl = document.querySelector('.summary-display .mosque-details h4');
     const mosqueAddressEl = document.querySelector('.summary-display .mosque-details .address');
     const mapLinksEl = document.querySelector('.summary-display .map-links');
@@ -262,8 +259,7 @@ export class PlannerPage {
     }
   }
 
-  updateConfigSummary(data) {
-    
+  updateConfigSummary (data) {
     const configItems = document.querySelectorAll('.summary-display .config-item');
     configItems.forEach(item => {
       const label = item.querySelector('.config-label');
@@ -283,25 +279,25 @@ export class PlannerPage {
         }
       }
     });
-    
+
     // Display individual paddings if available
     if (data.prayer_paddings) {
       // Store individual paddings globally for clock and timeline components
       window.currentPrayerPaddings = data.prayer_paddings;
-      
+
       const individualPaddingsContainer = document.querySelector('.individual-paddings-summary');
       if (individualPaddingsContainer) {
         individualPaddingsContainer.innerHTML = '';
         const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
         const prayerNames = {
-          'fajr': 'Fajr',
-          'sunset': 'Sunset',
-          'dhuhr': 'Dhuhr',
-          'asr': 'Asr',
-          'maghrib': 'Maghrib',
-          'isha': 'Isha'
+          fajr: 'Fajr',
+          sunset: 'Sunset',
+          dhuhr: 'Dhuhr',
+          asr: 'Asr',
+          maghrib: 'Maghrib',
+          isha: 'Isha'
         };
-        
+
         prayers.forEach(prayer => {
           if (data.prayer_paddings[prayer]) {
             const padding = data.prayer_paddings[prayer];
@@ -319,14 +315,14 @@ export class PlannerPage {
       // Create individual paddings from global paddings for consistency
       const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
       const backendPrayerNames = {
-        'fajr': 'fajr',
-        'sunset': 'sunset', 
-        'dhuhr': 'dohr',
-        'asr': 'asr',
-        'maghrib': 'maghreb',
-        'isha': 'icha'
+        fajr: 'fajr',
+        sunset: 'sunset',
+        dhuhr: 'dohr',
+        asr: 'asr',
+        maghrib: 'maghreb',
+        isha: 'icha'
       };
-      
+
       window.currentPrayerPaddings = {};
       prayers.forEach(prayer => {
         const backendName = backendPrayerNames[prayer];
@@ -341,7 +337,7 @@ export class PlannerPage {
     }
   }
 
-  generateDownloadLinks(data) {
+  generateDownloadLinks (data) {
     const downloadGrid = document.querySelector('.how-it-works-section .download-grid');
     if (downloadGrid) {
       downloadGrid.innerHTML = '';
@@ -372,34 +368,34 @@ export class PlannerPage {
       const editA = document.createElement('a');
       editA.href = '/edit_slot';
       editA.className = 'download-card edit';
-      editA.innerHTML = `<span class="download-icon">✏️</span><span class="download-title">Modifier manuellement</span><span class="download-format">Créneaux</span>`;
+      editA.innerHTML = '<span class="download-icon">✏️</span><span class="download-title">Modifier manuellement</span><span class="download-format">Créneaux</span>';
       downloadGrid.appendChild(editA);
       const scopeDownloads = document.createElement('div');
       scopeDownloads.className = 'scope-downloads';
-      scopeDownloads.innerHTML = `<h3>📥 Téléchargements par période</h3><div class="scope-buttons"></div>`;
+      scopeDownloads.innerHTML = '<h3>📥 Téléchargements par période</h3><div class="scope-buttons"></div>';
       const scopeButtons = scopeDownloads.querySelector('.scope-buttons');
       const yearBtn = document.createElement('button');
       yearBtn.className = 'scope-download-btn year active';
       yearBtn.dataset.scope = 'year';
-      yearBtn.innerHTML = `<span class="scope-icon">📅</span><span class="scope-title">Cette année</span>`;
+      yearBtn.innerHTML = '<span class="scope-icon">📅</span><span class="scope-title">Cette année</span>';
       scopeButtons.appendChild(yearBtn);
       ['today', 'month'].forEach(scope => {
         const btn = document.createElement('button');
         btn.className = `scope-download-btn ${scope}`;
         btn.dataset.scope = scope;
-        btn.innerHTML = `<span class="scope-icon">📅</span><span class="scope-title">${scope === 'today' ? "Aujourd'hui" : 'Ce mois'}</span>`;
+        btn.innerHTML = `<span class="scope-icon">📅</span><span class="scope-title">${scope === 'today' ? 'Aujourd\'hui' : 'Ce mois'}</span>`;
         scopeButtons.appendChild(btn);
       });
       downloadGrid.appendChild(scopeDownloads);
       this.setupScopeDownloadButtons(data);
-      
+
       // Update progress state
       this.progressState.downloadsAvailable = true;
       this.updateProgressIndicator(3);
     }
   }
 
-  setupScopeDownloadButtons(data) {
+  setupScopeDownloadButtons (data) {
     const scopeButtons = document.querySelectorAll('.scope-download-btn');
     if (!window.originalYearData) {
       window.originalYearData = data;
@@ -430,27 +426,27 @@ export class PlannerPage {
               formData.append('padding_before', paddingBefore);
               formData.append('padding_after', paddingAfter);
               formData.append('include_sunset', includeSunset ? 'on' : '');
-              
+
               // Add Features options
               const featuresOptions = [
                 'include_voluntary_fasts',
                 'show_hijri_date',
                 'include_adhkar'
               ];
-              
+
               featuresOptions.forEach(optionId => {
                 const checkbox = document.getElementById(optionId);
                 if (checkbox) {
                   formData.append(optionId, checkbox.checked ? 'on' : '');
                 }
               });
-              
+
               // Add individual paddings
               const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
               prayers.forEach(prayer => {
                 const beforeInput = document.getElementById(`${prayer}_padding_before`);
                 const afterInput = document.getElementById(`${prayer}_padding_after`);
-                
+
                 if (beforeInput) {
                   const defaultValue = prayer === 'sunset' ? '5' : '10';
                   const beforeValue = beforeInput.value || defaultValue;
@@ -462,7 +458,7 @@ export class PlannerPage {
                   formData.set(`${prayer}_padding_after`, afterValue);
                 }
               });
-              
+
               return formData;
             })()
           });
@@ -483,7 +479,7 @@ export class PlannerPage {
     });
   }
 
-  updateActiveScopeButton(activeScope) {
+  updateActiveScopeButton (activeScope) {
     const scopeButtons = document.querySelectorAll('.scope-download-btn');
     scopeButtons.forEach(btn => {
       btn.classList.remove('active');
@@ -493,7 +489,7 @@ export class PlannerPage {
     });
   }
 
-  initializeClock(data) {
+  initializeClock (data) {
     const clockContainer = document.getElementById('clockContent');
     if (!clockContainer) {
       console.error('❌ Clock container #clockContent not found in DOM');
@@ -560,7 +556,7 @@ export class PlannerPage {
     }
   }
 
-  initializeClockCalendar(segments, scope) {
+  initializeClockCalendar (segments, scope) {
     if (scope !== 'year') return;
     const container = document.getElementById('clockCalendarDays');
     const titleElement = document.getElementById('currentMonthTitle');
@@ -590,7 +586,7 @@ export class PlannerPage {
     this.setupClockCalendarNavigation(segments, currentMonth, currentYear);
   }
 
-  createClockCalendarDay(date, segments, currentMonth, currentYear) {
+  createClockCalendarDay (date, segments, currentMonth, currentYear) {
     const dayElement = document.createElement('div');
     dayElement.className = 'calendar-day';
     const dayNumber = document.createElement('div');
@@ -623,7 +619,7 @@ export class PlannerPage {
     return dayElement;
   }
 
-  selectClockCalendarDay(day, segments) {
+  selectClockCalendarDay (day, segments) {
     const dayIndex = day - 1;
     this.updateCalendarSelection(dayIndex);
     const currentMonth = window.currentMonth || new Date().getMonth();
@@ -649,7 +645,7 @@ export class PlannerPage {
     }
   }
 
-  setupClockCalendarNavigation(segments, currentMonth, currentYear) {
+  setupClockCalendarNavigation (segments, currentMonth, currentYear) {
     const prevMonthBtn = document.getElementById('prevMonthBtn');
     const nextMonthBtn = document.getElementById('nextMonthBtn');
     window.currentMonth = currentMonth;
@@ -666,7 +662,7 @@ export class PlannerPage {
     }
   }
 
-  async navigateClockCalendarMonth(direction, segments, currentMonth, currentYear) {
+  async navigateClockCalendarMonth (direction, segments, currentMonth, currentYear) {
     let newMonth = currentMonth + direction;
     let newYear = currentYear;
     if (newMonth < 0) {
@@ -694,7 +690,7 @@ export class PlannerPage {
     window.currentYear = newYear;
   }
 
-  getMosqueIdFromPage() {
+  getMosqueIdFromPage () {
     const mosqueSelect = document.getElementById('mosque-select');
     if (mosqueSelect && mosqueSelect.value) {
       return mosqueSelect.value;
@@ -710,7 +706,7 @@ export class PlannerPage {
     return null;
   }
 
-  getMonthName(monthIndex) {
+  getMonthName (monthIndex) {
     const monthNames = [
       'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
       'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
@@ -718,7 +714,7 @@ export class PlannerPage {
     return monthNames[monthIndex];
   }
 
-  updateClockCalendarDisplay(month, year, segments) {
+  updateClockCalendarDisplay (month, year, segments) {
     const titleElement = document.getElementById('currentMonthTitle');
     const container = document.getElementById('clockCalendarDays');
     if (!titleElement || !container) return;
@@ -749,7 +745,7 @@ export class PlannerPage {
     }
   }
 
-  showPlanningSections() {
+  showPlanningSections () {
     const selectors = [
       '.how-it-works-section',
       '.benefits-section'
@@ -762,25 +758,25 @@ export class PlannerPage {
         setTimeout(() => section.classList.add('visible'), 100);
       }
     });
-    
+
     // Scroll to the benefits section (Agenda des prières)
     const benefitsSection = document.querySelector('.benefits-section');
     if (benefitsSection) {
       setTimeout(() => {
-        benefitsSection.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
+        benefitsSection.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
         });
       }, 500);
     }
-    
+
     const noDataSection = document.querySelector('.no-data');
     if (noDataSection) {
       noDataSection.classList.add('hidden');
     }
   }
 
-  setupPlanningAnimation() {
+  setupPlanningAnimation () {
     const hasPlanningData = document.querySelector('.how-it-works-section') !== null;
     const hasClockConfig = document.getElementById('clockConfig') !== null;
     if (hasPlanningData && hasClockConfig) {
@@ -792,7 +788,7 @@ export class PlannerPage {
     }
   }
 
-  static initClock() {
+  static initClock () {
     const clockConfig = document.getElementById('clockConfig');
     if (!clockConfig) return;
     try {
@@ -812,7 +808,7 @@ export class PlannerPage {
     }
   }
 
-  updateCalendarSelection(index) {
+  updateCalendarSelection (index) {
     const previousSelected = document.querySelector('#clockCalendar .calendar-day.selected');
     if (previousSelected) {
       previousSelected.classList.remove('selected');
@@ -829,36 +825,35 @@ export class PlannerPage {
     }
   }
 
-  setupProgressIndicatorDetachment() {
+  setupProgressIndicatorDetachment () {
     // Observer to detect when progress-indicator leaves viewport
     const progressIndicator = document.getElementById('progressIndicatorHero');
     const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
-    
+
     if (!progressIndicator || !progressIndicatorFixed) return;
-    
+
     let isFixedVisible = false;
     let lastScrollY = window.scrollY;
-    
+
     // More reactive scroll detection
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
       const progressRect = progressIndicator.getBoundingClientRect();
-      
+
       // Detect downward scroll from first pixel
       if (scrollDirection === 'down' && currentScrollY > 10 && !isFixedVisible) {
         this.triggerDetachmentAnimation();
         isFixedVisible = true;
-      }
-      // Detect upward return
-      else if (scrollDirection === 'up' && currentScrollY < 50 && isFixedVisible) {
+      } else if (scrollDirection === 'up' && currentScrollY < 50 && isFixedVisible) {
+        // Detect upward return
         this.hideFixedProgressIndicator();
         isFixedVisible = false;
       }
-      
+
       lastScrollY = currentScrollY;
     };
-    
+
     // Use throttling to optimize performance
     let ticking = false;
     const throttledScroll = () => {
@@ -870,50 +865,50 @@ export class PlannerPage {
         ticking = true;
       }
     };
-    
+
     window.addEventListener('scroll', throttledScroll, { passive: true });
-    
+
     // Synchronize states between the two progress indicators
     this.syncProgressIndicators();
   }
 
-  triggerDetachmentAnimation() {
+  triggerDetachmentAnimation () {
     const progressIndicator = document.getElementById('progressIndicatorHero');
     const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
-    
+
     if (!progressIndicator || !progressIndicatorFixed) return;
-    
+
     // Show fixed bar immediately
     progressIndicatorFixed.classList.add('visible');
     this.syncProgressIndicators();
-    
+
     // Simply hide the original progress-indicator
     progressIndicator.classList.add('detaching');
   }
 
-  hideFixedProgressIndicator() {
+  hideFixedProgressIndicator () {
     const progressIndicator = document.getElementById('progressIndicatorHero');
     const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
-    
+
     if (!progressIndicator || !progressIndicatorFixed) return;
-    
+
     // Hide the fixed progress indicator immediately
     progressIndicatorFixed.classList.remove('visible');
-    
+
     // Reset the original progress-indicator
     progressIndicator.classList.remove('detaching');
   }
 
-  syncProgressIndicators() {
+  syncProgressIndicators () {
     const progressIndicator = document.getElementById('progressIndicatorHero');
     const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
-    
+
     if (!progressIndicator || !progressIndicatorFixed) return;
-    
+
     // Copy the steps classes from the original bar to the fixed bar
     const originalSteps = progressIndicator.querySelectorAll('.progress-step');
     const fixedSteps = progressIndicatorFixed.querySelectorAll('.progress-step');
-    
+
     originalSteps.forEach((step, index) => {
       if (fixedSteps[index]) {
         // Copy state classes
@@ -922,7 +917,7 @@ export class PlannerPage {
     });
   }
 
-  initializeProgressSystem() {
+  initializeProgressSystem () {
     // Progress state
     this.progressState = {
       mosqueSelected: false,
@@ -930,43 +925,43 @@ export class PlannerPage {
       planningGenerated: false,
       downloadsAvailable: false
     };
-    
+
     // Observe sections
     this.setupSectionObservers();
-    
+
     // Observe forms
     this.setupFormObservers();
-    
+
     // Add click events on progress-steps
     this.setupProgressStepClicks();
-    
+
     // Check initial state based on existing data
     this.checkInitialState();
-    
+
     // Initialize state
     this.updateProgressIndicator(0);
   }
 
-  checkInitialState() {
+  checkInitialState () {
     // Check if there's already data on the page (e.g., from a previous session)
     const mosqueSelect = document.getElementById('mosque-select');
     if (mosqueSelect && mosqueSelect.value) {
       this.progressState.mosqueSelected = true;
     }
-    
+
     // Check if configuration form has values
     const configForm = document.getElementById('configForm');
     if (configForm) {
       const paddingBefore = configForm.querySelector('input[name="padding_before"]');
       const paddingAfter = configForm.querySelector('input[name="padding_after"]');
       const includeSunset = configForm.querySelector('input[name="include_sunset"]');
-      
+
       if (paddingBefore && paddingAfter && includeSunset) {
         const hasPaddingValues = paddingBefore.value && paddingAfter.value &&
-                                !isNaN(parseInt(paddingBefore.value)) && 
+                                !isNaN(parseInt(paddingBefore.value)) &&
                                 !isNaN(parseInt(paddingAfter.value));
         const hasSunsetConfig = includeSunset.checked !== undefined;
-        
+
         this.progressState.configCompleted = hasPaddingValues && hasSunsetConfig;
       } else {
         this.progressState.configCompleted = false;
@@ -974,56 +969,56 @@ export class PlannerPage {
     } else {
       this.progressState.configCompleted = false;
     }
-    
+
     // Check if planning data exists
     this.progressState.planningGenerated = this.hasPlanningData();
-    
+
     // Check if download data exists
     this.progressState.downloadsAvailable = this.hasDownloadData();
-    
+
     // Update display based on initial state
     this.updateProgressDisplay();
   }
 
-  updateProgressState() {
+  updateProgressState () {
     // Update state based on interface reality
     const mosqueSelect = document.getElementById('mosque-select');
-    this.progressState.mosqueSelected = mosqueSelect && mosqueSelect.value ? true : false;
-    
+    this.progressState.mosqueSelected = !!(mosqueSelect && mosqueSelect.value);
+
     // Check configuration completion more rigorously
     const configForm = document.getElementById('configForm');
     if (configForm) {
       const paddingBefore = configForm.querySelector('input[name="padding_before"]');
       const paddingAfter = configForm.querySelector('input[name="padding_after"]');
       const includeSunset = configForm.querySelector('input[name="include_sunset"]');
-      
+
       // Check if both padding values are filled and valid
-      const hasPaddingValues = paddingBefore && paddingAfter && 
+      const hasPaddingValues = paddingBefore && paddingAfter &&
                               paddingBefore.value && paddingAfter.value &&
-                              !isNaN(parseInt(paddingBefore.value)) && 
+                              !isNaN(parseInt(paddingBefore.value)) &&
                               !isNaN(parseInt(paddingAfter.value));
-      
+
       // Check if sunset option is selected (if it exists)
       const hasSunsetConfig = !includeSunset || includeSunset.checked !== undefined;
-      
+
       this.progressState.configCompleted = hasPaddingValues && hasSunsetConfig;
     } else {
       this.progressState.configCompleted = false;
     }
-    
+
     // Check if planning data actually exists
     this.progressState.planningGenerated = this.hasPlanningData();
-    
+
     // Check if download data actually exists
     this.progressState.downloadsAvailable = this.hasDownloadData();
-    
+
     // Update the progress-indicator display
     this.updateProgressDisplay();
   }
 
-  updateProgressDisplay() {
+  updateProgressDisplay () {
     let currentStep = 0;
-    
+
     if (this.progressState.downloadsAvailable) {
       currentStep = 3;
     } else if (this.progressState.planningGenerated && this.progressState.configCompleted) {
@@ -1034,17 +1029,17 @@ export class PlannerPage {
     } else {
       currentStep = 0;
     }
-    
+
     this.updateProgressIndicator(currentStep);
   }
 
-  setupSectionObservers() {
+  setupSectionObservers () {
     // Remove automatic progress completion based on scrolling
     // Progress steps should only be completed based on actual user actions and form completion
     // This prevents false completion when users just scroll down the page
   }
 
-  setupFormObservers() {
+  setupFormObservers () {
     // Observe mosque selection
     const mosqueSelect = document.getElementById('mosque-select');
     if (mosqueSelect) {
@@ -1059,7 +1054,7 @@ export class PlannerPage {
         }
       });
     }
-    
+
     // Observe configuration (excluding features options and config mode switch)
     const configForm = document.getElementById('configForm');
     if (configForm) {
@@ -1073,7 +1068,7 @@ export class PlannerPage {
           'include_adhkar',
           'configModeSwitch'
         ];
-        
+
         if (!excludedOptions.includes(input.id)) {
           input.addEventListener('change', () => {
             this.checkConfigCompletion();
@@ -1086,37 +1081,37 @@ export class PlannerPage {
     }
   }
 
-  checkConfigCompletion() {
+  checkConfigCompletion () {
     const configForm = document.getElementById('configForm');
     if (!configForm) return;
-    
+
     // Only check essential configuration elements (paddings)
     const paddingBefore = configForm.querySelector('input[name="global_padding_before"]');
     const paddingAfter = configForm.querySelector('input[name="global_padding_after"]');
-    
+
     // Also check individual padding mode if it exists
     const configModeSwitch = document.getElementById('configModeSwitch');
     const isIndividualMode = configModeSwitch && configModeSwitch.checked;
-    
+
     if (isIndividualMode) {
       // In individual mode, check if at least one prayer has valid padding values
       const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
       let hasValidIndividualPaddings = false;
-      
+
       prayers.forEach(prayer => {
         const beforeInput = document.getElementById(`${prayer}_padding_before`);
         const afterInput = document.getElementById(`${prayer}_padding_after`);
-        
-        if (beforeInput && afterInput && 
+
+        if (beforeInput && afterInput &&
             beforeInput.value && afterInput.value &&
-            !isNaN(parseInt(beforeInput.value)) && 
+            !isNaN(parseInt(beforeInput.value)) &&
             !isNaN(parseInt(afterInput.value))) {
           hasValidIndividualPaddings = true;
         }
       });
-      
+
       const isComplete = hasValidIndividualPaddings;
-      
+
       if (isComplete && !this.progressState.configCompleted) {
         this.progressState.configCompleted = true;
         this.updateProgressState();
@@ -1128,11 +1123,11 @@ export class PlannerPage {
       // In global mode, check global padding values
       if (paddingBefore && paddingAfter) {
         const hasPaddingValues = paddingBefore.value && paddingAfter.value &&
-                                !isNaN(parseInt(paddingBefore.value)) && 
+                                !isNaN(parseInt(paddingBefore.value)) &&
                                 !isNaN(parseInt(paddingAfter.value));
-        
+
         const isComplete = hasPaddingValues;
-        
+
         if (isComplete && !this.progressState.configCompleted) {
           this.progressState.configCompleted = true;
           this.updateProgressState();
@@ -1150,32 +1145,32 @@ export class PlannerPage {
     }
   }
 
-  scrollToConfig() {
+  scrollToConfig () {
     const configCard = document.querySelector('.summary-card.config-info');
     if (configCard) {
       setTimeout(() => {
-        configCard.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center' 
+        configCard.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
         });
       }, 500);
     }
   }
 
-  updateProgressIndicator(stepIndex) {
+  updateProgressIndicator (stepIndex) {
     const progressIndicator = document.getElementById('progressIndicatorHero');
     const progressIndicatorFixed = document.getElementById('progressIndicatorFixed');
-    
+
     if (!progressIndicator || !progressIndicatorFixed) return;
-    
+
     const indicators = [progressIndicator, progressIndicatorFixed];
-    
+
     indicators.forEach(indicator => {
       const steps = indicator.querySelectorAll('.progress-step');
-      
+
       steps.forEach((step, index) => {
         step.classList.remove('active', 'completed');
-        
+
         if (index < stepIndex) {
           step.classList.add('completed');
         } else if (index === stepIndex) {
@@ -1183,17 +1178,17 @@ export class PlannerPage {
         }
       });
     });
-    
+
     // Add a transition animation
     this.animateProgressTransition(stepIndex);
   }
 
-  animateProgressTransition(stepIndex) {
+  animateProgressTransition (stepIndex) {
     const indicators = [
       document.getElementById('progressIndicatorHero'),
       document.getElementById('progressIndicatorFixed')
     ];
-    
+
     indicators.forEach(indicator => {
       if (indicator) {
         const activeStep = indicator.querySelector('.progress-step.active');
@@ -1207,12 +1202,12 @@ export class PlannerPage {
     });
   }
 
-  setupProgressStepClicks() {
+  setupProgressStepClicks () {
     const indicators = [
       document.getElementById('progressIndicatorHero'),
       document.getElementById('progressIndicatorFixed')
     ];
-    
+
     indicators.forEach(indicator => {
       if (indicator) {
         const steps = indicator.querySelectorAll('.progress-step');
@@ -1225,36 +1220,36 @@ export class PlannerPage {
     });
   }
 
-  navigateToStep(stepIndex) {
+  navigateToStep (stepIndex) {
     const sections = {
       0: '.summary-card.mosque-info',
       1: '.summary-card.config-info',
       2: '.benefits-section',
       3: '.how-it-works-section'
     };
-    
+
     const targetSelector = sections[stepIndex];
     if (!targetSelector) return;
-    
+
     const targetElement = document.querySelector(targetSelector);
     if (!targetElement) return;
-    
+
     // Click animation on the progress-step
     this.animateStepClick(stepIndex);
-    
+
     // Calculate the offset for the progress-indicator-fixed
     const fixedIndicator = document.getElementById('progressIndicatorFixed');
     let offset = 0;
-    
+
     if (fixedIndicator && fixedIndicator.classList.contains('visible')) {
       offset = fixedIndicator.offsetHeight;
     }
-    
+
     // Scroll to the section with offset
     setTimeout(() => {
       const targetRect = targetElement.getBoundingClientRect();
       const scrollTop = window.pageYOffset + targetRect.top - offset - 20; // 20px de marge
-      
+
       window.scrollTo({
         top: scrollTop,
         behavior: 'smooth'
@@ -1262,71 +1257,71 @@ export class PlannerPage {
     }, 200);
   }
 
-  isStepAccessible(stepIndex) {
+  isStepAccessible (stepIndex) {
     switch (stepIndex) {
-      case 0: return true; // Always accessible
-      case 1: return this.progressState.mosqueSelected;
-      case 2: return this.progressState.planningGenerated;
-      case 3: return this.progressState.downloadsAvailable;
-      default: return false;
+    case 0: return true; // Always accessible
+    case 1: return this.progressState.mosqueSelected;
+    case 2: return this.progressState.planningGenerated;
+    case 3: return this.progressState.downloadsAvailable;
+    default: return false;
     }
   }
 
-  hasPlanningData() {
+  hasPlanningData () {
     // Check if benefits-section exists and contains data
     const benefitsSection = document.querySelector('.benefits-section');
     if (!benefitsSection) return false;
-    
+
     // Check if section is not hidden
     if (benefitsSection.classList.contains('hidden')) return false;
-    
+
     // Check if there is planning data (clock, timeline, etc.)
     const clockContent = document.getElementById('clockContent');
     const timelineSvg = document.querySelector('.slots-timeline-svg');
-    
+
     // Check if global planning data exists
-    const hasGlobalData = window.currentMosqueId && 
-                         window.currentPaddingBefore && 
+    const hasGlobalData = window.currentMosqueId &&
+                         window.currentPaddingBefore &&
                          window.currentPaddingAfter;
-    
+
     // Check if visual components have content
     const hasClockContent = clockContent && clockContent.children.length > 0;
     const hasTimelineContent = timelineSvg && timelineSvg.children.length > 0;
-    
+
     // Check if segments data exists (from API response)
     const hasSegmentsData = window.currentSegments && window.currentSegments.length > 0;
-    
+
     return hasGlobalData && (hasClockContent || hasTimelineContent || hasSegmentsData);
   }
 
-  hasDownloadData() {
+  hasDownloadData () {
     // Check if how-it-works-section exists and contains download links
     const downloadsSection = document.querySelector('.how-it-works-section');
     if (!downloadsSection) return false;
-    
+
     // Check if section is not hidden
     if (downloadsSection.classList.contains('hidden')) return false;
-    
+
     // Check if there are download links with valid href
     const downloadCards = downloadsSection.querySelectorAll('.download-card');
     let hasValidDownloads = false;
-    
+
     downloadCards.forEach(card => {
       const href = card.getAttribute('href');
       if (href && href !== '#' && href !== '') {
         hasValidDownloads = true;
       }
     });
-    
+
     return hasValidDownloads;
   }
 
-  animateStepClick(stepIndex) {
+  animateStepClick (stepIndex) {
     const indicators = [
       document.getElementById('progressIndicatorHero'),
       document.getElementById('progressIndicatorFixed')
     ];
-    
+
     indicators.forEach(indicator => {
       if (indicator) {
         const step = indicator.querySelectorAll('.progress-step')[stepIndex];
@@ -1340,7 +1335,7 @@ export class PlannerPage {
     });
   }
 
-  toggleConfigMode(isIndividualMode, globalConfigSection, individualConfigSection) {
+  toggleConfigMode (isIndividualMode, globalConfigSection, individualConfigSection) {
     // Disable/enable global configuration inputs
     const globalInputs = globalConfigSection.querySelectorAll('input');
     globalInputs.forEach(input => {
@@ -1351,7 +1346,7 @@ export class PlannerPage {
         input.style.opacity = '1';
       }
     });
-    
+
     // Show/hide individual section
     if (isIndividualMode) {
       individualConfigSection.style.display = 'block';
@@ -1360,19 +1355,18 @@ export class PlannerPage {
     }
   }
 
-  setupPrayerPaddingConfig() {
-    
+  setupPrayerPaddingConfig () {
     // Switch to toggle between global and individual configuration
     const configModeSwitch = document.getElementById('configModeSwitch');
     const globalConfigSection = document.getElementById('globalConfigSection');
     const individualConfigSection = document.getElementById('individualConfigSection');
     const backToGlobalBtn = document.getElementById('backToGlobalBtn');
-    
+
     if (configModeSwitch && globalConfigSection && individualConfigSection) {
       // Initialize initial state
       const isIndividualMode = configModeSwitch.checked;
       this.toggleConfigMode(isIndividualMode, globalConfigSection, individualConfigSection);
-      
+
       // Update switch label for initial state
       const switchLabel = document.querySelector('.switch-label');
       if (switchLabel) {
@@ -1383,12 +1377,12 @@ export class PlannerPage {
           switchLabel.classList.remove('active');
         }
       }
-      
+
       configModeSwitch.addEventListener('change', () => {
         const isIndividualMode = configModeSwitch.checked;
-        
+
         this.toggleConfigMode(isIndividualMode, globalConfigSection, individualConfigSection);
-        
+
         // Update switch label to indicate current mode
         const switchLabel = document.querySelector('.switch-label');
         if (switchLabel) {
@@ -1399,12 +1393,12 @@ export class PlannerPage {
             switchLabel.classList.remove('active');
           }
         }
-        
+
         // Don't trigger configuration completion check on switch change
         // The user needs to actually fill in the configuration values
       });
     }
-    
+
     // Button to return to global configuration
     if (backToGlobalBtn && configModeSwitch) {
       backToGlobalBtn.addEventListener('click', () => {
@@ -1421,12 +1415,12 @@ export class PlannerPage {
 
     // Real-time validation of minimum padding for individual paddings
     const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
-    
+
     // Initial value validation
     prayers.forEach(prayer => {
       const beforeInput = document.getElementById(`${prayer}_padding_before`);
       const afterInput = document.getElementById(`${prayer}_padding_after`);
-      
+
       // Check and correct default values if necessary
       if (beforeInput && !beforeInput.value) {
         beforeInput.value = prayer === 'sunset' ? 5 : 10;
@@ -1435,18 +1429,18 @@ export class PlannerPage {
         afterInput.value = prayer === 'sunset' ? 15 : 35;
       }
     });
-    
+
     prayers.forEach(prayer => {
       const afterInput = document.getElementById(`${prayer}_padding_after`);
-      
+
       if (afterInput) {
         afterInput.addEventListener('input', () => {
           const value = parseInt(afterInput.value) || 0;
-          
+
           if (value < this.MIN_PADDING_AFTER) {
             afterInput.style.borderColor = '#f56565';
             afterInput.title = `Minimum ${this.MIN_PADDING_AFTER} minutes required for uniform display`;
-            
+
             // Show padding information
             this.showPaddingInfo(prayer, value, this.MIN_PADDING_AFTER);
           } else {
@@ -1463,11 +1457,11 @@ export class PlannerPage {
     if (globalPaddingAfter) {
       globalPaddingAfter.addEventListener('input', () => {
         const value = parseInt(globalPaddingAfter.value) || 0;
-        
+
         if (value < this.MIN_PADDING_AFTER) {
           globalPaddingAfter.style.borderColor = '#f56565';
           globalPaddingAfter.title = `Minimum ${this.MIN_PADDING_AFTER} minutes required for uniform display`;
-          
+
           // Show padding information
           this.showPaddingInfo('global', value, this.MIN_PADDING_AFTER);
         } else {
@@ -1485,12 +1479,12 @@ export class PlannerPage {
         // Reset global values
         if (globalPaddingBefore) globalPaddingBefore.value = 10;
         if (globalPaddingAfter) globalPaddingAfter.value = 35;
-        
+
         // Reset all individual paddings
         prayers.forEach(prayer => {
           const beforeInput = document.getElementById(`${prayer}_padding_before`);
           const afterInput = document.getElementById(`${prayer}_padding_after`);
-          
+
           if (beforeInput) {
             beforeInput.value = prayer === 'sunset' ? 5 : 10;
           }
@@ -1500,7 +1494,7 @@ export class PlannerPage {
             afterInput.title = '';
           }
         });
-        
+
         this.hidePaddingInfo();
       });
     }
@@ -1510,18 +1504,18 @@ export class PlannerPage {
       applyGlobalBtn.addEventListener('click', () => {
         const globalBefore = parseInt(globalPaddingBefore.value) || 10;
         const globalAfter = parseInt(globalPaddingAfter.value) || 35;
-        
+
         prayers.forEach(prayer => {
           const beforeInput = document.getElementById(`${prayer}_padding_before`);
           const afterInput = document.getElementById(`${prayer}_padding_after`);
-          
+
           if (beforeInput) {
             beforeInput.value = prayer === 'sunset' ? Math.min(globalBefore, 5) : globalBefore;
           }
           if (afterInput) {
             const newValue = prayer === 'sunset' ? Math.min(globalAfter, 15) : globalAfter;
             afterInput.value = newValue;
-            
+
             // Validate minimum padding
             if (newValue < this.MIN_PADDING_AFTER) {
               afterInput.style.borderColor = '#f56565';
@@ -1532,54 +1526,54 @@ export class PlannerPage {
             }
           }
         });
-        
+
         this.hidePaddingInfo();
       });
     }
   }
 
-  showPaddingInfo(prayer, currentValue, minValue) {
+  showPaddingInfo (prayer, currentValue, minValue) {
     // Hide all existing padding-info
     const existingInfos = document.querySelectorAll('.padding-info');
     existingInfos.forEach(info => {
       info.style.display = 'none';
     });
-    
+
     // Find padding-info - search throughout the page
-    let targetInfo = document.querySelector('.padding-info');
-    
+    const targetInfo = document.querySelector('.padding-info');
+
     if (targetInfo) {
       // Update content with specific information
       const infoContent = targetInfo.querySelector('.info-content');
       if (infoContent) {
         const prayerNames = {
-          'fajr': 'Fajr',
-          'sunset': 'Sunset',
-          'dhuhr': 'Dhuhr',
-          'asr': 'Asr',
-          'maghrib': 'Maghrib',
-          'isha': 'Isha',
-          'global': 'Global Configuration'
+          fajr: 'Fajr',
+          sunset: 'Sunset',
+          dhuhr: 'Dhuhr',
+          asr: 'Asr',
+          maghrib: 'Maghrib',
+          isha: 'Isha',
+          global: 'Global Configuration'
         };
-        
+
         infoContent.innerHTML = `
           <strong>${prayerNames[prayer]}</strong> : The after padding (${currentValue} min) will be automatically increased to ${minValue} min for uniform display in calendars.
         `;
       }
-      
+
       // Show with animation
       targetInfo.style.display = 'block';
       targetInfo.style.animation = 'slideDown 0.3s ease';
     }
   }
 
-  hidePaddingInfo() {
+  hidePaddingInfo () {
     // Check if no input has a value below minimum
     const prayers = ['fajr', 'sunset', 'dhuhr', 'asr', 'maghrib', 'isha'];
     const globalPaddingAfter = document.getElementById('global_padding_after');
-    
+
     let shouldHide = true;
-    
+
     // Check individual paddings
     prayers.forEach(prayer => {
       const afterInput = document.getElementById(`${prayer}_padding_after`);
@@ -1587,12 +1581,12 @@ export class PlannerPage {
         shouldHide = false;
       }
     });
-    
+
     // Check global padding
     if (globalPaddingAfter && parseInt(globalPaddingAfter.value) < this.MIN_PADDING_AFTER) {
       shouldHide = false;
     }
-    
+
     // Hide padding-info only if all paddings are correct
     if (shouldHide) {
       const paddingInfos = document.querySelectorAll('.padding-info');
@@ -1602,24 +1596,24 @@ export class PlannerPage {
     }
   }
 
-  resetProgressState() {
+  resetProgressState () {
     // Reset all progress states
     this.progressState.mosqueSelected = false;
     this.progressState.configCompleted = false;
     this.progressState.planningGenerated = false;
     this.progressState.downloadsAvailable = false;
-    
+
     // Clear global data
     window.currentMosqueId = null;
     window.currentPaddingBefore = null;
     window.currentPaddingAfter = null;
     window.currentSegments = null;
-    
+
     // Update display
     this.updateProgressIndicator(0);
   }
 
-  setupFeaturesOptions() {
+  setupFeaturesOptions () {
     // Setup event listeners for features options
     const featuresOptions = [
       'include_voluntary_fasts',
@@ -1640,7 +1634,7 @@ export class PlannerPage {
     this.setupConditionalOptions();
   }
 
-  setupConditionalOptions() {
+  setupConditionalOptions () {
     // Currently no conditional logic needed for features options
     // This method is kept for future extensibility
   }
