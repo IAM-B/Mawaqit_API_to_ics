@@ -20,7 +20,7 @@ def render_slot_editor(req):
         return render_get()
 
 
-# Pour GET : retourne une interface d’édition avec quelques créneaux factices
+# Pour GET : retourne une interface d'edition avec quelques creneaux factices
 def render_get():
     slots = [
         {"start": "2025-05-31T09:00:00", "end": "2025-05-31T10:00:00"},
@@ -29,7 +29,7 @@ def render_get():
     return render_template("slot_editor.html", slots=slots)
 
 
-# Pour POST : à implémenter selon ton besoin (modification, validation, export...)
-def handle_post(req):
+# Pour POST : a implementer selon ton besoin (modification, validation, export...)
+def handle_post(_req):
     # Exemple minimal de retour JSON
     return {"message": "Slot POST not implemented"}, 200

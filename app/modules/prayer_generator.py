@@ -50,7 +50,7 @@ def parse_time_str(time_str: str, date_ref=None) -> datetime:
 
         return datetime.combine(date_ref, time(h, m))
     except Exception as e:
-        raise ValueError(f"Error parsing time '{time_str}': {e!s}")
+        raise ValueError(f"Error parsing time '{time_str}': {e!s}") from e
 
 
 def generate_prayer_ics_file(

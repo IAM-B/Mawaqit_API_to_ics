@@ -37,7 +37,8 @@ def log(msg, level="info"):
 def sanitize_country_name(name: str) -> str:
     name = unidecode(name)
     name = name.lower()
-    name = re.sub(r"[’'‘]", "", name)
+    # On ne garde que l'apostrophe simple et le backtick pour éviter les caractères ambigus
+    name = re.sub(r"['`]", "", name)
     name = re.sub(r"\s+", "_", name)
     name = re.sub(r"[^\w\-]", "", name)
     return name

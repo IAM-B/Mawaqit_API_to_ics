@@ -97,12 +97,7 @@ exclude_lines = [
 
 [tool.ruff]
 # Enable pycodestyle (`E`), Pyflakes (`F`), and isort (`I`) codes
-select = ["E", "F", "I", "W", "B", "C4", "UP", "ARG", "SIM", "TCH", "TID", "Q", "RUF"]
-ignore = ["E501", "E203"]
-
-# Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ["ALL"]
-unfixable = []
+# (déplacé dans [tool.ruff.lint])
 
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -135,6 +130,12 @@ indent-width = 4
 
 # Assume Python 3.9
 target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B", "C4", "UP", "ARG", "SIM", "TCH", "TID", "Q", "RUF"]
+ignore = ["E501", "E203"]
+fixable = ["ALL"]
+unfixable = []
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

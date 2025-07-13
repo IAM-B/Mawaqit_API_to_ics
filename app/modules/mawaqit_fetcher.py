@@ -88,7 +88,7 @@ def fetch_mawaqit_data(
                 print(f"✅ Données récupérées avec succès pour {masjid_id}")
                 return conf_data
             except json.JSONDecodeError as e:
-                raise ValueError(f"JSON error in confData: {e}")
+                raise ValueError(f"JSON error in confData: {e}") from e
 
         except (requests.RequestException, RuntimeError, ValueError) as e:
             last_exception = e

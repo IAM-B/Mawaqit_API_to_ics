@@ -57,7 +57,7 @@ def parse_time_str(s: str) -> datetime:
         if ":" in s and "-" not in s:
             h, m = map(int, s.strip().split(":"))
             return datetime.combine(datetime.today().date(), time(h, m))
-        raise ValueError(f"Unsupported format: {s}")
+        raise ValueError(f"Unsupported format: {s}") from None
 
 
 def adjust_slots_rounding(slots, prayer_adjacent_slots=None):
