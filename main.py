@@ -3,7 +3,6 @@ Main application entry point for Mawaqit to ICS converter.
 This module initializes the Flask application and handles configuration loading.
 """
 
-
 from flask import Flask
 
 from app.controllers.error_handlers import init_error_handlers

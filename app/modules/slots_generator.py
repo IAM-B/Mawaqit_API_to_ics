@@ -5,6 +5,7 @@ This module handles the generation of calendar events for available time slots b
 
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
@@ -58,8 +59,8 @@ def generate_slot_ics_file(
     timezone_str: str,
     padding_before: int,
     padding_after: int,
-    PRAYERS_ORDER: list = None,
-    prayer_paddings: dict = None,
+    PRAYERS_ORDER: Optional[list] = None,
+    prayer_paddings: Optional[dict] = None,
 ) -> str:
     """
     Generate calendar events for available slots between prayers for a single day.
@@ -199,8 +200,8 @@ def generate_slots_by_scope(
     padding_after: int,
     prayer_times: list | dict,
     include_sunset: bool = False,
-    prayer_paddings: dict = None,
-    features_options: dict = None,
+    prayer_paddings: Optional[dict] = None,
+    features_options: Optional[dict] = None,
 ) -> str:
     """
     Generate available slot events for a specific time scope (today/month/year).
@@ -340,7 +341,7 @@ def generate_slots_by_scope(
                         if "sunset" in PRAYERS_ORDER:
                             keys.append("sunset")
                         keys += ["dohr", "asr", "maghreb", "icha"]
-                        times_dict = {k: v for k, v in zip(keys, times_dict)}
+                        times_dict = dict(zip(keys, times_dict))
                     if isinstance(times_dict, dict):
                         append_day_to_calendar(date_obj, times_dict)
                 except Exception as e:

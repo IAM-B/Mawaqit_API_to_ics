@@ -5,6 +5,7 @@ This module handles the generation of ICS calendar files for prayer times with c
 
 from datetime import datetime, time, timedelta
 from pathlib import Path
+from typing import Optional
 from uuid import uuid4
 from zoneinfo import ZoneInfo
 
@@ -60,8 +61,8 @@ def generate_prayer_ics_file(
     padding_after: int,
     prayer_times: list | dict,
     include_sunset: bool = False,
-    prayer_paddings: dict = None,
-    features_options: dict = None,
+    prayer_paddings: Optional[dict] = None,
+    features_options: Optional[dict] = None,
 ) -> str:
     """
     Generate an ICS file containing prayer times with customizable padding.
@@ -271,7 +272,7 @@ def generate_prayer_ics_file(
                         if "sunset" in PRAYERS_ORDER:
                             keys.append("sunset")
                         keys += ["dohr", "asr", "maghreb", "icha"]
-                        times_dict = {k: v for k, v in zip(keys, times_dict)}
+                        times_dict = dict(zip(keys, times_dict))
                     if isinstance(times_dict, dict):
                         filtered_times = {
                             k: v for k, v in times_dict.items() if k in PRAYERS_ORDER

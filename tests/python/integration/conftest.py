@@ -8,11 +8,13 @@ sys.path.insert(
 )
 
 # Import create_app from app.py instead of app/__init__.py
+import os
+import sys
 from pathlib import Path
 
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(
+    0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 
 from main import create_app
 

@@ -64,10 +64,10 @@ def init_routes(app):
             padding_after = int(request.form.get("padding_after", 35))
 
             # Get mosque details from hidden fields
-            mosque_name = request.form.get("mosque_name", "")
-            mosque_address = request.form.get("mosque_address", "")
-            mosque_lat = request.form.get("mosque_lat", "")
-            mosque_lng = request.form.get("mosque_lng", "")
+            request.form.get("mosque_name", "")
+            request.form.get("mosque_address", "")
+            request.form.get("mosque_lat", "")
+            request.form.get("mosque_lng", "")
 
             # Generate planning data using the existing function
             result = handle_planner_post(

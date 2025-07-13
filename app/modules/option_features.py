@@ -4,7 +4,7 @@ This module handles options events, voluntary fasts, Jummah prayers, Hijri dates
 """
 
 from datetime import date, datetime, timedelta
-from typing import Dict, List, Tuple
+from typing import Optional
 from uuid import uuid4
 
 from icalendar import Calendar, Event
@@ -22,7 +22,7 @@ class OptionFeatures:
         """
         self.timezone_str = timezone_str
 
-    def get_hijri_date(self, gregorian_date) -> Tuple[int, int, int]:
+    def get_hijri_date(self, gregorian_date) -> tuple[int, int, int]:
         """
         Convert Gregorian date to Hijri date.
         Uses a simplified algorithm for approximate conversion.
@@ -100,8 +100,8 @@ class OptionFeatures:
         return f"{hijri_day} {hijri_months[hijri_month - 1]} {hijri_year}"
 
     def get_hijri_date_events(
-        self, start_date: date, end_date: date, features_options: Dict = None
-    ) -> List[Dict]:
+        self, start_date: date, end_date: date, features_options: Optional[dict] = None
+    ) -> list[dict]:
         """
         Get Hijri date events for each day with options information integrated.
 
@@ -235,7 +235,7 @@ class OptionFeatures:
         return ""
 
     def add_options_events_to_calendar(
-        self, cal: Calendar, start_date, end_date, features_options: Dict
+        self, cal: Calendar, start_date, end_date, features_options: dict
     ) -> None:
         """
         Add options events to the calendar based on options.
@@ -273,7 +273,7 @@ class OptionFeatures:
                 if hijri_event["type"] == "voluntary_fasts":
                     self._add_event_to_calendar(cal, hijri_event)
 
-    def _add_event_to_calendar(self, cal: Calendar, event_data: Dict) -> None:
+    def _add_event_to_calendar(self, cal: Calendar, event_data: dict) -> None:
         """
         Add a single event to the calendar.
 

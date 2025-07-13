@@ -4,6 +4,7 @@ This module handles the segmentation of time periods into manageable slots.
 """
 
 from datetime import datetime, timedelta
+from typing import Optional
 from zoneinfo import ZoneInfo
 
 
@@ -12,7 +13,7 @@ def segment_available_time(
     tz_str: str,
     padding_before: int,
     padding_after: int,
-    prayer_paddings: dict = None,
+    prayer_paddings: Optional[dict] = None,
 ):
     """
     Segment available time between prayer times into slots.

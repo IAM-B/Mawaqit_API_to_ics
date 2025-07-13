@@ -476,13 +476,9 @@ def handle_planner_post(masjid_id, scope, padding_before, padding_after):
                 )
         elif isinstance(prayer_times, list):
             if scope == "month":
-                # Use target month/year if provided, otherwise use current
-                if target_month and target_year:
-                    month = int(target_month)
-                    year = int(target_year)
-                else:
-                    month = datetime.now().month
-                    year = datetime.now().year
+                # Use current month/year
+                month = datetime.now().month
+                year = datetime.now().year
 
                 for i, daily in enumerate(prayer_times):
                     if not isinstance(daily, dict):
@@ -987,6 +983,9 @@ def handle_generate_ics():
         # Normalize data for month scope
         if scope == "month":
             prayer_times = normalize_month_data(prayer_times)
+
+        # Get include_sunset from request data
+        include_sunset = data.get("include_sunset", False)
 
         # Generate ICS file
         ics_path = generate_prayer_ics_file(

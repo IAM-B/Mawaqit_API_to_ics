@@ -7,7 +7,7 @@ import hashlib
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 class ICSCacheManager:
@@ -15,7 +15,7 @@ class ICSCacheManager:
     Manages caching for ICS file generation to avoid redundant API calls and processing.
     """
 
-    def __init__(self, cache_dir: str = None):
+    def __init__(self, cache_dir: Optional[str] = None):
         """
         Initialize the cache manager.
 
@@ -34,7 +34,7 @@ class ICSCacheManager:
         self.metadata_file = self.cache_dir / "cache_metadata.json"
         self.metadata = self._load_metadata()
 
-    def _load_metadata(self) -> Dict[str, Any]:
+    def _load_metadata(self) -> dict[str, Any]:
         """Load cache metadata from file."""
         if self.metadata_file.exists():
             try:
@@ -60,8 +60,8 @@ class ICSCacheManager:
         padding_after: int,
         include_sunset: bool,
         file_type: str,
-        prayer_paddings: dict = None,
-        features_options: dict = None,
+        prayer_paddings: Optional[dict] = None,
+        features_options: Optional[dict] = None,
     ) -> str:
         """
         Generate a unique cache key based on generation parameters.
@@ -145,8 +145,8 @@ class ICSCacheManager:
         padding_after: int,
         include_sunset: bool,
         file_type: str,
-        prayer_paddings: dict = None,
-        features_options: dict = None,
+        prayer_paddings: Optional[dict] = None,
+        features_options: Optional[dict] = None,
         max_age_hours: int = 24,
     ) -> bool:
         """
@@ -224,8 +224,8 @@ class ICSCacheManager:
         padding_after: int,
         include_sunset: bool,
         file_type: str,
-        prayer_paddings: dict = None,
-        features_options: dict = None,
+        prayer_paddings: Optional[dict] = None,
+        features_options: Optional[dict] = None,
     ) -> Optional[str]:
         """
         Get the path to a cached file if it exists and is valid.
@@ -281,8 +281,8 @@ class ICSCacheManager:
         file_type: str,
         file_content: bytes,
         original_path: str,
-        prayer_paddings: dict = None,
-        features_options: dict = None,
+        prayer_paddings: Optional[dict] = None,
+        features_options: Optional[dict] = None,
     ) -> str:
         """
         Save a generated file to cache.
@@ -350,8 +350,8 @@ class ICSCacheManager:
         include_sunset: bool,
         file_type: str,
         destination_path: str,
-        prayer_paddings: dict = None,
-        features_options: dict = None,
+        prayer_paddings: Optional[dict] = None,
+        features_options: Optional[dict] = None,
     ) -> bool:
         """
         Copy a cached file to the destination path.
@@ -400,7 +400,7 @@ class ICSCacheManager:
             print(f"❌ Error copying cached file: {e}")
             return False
 
-    def clear_cache(self, max_age_hours: int = None):
+    def clear_cache(self, max_age_hours: Optional[int] = None):
         """
         Clear old cache files.
 
@@ -433,7 +433,7 @@ class ICSCacheManager:
         except Exception as e:
             print(f"❌ Error clearing cache: {e}")
 
-    def get_cache_stats(self) -> Dict[str, Any]:
+    def get_cache_stats(self) -> dict[str, Any]:
         """
         Get cache statistics.
 
