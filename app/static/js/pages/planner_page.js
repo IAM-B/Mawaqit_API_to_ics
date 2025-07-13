@@ -1,8 +1,6 @@
 // Planner page logic: forms, AJAX, feedback, config, download, etc.
 
-import { initializeCompactMap } from '../components/map.js';
 import { Clock } from '../components/clock.js';
-import { formatDateForDisplay, timeToMinutes, minutesToTime } from '../utils/utils.js';
 import { getPaddingBefore, getPaddingAfter } from '../utils/padding.js';
 
 export class PlannerPage {
@@ -120,22 +118,20 @@ export class PlannerPage {
             throw new Error(result.error || 'Erreur lors de la génération');
           }
         } catch (error) {
-          console.error('Error generating planning:', error);
-
           // Improve error messages for the user
-          let errorMessage = 'Error generating planning';
+          // let errorMessage = 'Error generating planning';
 
-          if (error.message.includes('HTTP error 500')) {
-            errorMessage = 'Mawaqit service temporarily unavailable. Please try again in a few seconds.';
-          } else if (error.message.includes('timeout') || error.message.includes('network')) {
-            errorMessage = 'Network connection issue. Please check your connection and try again.';
-          } else if (error.message.includes('Mosque not found')) {
-            errorMessage = 'Mosque not found. Please check the mosque identifier.';
-          } else if (error.message.includes('HTTP error')) {
-            errorMessage = 'Communication error with Mawaqit service. Please try again.';
-          } else if (error.message) {
-            errorMessage = error.message;
-          }
+          // if (error.message.includes('HTTP error 500')) {
+          //   errorMessage = 'Mawaqit service temporarily unavailable. Please try again in a few seconds.';
+          // } else if (error.message.includes('timeout') || error.message.includes('network')) {
+          //   errorMessage = 'Network connection issue. Please check your connection and try again.';
+          // } else if (error.message.includes('Mosque not found')) {
+          //   errorMessage = 'Mosque not found. Please check the mosque identifier.';
+          // } else if (error.message.includes('HTTP error')) {
+          //   errorMessage = 'Communication error with Mawaqit service. Please try again.';
+          // } else if (error.message) {
+          //   errorMessage = error.message;
+          // }
         } finally {
           this.hideLoadingState(submitBtn);
         }
@@ -189,15 +185,6 @@ export class PlannerPage {
         }
         this.initializeClock(data);
       }, 100);
-    }
-    let year, month;
-    if (window.clockCalendar && window.clockCalendar.selectedYear && window.clockCalendar.selectedMonth) {
-      year = window.clockCalendar.selectedYear;
-      month = window.clockCalendar.selectedMonth;
-    } else {
-      const now = new Date();
-      year = now.getFullYear();
-      month = now.getMonth() + 1;
     }
   }
 
@@ -470,7 +457,7 @@ export class PlannerPage {
             throw new Error(result.error || 'Erreur lors de la génération');
           }
         } catch (error) {
-          console.error('Error generating ICS:', error);
+          // Error generating ICS
         } finally {
           button.classList.remove('loading');
           button.disabled = false;
@@ -492,11 +479,9 @@ export class PlannerPage {
   initializeClock (data) {
     const clockContainer = document.getElementById('clockContent');
     if (!clockContainer) {
-      console.error('❌ Clock container #clockContent not found in DOM');
       return;
     }
     if (!data.segments || data.segments.length === 0) {
-      console.warn('⚠️ No segments data available for clock initialization');
       return;
     }
     const clockConfig = document.createElement('div');
@@ -511,48 +496,38 @@ export class PlannerPage {
         const currentMonth = new Date().getMonth();
         if (data.segments[currentMonth] && data.segments[currentMonth].days) {
           clockSegments = data.segments[currentMonth].days;
-        } else {
-          console.warn('⚠️ No days data found for month', currentMonth);
         }
       }
-      try {
-        const clock = new Clock('clockContent', clockSegments, data.scope);
-        window.clockInstance = clock;
-        if (clockSegments && clockSegments.length > 0) {
-          const currentDay = new Date().getDate();
-          const todayIndex = Math.min(currentDay - 1, clockSegments.length - 1);
-          clock.currentIndex = todayIndex;
-          clock.updateClock();
-          this.updateCalendarSelection(todayIndex);
-        } else {
-          console.warn('⚠️ No clock segments available for display');
-        }
-        if (window.calendarViewsManager) {
-          window.calendarViewsManager.setClockInstance(clock);
-        }
-        this.initializeClockCalendar(data.segments, data.scope);
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        if (prevBtn) {
-          prevBtn.addEventListener('click', () => {
-            clock.navigate(-1);
-            this.updateCalendarSelection(clock.currentIndex);
-          });
-        }
-        if (nextBtn) {
-          nextBtn.addEventListener('click', () => {
-            clock.navigate(1);
-            this.updateCalendarSelection(clock.currentIndex);
-          });
-        }
-        setTimeout(() => {
-          Clock.handlePlanningGeneration();
-        }, 200);
-      } catch (error) {
-        console.error('❌ Error creating clock instance:', error);
+      const clock = new Clock('clockContent', clockSegments, data.scope);
+      window.clockInstance = clock;
+      if (clockSegments && clockSegments.length > 0) {
+        const currentDay = new Date().getDate();
+        const todayIndex = Math.min(currentDay - 1, clockSegments.length - 1);
+        clock.currentIndex = todayIndex;
+        clock.updateClock();
+        this.updateCalendarSelection(todayIndex);
       }
-    } else {
-      console.error('❌ Clock class not found in window.Clock');
+      if (window.calendarViewsManager) {
+        window.calendarViewsManager.setClockInstance(clock);
+      }
+      this.initializeClockCalendar(data.segments, data.scope);
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          clock.navigate(-1);
+          this.updateCalendarSelection(clock.currentIndex);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          clock.navigate(1);
+          this.updateCalendarSelection(clock.currentIndex);
+        });
+      }
+      setTimeout(() => {
+        Clock.handlePlanningGeneration();
+      }, 200);
     }
   }
 
@@ -586,7 +561,7 @@ export class PlannerPage {
     this.setupClockCalendarNavigation(segments, currentMonth, currentYear);
   }
 
-  createClockCalendarDay (date, segments, currentMonth, currentYear) {
+  createClockCalendarDay (date, segments, currentMonth, _currentYear) {
     const dayElement = document.createElement('div');
     dayElement.className = 'calendar-day';
     const dayNumber = document.createElement('div');
@@ -604,12 +579,7 @@ export class PlannerPage {
       dayElement.classList.add('selected');
     }
     if (segments && segments.length > 0) {
-      let monthSegments = [];
-      if (segments[currentMonth] && segments[currentMonth].days) {
-        monthSegments = segments[currentMonth].days;
-      } else {
-        monthSegments = segments;
-      }
+      // monthSegments logic removed as it's not used
     }
     dayElement.addEventListener('click', () => {
       if (date.getMonth() === currentMonth) {
@@ -784,27 +754,24 @@ export class PlannerPage {
         Clock.handlePlanningGeneration();
       }, 100);
     } else {
-      console.log('No planning data found, skipping animation');
+      // No planning data found, skipping animation
     }
   }
 
   static initClock () {
     const clockConfig = document.getElementById('clockConfig');
     if (!clockConfig) return;
-    try {
-      const clockData = JSON.parse(clockConfig.dataset.segments);
-      const clockScope = clockConfig.dataset.scope;
-      const clock = new Clock('clockContent', clockData, clockScope);
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
-      if (prevBtn) {
-        prevBtn.addEventListener('click', () => clock.navigate(-1));
-      }
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => clock.navigate(1));
-      }
-    } catch (error) {
-      console.error('Error initializing clock:', error);
+
+    const clockData = JSON.parse(clockConfig.dataset.segments);
+    const clockScope = clockConfig.dataset.scope;
+    const clock = new Clock('clockContent', clockData, clockScope);
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => clock.navigate(-1));
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => clock.navigate(1));
     }
   }
 
@@ -839,7 +806,6 @@ export class PlannerPage {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
-      const progressRect = progressIndicator.getBoundingClientRect();
 
       // Detect downward scroll from first pixel
       if (scrollDirection === 'down' && currentScrollY > 10 && !isFixedVisible) {
@@ -1183,7 +1149,7 @@ export class PlannerPage {
     this.animateProgressTransition(stepIndex);
   }
 
-  animateProgressTransition (stepIndex) {
+  animateProgressTransition (_stepIndex) {
     const indicators = [
       document.getElementById('progressIndicatorHero'),
       document.getElementById('progressIndicatorFixed')

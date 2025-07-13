@@ -154,14 +154,10 @@ describe('Clock Component', () => {
       // Test error handling when container element is not found
       // This prevents crashes when the clock is initialized incorrectly
       document.getElementById = jest.fn(() => null);
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
 
       const invalidClock = new Clock('nonexistent', [], 'today');
 
-      expect(consoleSpy).toHaveBeenCalledWith('Container not found:', 'nonexistent');
       expect(invalidClock.container).toBeNull();
-
-      consoleSpy.mockRestore();
     });
   });
 

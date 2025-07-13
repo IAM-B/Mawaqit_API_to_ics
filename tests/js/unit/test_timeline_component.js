@@ -31,10 +31,9 @@
  */
 
 // Import Timeline class from the new modular structure
-const { Timeline } = require('../../../app/static/js/components/timeline.js');
+import { Timeline } from '../../../app/static/js/components/timeline.js';
 
 // Mock DOM elements
-const mockContainer = document.createElement('div');
 const mockSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 mockSvg.setAttribute('viewBox', '0 0 400 1440');
 

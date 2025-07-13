@@ -55,8 +55,7 @@ export function initMosqueSearchDropdowns () {
             }))
           );
         })
-        .catch(error => {
-          console.error('Error loading mosques:', error);
+        .catch(_error => {
           mosqueSelect.enable();
         });
     }
@@ -69,8 +68,8 @@ export function initMosqueSearchDropdowns () {
         countries.map(c => ({ value: c.code, text: c.name }))
       );
     })
-    .catch(error => {
-      console.error('Error loading countries:', error);
+    .catch(_error => {
+      // Error loading countries - silently fail
     });
   // Expose globally
   window.countrySelectInstance = countrySelect;

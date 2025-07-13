@@ -1,32 +1,15 @@
 /**
- * PlannerPage class tests
+ * Unit tests for planner_page.js component
  *
- * This test suite covers the main planner page component that orchestrates
- * the entire prayer planning experience. The PlannerPage serves as the
- * central coordinator that manages user interactions, data flow, and
- * component synchronization.
- *
- * Key responsibilities tested:
- * - Form handling and validation for mosque and scope selection
- * - Data generation and management for prayer schedules
- * - Component coordination (Timeline, Clock, Calendar)
- * - User interface state management (loading, errors, success)
- * - Navigation and date handling
- * - Event handling and user interactions
- *
- * Architecture:
- * - PlannerPage: Main orchestrator component
- * - Timeline: Visual timeline of prayer times and slots
- * - Clock: Circular visualization of daily schedule
- * - Calendar: Date navigation and selection
- *
- * Dependencies mocked:
- * - Utility functions for time and date handling
+ * This test suite covers the planner page functionality that handles:
+ * - Form submission and validation
+ * - Data loading and state management
+ * - Component synchronization
+ * - Error handling and user feedback
+ * - Navigation between different views
  * - Padding calculations for prayer time adjustments
  * - DOM elements for form and display components
  */
-
-import { PlannerPage } from '../../../app/static/js/pages/planner_page.js';
 
 // Mock utilities for consistent testing
 jest.mock('../../../app/static/js/utils/utils.js', () => ({
@@ -391,9 +374,8 @@ class MockPlannerPage {
     }
   }
 
-  showMessage (message) {
+  showMessage (_message) {
     // Simple message display for user feedback
-    console.log(message);
   }
 
   getCurrentData () {

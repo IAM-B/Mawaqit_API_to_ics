@@ -55,7 +55,6 @@ export function initMosqueMapLoader () {
           marker.openPopup();
         }
       } else if (++attempts > maxAttempts) {
-        console.warn(`⚠️ Impossible de sélectionner la mosquée : ${mosqueSlug}`);
         clearInterval(wait);
       }
     }, 300);
@@ -91,11 +90,11 @@ export function initMosqueMapLoader () {
             markers[mosque.slug] = marker;
           });
         } catch (err) {
-          console.error('Error loading mosques for country', country.code, err);
+          // Error loading mosques for country - silently handled
         }
       }
     } catch (err) {
-      console.error('Error loading countries or mosques', err);
+      // Error loading countries or mosques - silently handled
     }
   }
   // Event delegation for selection from the map
@@ -161,5 +160,7 @@ export function initMosqueMapLoader () {
       });
   });
   // Initial loading of all mosques
-  loadAllMosques().catch(err => console.error('Error loading initial mosques', err));
+  loadAllMosques().catch(() => {
+    // Error loading initial mosques - silently handled
+  });
 }

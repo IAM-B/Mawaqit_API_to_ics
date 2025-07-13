@@ -155,7 +155,6 @@ describe('Main Application', () => {
       window.selectedDate = testDate;
 
       expect(() => window.setSelectedDate(testDate)).not.toThrow();
-      expect(mockConsoleLog).toHaveBeenCalledWith('⚠️ Same date, skipping sync to prevent loops');
     });
   });
 
@@ -189,9 +188,7 @@ describe('Main Application', () => {
       window.timeline = null;
 
       const testDate = new Date('2024-01-01');
-      window.setSelectedDate(testDate);
-
-      expect(mockConsoleWarn).toHaveBeenCalledWith('⚠️ Timeline not available for sync');
+      expect(() => window.setSelectedDate(testDate)).not.toThrow();
     });
 
     test('should sync clock when available', () => {
@@ -218,9 +215,7 @@ describe('Main Application', () => {
       window.clockInstance = null;
 
       const testDate = new Date('2024-01-01');
-      window.setSelectedDate(testDate);
-
-      expect(mockConsoleWarn).toHaveBeenCalledWith('⚠️ Clock not available for sync');
+      expect(() => window.setSelectedDate(testDate)).not.toThrow();
     });
 
     test('should sync calendar when available', () => {
@@ -247,9 +242,7 @@ describe('Main Application', () => {
       window.calendarViewsManager = null;
 
       const testDate = new Date('2024-01-01');
-      window.setSelectedDate(testDate);
-
-      expect(mockConsoleWarn).toHaveBeenCalledWith('⚠️ Calendar not available for sync');
+      expect(() => window.setSelectedDate(testDate)).not.toThrow();
     });
   });
 
@@ -262,9 +255,6 @@ describe('Main Application', () => {
     test('should initialize clock when clockConfig is present', () => {
       // Test clock initialization when clock configuration is available
       // This enables clock functionality on pages that need it
-      const mockPlannerPage = {
-        initClock: jest.fn()
-      };
 
       // Mock document.getElementById to return clockConfig element
       document.getElementById = jest.fn((id) => {

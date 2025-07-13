@@ -9,7 +9,6 @@ export class Clock {
   constructor (containerId, segments, scope) {
     this.container = document.getElementById(containerId);
     if (!this.container) {
-      console.error('Container not found:', containerId);
       return;
     }
     this.segments = segments;
@@ -182,7 +181,6 @@ export class Clock {
     // Apply slot size adjustment for UI purposes, but ensure minimum visibility
     const slotSizeAdjustment = -25;
     const adjustedEndMinutes = endMinutes + slotSizeAdjustment;
-    const adjustedEndTime = minutesToTime(adjustedEndMinutes);
 
     // For night slots that cross midnight, we need special handling
     let startAngle, endAngle;
@@ -242,10 +240,7 @@ export class Clock {
     if (allNightSlotId) {
       path.setAttribute('data-all-night-slot-id', allNightSlotId);
     }
-    const midAngle = (startAngle + endAngle) / 2;
-    const labelRadius = radius - 25;
-    const labelX = centerX + labelRadius * Math.cos((midAngle - 90) * Math.PI / 180);
-    const labelY = centerY + labelRadius * Math.sin((midAngle - 90) * Math.PI / 180);
+
     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     label.setAttribute('x', '150');
     label.setAttribute('y', '150');

@@ -22,12 +22,7 @@
  */
 
 // Import functions to test from the new modular structure
-const {
-  getPaddingBefore,
-  getPaddingAfter,
-  getRealPaddingBefore,
-  getRealPaddingAfter
-} = require('../../../app/static/js/utils/padding.js');
+import { getPaddingBefore, getPaddingAfter } from '../../../app/static/js/utils/padding.js';
 
 describe('Padding.js - Padding utility functions', () => {
   beforeEach(() => {

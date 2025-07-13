@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.Clock = Clock;
 
   // 6. PlannerPage (formulaires, config, etc.)
+  // eslint-disable-next-line no-new
   new PlannerPage();
 
   // 7. Clock initialization if segments are already present (ex: after planning generation)
@@ -36,7 +37,6 @@ window.selectedDate = new Date();
 window.setSelectedDate = function (date) {
   if (!date) return;
   if (window.selectedDate && window.selectedDate.toDateString && window.selectedDate.toDateString() === date.toDateString()) {
-    console.log('⚠️ Same date, skipping sync to prevent loops');
     return;
   }
   window.selectedDate = new Date(date);
@@ -44,21 +44,15 @@ window.setSelectedDate = function (date) {
   // Timeline
   if (window.timeline && typeof window.timeline.setDate === 'function') {
     window.timeline.setDate(window.selectedDate);
-  } else {
-    console.warn('⚠️ Timeline not available for sync');
   }
 
   // Clock
   if (window.clockInstance && typeof window.clockInstance.setDate === 'function') {
     window.clockInstance.setDate(window.selectedDate);
-  } else {
-    console.warn('⚠️ Clock not available for sync');
   }
 
   // Calendar
   if (window.calendarViewsManager && typeof window.calendarViewsManager.setDate === 'function') {
     window.calendarViewsManager.setDate(window.selectedDate);
-  } else {
-    console.warn('⚠️ Calendar not available for sync');
   }
 };

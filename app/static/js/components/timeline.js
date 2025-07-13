@@ -1040,10 +1040,10 @@ export class Timeline {
       }
     } else if (slots && slots.length > 0) {
       // Fallback: use original slots if no prayer times available
-      slots.forEach((slot, index) => {
+      slots.forEach((slot, _index) => {
         const startTime = slot.start_time || slot.start || slot.startTime;
         const endTime = slot.end_time || slot.end || slot.endTime;
-        const title = slot.title || slot.summary || `Slot ${index + 1}`;
+        // const title = slot.title || slot.summary || `Slot ${index + 1}`;
 
         // Calculate slot duration
         const startMinutes = timeToMinutes(startTime);

@@ -30,11 +30,10 @@
  */
 
 // Import CalendarViewsManager class from the new modular structure
-const { CalendarViewsManager } = require('../../../app/static/js/components/calendar.js');
+import { CalendarViewsManager } from '../../../app/static/js/components/calendar.js';
 
 describe('Calendar Component', () => {
   let calendar;
-  let mockContainer;
 
   beforeEach(() => {
     // Setup DOM for tests with realistic calendar structure
@@ -62,8 +61,6 @@ describe('Calendar Component', () => {
         </div>
       </div>
     `;
-
-    mockContainer = document.getElementById('clockCalendar');
 
     // Mock global values that CalendarViewsManager might use
     // These represent the current application state

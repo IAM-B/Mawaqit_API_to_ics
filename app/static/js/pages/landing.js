@@ -30,8 +30,6 @@ function initSmoothRedirects () {
 
 // Initialize all functionality when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('Landing page loaded');
-
   // CTA buttons management
   const ctaButtons = document.querySelectorAll('.cta-button');
 
@@ -46,12 +44,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Handle different actions
       switch (action) {
-      case 'start-planning':
+      case 'start-planning': {
         // Redirect to planner page
         window.location.href = '/planner';
         break;
+      }
 
-      case 'scroll-to-how-it-works':
+      case 'scroll-to-how-it-works': {
         // Scroll to "How it works" section
         const howItWorksSection = document.getElementById('how-it-works');
         if (howItWorksSection) {
@@ -61,9 +60,11 @@ document.addEventListener('DOMContentLoaded', function () {
           });
         }
         break;
+      }
 
       default:
-        console.log('Action non reconnue:', action);
+        // Action non reconnue
+        break;
       }
     });
 
