@@ -17,5 +17,7 @@ def init_error_handlers(app):
     @app.errorhandler(500)
     def internal_error(_e):
         return render_template(
-            "error.html", error_message="Erreur interne du serveur (500)", error_code=500
+            "error.html",
+            error_message="Erreur interne du serveur (500)",
+            error_code=500,
         ), 500
