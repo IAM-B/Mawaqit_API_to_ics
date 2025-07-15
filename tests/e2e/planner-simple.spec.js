@@ -1,10 +1,12 @@
 const { test, expect } = require('@playwright/test');
-const { 
-  navigateToPlanner, 
-  waitForCountriesToLoad, 
-  waitForMosquesToLoad, 
+const {
+  navigateToPlanner,
+  waitForCountriesToLoad,
+  waitForMosquesToLoad,
   fillGlobalPadding,
-  selectCountry,
+  selectFrance,
+  selectMosqueDirectly,
+  waitForFormSubmission,
   waitForElementStable
 } = require('./helpers');
 
@@ -14,10 +16,7 @@ test.describe('Planner Page - Simple Tests', () => {
   });
 
   test('should display configuration form', async ({ page }) => {
-    // Check that page loads correctly
     await expect(page).toHaveTitle(/Planning synchronisé/);
-    
-    // Check form elements with stable waiting
     await waitForElementStable(page, '#country-select');
     await waitForElementStable(page, '#mosque-select');
     await waitForElementStable(page, 'input[name="global_padding_before"]');
@@ -28,36 +27,55 @@ test.describe('Planner Page - Simple Tests', () => {
   test('should load countries in select', async ({ page }) => {
     // Wait for countries to load using helper
     await waitForCountriesToLoad(page);
-    
-    const countrySelect = page.locator('#country-select');
-    const options = await countrySelect.locator('option').count();
-    expect(options).toBeGreaterThan(1);
+
+    // Wait a bit more for TomSelect to populate the options
+    await page.waitForTimeout(2000);
+
+    // Check that TomSelect has more than just the placeholder option
+    const optionsCount = await page.evaluate(() => {
+      const countrySelect = window.countrySelectInstance;
+      return countrySelect && countrySelect.options ? Object.keys(countrySelect.options).length : 0;
+    });
+    expect(optionsCount).toBeGreaterThan(1);
   });
 
   test('should load mosques after country selection', async ({ page }) => {
-    // Wait for countries to load
-    await waitForCountriesToLoad(page);
-    
-    // Select a country
-    await selectCountry(page, 1);
-    
+    // Select France (which has mosques)
+    await selectFrance(page);
+
     // Wait for mosques to load
     await waitForMosquesToLoad(page);
-    
-    const mosqueSelect = page.locator('#mosque-select');
-    const options = await mosqueSelect.locator('option').count();
-    expect(options).toBeGreaterThan(1);
+
+    // Check that TomSelect has more than just the placeholder option
+    const optionsCount = await page.evaluate(() => {
+      const mosqueSelect = window.mosqueSelectInstance;
+      return mosqueSelect && mosqueSelect.options ? Object.keys(mosqueSelect.options).length : 0;
+    });
+    expect(optionsCount).toBeGreaterThan(1);
   });
 
   test('should allow padding configuration', async ({ page }) => {
-    // Configure paddings using helper
     await fillGlobalPadding(page, 15, 30);
-    
-    // Check values
     const paddingBefore = page.locator('input[name="global_padding_before"]');
     const paddingAfter = page.locator('input[name="global_padding_after"]');
     expect(await paddingBefore.inputValue()).toBe('15');
     expect(await paddingAfter.inputValue()).toBe('30');
+  });
+
+  test('should generate timeline after mosque selection', async ({ page }) => {
+    // Complete setup with France
+    await selectFrance(page);
+    await waitForMosquesToLoad(page);
+
+    // Select first mosque
+    await selectMosqueDirectly(page, 'france6947');
+
+    // Fill padding
+    await fillGlobalPadding(page, 10, 15);
+
+    // Submit form and wait for timeline
+    const result = await waitForFormSubmission(page);
+    expect(result).toBe('success');
   });
 });
 
@@ -68,13 +86,10 @@ test.describe('Planner responsive design', () => {
       { width: 1024, height: 768, name: 'Tablet' },
       { width: 375, height: 667, name: 'Mobile' }
     ];
-    
     for (const viewport of viewports) {
       await page.setViewportSize(viewport);
       await navigateToPlanner(page);
-      
-      // Check that form is visible
       await waitForElementStable(page, 'form');
     }
   });
-}); 
+});

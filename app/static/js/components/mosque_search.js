@@ -69,7 +69,7 @@ export function initMosqueSearchDropdowns () {
       );
     })
     .catch(_error => {
-      // Error loading countries - silently fail
+      if (window.showError) window.showError('error-state');
     });
   // Expose globally
   window.countrySelectInstance = countrySelect;

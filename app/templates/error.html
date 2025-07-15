@@ -12,13 +12,34 @@
   <body class="error-page">
     <fieldset>
       <!-- Error message display -->
-      <h1>⚠️ Une erreur est survenue</h1>
-      <h2>Erreur {{ error_code }} : {{ error_message }}</h2>
-
-      <!-- Home button -->
-      <button class="btn-submit">
-        <a href="/" >🏠 Retour à l'accueil</a>
-      </button>
+      {% if error_code == 404 %}
+      <div class="error-404">
+        <h1>⚠️ Une erreur est survenue</h1>
+        <h2>Erreur 404 : Page non trouvée</h2>
+        <div class="error-message">Page non trouvée</div>
+        <button class="btn-submit">
+          <a href="/" >🏠 Retour à l'accueil</a>
+        </button>
+      </div>
+      {% elif error_code == 500 %}
+      <div class="error-state">
+        <h1>⚠️ Une erreur est survenue</h1>
+        <h2>Erreur 500 : Erreur interne du serveur</h2>
+        <div class="error-message">Erreur interne du serveur</div>
+        <button class="btn-submit">
+          <a href="/" >🏠 Retour à l'accueil</a>
+        </button>
+      </div>
+      {% else %}
+      <div class="error-state">
+        <h1>⚠️ Une erreur est survenue</h1>
+        <h2>Erreur {{ error_code }} : {{ error_message }}</h2>
+        <div class="error-message">{{ error_message }}</div>
+        <button class="btn-submit">
+          <a href="/" >🏠 Retour à l'accueil</a>
+        </button>
+      </div>
+      {% endif %}
     </fieldset>
   </body>
 </html>

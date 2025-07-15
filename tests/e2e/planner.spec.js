@@ -1,64 +1,72 @@
 const { test, expect } = require('@playwright/test');
-const { 
-  navigateToPlanner, 
-  waitForCountriesToLoad, 
-  waitForMosquesToLoad, 
-  fillGlobalPadding,
+const {
+  navigateToPlanner,
+  waitForCountriesToLoad,
+  waitForMosquesToLoad,
   selectCountry,
-  selectMosque,
+  selectCountryByCode,
+  fillGlobalPadding,
   waitForElementStable
 } = require('./helpers');
 
 test.describe('Planner Page', () => {
   test.beforeEach(async ({ page }) => {
-    await navigateToPlanner(page);
+    await navigateToPlanner(page, expect);
   });
 
   test('should display configuration form', async ({ page }) => {
-    // Check that page loads correctly
     await expect(page).toHaveTitle(/Planning synchronisé/);
-    
-    // Check form elements with stable waiting
     await waitForElementStable(page, '#country-select');
     await waitForElementStable(page, '#mosque-select');
     await waitForElementStable(page, 'input[name="global_padding_before"]');
     await waitForElementStable(page, 'input[name="global_padding_after"]');
     await waitForElementStable(page, 'button[type="submit"]');
+    // Vérifier que les éléments sont bien visibles
+    await expect(page.locator('#country-select')).toBeVisible();
+    await expect(page.locator('#mosque-select')).toBeVisible();
+    await expect(page.locator('input[name="global_padding_before"]')).toBeVisible();
+    await expect(page.locator('input[name="global_padding_after"]')).toBeVisible();
+    await expect(page.locator('button[type="submit"]')).toBeVisible();
   });
 
   test('should load countries in select', async ({ page }) => {
-    // Wait for countries to load using helper
     await waitForCountriesToLoad(page);
-    
     const countrySelect = page.locator('#country-select');
-    const options = await countrySelect.locator('option').count();
-    expect(options).toBeGreaterThan(1);
+    // Vérifier que le select est bien initialisé
+    await expect(countrySelect).toBeVisible();
+    // Vérifier que TomSelect a bien chargé les pays via JavaScript
+    await page.waitForFunction(() => {
+      return window.countrySelectInstance &&
+        window.countrySelectInstance.options &&
+        Object.keys(window.countrySelectInstance.options).length > 1;
+    }, { timeout: 10000 });
   });
 
   test('should load mosques after country selection', async ({ page }) => {
-    // Wait for countries to load
     await waitForCountriesToLoad(page);
-    
-    // Select a country
-    await selectCountry(page, 1);
-    
-    // Wait for mosques to load
+    // Utiliser la sélection par code pays (plus fiable)
+    await selectCountryByCode(page, 'algerie6641');
     await waitForMosquesToLoad(page);
-    
     const mosqueSelect = page.locator('#mosque-select');
-    const options = await mosqueSelect.locator('option').count();
-    expect(options).toBeGreaterThan(1);
+    // Vérifier que le select mosquée est bien activé
+    await expect(mosqueSelect).toBeEnabled();
+    // Vérifier que TomSelect a bien chargé les mosquées via JavaScript
+    await page.waitForFunction(() => {
+      return window.mosqueSelectInstance &&
+        window.mosqueSelectInstance.options &&
+        Object.keys(window.mosqueSelectInstance.options).length > 1;
+    }, { timeout: 15000 });
   });
 
   test('should allow padding configuration', async ({ page }) => {
-    // Configure paddings using helper
-    await fillGlobalPadding(page, 15, 30);
-    
-    // Check values
+    await fillGlobalPadding(page, 15, 30, expect);
     const paddingBefore = page.locator('input[name="global_padding_before"]');
     const paddingAfter = page.locator('input[name="global_padding_after"]');
     expect(await paddingBefore.inputValue()).toBe('15');
     expect(await paddingAfter.inputValue()).toBe('30');
+    // Vérifier que les champs sont bien remplis et visibles
+    await expect(paddingBefore).toBeVisible();
+    await expect(paddingAfter).toBeVisible();
   });
 });
 
@@ -69,14 +77,15 @@ test.describe('Planner responsive design', () => {
       { width: 1024, height: 768, name: 'Tablet' },
       { width: 375, height: 667, name: 'Mobile' }
     ];
-    
+
     for (const viewport of viewports) {
       await page.setViewportSize(viewport);
-      await navigateToPlanner(page);
-      
-      // Check that forms are visible
+      await navigateToPlanner(page, expect);
       await waitForElementStable(page, '#plannerForm');
       await waitForElementStable(page, '#configForm');
+      // Vérifier que les formulaires sont visibles sur chaque viewport
+      await expect(page.locator('#plannerForm')).toBeVisible();
+      await expect(page.locator('#configForm')).toBeVisible();
     }
   });
 });

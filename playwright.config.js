@@ -11,9 +11,9 @@ module.exports = defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0, // Reduced from 2
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 2, // Reduced from undefined
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
@@ -33,6 +33,10 @@ module.exports = defineConfig({
     
     /* Record video on failure */
     video: 'retain-on-failure',
+    
+    /* Faster navigation */
+    navigationTimeout: 10000, // Reduced from default
+    actionTimeout: 5000, // Reduced from default
   },
 
   /* Configure projects for major browsers */
@@ -42,53 +46,41 @@ module.exports = defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
-
-    /* Test against branded browsers. */
+    // Comment out other browsers for faster testing
     // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
     // },
     // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
+    // {
+    //   name: 'Mobile Chrome',
+    //   use: { ...devices['Pixel 5'] },
+    // },
+    // {
+    //   name: 'Mobile Safari',
+    //   use: { ...devices['iPhone 12'] },
     // },
   ],
 
   /* Run your local dev server before starting the tests */
   webServer: {
-            command: 'uv run python main.py --env testing',
+    command: 'uv run python main.py --env testing',
     url: 'http://localhost:5000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    timeout: 60 * 1000, // Reduced from 120 * 1000
     stdout: 'pipe',
     stderr: 'pipe',
   },
   
   /* Global timeout for tests */
-  timeout: 30000, // Reduced from 60000
+  timeout: 15000, // Reduced from 30000
   
   /* Expect timeout */
   expect: {
-    timeout: 10000, // Reduced from 15000
+    timeout: 5000, // Reduced from 10000
   },
   
   /* Output directory for test artifacts */

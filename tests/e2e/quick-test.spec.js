@@ -1,11 +1,8 @@
 const { test, expect } = require('@playwright/test');
 
-test.describe('Planner Basic Functionality', () => {
-  test('should load planner page and display form elements', async ({ page }) => {
-    // Navigate to planner page
+test.describe('Quick Test - Basic Functionality', () => {
+  test('should load planner page', async ({ page }) => {
     await page.goto('/planner');
-
-    // Wait for page to load
     await page.waitForLoadState('domcontentloaded');
 
     // Check page title
@@ -19,7 +16,7 @@ test.describe('Planner Basic Functionality', () => {
     await expect(page.locator('button[type="submit"]')).toBeVisible();
   });
 
-  test('should allow padding configuration', async ({ page }) => {
+  test('should configure padding', async ({ page }) => {
     await page.goto('/planner');
     await page.waitForLoadState('domcontentloaded');
 

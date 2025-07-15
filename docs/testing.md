@@ -84,43 +84,80 @@ tests/js/integration/
 - **Error Handling**: Invalid inputs, edge cases, error states
 - **State Management**: Component state, data flow, synchronization
 
-### End-to-End Tests
+### End-to-End Tests (`tests/e2e/`)
 
-#### E2E Tests
+#### E2E Test Strategy
 - **Location**: `tests/e2e/`
-- **Purpose**: Test complete user workflows
+- **Purpose**: Test complete user workflows and critical features
 - **Tools**: Playwright
-- **Coverage**: User interface and workflows
-- **Status**: Coming soon (basic structure in place)
+- **Strategy**: Hierarchical approach focusing on core features
 
-**Structure:**
+#### Test Structure
 ```
 tests/e2e/
-├── landing.spec.js           # Landing page workflows
-├── planner.spec.js           # Planner interface workflows
-├── planner-basic.spec.js     # Basic planner tests
-├── helpers.js                # Reusable test helper functions
-└── error-handling.spec.js    # Error handling workflows
+├── core-features.spec.js         # Critical user journeys
+├── advanced-features.spec.js     # Important but non-critical features
+├── quick-test.spec.js            # Ultra-fast validation
+├── helpers.js                    # Reusable test helper functions
+├── landing.spec.js               # Landing page workflows
+├── planner-basic.spec.js         # Basic planner tests
+├── error-handling.spec.js        # Error handling workflows
+└── slot-editor.spec.js           # Slot editor functionality
 ```
 
-**Helper Functions (`helpers.js`):**
-- `waitForCountriesToLoad()` - Wait for country dropdown to populate
-- `waitForMosquesToLoad()` - Wait for mosque dropdown to populate  
-- `fillGlobalPadding()` - Configure padding values
-- `selectCountry()` / `selectMosque()` - Select options by index
-- `waitForElementStable()` - Wait for elements to be visible and stable
-- `navigateToPlanner()` / `navigateToLanding()` - Page navigation with proper waits
+#### Test Hierarchy
 
-**Current Coverage:**
-- ✅ Page loading and form element visibility
-- ✅ Padding configuration (input/output validation)
-- ✅ Form submission button presence and state
-- ✅ Responsive design (desktop/mobile viewports)
-- ✅ Basic navigation between pages
+**🔥 Level 1 - Core Features (Critical)**
+- **User Journey**: Country selection → Mosque selection → Configuration → ICS generation
+- **Critical Functions**: Mosque search, padding configuration, ICS file generation
+- **Error Handling**: Invalid selections, network errors
+- **Files**: `core-features.spec.js`, `quick-test.spec.js`
 
-**Browser Support:**
-- ✅ **Chromium** - Fully working
-- ❌ **Firefox/Webkit** - Missing system dependencies
+**⚡ Level 2 - Advanced Features (Important)**
+- **Features**: Slot segmentation mode, circular clock, responsive design
+- **Performance**: Loading times, user feedback
+- **Navigation**: Page transitions, form interactions
+- **Files**: `advanced-features.spec.js`
+
+**🎨 Level 3 - Nice-to-Have (Optional)**
+- **Accessibility**: ARIA labels, keyboard navigation
+- **Multi-browser**: Firefox, WebKit support
+- **Performance**: Advanced performance testing
+- **Security**: Input validation testing
+
+#### Helper Functions (`helpers.js`)
+```javascript
+// Navigation helpers
+navigateToPlanner(page)           // Navigate to planner with proper waits
+navigateToLanding(page)           // Navigate to landing page
+
+// Data loading helpers
+waitForCountriesToLoad(page)      // Wait for countries dropdown (20s timeout)
+waitForMosquesToLoad(page)        // Wait for mosques dropdown (20s timeout)
+
+// Selection helpers
+selectCountry(page, index)        // Select country by index
+selectMosque(page, index)         // Select mosque by index
+fillGlobalPadding(page, before, after)  // Configure padding values
+
+// Utility helpers
+waitForElementStable(page, selector)     // Wait for element to be stable
+waitForFormSubmission(page)              // Handle form submission
+verifyICSFiles(page)                     // Check ICS file generation
+completeBasicSetup(page)                 // Complete basic test setup
+```
+
+#### Current Coverage
+- ✅ **Page Loading**: Form elements visibility, responsive design
+- ✅ **User Interactions**: Country/mosque selection, padding configuration
+- ✅ **Form Submission**: Button states, validation
+- ✅ **ICS Generation**: File creation and download verification
+- ✅ **Error Handling**: Invalid inputs, network issues
+- ✅ **Navigation**: Landing page to planner transitions
+
+#### Browser Support
+- ✅ **Chromium**: Fully working (primary target)
+- ❌ **Firefox/WebKit**: Missing system dependencies
 
 ## Running Tests
 
@@ -150,17 +187,45 @@ npm run test:js          # Direct Jest command for all JS tests
 ```
 
 ### E2E Tests
+
+#### Quick Commands
 ```bash
-make test-e2e       # Run end-to-end tests (coming soon)
+# Ultra-fast validation (30 seconds)
+npm run test:e2e:quick
 
-# Direct Playwright commands (if needed)
-npm run test:e2e    # Direct Playwright command
-npm run test:e2e:ui # UI mode for debugging
-npm run test:e2e:headed  # Headed browser mode
+# Core features only (2-3 minutes)
+npm run test:e2e:core
 
-# Run specific E2E tests
-npx playwright test tests/e2e/planner-basic.spec.js --project=chromium
+# Advanced features (3-4 minutes)
+npm run test:e2e:advanced
+
+# All E2E tests (5-8 minutes)
+npm run test:e2e
+```
+
+#### Debug Commands
+```bash
+# Interface graphique pour debug
+npm run test:e2e:ui
+
+# Navigateur visible
+npm run test:e2e:headed
+
+# Mode debug pas à pas
+npm run test:e2e:debug
+
+# Voir le rapport
+npm run test:e2e:report
+```
+
+#### Direct Playwright Commands
+```bash
+# Tests spécifiques
+npx playwright test tests/e2e/core-features.spec.js --project=chromium
 npx playwright test tests/e2e/ --project=chromium  # All E2E tests (Chromium only)
+
+# Tests avec options
+npx playwright test --timeout=30000 --workers=1 --retries=1
 ```
 
 ### Coverage Reports
@@ -168,6 +233,145 @@ npx playwright test tests/e2e/ --project=chromium  # All E2E tests (Chromium onl
 make coverage       # Generate coverage for all tests
 make coverage-py    # Python coverage only
 make coverage-js    # JavaScript coverage only
+```
+
+## E2E Testing Strategy
+
+### Performance Targets
+- **Quick Tests**: < 30 seconds
+- **Core Tests**: < 3 minutes
+- **Complete Tests**: < 8 minutes
+
+### Success Rates
+- **Core Features**: 100% (critical)
+- **Advanced Features**: 95% (acceptable)
+- **Nice-to-Have**: 90% (tolerant)
+
+### Configuration Optimizations
+
+#### Fast Configuration (Development)
+```javascript
+// playwright.config.js
+module.exports = {
+  timeout: 10000,        // Reduced timeout
+  workers: 1,            // Single worker
+  retries: 1,            // Single retry
+  use: {
+    browserName: 'chromium',  // Chromium only
+  }
+};
+```
+
+#### Complete Configuration (CI/CD)
+```javascript
+// playwright.config.js
+module.exports = {
+  timeout: 30000,        // Standard timeout
+  workers: 2,            // Two workers
+  retries: 2,            // Two retries
+  use: {
+    browserName: 'chromium',
+  }
+};
+```
+
+### Best Practices
+
+#### Test Structure
+```javascript
+test.describe('Feature Name', () => {
+  test.beforeEach(async ({ page }) => {
+    // Setup rapide
+    await navigateToPlanner(page);
+  });
+
+  test('should complete user journey', async ({ page }) => {
+    // Use helpers for common operations
+    await completeBasicSetup(page);
+    await waitForFormSubmission(page);
+    await verifyICSFiles(page);
+  });
+});
+```
+
+#### Smart Waiting
+```javascript
+// ✅ Good - Wait for specific state
+await page.waitForSelector('#element:not([disabled])');
+
+// ❌ Avoid - Wait for fixed time
+await page.waitForTimeout(2000);
+```
+
+#### Robust Selectors
+```javascript
+// ✅ Good - Specific selector
+await page.locator('#country-select option[value="FR"]');
+
+// ❌ Avoid - Generic selector
+await page.locator('option').nth(1);
+```
+
+### Troubleshooting
+
+#### Common Issues
+1. **Slow Tests**
+   - Check timeouts in `playwright.config.js`
+   - Use `test:e2e:fast` for quick tests
+   - Avoid `networkidle` waits
+
+2. **Unstable Tests**
+   - Use more specific selectors
+   - Wait for element states
+   - Avoid time-based waits
+
+3. **Failed Tests**
+   - Use `test:e2e:headed` to see browser
+   - Use `test:e2e:debug` for step-by-step debug
+   - Check server logs
+
+#### Debug Commands
+```bash
+# See browser during tests
+npm run test:e2e:headed
+
+# Step-by-step debug
+npm run test:e2e:debug
+
+# UI interface
+npm run test:e2e:ui
+
+# View report
+npm run test:e2e:report
+```
+
+### Workflow Recommendations
+
+#### Daily Development
+```bash
+# Quick validation before commit
+npm run test:e2e:quick
+
+# Core tests before merge
+npm run test:e2e:core
+```
+
+#### CI/CD Pipeline
+```bash
+# Fast pipeline (2-3 minutes)
+npm run test:e2e:core
+
+# Complete pipeline (5-8 minutes)
+npm run test:e2e
+```
+
+#### Manual Testing
+```bash
+# UI interface for debugging
+npm run test:e2e:ui
+
+# Specific tests
+npm run test:e2e -- --grep "should complete full user journey"
 ```
 
 ## Test Configuration
@@ -233,6 +437,17 @@ ignore = [
     "C901",  # too complex
 ]
 ```
+
+### JavaScript Linting with ESLint
+```bash
+npm run lint        # Check JavaScript code style
+npm run lint:fix    # Auto-fix JavaScript code style issues
+```
+
+**ESLint Configuration:**
+- Includes E2E tests in linting scope
+- Standard configuration with custom rules
+- Automatic fixing for common issues
 
 ### Test Import Structure
 All Python tests now use the correct import structure:
@@ -323,6 +538,47 @@ def app():
    });
    ```
 
+### E2E Testing
+1. **Use helper functions for consistency**:
+   ```javascript
+   const { navigateToPlanner, completeBasicSetup } = require('./helpers');
+   
+   test('should complete user journey', async ({ page }) => {
+     await navigateToPlanner(page);
+     await completeBasicSetup(page);
+     // Test specific functionality
+   });
+   ```
+
+2. **Use realistic timeouts**:
+   ```javascript
+   // Wait for data loading (20s for slow operations)
+   await waitForCountriesToLoad(page);
+   
+   // Wait for UI elements (10s for quick operations)
+   await expect(page.locator('#element')).toBeVisible({ timeout: 10000 });
+   ```
+
+3. **Test error scenarios**:
+   ```javascript
+   test('should handle network errors', async ({ page }) => {
+     // Simulate network issue
+     await page.route('**/api/**', route => route.abort());
+     
+     // Verify graceful handling
+     await expect(page.locator('.error')).toBeVisible();
+   });
+   ```
+
+4. **Use specific selectors**:
+   ```javascript
+   // ✅ Good - Specific and reliable
+   await page.locator('#country-select option[value="FR"]');
+   
+   // ❌ Avoid - Generic and fragile
+   await page.locator('option').nth(1);
+   ```
+
 ## Test Data Management
 
 ### Python Test Data
@@ -335,17 +591,22 @@ def app():
 - **Fixtures**: Reusable test data
 - **Cleanup**: Automatic DOM cleanup
 
+### E2E Test Data
+- **Helper functions**: Centralized in `helpers.js`
+- **Test setup**: Reusable setup functions
+- **Data validation**: Built-in validation in helpers
+
 ## Coverage Goals
 
 ### Current Coverage
 - **Python**: 65% overall (147 tests, 1 xfailed)
 - **JavaScript**: 128 tests (100% pass rate)
-- **E2E**: Coming soon
+- **E2E**: Core features covered, advanced features in progress
 
 ### Coverage Targets
 - **Python**: 80% minimum
 - **JavaScript**: 90% minimum
-- **E2E**: 100% of user workflows
+- **E2E**: 100% of critical user workflows
 
 ## Troubleshooting
 
@@ -391,7 +652,24 @@ npx playwright install-deps
 
 # Debug mode
 npm run test:e2e:headed
+
+# Check configuration
+npx playwright test --list
 ```
+
+### Performance Issues
+
+#### Slow E2E Tests
+1. **Check timeouts**: Review `playwright.config.js`
+2. **Use fast commands**: `npm run test:e2e:quick`
+3. **Avoid networkidle**: Use `domcontentloaded` instead
+4. **Optimize selectors**: Use specific IDs over generic tags
+
+#### Unstable Tests
+1. **Use stable selectors**: Prefer IDs and specific attributes
+2. **Wait for states**: Use `:not([disabled])` selectors
+3. **Avoid time-based waits**: Use element state waits instead
+4. **Check server logs**: Verify backend is responding
 
 ## Migration Notes
 
@@ -406,3 +684,7 @@ npm run test:e2e:headed
 ### From black/isort/flake8 to Ruff
 - **Old**: `black . && isort . && flake8 .`
 - **New**: `make fix` (auto-fix) or `make lint` (check only)
+
+### E2E Test Evolution
+- **Old**: Basic structure with manual timeouts
+- **New**: Hierarchical strategy with optimized helpers and realistic timeouts

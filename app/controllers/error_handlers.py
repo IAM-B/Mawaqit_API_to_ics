@@ -5,7 +5,7 @@ def init_error_handlers(app):
     @app.errorhandler(404)
     def not_found(_e):
         return render_template(
-            "error.html", error_message="Page non trouvée (404)"
+            "error.html", error_message="Page non trouvée (404)", error_code=404
         ), 404
 
     @app.errorhandler(405)
@@ -17,5 +17,5 @@ def init_error_handlers(app):
     @app.errorhandler(500)
     def internal_error(_e):
         return render_template(
-            "error.html", error_message="Erreur interne du serveur (500)"
+            "error.html", error_message="Erreur interne du serveur (500)", error_code=500
         ), 500

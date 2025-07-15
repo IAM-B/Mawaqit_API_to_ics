@@ -17,6 +17,10 @@
     "test:js:unit": "jest tests/js/unit/",
     "test:js:integration": "jest tests/js/integration/",
     "test:e2e": "playwright test",
+    "test:e2e:core": "playwright test tests/e2e/core-features.spec.js --timeout=30000 --workers=1 --retries=1",
+    "test:e2e:advanced": "playwright test tests/e2e/advanced-features.spec.js --timeout=30000 --workers=1 --retries=1",
+    "test:e2e:quick": "playwright test tests/e2e/quick-test.spec.js --timeout=5000 --workers=1 --retries=0",
+    "test:e2e:fast": "playwright test --timeout=10000 --workers=1 --retries=1",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
@@ -24,8 +28,8 @@
     "test:all": "npm run test:js && python -m pytest tests/python/",
     "test:all:coverage": "npm run test:js:coverage && python -m pytest tests/python/ --cov=app --cov-report=html:htmlcov/python",
     "test:full": "npm run test:js && npm run test:e2e && python -m pytest tests/python/",
-    "lint": "eslint app/static/js/ tests/js/ --ext .js",
-    "lint:fix": "eslint app/static/js/ tests/js/ --ext .js --fix"
+    "lint": "eslint app/static/js/ tests/js/ tests/e2e/ --ext .js",
+    "lint:fix": "eslint app/static/js/ tests/js/ tests/e2e/ --ext .js --fix"
   },
   "repository": {
     "type": "git",
