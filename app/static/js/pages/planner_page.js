@@ -340,55 +340,108 @@ export class PlannerPage {
     const downloadGrid = document.querySelector('.how-it-works-section .download-grid');
     if (downloadGrid) {
       downloadGrid.innerHTML = '';
-      if (data.ics_path) {
-        const a = document.createElement('a');
-        a.href = `/static/ics/${data.ics_path}`;
-        a.download = '';
-        a.className = 'download-card primary';
-        a.innerHTML = `<span class="download-icon">📅</span><span class="download-title">Horaires de prière (${data.scope})</span><span class="download-format">.ics</span>`;
-        downloadGrid.appendChild(a);
-      }
-      if (data.available_slots_path) {
-        const a = document.createElement('a');
-        a.href = `/static/ics/${data.available_slots_path}`;
-        a.download = '';
-        a.className = 'download-card secondary';
-        a.innerHTML = `<span class="download-icon">🕒</span><span class="download-title">Créneaux synchronisés (${data.scope})</span><span class="download-format">.ics</span>`;
-        downloadGrid.appendChild(a);
-      }
-      if (data.empty_slots_path) {
-        const a = document.createElement('a');
-        a.href = `/static/ics/${data.empty_slots_path}`;
-        a.download = '';
-        a.className = 'download-card secondary';
-        a.innerHTML = `<span class="download-icon">📋</span><span class="download-title">Créneaux disponibles (${data.scope})</span><span class="download-format">.ics</span>`;
-        downloadGrid.appendChild(a);
-      }
-      const editA = document.createElement('a');
-      editA.href = '/edit_slot';
-      editA.className = 'download-card edit';
-      editA.innerHTML = '<span class="download-icon">✏️</span><span class="download-title">Modifier manuellement</span><span class="download-format">Créneaux</span>';
-      downloadGrid.appendChild(editA);
+      
+      // Fonction utilitaire pour extraire le nom de fichier du chemin complet
+      const extractFilename = (path) => {
+        if (!path) return '';
+        // Si le chemin contient des slashes, prendre la dernière partie
+        return path.includes('/') ? path.split('/').pop() : path;
+      };
+      
+      // Fonction pour créer un lien de téléchargement
+      const createDownloadLink = (path, title, icon, className = 'secondary') => {
+        if (!path) return null;
+        
+        const filename = extractFilename(path);
+        const link = document.createElement('a');
+        link.href = `/download_ics/${filename}`;
+        link.download = filename;
+        link.className = `download-card ${className}`;
+        link.innerHTML = `
+          <span class="download-icon">${icon}</span>
+          <span class="download-title">${title} (${data.scope})</span>
+          <span class="download-format">.ics</span>
+        `;
+        return link;
+      };
+      
+      // Créer les liens de téléchargement pour chaque type de fichier
+      const downloadLinks = [
+        {
+          path: data.ics_path,
+          title: 'Horaires de prière',
+          icon: '📅',
+          className: 'primary'
+        },
+        {
+          path: data.available_slots_path,
+          title: 'Créneaux synchronisés',
+          icon: '🕒',
+          className: 'secondary'
+        },
+        {
+          path: data.empty_slots_path,
+          title: 'Créneaux disponibles',
+          icon: '📋',
+          className: 'secondary'
+        }
+      ];
+      
+      // Ajouter les liens de téléchargement au grid
+      downloadLinks.forEach(({ path, title, icon, className }) => {
+        const link = createDownloadLink(path, title, icon, className);
+        if (link) {
+          downloadGrid.appendChild(link);
+        }
+      });
+      
+      // Ajouter le lien d'édition manuelle
+      const editLink = document.createElement('a');
+      editLink.href = '/edit_slot';
+      editLink.className = 'download-card edit';
+      editLink.innerHTML = `
+        <span class="download-icon">✏️</span>
+        <span class="download-title">Modifier manuellement</span>
+        <span class="download-format">Créneaux</span>
+      `;
+      downloadGrid.appendChild(editLink);
+      
+      // Ajouter la section des téléchargements par période
       const scopeDownloads = document.createElement('div');
       scopeDownloads.className = 'scope-downloads';
-      scopeDownloads.innerHTML = '<h3>📥 Téléchargements par période</h3><div class="scope-buttons"></div>';
+      scopeDownloads.innerHTML = `
+        <h3>📥 Téléchargements par période</h3>
+        <div class="scope-buttons"></div>
+      `;
+      
       const scopeButtons = scopeDownloads.querySelector('.scope-buttons');
+      
+      // Bouton pour l'année (actif par défaut)
       const yearBtn = document.createElement('button');
       yearBtn.className = 'scope-download-btn year active';
       yearBtn.dataset.scope = 'year';
-      yearBtn.innerHTML = '<span class="scope-icon">📅</span><span class="scope-title">Cette année</span>';
+      yearBtn.innerHTML = `
+        <span class="scope-icon">📅</span>
+        <span class="scope-title">Cette année</span>
+      `;
       scopeButtons.appendChild(yearBtn);
+      
+      // Boutons pour aujourd'hui et ce mois
       ['today', 'month'].forEach(scope => {
         const btn = document.createElement('button');
         btn.className = `scope-download-btn ${scope}`;
         btn.dataset.scope = scope;
-        btn.innerHTML = `<span class="scope-icon">📅</span><span class="scope-title">${scope === 'today' ? 'Aujourd\'hui' : 'Ce mois'}</span>`;
+        btn.innerHTML = `
+          <span class="scope-icon">📅</span>
+          <span class="scope-title">${scope === 'today' ? 'Aujourd\'hui' : 'Ce mois'}</span>
+        `;
         scopeButtons.appendChild(btn);
       });
+      
       downloadGrid.appendChild(scopeDownloads);
       this.setupScopeDownloadButtons(data);
 
-      // Update progress state
+      // Mettre à jour l'état de progression
       this.progressState.downloadsAvailable = true;
       this.updateProgressIndicator(3);
     }

@@ -3,7 +3,9 @@ Main controller module for the Mawaqit to ICS application.
 Handles all route definitions and request processing.
 """
 
-from flask import Blueprint, Flask, jsonify, render_template, request
+from flask import Blueprint, Flask, jsonify, render_template, request, send_file, abort, current_app
+
+from pathlib import Path
 
 from app.modules.mosque_search import (
     get_formatted_mosques,
@@ -140,3 +142,24 @@ def init_routes(app):
     def edit_slot():
         """Handle slot editing interface."""
         return render_slot_editor(request)
+
+    @app.route("/download_ics/<filename>")
+    def download_ics(filename):
+        """Serve ICS files with proper download headers."""
+        
+        ics_path = Path(current_app.static_folder) / "ics" / filename
+        
+        if not ics_path.exists():
+            abort(404, description="Fichier ICS non trouvé")
+        
+        return send_file(
+            ics_path,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='text/calendar'
+        )
+
+    @app.route("/test_download_final")
+    def test_download_final():
+        """Test page for ICS file downloads."""
+        return app.send_static_file("test_download_final.html")
